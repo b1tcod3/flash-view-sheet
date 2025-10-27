@@ -79,6 +79,75 @@ def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
     return df
 
 
+def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict = None, chunk_size: int = None) -> pd.DataFrame:
+    """
+    Cargar datos desde un archivo con opciones adicionales como saltar filas y renombrar columnas
+
+    Args:
+        filepath: Ruta del archivo a cargar
+        skip_rows: Número de filas a saltar al inicio (la siguiente fila se usa como header)
+        column_names: Diccionario con nombres de columnas a renombrar {original: nuevo}
+        chunk_size: Tamaño de chunk para lectura (solo para CSV grandes)
+
+    Returns:
+        DataFrame de Pandas con los datos cargados y opciones aplicadas
+    """
+    # Determinar el tipo de archivo por extensión
+    extension = os.path.splitext(filepath)[1].lower()
+
+    try:
+        if extension in ['.xlsx', '.xls']:
+            # Para Excel, usar header=skip_rows para usar la fila después de saltar como header
+            if skip_rows > 0:
+                df = pd.read_excel(filepath, header=skip_rows)
+                # Resetear index para que empiece desde 0
+                df = df.reset_index(drop=True)
+            else:
+                df = pd.read_excel(filepath)
+        elif extension == '.csv':
+            # Para CSV, usar header=skip_rows para usar la fila después de saltar como header
+            if skip_rows > 0:
+                df = pd.read_csv(filepath, header=skip_rows)
+                # Resetear index para que empiece desde 0
+                df = df.reset_index(drop=True)
+            else:
+                df = pd.read_csv(filepath)
+        elif extension == '.json':
+            # Para JSON, no se puede usar header, así que cargar normal y luego saltar
+            df = pd.read_json(filepath)
+            if skip_rows > 0:
+                df = df.iloc[skip_rows:].reset_index(drop=True)
+        elif extension in ['.xml']:
+            # Para XML, cargar normal y luego saltar
+            try:
+                df = pd.read_xml(filepath)
+            except AttributeError:
+                # Si pandas no tiene read_xml, usar lxml
+                from lxml import etree
+                tree = etree.parse(filepath)
+                root = tree.getroot()
+                data = []
+                for child in root:
+                    row = {}
+                    for subchild in child:
+                        row[subchild.tag] = subchild.text
+                    data.append(row)
+                df = pd.DataFrame(data)
+
+            if skip_rows > 0:
+                df = df.iloc[skip_rows:].reset_index(drop=True)
+        else:
+            raise ValueError(f"Formato de archivo no soportado: {extension}")
+    except Exception as e:
+        raise Exception(f"Error al cargar el archivo {filepath}: {str(e)}")
+
+    # Aplicar renombrado de columnas si se especifica
+    if column_names:
+        df = df.rename(columns=column_names)
+
+    return df
+
+
 def _cargar_csv_en_chunks(filepath: str, chunk_size: int = None) -> pd.DataFrame:
     """
     Cargar archivo CSV en chunks para optimizar memoria
@@ -166,9 +235,12 @@ def obtener_estadisticas(df: pd.DataFrame, columnas: list = None, percentiles: l
                 # Si no hay columnas numéricas, usar todas
                 columnas = df.columns.tolist()
 
-        # Configurar percentiles por defecto
+        # Configurar percentiles por defecto (convertir a decimales)
         if percentiles is None:
-            percentiles = [25, 50, 75]
+            percentiles = [0.25, 0.5, 0.75]  # Usar decimales en lugar de porcentajes
+        else:
+            # Convertir percentiles de porcentaje a decimal si es necesario
+            percentiles = [p/100 if p > 1 else p for p in percentiles]
 
         # Para datasets muy grandes, usar sample para estadísticas aproximadas
         if optimization_config.should_sample_stats(len(df)):

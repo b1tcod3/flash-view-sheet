@@ -132,6 +132,29 @@
 
 ---
 
+## Fase 6: Separación de Vistas - COMPLETADA
+
+### Subfase 6.1: Planificación y Diseño
+- [x] **14:00** - Analizado estructura UI actual (MainWindow, InfoPanel, VisualizationPanel)
+- [x] **14:00** - Diseñada arquitectura con QStackedWidget para vistas separadas
+- [x] **14:00** - Creado plan detallado en `docs/vistas/plan.md`
+- [x] **14:00** - Definidas tres vistas: Principal, Información, Gráficos
+
+### Subfase 6.2: Implementación de Vistas
+- [x] **14:10** - Creado widget de vista principal con botón de carga, card e icono
+- [x] **14:10** - Creado modal de información para detalles del archivo
+- [x] **14:10** - Creado widget de vista de gráficos para charts y stats
+- [x] **14:10** - Actualizada barra de herramientas con botones para cambiar vistas
+- [x] **14:10** - Integradas vistas en MainWindow y manejo de cambios
+- [x] **14:10** - Actualizado manejo de datos para aplicar filtros a vista de gráficos
+- [x] **14:10** - Probada aplicación sin errores
+
+### Subfase 6.3: Documentación de Avances
+- [x] **14:15** - Creado archivo `docs/vistas/avances.md` con detalles de implementación
+- [x] **14:15** - Actualizado `avances.md` con completación de fase
+
+---
+
 ## Log de Actividades
 
 ### 2025-10-26
@@ -159,22 +182,22 @@
 - [x] **01:00** - Añadido archivo de configuración con parámetros de optimización
 - [x] **01:00** - Implementada suite completa de pruebas unitarias
 - [x] **01:00** - Actualizada documentación con nuevas características
+- [x] **14:00** - Iniciada Fase 6: Separación de Vistas
 
 ---
 
 ## Próximas Tareas Inmediatas
 
 ### Prioridad Alta
-- [x] Crear archivo `requirements.txt` con dependencias
-- [x] **17:03** - Verificada funcionalidad de PySide6
-- [x] **17:02** - Instaladas dependencias básicas
-- [x] **17:03** - Aplicación básica funcionando
-- [x] Implementar carga de archivos Excel/CSV
-- [x] Conectar modelo `PandasTableModel` con `QTableView`
-- [x] Completar Fase 4: Sistema de Exportación
+- [ ] Crear widget de vista principal con botón de carga, card e icono
+- [ ] Crear modal de información para detalles del archivo
+- [ ] Crear widget de vista de gráficos para charts y stats
+- [ ] Actualizar barra de herramientas con botones para cambiar vistas
+- [ ] Integrar vistas en MainWindow y manejar cambios
+- [ ] Actualizar manejo de datos para aplicar filtros a vista de gráficos
 
-### Próximas Mejoras (Fase 6 - Futuras)
-- [ ] Implementar gráficos y visualizaciones de datos
+### Próximas Mejoras (Fase 7 - Futuras)
+- [ ] Implementar gráficos y visualizaciones de datos avanzadas
 - [ ] Añadir soporte para más formatos de archivo (JSON, XML, etc.)
 - [ ] Implementar operaciones de transformación de datos
 - [ ] Añadir funcionalidad de exportación a Excel
@@ -243,7 +266,13 @@ MAX_CACHE_CHUNKS = 10              # Chunks máximos en cache
 
 ## Próxima Revisión
 **Fecha:** 28 de Octubre 2025
-**Objetivo:** Iniciar Fase 6: Visualizaciones y Funcionalidades Avanzadas
+**Objetivo:** Iniciar Fase 7: Pruebas de Usuario y Optimizaciones de UX
+
+### Próximos Pasos Sugeridos
+1. **Pruebas de Usuario**: Realizar pruebas exhaustivas con usuarios para validar usabilidad de las nuevas vistas.
+2. **Optimizaciones de UI/UX**: Mejorar estilos, animaciones y responsividad de la interfaz.
+3. **Funcionalidades Avanzadas**: Añadir más tipos de gráficos o herramientas de análisis adicionales.
+4. **Documentación**: Actualizar manual de usuario con las nuevas vistas y funcionalidades.
 
 ---
 

@@ -7,11 +7,13 @@ Punto de entrada principal de la aplicación
 import sys
 import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
-                             QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
-                             QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog)
+                              QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
+                              QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog,
+                              QStackedWidget)
 from PySide6.QtCore import Qt, QThread, Signal
-from app.widgets.info_panel import InfoPanel
-from app.widgets.visualization_panel import VisualizationPanel
+from app.widgets.main_view import MainView
+from app.widgets.info_modal import InfoModal
+from app.widgets.graphics_view import GraphicsView
 
 
 class DataLoaderThread(QThread):
@@ -20,15 +22,17 @@ class DataLoaderThread(QThread):
     data_loaded = Signal(object)
     error_occurred = Signal(str)
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, skip_rows=0, column_names=None):
         super().__init__()
         self.filepath = filepath
+        self.skip_rows = skip_rows
+        self.column_names = column_names if column_names else {}
 
     def run(self):
         """Ejecutar la carga de datos"""
         try:
-            from core.data_handler import cargar_datos
-            df = cargar_datos(self.filepath)
+            from core.data_handler import cargar_datos_con_opciones
+            df = cargar_datos_con_opciones(self.filepath, self.skip_rows, self.column_names)
             self.data_loaded.emit(df)
         except Exception as e:
             self.error_occurred.emit(str(e))
@@ -47,16 +51,21 @@ class MainWindow(QMainWindow):
         self.df_vista_actual = None
         self.pandas_model = None
         self.loading_thread = None
-        self.info_panel = None
-        self.visualization_panel = None
+        # Removed old panels as they are now in separate views
+        self.main_view = None
+        self.info_modal = None
+        self.graphics_view = None
+        self.stacked_widget = None
         self.filter_combo = None
         self.filter_input = None
         self.apply_filter_btn = None
         self.clear_filter_btn = None
+        self.view_main_btn = None
+        self.view_info_btn = None
+        self.view_graphics_btn = None
 
         self.setup_ui()
         self.setup_connections()
-        self.create_visualization_panel()
 
     def setup_ui(self):
         """Configurar la interfaz de usuario"""
@@ -66,7 +75,7 @@ class MainWindow(QMainWindow):
         self.create_tool_bar()
         self.create_central_widget()
         self.create_status_bar()
-        self.create_info_panel()
+        self.create_views()
 
     def setup_connections(self):
         """Configurar conexiones de señales y slots"""
@@ -76,6 +85,10 @@ class MainWindow(QMainWindow):
             self.clear_filter_btn.clicked.connect(self.limpiar_filtro)
         if self.filter_input:
             self.filter_input.returnPressed.connect(self.aplicar_filtro)
+
+        # Conectar señal de recarga con opciones desde la vista principal
+        if self.main_view:
+            self.main_view.reload_with_options.connect(self.on_reload_with_options)
 
     def create_menu_bar(self):
         """Crear la barra de menú"""
@@ -115,7 +128,33 @@ class MainWindow(QMainWindow):
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
         tool_bar = self.addToolBar("Herramientas")
+        self.create_view_switcher_ui(tool_bar)
+        tool_bar.addSeparator()
         self.create_filtering_ui(tool_bar)
+
+    def create_view_switcher_ui(self, tool_bar):
+        """Crear la interfaz para cambiar vistas en la barra de herramientas"""
+        # Widget contenedor para los botones de vista
+        view_widget = QWidget()
+        view_layout = QHBoxLayout(view_widget)
+
+        # Botón Vista Principal
+        self.view_main_btn = QPushButton("Vista Principal")
+        self.view_main_btn.clicked.connect(lambda: self.switch_view(0))
+        view_layout.addWidget(self.view_main_btn)
+
+        # Botón Vista Información
+        self.view_info_btn = QPushButton("Vista Información")
+        self.view_info_btn.clicked.connect(self.show_info_modal)
+        view_layout.addWidget(self.view_info_btn)
+
+        # Botón Vista Gráficos
+        self.view_graphics_btn = QPushButton("Vista Gráficos")
+        self.view_graphics_btn.clicked.connect(lambda: self.switch_view(2))
+        view_layout.addWidget(self.view_graphics_btn)
+
+        # Añadir el widget a la barra de herramientas
+        tool_bar.addWidget(view_widget)
 
     def create_filtering_ui(self, tool_bar):
         """Crear la interfaz de filtrado en la barra de herramientas"""
@@ -147,28 +186,48 @@ class MainWindow(QMainWindow):
         tool_bar.addWidget(filter_widget)
 
     def create_central_widget(self):
-        """Crear el widget central (tabla de datos)"""
-        # Crear tabla de datos
-        self.tabla_datos = QTableView()
-        self.setCentralWidget(self.tabla_datos)
+        """Crear el widget central con stacked views"""
+        # Crear stacked widget para las vistas
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
 
     def create_status_bar(self):
         """Crear la barra de estado"""
         self.statusBar().showMessage("Listo para cargar datos")
 
-    def create_info_panel(self):
-        """Crear el panel de información"""
-        self.info_panel = InfoPanel()
-        dock_widget = QDockWidget("Información")
-        dock_widget.setWidget(self.info_panel)
-        self.addDockWidget(Qt.RightDockWidgetArea, dock_widget)
 
-    def create_visualization_panel(self):
-        """Crear el panel de visualizaciones"""
-        self.visualization_panel = VisualizationPanel()
-        dock_widget = QDockWidget("Visualizaciones")
-        dock_widget.setWidget(self.visualization_panel)
-        self.addDockWidget(Qt.BottomDockWidgetArea, dock_widget)
+    def create_views(self):
+        """Crear las vistas y añadirlas al stacked widget"""
+        # Vista Principal (índice 0)
+        self.main_view = MainView()
+        self.main_view.file_loaded.connect(self.on_file_loaded_from_main_view)
+        self.stacked_widget.addWidget(self.main_view)
+
+        # Vista de Tabla (índice 1) - la tabla original
+        self.tabla_datos = QTableView()
+        self.stacked_widget.addWidget(self.tabla_datos)
+
+        # Vista de Gráficos (índice 2)
+        self.graphics_view = GraphicsView()
+        self.stacked_widget.addWidget(self.graphics_view)
+
+        # Establecer vista inicial
+        self.stacked_widget.setCurrentIndex(0)
+
+    def switch_view(self, index):
+        """Cambiar a la vista especificada"""
+        self.stacked_widget.setCurrentIndex(index)
+
+    def show_info_modal(self):
+        """Mostrar el modal de información"""
+        if self.df_original is not None:
+            if self.info_modal is None:
+                self.info_modal = InfoModal(self)
+            filename = os.path.basename(self.loading_thread.filepath) if self.loading_thread else "Archivo cargado"
+            self.info_modal.update_info(self.df_original, filename)
+            self.info_modal.exec()
+        else:
+            QMessageBox.warning(self, "Advertencia", "No hay datos cargados para mostrar información.")
 
     def abrir_archivo(self):
         """Slot para abrir un archivo"""
@@ -181,7 +240,7 @@ class MainWindow(QMainWindow):
         if filepath:
             self.mostrar_loading_indicator(filepath)
 
-    def mostrar_loading_indicator(self, filepath):
+    def mostrar_loading_indicator(self, filepath, skip_rows=0, column_names=None):
         """Mostrar indicador de carga mientras se procesa el archivo"""
 
         # Crear y configurar el diálogo de progreso
@@ -191,7 +250,7 @@ class MainWindow(QMainWindow):
         self.progress_dialog.show()
 
         # Crear y ejecutar el hilo de carga
-        self.loading_thread = DataLoaderThread(filepath)
+        self.loading_thread = DataLoaderThread(filepath, skip_rows, column_names)
         self.loading_thread.data_loaded.connect(self.on_datos_cargados)
         self.loading_thread.error_occurred.connect(self.on_error_carga)
         self.loading_thread.start()
@@ -209,20 +268,30 @@ class MainWindow(QMainWindow):
         self.actualizar_vista()
         self.statusBar().showMessage(f"Datos cargados: {self.loading_thread.filepath}")
 
-        # Actualizar panel de información
-        self.info_panel.update_info(df)
 
-        # Actualizar panel de visualizaciones
-        if self.visualization_panel:
-            self.visualization_panel.update_data(df)
+        # Actualizar vista de gráficos
+        if self.graphics_view:
+            self.graphics_view.update_data(df)
+
+        # Actualizar vista principal
+        if self.main_view:
+            self.main_view.set_file_info(self.loading_thread.filepath)
+            # Mostrar el botón de opciones después de cargar
+            self.main_view.show_options_button()
 
         # Poblar el ComboBox con nombres de columnas
-        self.filter_combo.clear()
-        self.filter_combo.addItems(df.columns.tolist())
+        if self.filter_combo:
+            self.filter_combo.clear()
+            self.filter_combo.addItems(df.columns.tolist())
 
         # Limpiar filtros previos
-        self.filter_input.clear()
-        self.filter_combo.setCurrentIndex(-1)
+        if self.filter_input:
+            self.filter_input.clear()
+        if self.filter_combo:
+            self.filter_combo.setCurrentIndex(-1)
+
+        # Cambiar a vista de tabla por defecto
+        self.switch_view(1)
 
     def on_error_carga(self, error_message):
         """Slot para manejar errores de carga"""
@@ -230,6 +299,16 @@ class MainWindow(QMainWindow):
             self.progress_dialog.close()
 
         QMessageBox.critical(self, "Error", f"No se pudo cargar el archivo: {error_message}")
+
+    def on_file_loaded_from_main_view(self, filepath, skip_rows=0, column_names=None):
+        """Slot para manejar carga de archivo desde la vista principal"""
+        if column_names is None:
+            column_names = {}
+        self.mostrar_loading_indicator(filepath, skip_rows, column_names)
+
+    def on_reload_with_options(self, filepath, skip_rows, column_names):
+        """Slot para manejar recarga de archivo con nuevas opciones"""
+        self.mostrar_loading_indicator(filepath, skip_rows, column_names)
 
     def cargar_datos(self, filepath):
         """Cargar datos desde un archivo"""
@@ -242,13 +321,6 @@ class MainWindow(QMainWindow):
             self.actualizar_vista()
             self.statusBar().showMessage(f"Datos cargados: {filepath}")
 
-            # Actualizar panel de información
-            if self.info_panel:
-                self.info_panel.update_info(self.df_original)
-
-            # Actualizar panel de visualizaciones
-            if self.visualization_panel:
-                self.visualization_panel.update_data(self.df_original)
 
             # Limpiar filtros previos
             if self.filter_input:
@@ -266,7 +338,8 @@ class MainWindow(QMainWindow):
         if self.df_vista_actual is not None:
             # Usar el modelo virtualizado para mejor rendimiento
             self.pandas_model = VirtualizedPandasModel(self.df_vista_actual)
-        self.tabla_datos.setModel(self.pandas_model)
+        if hasattr(self, 'tabla_datos'):
+            self.tabla_datos.setModel(self.pandas_model)
 
     def aplicar_filtro(self):
         """Aplicar filtro a los datos"""
@@ -289,6 +362,9 @@ class MainWindow(QMainWindow):
             from core.data_handler import aplicar_filtro
             self.df_vista_actual = aplicar_filtro(self.df_original, columna, termino)
             self.actualizar_vista()
+            # Actualizar vista de gráficos con datos filtrados
+            if self.graphics_view:
+                self.graphics_view.update_data(self.df_vista_actual)
             self.statusBar().showMessage(f"Filtro aplicado: {len(self.df_vista_actual)} filas mostradas")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al aplicar filtro: {str(e)}")
@@ -300,8 +376,13 @@ class MainWindow(QMainWindow):
 
         self.df_vista_actual = self.df_original.copy()
         self.actualizar_vista()
-        self.filter_input.clear()
-        self.filter_combo.setCurrentIndex(-1)  # Deseleccionar columna
+        # Actualizar vista de gráficos con datos originales
+        if self.graphics_view:
+            self.graphics_view.update_data(self.df_vista_actual)
+        if self.filter_input:
+            self.filter_input.clear()
+        if self.filter_combo:
+            self.filter_combo.setCurrentIndex(-1)  # Deseleccionar columna
         self.statusBar().showMessage(f"Datos restaurados: {len(self.df_vista_actual)} filas mostradas")
 
     def exportar_a_pdf(self):
