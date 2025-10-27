@@ -72,7 +72,7 @@ class PandasTableModel(QAbstractTableModel):
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole):
         """
         Retornar datos para los encabezados
-            
+        
         Args:
             section: Sección del encabezado
             orientation: Orientación (horizontal o vertical)

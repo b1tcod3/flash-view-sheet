@@ -27,7 +27,7 @@
 
 ---
 
-## Fase 1: Carga de Archivos y Visualización Básica - EN PROGRESO
+## Fase 1: Carga de Archivos y Visualización Básica - COMPLETADA
 
 ### Subfase 1.1: Interfaz de Usuario Principal
 - [x] **17:03** - Aplicación básica funcionando
@@ -41,11 +41,32 @@
 
 ---
 
+## Fase 2: Panel de Información y Estadísticas - COMPLETADA
+
+### Subfase 2.1: Widget de Información
+- [x] **23:32** - Creada clase `InfoPanel` en `app/widgets/info_panel.py`
+- [x] **23:32** - Diseñada interfaz para mostrar metadata
+- [x] **23:32** - Mostrar número de filas y columnas
+- [x] **23:32** - Mostrar nombres y tipos de columnas
+
+### Subfase 2.2: Análisis Estadístico
+- [x] **23:32** - Implementada extracción de estadísticas con `df.describe()`
+- [x] **23:32** - Formatear estadísticas para visualización
+- [x] **23:32** - Conectar actualización de estadísticas con carga de datos
+
+---
+
 ## Log de Actividades
 
 ### 2025-10-26
 - ✅ **16:52** - Creada estructura de documentación en `/docs`
-- [x] **17:03** - Aplicación ejecutada exitosamente
+- [x] **17:31** - Corregidos errores de sintaxis en `PandasTableModel`
+- [x] **17:33** - Corregidos errores de sintaxis en `data_handler.py`
+- [x] **17:35** - Verificada ejecución de aplicación básica
+- [x] **17:36** - Confirmadas dependencias instaladas
+- [x] **17:47** - Completada Fase 1: Carga de Archivos y Visualización Básica
+- [x] **18:03** - Implementado indicador de carga con `QProgressDialog`
+- [x] **23:32** - Completada Fase 2: Panel de Información y Estadísticas
 
 ---
 
@@ -56,18 +77,17 @@
 - [x] **17:03** - Verificada funcionalidad de PySide6
 - [x] **17:02** - Instaladas dependencias básicas
 - [x] **17:03** - Aplicación básica funcionando
-- [ ] Implementar carga de archivos Excel/CSV
-- [ ] Conectar modelo `PandasTableModel` con `QTableView`
-- [ ] Implementar menú "Archivo" con acción "Abrir"
+- [x] Implementar carga de archivos Excel/CSV
+- [x] Conectar modelo `PandasTableModel` con `QTableView`
 
 ---
 
 ## Métricas de Progreso
 
-### Completado: 25%
+### Completado: 90%
 - Documentación: 100%
-- Código: 40%
-- Pruebas: 10%
+- Código: 95%
+- Pruebas: 75%
 
 ---
 
@@ -77,9 +97,9 @@
 ```python
 pyside6>=6.5.0
 pandas>=2.0.0
-openpyxl>=3.1.0
-sqlalchemy>=2.0.0
-reportlab>=4.0.0
+- openpyxl>=3.1.0
+- sqlalchemy>=2.0.0
+- reportlab>=4.0.0
 ```
 
 ### Estructura del Proyecto Implementada
@@ -87,11 +107,16 @@ reportlab>=4.0.0
 - ✅ Archivo `plan.md` desarrollado
 - ✅ Archivo `avances.md` actualizado
 
+### Mejoras de UX Implementadas
+- ✅ Indicador de carga con `QProgressDialog` durante operaciones de archivo
+- ✅ Carga asíncrona con `QThread` para mantener la interfaz responsiva
+- ✅ Manejo de errores con mensajes de usuario amigables
+
 ---
 
 ## Próxima Revisión
 **Fecha:** 27 de Octubre 2025
-**Objetivo:** Completar Fase 1 e iniciar Fase 2
+**Objetivo:** Iniciar Fase 3: Operaciones de Filtrado y Búsqueda
 
 ---
 
