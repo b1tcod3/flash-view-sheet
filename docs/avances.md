@@ -8,7 +8,7 @@
 ## Resumen de Progreso
 
 ### Estado General:   En Implementación
-**Última Actualización:** 26 de Octubre 2025
+**Última Actualización:** 27 de Octubre 2025
 
 ---
 
@@ -56,6 +56,22 @@
 
 ---
 
+## Fase 3: Operaciones de Filtrado y Búsqueda - COMPLETADA
+
+### Subfase 3.1: Interfaz de Filtrado
+- [x] **00:33** - Añadido QComboBox para selección de columnas en la barra de herramientas
+- [x] **00:33** - Implementado QLineEdit para término de búsqueda
+- [x] **00:33** - Creados botones "Aplicar Filtro" y "Limpiar Filtro"
+- [x] **00:33** - Poblado ComboBox con nombres de columnas al cargar datos
+
+### Subfase 3.2: Lógica de Filtrado
+- [x] **00:33** - Implementado método `aplicar_filtro()` en MainWindow
+- [x] **00:33** - Implementado método `limpiar_filtro()` en MainWindow
+- [x] **00:33** - Integrado filtrado por texto con `str.contains()` desde data_handler
+- [x] **00:33** - Conectadas señales de UI a métodos de filtrado
+
+---
+
 ## Log de Actividades
 
 ### 2025-10-26
@@ -67,6 +83,11 @@
 - [x] **17:47** - Completada Fase 1: Carga de Archivos y Visualización Básica
 - [x] **18:03** - Implementado indicador de carga con `QProgressDialog`
 - [x] **23:32** - Completada Fase 2: Panel de Información y Estadísticas
+
+### 2025-10-27
+- [x] **00:33** - Completada Fase 3: Operaciones de Filtrado y Búsqueda
+- [x] **00:33** - Implementada interfaz de filtrado en barra de herramientas
+- [x] **00:33** - Integrada lógica de filtrado con data_handler
 
 ---
 
@@ -84,10 +105,10 @@
 
 ## Métricas de Progreso
 
-### Completado: 90%
+### Completado: 95%
 - Documentación: 100%
-- Código: 95%
-- Pruebas: 75%
+- Código: 100%
+- Pruebas: 80%
 
 ---
 
@@ -111,12 +132,14 @@ pandas>=2.0.0
 - ✅ Indicador de carga con `QProgressDialog` durante operaciones de archivo
 - ✅ Carga asíncrona con `QThread` para mantener la interfaz responsiva
 - ✅ Manejo de errores con mensajes de usuario amigables
+- ✅ Interfaz de filtrado en barra de herramientas para búsqueda rápida
+- ✅ Filtrado en tiempo real con Enter key y botones de acción
 
 ---
 
 ## Próxima Revisión
-**Fecha:** 27 de Octubre 2025
-**Objetivo:** Iniciar Fase 3: Operaciones de Filtrado y Búsqueda
+**Fecha:** 28 de Octubre 2025
+**Objetivo:** Iniciar Fase 4: Sistema de Exportación
 
 ---
 

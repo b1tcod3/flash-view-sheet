@@ -7,7 +7,8 @@ Punto de entrada principal de la aplicación
 import sys
 import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
-                          QFileDialog, QMessageBox, QProgressDialog, QDockWidget)
+                           QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
+                           QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget)
 from PySide6.QtCore import Qt, QThread, Signal
 from app.widgets.info_panel import InfoPanel
 
@@ -46,6 +47,10 @@ class MainWindow(QMainWindow):
         self.pandas_model = None
         self.loading_thread = None
         self.info_panel = None
+        self.filter_combo = None
+        self.filter_input = None
+        self.apply_filter_btn = None
+        self.clear_filter_btn = None
 
         self.setup_ui()
         self.setup_connections()
@@ -62,7 +67,12 @@ class MainWindow(QMainWindow):
 
     def setup_connections(self):
         """Configurar conexiones de señales y slots"""
-        pass
+        if self.apply_filter_btn:
+            self.apply_filter_btn.clicked.connect(self.aplicar_filtro)
+        if self.clear_filter_btn:
+            self.clear_filter_btn.clicked.connect(self.limpiar_filtro)
+        if self.filter_input:
+            self.filter_input.returnPressed.connect(self.aplicar_filtro)
 
     def create_menu_bar(self):
         """Crear la barra de menú"""
@@ -87,6 +97,36 @@ class MainWindow(QMainWindow):
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
         tool_bar = self.addToolBar("Herramientas")
+        self.create_filtering_ui(tool_bar)
+
+    def create_filtering_ui(self, tool_bar):
+        """Crear la interfaz de filtrado en la barra de herramientas"""
+        # Widget contenedor para los elementos de filtrado
+        filter_widget = QWidget()
+        filter_layout = QHBoxLayout(filter_widget)
+
+        # ComboBox para selección de columna
+        self.filter_combo = QComboBox()
+        self.filter_combo.setFixedWidth(150)
+        self.filter_combo.setPlaceholderText("Seleccionar columna")
+        filter_layout.addWidget(self.filter_combo)
+
+        # LineEdit para término de búsqueda
+        self.filter_input = QLineEdit()
+        self.filter_input.setFixedWidth(200)
+        self.filter_input.setPlaceholderText("Término de búsqueda")
+        filter_layout.addWidget(self.filter_input)
+
+        # Botón Aplicar Filtro
+        self.apply_filter_btn = QPushButton("Aplicar Filtro")
+        filter_layout.addWidget(self.apply_filter_btn)
+
+        # Botón Limpiar Filtro
+        self.clear_filter_btn = QPushButton("Limpiar Filtro")
+        filter_layout.addWidget(self.clear_filter_btn)
+
+        # Añadir el widget a la barra de herramientas
+        tool_bar.addWidget(filter_widget)
 
     def create_central_widget(self):
         """Crear el widget central (tabla de datos)"""
@@ -147,6 +187,14 @@ class MainWindow(QMainWindow):
         # Actualizar panel de información
         self.info_panel.update_info(df)
 
+        # Poblar el ComboBox con nombres de columnas
+        self.filter_combo.clear()
+        self.filter_combo.addItems(df.columns.tolist())
+
+        # Limpiar filtros previos
+        self.filter_input.clear()
+        self.filter_combo.setCurrentIndex(-1)
+
     def on_error_carga(self, error_message):
         """Slot para manejar errores de carga"""
         if hasattr(self, 'progress_dialog'):
@@ -165,6 +213,12 @@ class MainWindow(QMainWindow):
             self.actualizar_vista()
             self.statusBar().showMessage(f"Datos cargados: {filepath}")
 
+            # Limpiar filtros previos
+            if self.filter_input:
+                self.filter_input.clear()
+            if self.filter_combo:
+                self.filter_combo.setCurrentIndex(-1)
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo cargar el archivo: {str(e)}")
 
@@ -175,6 +229,42 @@ class MainWindow(QMainWindow):
         if self.df_vista_actual is not None:
             self.pandas_model = PandasTableModel(self.df_vista_actual)
         self.tabla_datos.setModel(self.pandas_model)
+
+    def aplicar_filtro(self):
+        """Aplicar filtro a los datos"""
+        if self.df_original is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos cargados para filtrar.")
+            return
+
+        columna = self.filter_combo.currentText()
+        termino = self.filter_input.text().strip()
+
+        if not columna:
+            QMessageBox.warning(self, "Advertencia", "Selecciona una columna para filtrar.")
+            return
+
+        if not termino:
+            QMessageBox.warning(self, "Advertencia", "Ingresa un término de búsqueda.")
+            return
+
+        try:
+            from core.data_handler import aplicar_filtro
+            self.df_vista_actual = aplicar_filtro(self.df_original, columna, termino)
+            self.actualizar_vista()
+            self.statusBar().showMessage(f"Filtro aplicado: {len(self.df_vista_actual)} filas mostradas")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error al aplicar filtro: {str(e)}")
+
+    def limpiar_filtro(self):
+        """Limpiar el filtro y mostrar todos los datos"""
+        if self.df_original is None:
+            return
+
+        self.df_vista_actual = self.df_original.copy()
+        self.actualizar_vista()
+        self.filter_input.clear()
+        self.filter_combo.setCurrentIndex(-1)  # Deseleccionar columna
+        self.statusBar().showMessage(f"Datos restaurados: {len(self.df_vista_actual)} filas mostradas")
 
     def closeEvent(self, event):
         """Manejar el cierre de la aplicación"""
