@@ -97,6 +97,36 @@ export FLASH_VIRT_THRESHOLD=3000
 export FLASH_CACHE_CHUNKS=15
 ```
 
+## Creación de Ejecutable
+
+### Windows
+
+1. Instalar PyInstaller:
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. Crear el ejecutable:
+   ```bash
+   pyinstaller --onefile --windowed main.py
+   ```
+   El ejecutable se generará en la carpeta `dist/`.
+
+### Linux
+
+1. Instalar PyInstaller:
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. Crear el ejecutable:
+   ```bash
+   pyinstaller --onefile main.py
+   ```
+   El ejecutable se generará en la carpeta `dist/`.
+
+**Notas**: Asegúrate de que todas las dependencias estén instaladas. Para aplicaciones GUI, `--windowed` oculta la consola en Windows. En Linux, ajusta según sea necesario para entornos gráficos.
+
 ## Estructura del Proyecto
 
 ```
