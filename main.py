@@ -7,10 +7,11 @@ Punto de entrada principal de la aplicación
 import sys
 import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
-                           QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
-                           QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget)
+                             QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
+                             QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog)
 from PySide6.QtCore import Qt, QThread, Signal
 from app.widgets.info_panel import InfoPanel
+from app.widgets.visualization_panel import VisualizationPanel
 
 
 class DataLoaderThread(QThread):
@@ -47,6 +48,7 @@ class MainWindow(QMainWindow):
         self.pandas_model = None
         self.loading_thread = None
         self.info_panel = None
+        self.visualization_panel = None
         self.filter_combo = None
         self.filter_input = None
         self.apply_filter_btn = None
@@ -54,6 +56,7 @@ class MainWindow(QMainWindow):
 
         self.setup_ui()
         self.setup_connections()
+        self.create_visualization_panel()
 
     def setup_ui(self):
         """Configurar la interfaz de usuario"""
@@ -88,6 +91,21 @@ class MainWindow(QMainWindow):
 
         # Menú Exportar
         exportar_menu = archivo_menu.addMenu("&Exportar como...")
+
+        # Acción Exportar a PDF
+        pdf_action = exportar_menu.addAction("&PDF...")
+        pdf_action.setShortcut("Ctrl+P")
+        pdf_action.triggered.connect(self.exportar_a_pdf)
+
+        # Acción Exportar a Imagen
+        imagen_action = exportar_menu.addAction("&Imagen...")
+        imagen_action.setShortcut("Ctrl+I")
+        imagen_action.triggered.connect(self.exportar_a_imagen)
+
+        # Acción Exportar a SQL
+        sql_action = exportar_menu.addAction("&SQL...")
+        sql_action.setShortcut("Ctrl+S")
+        sql_action.triggered.connect(self.exportar_a_sql)
 
         # Acción Salir
         salir_action = archivo_menu.addAction("&Salir")
@@ -145,13 +163,20 @@ class MainWindow(QMainWindow):
         dock_widget.setWidget(self.info_panel)
         self.addDockWidget(Qt.RightDockWidgetArea, dock_widget)
 
+    def create_visualization_panel(self):
+        """Crear el panel de visualizaciones"""
+        self.visualization_panel = VisualizationPanel()
+        dock_widget = QDockWidget("Visualizaciones")
+        dock_widget.setWidget(self.visualization_panel)
+        self.addDockWidget(Qt.BottomDockWidgetArea, dock_widget)
+
     def abrir_archivo(self):
         """Slot para abrir un archivo"""
         filepath, _ = QFileDialog.getOpenFileName(
             self,
             "Abrir archivo de datos",
             "",
-            "Archivos de Excel (*.xlsx *.xls);;Archivos CSV (*.csv)")
+            "Archivos de Excel (*.xlsx *.xls);;Archivos CSV (*.csv);;Archivos JSON (*.json);;Archivos XML (*.xml)")
 
         if filepath:
             self.mostrar_loading_indicator(filepath)
@@ -187,6 +212,10 @@ class MainWindow(QMainWindow):
         # Actualizar panel de información
         self.info_panel.update_info(df)
 
+        # Actualizar panel de visualizaciones
+        if self.visualization_panel:
+            self.visualization_panel.update_data(df)
+
         # Poblar el ComboBox con nombres de columnas
         self.filter_combo.clear()
         self.filter_combo.addItems(df.columns.tolist())
@@ -213,6 +242,14 @@ class MainWindow(QMainWindow):
             self.actualizar_vista()
             self.statusBar().showMessage(f"Datos cargados: {filepath}")
 
+            # Actualizar panel de información
+            if self.info_panel:
+                self.info_panel.update_info(self.df_original)
+
+            # Actualizar panel de visualizaciones
+            if self.visualization_panel:
+                self.visualization_panel.update_data(self.df_original)
+
             # Limpiar filtros previos
             if self.filter_input:
                 self.filter_input.clear()
@@ -224,10 +261,11 @@ class MainWindow(QMainWindow):
 
     def actualizar_vista(self):
         """Actualizar la vista con los datos actuales"""
-        from app.models.pandas_model import PandasTableModel
+        from app.models.pandas_model import VirtualizedPandasModel
 
         if self.df_vista_actual is not None:
-            self.pandas_model = PandasTableModel(self.df_vista_actual)
+            # Usar el modelo virtualizado para mejor rendimiento
+            self.pandas_model = VirtualizedPandasModel(self.df_vista_actual)
         self.tabla_datos.setModel(self.pandas_model)
 
     def aplicar_filtro(self):
@@ -265,6 +303,82 @@ class MainWindow(QMainWindow):
         self.filter_input.clear()
         self.filter_combo.setCurrentIndex(-1)  # Deseleccionar columna
         self.statusBar().showMessage(f"Datos restaurados: {len(self.df_vista_actual)} filas mostradas")
+
+    def exportar_a_pdf(self):
+        """Exportar datos actuales a PDF"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar como PDF",
+            "",
+            "Archivos PDF (*.pdf)"
+        )
+
+        if filepath:
+            from core.data_handler import exportar_a_pdf
+            success = exportar_a_pdf(self.df_vista_actual, filepath)
+            if success:
+                QMessageBox.information(self, "Éxito", f"Datos exportados a {filepath}")
+                self.statusBar().showMessage(f"Exportado a PDF: {filepath}")
+            else:
+                QMessageBox.critical(self, "Error", "No se pudo exportar a PDF.")
+
+    def exportar_a_imagen(self):
+        """Exportar vista de tabla a imagen"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar como Imagen",
+            "",
+            "Archivos de Imagen (*.png *.jpg *.jpeg)"
+        )
+
+        if filepath:
+            from core.data_handler import exportar_a_imagen
+            success = exportar_a_imagen(self.tabla_datos, filepath)
+            if success:
+                QMessageBox.information(self, "Éxito", f"Imagen exportada a {filepath}")
+                self.statusBar().showMessage(f"Exportado a imagen: {filepath}")
+            else:
+                QMessageBox.critical(self, "Error", "No se pudo exportar a imagen.")
+
+    def exportar_a_sql(self):
+        """Exportar datos a base de datos SQL"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar como Base de Datos SQL",
+            "",
+            "Bases de Datos SQLite (*.db)"
+        )
+
+        if filepath:
+            nombre_tabla, ok = self.get_text_input("Nombre de la Tabla", "Ingresa el nombre de la tabla:")
+            if ok and nombre_tabla:
+                from core.data_handler import exportar_a_sql
+                success = exportar_a_sql(self.df_vista_actual, filepath, nombre_tabla)
+                if success:
+                    QMessageBox.information(self, "Éxito", f"Datos exportados a {filepath} en tabla '{nombre_tabla}'")
+                    self.statusBar().showMessage(f"Exportado a SQL: {filepath}")
+                else:
+                    QMessageBox.critical(self, "Error", "No se pudo exportar a SQL.")
+            else:
+                QMessageBox.warning(self, "Advertencia", "Nombre de tabla requerido.")
+
+    def get_text_input(self, title, label):
+        """Obtener entrada de texto del usuario"""
+        from PySide6.QtWidgets import QInputDialog
+        text, ok = QInputDialog.getText(self, title, label)
+        return text, ok
 
     def closeEvent(self, event):
         """Manejar el cierre de la aplicación"""

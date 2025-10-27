@@ -94,8 +94,8 @@ class InfoPanel(QWidget):
         
     def update_statistics(self, df: pd.DataFrame):
         """
-        Actualizar las estadísticas mostradas
-        
+        Actualizar las estadísticas mostradas con lazy loading
+
         Args:
             df: DataFrame de Pandas
         """
@@ -104,41 +104,90 @@ class InfoPanel(QWidget):
                 widget = self.stats_layout.itemAt(i).widget()
                 if widget:
                     widget.deleteLater()
-                
+
         try:
-            # Obtener estadísticas descriptivas
-            stats = df.describe(include='all')
-            
-            # Mostrar estadísticas para cada columna numérica
-            numeric_cols = df.select_dtypes(include=['number']).columns
-            
-            for col in numeric_cols:
-                col_stats = stats[col] if col in stats.columns else None
-                
-                if col_stats is not None:
-                    # Crear grupo para cada columna numérica
-                    col_group = QGroupBox(f"Estadísticas - {col}")
-                    col_layout = QVBoxLayout(col_group)
-                    
-                    # Mostrar estadísticas básicas
-                    stats_info = [
-                        f"Conteo: {col_stats.get('count', 'N/A')}",
-                        f"Media: {col_stats.get('mean', 'N/A')}",
-                        f"Desviación Estándar: {col_stats.get('std', 'N/A')}",
-                        f"Mínimo: {col_stats.get('min', 'N/A')}",
-                        f"25%: {col_stats.get('25%', 'N/A')}",
-                        f"50% (Mediana): {col_stats.get('50%', 'N/A')}",
-                        f"75%: {col_stats.get('75%', 'N/A')}",
-                        f"Máximo: {col_stats.get('max', 'N/A')}",
-                    ]
-                    
-                    for stat_text in stats_info:
-                        stat_label = QLabel(stat_text)
-                        col_layout.addWidget(stat_label)
-                        
-                    self.stats_layout.addWidget(col_group)
-                    
+            # Obtener estadísticas básicas optimizadas
+            from core.data_handler import obtener_estadisticas_basicas
+            basic_stats = obtener_estadisticas_basicas(df)
+
+            # Mostrar estadísticas básicas
+            if basic_stats:
+                basic_group = QGroupBox("Estadísticas Generales")
+                basic_layout = QVBoxLayout(basic_group)
+
+                basic_info = [
+                    f"Total de filas: {basic_stats.get('total_filas', 'N/A'):,}",
+                    f"Total de columnas: {basic_stats.get('total_columnas', 'N/A')}",
+                    f"Columnas numéricas: {basic_stats.get('columnas_numericas', 'N/A')}",
+                    f"Columnas de texto: {basic_stats.get('columnas_texto', 'N/A')}",
+                    f"Uso de memoria: {basic_stats.get('memoria_uso_mb', 'N/A'):.2f} MB",
+                    f"Filas duplicadas: {basic_stats.get('filas_duplicadas', 'N/A'):,}",
+                    f"Valores nulos totales: {basic_stats.get('valores_nulos_total', 'N/A'):,}",
+                ]
+
+                for info_text in basic_info:
+                    info_label = QLabel(info_text)
+                    basic_layout.addWidget(info_label)
+
+                self.stats_layout.addWidget(basic_group)
+
+            # Para datasets pequeños, mostrar estadísticas detalladas
+            if len(df) <= 10000:
+                self._mostrar_estadisticas_detalladas(df)
+            else:
+                # Para datasets grandes, mostrar mensaje de optimización
+                perf_label = QLabel("Dataset grande optimizado - Estadísticas resumidas mostradas")
+                perf_label.setStyleSheet("color: blue; font-style: italic;")
+                self.stats_layout.addWidget(perf_label)
+
         except Exception as e:
             # Mostrar mensaje de error
             error_label = QLabel(f"Error al calcular estadísticas: {str(e)}")
+            error_label.setStyleSheet("color: red;")
+            self.stats_layout.addWidget(error_label)
+
+    def _mostrar_estadisticas_detalladas(self, df: pd.DataFrame):
+        """
+        Mostrar estadísticas detalladas para datasets pequeños
+
+        Args:
+            df: DataFrame de Pandas
+        """
+        try:
+            # Obtener estadísticas descriptivas
+            from core.data_handler import obtener_estadisticas
+            stats = obtener_estadisticas(df)
+
+            # Mostrar estadísticas para cada columna numérica
+            numeric_cols = df.select_dtypes(include=['number']).columns
+
+            for col in numeric_cols:
+                col_stats = stats[col] if col in stats.columns else None
+
+                if col_stats is not None and not col_stats.empty:
+                    # Crear grupo para cada columna numérica
+                    col_group = QGroupBox(f"Estadísticas - {col}")
+                    col_layout = QVBoxLayout(col_group)
+
+                    # Mostrar estadísticas básicas
+                    stats_info = [
+                        f"Conteo: {col_stats.get('count', 'N/A'):,}",
+                        f"Media: {col_stats.get('mean', 'N/A'):.4f}",
+                        f"Desviación Estándar: {col_stats.get('std', 'N/A'):.4f}",
+                        f"Mínimo: {col_stats.get('min', 'N/A'):.4f}",
+                        f"25%: {col_stats.get('25%', 'N/A'):.4f}",
+                        f"50% (Mediana): {col_stats.get('50%', 'N/A'):.4f}",
+                        f"75%: {col_stats.get('75%', 'N/A'):.4f}",
+                        f"Máximo: {col_stats.get('max', 'N/A'):.4f}",
+                    ]
+
+                    for stat_text in stats_info:
+                        stat_label = QLabel(stat_text)
+                        col_layout.addWidget(stat_label)
+
+                    self.stats_layout.addWidget(col_group)
+
+        except Exception as e:
+            error_label = QLabel(f"Error al calcular estadísticas detalladas: {str(e)}")
+            error_label.setStyleSheet("color: red;")
             self.stats_layout.addWidget(error_label)
