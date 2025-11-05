@@ -44,14 +44,22 @@ class MainView(QWidget):
         """)
         group_layout = QVBoxLayout(main_group)
         
-        # Icono de spreadsheet genérico
+        # Logo de la aplicación
         icon_label = QLabel()
-        # Crear un icono simple de spreadsheet (usando texto o imagen)
-        icon_label.setText("📊")
-        icon_label.setStyleSheet("""
-            font-size: 64px;
-            text-align: center;
-        """)
+        # Cargar el logo desde assets
+        logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "assets", "logo.png")
+        if os.path.exists(logo_path):
+            pixmap = QPixmap(logo_path)
+            # Escalar la imagen manteniendo la proporción
+            scaled_pixmap = pixmap.scaled(128, 128, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icon_label.setPixmap(scaled_pixmap)
+        else:
+            # Fallback al emoji si el logo no existe
+            icon_label.setText("📊")
+            icon_label.setStyleSheet("""
+                font-size: 64px;
+                text-align: center;
+            """)
         icon_label.setAlignment(Qt.AlignCenter)
         group_layout.addWidget(icon_label)
         
@@ -116,11 +124,50 @@ class MainView(QWidget):
         
     def load_file(self):
         """Abrir diálogo para seleccionar archivo"""
+        from core.data_handler import get_supported_file_formats
+        
+        # Obtener formatos soportados dinámicamente
+        supported_formats = get_supported_file_formats()
+        
+        # Crear filtro de archivos dinámico
+        format_filters = []
+        format_descriptions = {
+            '.xlsx': 'Archivos de Excel',
+            '.xls': 'Archivos de Excel Legacy',
+            '.csv': 'Archivos CSV',
+            '.tsv': 'Archivos TSV',
+            '.json': 'Archivos JSON',
+            '.xml': 'Archivos XML',
+            '.parquet': 'Archivos Parquet',
+            '.feather': 'Archivos Feather',
+            '.hdf5': 'Archivos HDF5',
+            '.h5': 'Archivos HDF5',
+            '.pkl': 'Archivos Pickle',
+            '.pickle': 'Archivos Pickle',
+            '.db': 'Bases de Datos SQLite',
+            '.sqlite': 'Bases de Datos SQLite',
+            '.sqlite3': 'Bases de Datos SQLite',
+            '.yaml': 'Archivos YAML',
+            '.yml': 'Archivos YAML',
+        }
+        
+        for ext in supported_formats:
+            if ext in format_descriptions:
+                format_filters.append(f"{format_descriptions[ext]} (*{ext})")
+        
+        # Añadir filtro de "Todos los soportados"
+        all_extensions = " ".join([f"*{ext}" for ext in supported_formats])
+        all_formats = f"Todos los archivos soportados ({all_extensions})"
+        format_filters.insert(0, all_formats)
+        
+        # Crear el filtro final
+        file_filter = ";;".join(format_filters)
+        
         filepath, _ = QFileDialog.getOpenFileName(
             self,
             "Abrir archivo de datos",
             "",
-            "Archivos de Excel (*.xlsx *.xls);;Archivos CSV (*.csv);;Archivos JSON (*.json);;Archivos XML (*.xml)"
+            file_filter
         )
         
         if filepath:

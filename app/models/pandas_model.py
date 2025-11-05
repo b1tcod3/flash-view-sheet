@@ -93,14 +93,84 @@ class VirtualizedPandasModel(QAbstractTableModel):
 
             # Verificar que el índice está dentro del rango
             if row < self.total_rows and column < self.total_cols:
-                # Obtener chunk de datos si es necesario
+                # Para datos no virtualizados, acceso directo
+                if not self.enable_virtualization:
+                    value = self.full_df.iloc[row, column]
+                    return str(value) if not pd.isna(value) else ""
+                
+                # Para datos virtualizados, usar chunk system
                 chunk_data = self._get_chunk_data(row)
-                if chunk_data is not None and row in chunk_data.index and column < len(chunk_data.columns):
+                if chunk_data is not None and column < len(chunk_data.columns):
                     value = chunk_data.iloc[row - chunk_data.index[0], column]
                     # Convertir a string para mostrar
                     return str(value) if not pd.isna(value) else ""
 
         return None
+
+    def flags(self, index: QModelIndex):
+        """
+        Retornar flags para la celda especificada
+
+        Args:
+            index: Índice de la celda
+
+        Returns:
+            Flags de la celda
+        """
+        if not index.isValid():
+            return Qt.ItemFlags()
+        
+        return Qt.ItemIsSelectable | Qt.ItemIsEnabled
+
+    def sort(self, column: int, order: Qt.SortOrder):
+        """
+        Ordenar datos por la columna especificada
+
+        Args:
+            column: Índice de la columna
+            order: Orden de clasificación (Qt.AscendingOrder o Qt.DescendingOrder)
+        """
+        if column < 0 or column >= self.total_cols:
+            return
+        
+        # Emitir señal de inicio de ordenamiento
+        self.layoutAboutToBeChanged.emit()
+        
+        try:
+            # Obtener nombre de la columna
+            column_name = self.full_df.columns[column]
+            
+            # Manejar correctamente los enum de Qt
+            ascending = (order == Qt.AscendingOrder)
+            
+            # Ordenar DataFrame
+            sorted_df = self.full_df.sort_values(by=column_name, ascending=ascending).reset_index(drop=True)
+            
+            # Actualizar datos
+            self.full_df = sorted_df
+            
+            # Limpiar cache y datos virtualizados
+            self.data_cache.clear()
+            if hasattr(self, 'current_df'):
+                self.current_df = self.full_df
+                
+            print(f"📊 Ordenamiento aplicado: {column_name}, ascendente={ascending}")
+            
+        except Exception as e:
+            print(f"Error al ordenar: {e}")
+            # En caso de error, revertir cambios si es necesario
+        
+        # Emitir señal de fin de ordenamiento
+        self.layoutChanged.emit()
+
+    def get_sorted_data(self) -> pd.DataFrame:
+        """
+        Obtener los datos ordenados actuales
+
+        Returns:
+            DataFrame con datos ordenados
+        """
+        return self.full_df.copy()
 
     def _get_chunk_data(self, row: int) -> pd.DataFrame:
         """

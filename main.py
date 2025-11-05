@@ -11,10 +11,13 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
                               QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog,
                               QStackedWidget)
 from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtGui import QIcon, QPixmap
 from app.widgets.main_view import MainView
 from app.widgets.info_modal import InfoModal
 from app.widgets.graphics_view import GraphicsView
-
+from app.widgets.transformations_view import TransformationsView
+from paginacion.data_view import DataView
+from core.data_handler import ExcelTemplateSplitter
 
 class DataLoaderThread(QThread):
     """Hilo para cargar datos en segundo plano"""
@@ -53,16 +56,24 @@ class MainWindow(QMainWindow):
         self.loading_thread = None
         # Removed old panels as they are now in separate views
         self.main_view = None
+        self.data_view = None
         self.info_modal = None
         self.graphics_view = None
+        self.transformations_view = None
         self.stacked_widget = None
         self.filter_combo = None
         self.filter_input = None
         self.apply_filter_btn = None
         self.clear_filter_btn = None
         self.view_main_btn = None
+        self.view_data_btn = None
         self.view_info_btn = None
+        self.view_transformations_btn = None
         self.view_graphics_btn = None
+
+        # Referencias para funcionalidad de separación
+        self.separar_menu = None
+        self.exportar_separado_action = None
 
         self.setup_ui()
         self.setup_connections()
@@ -79,16 +90,19 @@ class MainWindow(QMainWindow):
 
     def setup_connections(self):
         """Configurar conexiones de señales y slots"""
-        if self.apply_filter_btn:
-            self.apply_filter_btn.clicked.connect(self.aplicar_filtro)
-        if self.clear_filter_btn:
-            self.clear_filter_btn.clicked.connect(self.limpiar_filtro)
-        if self.filter_input:
-            self.filter_input.returnPressed.connect(self.aplicar_filtro)
-
         # Conectar señal de recarga con opciones desde la vista principal
         if self.main_view:
             self.main_view.reload_with_options.connect(self.on_reload_with_options)
+            
+        # Conectar señal de transformación desde la vista de transformaciones
+        if self.transformations_view:
+            self.transformations_view.data_transformed.connect(self.on_data_transformed)
+            
+        # Conectar señales de DataView
+        if self.data_view:
+            self.data_view.filter_applied.connect(self.on_filter_applied)
+            self.data_view.filter_cleared.connect(self.on_filter_cleared)
+            self.data_view.data_updated.connect(self.on_data_updated)
 
     def create_menu_bar(self):
         """Crear la barra de menú"""
@@ -125,12 +139,24 @@ class MainWindow(QMainWindow):
         salir_action.setShortcut("Ctrl+Q")
         salir_action.triggered.connect(self.close)
 
+        # Nuevo Menú Separar
+        separar_menu = menu_bar.addMenu("&Separar")
+
+        # Acción Exportar Datos Separados
+        exportar_separado_action = separar_menu.addAction("&Exportar Datos Separados...")
+        exportar_separado_action.setShortcut("Ctrl+Shift+S")
+        exportar_separado_action.triggered.connect(self.exportar_datos_separados)
+        exportar_separado_action.setEnabled(False)  # Se habilita solo con datos cargados
+
+        # Guardar referencia al menú para habilitar/deshabilitar
+        self.separar_menu = separar_menu
+        self.exportar_separado_action = exportar_separado_action
+
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
         tool_bar = self.addToolBar("Herramientas")
         self.create_view_switcher_ui(tool_bar)
-        tool_bar.addSeparator()
-        self.create_filtering_ui(tool_bar)
+        # Nota: Los filtros ahora están integrados en DataView
 
     def create_view_switcher_ui(self, tool_bar):
         """Crear la interfaz para cambiar vistas en la barra de herramientas"""
@@ -143,14 +169,24 @@ class MainWindow(QMainWindow):
         self.view_main_btn.clicked.connect(lambda: self.switch_view(0))
         view_layout.addWidget(self.view_main_btn)
 
+        # Botón Vista de Datos
+        self.view_data_btn = QPushButton("Vista de Datos")
+        self.view_data_btn.clicked.connect(lambda: self.switch_view(1))
+        view_layout.addWidget(self.view_data_btn)
+
         # Botón Vista Información
         self.view_info_btn = QPushButton("Vista Información")
         self.view_info_btn.clicked.connect(self.show_info_modal)
         view_layout.addWidget(self.view_info_btn)
 
+        # Botón Vista Transformaciones
+        self.view_transformations_btn = QPushButton("Vista Transformaciones")
+        self.view_transformations_btn.clicked.connect(lambda: self.switch_view(2))
+        view_layout.addWidget(self.view_transformations_btn)
+
         # Botón Vista Gráficos
         self.view_graphics_btn = QPushButton("Vista Gráficos")
-        self.view_graphics_btn.clicked.connect(lambda: self.switch_view(2))
+        self.view_graphics_btn.clicked.connect(lambda: self.switch_view(3))
         view_layout.addWidget(self.view_graphics_btn)
 
         # Añadir el widget a la barra de herramientas
@@ -203,11 +239,18 @@ class MainWindow(QMainWindow):
         self.main_view.file_loaded.connect(self.on_file_loaded_from_main_view)
         self.stacked_widget.addWidget(self.main_view)
 
-        # Vista de Tabla (índice 1) - la tabla original
-        self.tabla_datos = QTableView()
-        self.stacked_widget.addWidget(self.tabla_datos)
+        # Vista de Tabla (índice 1) - DataView con paginación
+        self.data_view = DataView()
+        self.stacked_widget.addWidget(self.data_view)
 
-        # Vista de Gráficos (índice 2)
+        # Vista de Información (índice 2) - modal
+        # Se muestra mediante show_info_modal()
+
+        # Vista de Transformaciones (índice 3)
+        self.transformations_view = TransformationsView()
+        self.stacked_widget.addWidget(self.transformations_view)
+
+        # Vista de Gráficos (índice 4)
         self.graphics_view = GraphicsView()
         self.stacked_widget.addWidget(self.graphics_view)
 
@@ -231,11 +274,50 @@ class MainWindow(QMainWindow):
 
     def abrir_archivo(self):
         """Slot para abrir un archivo"""
+        from core.data_handler import get_supported_file_formats
+        
+        # Obtener formatos soportados dinámicamente
+        supported_formats = get_supported_file_formats()
+        
+        # Crear filtro de archivos dinámico
+        format_filters = []
+        format_descriptions = {
+            '.xlsx': 'Archivos de Excel',
+            '.xls': 'Archivos de Excel Legacy',
+            '.csv': 'Archivos CSV',
+            '.tsv': 'Archivos TSV',
+            '.json': 'Archivos JSON',
+            '.xml': 'Archivos XML',
+            '.parquet': 'Archivos Parquet',
+            '.feather': 'Archivos Feather',
+            '.hdf5': 'Archivos HDF5',
+            '.h5': 'Archivos HDF5',
+            '.pkl': 'Archivos Pickle',
+            '.pickle': 'Archivos Pickle',
+            '.db': 'Bases de Datos SQLite',
+            '.sqlite': 'Bases de Datos SQLite',
+            '.sqlite3': 'Bases de Datos SQLite',
+            '.yaml': 'Archivos YAML',
+            '.yml': 'Archivos YAML',
+        }
+        
+        for ext in supported_formats:
+            if ext in format_descriptions:
+                format_filters.append(f"{format_descriptions[ext]} (*{ext})")
+        
+        # Añadir filtro de "Todos los soportados"
+        all_extensions = " ".join([f"*{ext}" for ext in supported_formats])
+        all_formats = f"Todos los archivos soportados ({all_extensions})"
+        format_filters.insert(0, all_formats)
+        
+        # Crear el filtro final
+        file_filter = ";;".join(format_filters)
+        
         filepath, _ = QFileDialog.getOpenFileName(
             self,
             "Abrir archivo de datos",
             "",
-            "Archivos de Excel (*.xlsx *.xls);;Archivos CSV (*.csv);;Archivos JSON (*.json);;Archivos XML (*.xml)")
+            file_filter)
 
         if filepath:
             self.mostrar_loading_indicator(filepath)
@@ -264,14 +346,21 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'progress_dialog'):
             self.progress_dialog.close()
 
+        # Establecer datos en DataView
+        if self.data_view:
+            self.data_view.set_data(df)
+
         # Actualizar interfaz
         self.actualizar_vista()
         self.statusBar().showMessage(f"Datos cargados: {self.loading_thread.filepath}")
 
-
         # Actualizar vista de gráficos
         if self.graphics_view:
             self.graphics_view.update_data(df)
+
+        # Actualizar vista de transformaciones
+        if self.transformations_view:
+            self.transformations_view.set_data(df)
 
         # Actualizar vista principal
         if self.main_view:
@@ -289,6 +378,9 @@ class MainWindow(QMainWindow):
             self.filter_input.clear()
         if self.filter_combo:
             self.filter_combo.setCurrentIndex(-1)
+
+        # Actualizar menú de separación
+        self.actualizar_menu_separar()
 
         # Cambiar a vista de tabla por defecto
         self.switch_view(1)
@@ -310,6 +402,43 @@ class MainWindow(QMainWindow):
         """Slot para manejar recarga de archivo con nuevas opciones"""
         self.mostrar_loading_indicator(filepath, skip_rows, column_names)
 
+    def on_filter_applied(self, column, term):
+        """Slot para manejar filtro aplicado desde DataView"""
+        self.statusBar().showMessage(f"Filtro aplicado en columna '{column}': '{term}'")
+        
+    def on_filter_cleared(self):
+        """Slot para manejar filtro limpiado desde DataView"""
+        self.statusBar().showMessage("Filtro limpiado")
+        
+    def on_data_updated(self):
+        """Slot para manejar datos actualizados desde DataView"""
+        # Actualizar otras vistas con los datos actuales
+        if self.graphics_view and self.data_view:
+            current_page_data = self.data_view.export_current_page()
+            if not current_page_data.empty:
+                self.graphics_view.update_data(current_page_data)
+        
+    def on_data_transformed(self, transformed_df):
+        """Slot para manejar datos transformados"""
+        self.df_vista_actual = transformed_df
+        
+        # Actualizar DataView con datos transformados
+        if self.data_view:
+            self.data_view.set_data(transformed_df)
+            
+        # Actualizar vista de gráficos con datos transformados
+        if self.graphics_view:
+            self.graphics_view.update_data(self.df_vista_actual)
+            
+        # Actualizar vista de transformaciones
+        if self.transformations_view:
+            self.transformations_view.set_data(transformed_df)
+            
+        # Actualizar menú de separación
+        self.actualizar_menu_separar()
+            
+        self.statusBar().showMessage(f"Datos transformados: {len(transformed_df)} filas, {len(transformed_df.columns)} columnas")
+
     def cargar_datos(self, filepath):
         """Cargar datos desde un archivo"""
         try:
@@ -319,9 +448,9 @@ class MainWindow(QMainWindow):
 
             # Actualizar interfaz
             self.actualizar_vista()
+            self.actualizar_menu_separar()
             self.statusBar().showMessage(f"Datos cargados: {filepath}")
-
-
+    
             # Limpiar filtros previos
             if self.filter_input:
                 self.filter_input.clear()
@@ -333,13 +462,9 @@ class MainWindow(QMainWindow):
 
     def actualizar_vista(self):
         """Actualizar la vista con los datos actuales"""
-        from app.models.pandas_model import VirtualizedPandasModel
-
-        if self.df_vista_actual is not None:
-            # Usar el modelo virtualizado para mejor rendimiento
-            self.pandas_model = VirtualizedPandasModel(self.df_vista_actual)
-        if hasattr(self, 'tabla_datos'):
-            self.tabla_datos.setModel(self.pandas_model)
+        # Nota: Esta función mantiene compatibilidad con el sistema anterior
+        # La DataView se actualiza automáticamente cuando se establecen los datos
+        pass
 
     def aplicar_filtro(self):
         """Aplicar filtro a los datos"""
@@ -461,6 +586,143 @@ class MainWindow(QMainWindow):
         text, ok = QInputDialog.getText(self, title, label)
         return text, ok
 
+    def exportar_datos_separados(self):
+        """Slot para exportar datos separados usando plantillas Excel"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+            
+        if self.df_vista_actual.empty:
+            QMessageBox.warning(self, "Advertencia", "Los datos están vacíos.")
+            return
+        
+        try:
+            # Importar diálogo de exportación separada
+            from app.widgets.export_separated_dialog import ExportSeparatedDialog
+            
+            # Crear y mostrar diálogo
+            dialog = ExportSeparatedDialog(self.df_vista_actual, self)
+            
+            if dialog.exec():
+                config = dialog.config
+                if config:
+                    self.procesar_exportacion_separada(config)
+                    
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error abriendo diálogo de exportación: {str(e)}")
+
+    def procesar_exportacion_separada(self, config):
+        """Procesar la exportación separada con progreso"""
+        try:
+            from core.data_handler import exportar_datos_separados
+            from core.data_handler import ExcelTemplateSplitter
+            from PySide6.QtWidgets import QProgressDialog
+            from PySide6.QtCore import Qt, QTimer
+            from PySide6.QtTest import QTest
+            
+            # Estimar tiempo de procesamiento para barra de progreso
+            try:
+                splitter = ExcelTemplateSplitter(self.df_vista_actual, config)
+                validation = splitter.validate_configuration()
+                if validation.is_valid:
+                    analisis = splitter.analyze_data()
+                    grupos_estimados = getattr(analisis, 'estimated_groups', len(self.df_vista_actual.groupby(config.separator_column)) if hasattr(config, 'separator_column') else 1)
+                    grupos_estimados = max(grupos_estimados, 1)
+                else:
+                    grupos_estimados = 1
+            except:
+                grupos_estimados = 1
+            
+            # Crear diálogo de progreso
+            self.progress_dialog = QProgressDialog("Iniciando exportación...", "Cancelar", 0, grupos_estimados)
+            self.progress_dialog.setWindowTitle("Exportación Separada")
+            self.progress_dialog.setWindowModality(Qt.WindowModal)
+            self.progress_dialog.setMinimumDuration(0)  # Mostrar inmediatamente
+            
+            # Actualizar etiqueta de progreso
+            self.progress_dialog.setLabelText("Analizando datos y configurando...")
+            self.progress_dialog.show()
+            
+            # Procesar exportación con callback de progreso
+            def callback_progreso(grupo_actual, total_grupos):
+                if self.progress_dialog and self.progress_dialog.isVisible():
+                    self.progress_dialog.setValue(grupo_actual)
+                    self.progress_dialog.setLabelText(f"Procesando grupo {grupo_actual}/{total_grupos}...")
+                    
+            resultado = exportar_datos_separados(self.df_vista_actual, config.__dict__)
+            
+            # Cerrar diálogo de progreso
+            if hasattr(self, 'progress_dialog') and self.progress_dialog:
+                self.progress_dialog.close()
+            
+            # Mostrar resultado
+            if resultado.get('success', False):
+                archivos_generados = resultado.get('files_created', [])
+                grupos_procesados = resultado.get('groups_processed', 0)
+                tiempo_procesamiento = resultado.get('processing_time', 0)
+                
+                mensaje = f"Exportación completada exitosamente:\n\n"
+                mensaje += f"• {grupos_procesados} grupos procesados\n"
+                mensaje += f"• {len(archivos_generados)} archivos generados\n"
+                mensaje += f"• Tiempo: {tiempo_procesamiento:.1f} segundos\n"
+                mensaje += f"• Carpeta: {config.output_folder}"
+                
+                # Mostrar archivos generados si no son demasiados
+                if len(archivos_generados) <= 10 and archivos_generados:
+                    mensaje += f"\n\nArchivos creados:\n" + "\n".join([f"• {archivo}" for archivo in archivos_generados])
+                elif len(archivos_generados) > 10:
+                    mensaje += f"\n\nPrimeros 10 archivos:\n" + "\n".join([f"• {archivo}" for archivo in archivos_generados[:10]])
+                    mensaje += f"\n... y {len(archivos_generados) - 10} archivos más"
+                
+                QMessageBox.information(self, "Éxito", mensaje)
+                self.statusBar().showMessage(f"Exportación completada: {len(archivos_generados)} archivos generados en {tiempo_procesamiento:.1f}s")
+                
+            else:
+                errores = resultado.get('errors', [])
+                warning_msgs = resultado.get('warnings', [])
+                
+                if errores:
+                    error_msg = "\n".join(errores) if errores else "Error desconocido"
+                    QMessageBox.critical(self, "Error en Exportación", f"No se pudo completar la exportación:\n\n{error_msg}")
+                elif warning_msgs:
+                    warning_msg = "\n".join(warning_msgs)
+                    QMessageBox.warning(self, "Advertencias", f"Exportación completada con advertencias:\n\n{warning_msg}")
+                else:
+                    QMessageBox.warning(self, "Advertencia", "No se pudo completar la exportación. Revisa los datos y configuración.")
+                
+        except Exception as e:
+            error_str = str(e)
+            
+            # Manejar errores específicos de Excel
+            if "Excel" in error_str or "xlsx" in error_str or "openpyxl" in error_str:
+                if "corrupt" in error_str.lower() or "formato" in error_str.lower():
+                    error_msg = "Error de archivo Excel:\n\n• El archivo de plantilla puede estar corrupto\n• Verifica que sea un archivo .xlsx válido\n• Asegúrate de que no esté abierto en Excel\n\nDetalles: " + error_str
+                elif "permission" in error_str.lower() or "permiso" in error_str.lower():
+                    error_msg = "Error de permisos:\n\n• No tienes permisos para escribir en la carpeta\n• Verifica los permisos de la carpeta de destino\n• Prueba con una carpeta diferente\n\nDetalles: " + error_str
+                elif "template" in error_str.lower():
+                    error_msg = "Error de plantilla:\n\n• La plantilla Excel no se puede leer\n• Verifica que el archivo existe y es accesible\n• Asegúrate de que sea un archivo Excel válido\n\nDetalles: " + error_str
+                else:
+                    error_msg = "Error relacionado con Excel:\n\n• Verifica que los archivos Excel no estén abiertos\n• Asegúrate de tener permisos de lectura/escritura\n• Revisa que la plantilla sea compatible\n\nDetalles: " + error_str
+            elif "template" in error_str.lower():
+                error_msg = "Error de plantilla:\n\n• La plantilla especificada no se puede leer\n• Verifica que el archivo existe y es válido\n\nDetalles: " + error_str
+            elif "memoria" in error_str.lower() or "memory" in error_str.lower():
+                error_msg = "Error de memoria:\n\n• El dataset es demasiado grande para procesarlo\n• Prueba con un dataset más pequeño\n• Considera usar la opción de chunking\n\nDetalles: " + error_str
+            else:
+                error_msg = f"Error procesando exportación:\n\nDetalles: {error_str}"
+                
+            QMessageBox.critical(self, "Error", error_msg)
+            self.statusBar().showMessage("Error en exportación separada")
+
+    def actualizar_menu_separar(self):
+        """Actualizar estado del menú Separar basado en datos cargados"""
+        if hasattr(self, 'exportar_separado_action') and self.exportar_separado_action:
+            if self.df_vista_actual is not None and not self.df_vista_actual.empty:
+                self.exportar_separado_action.setEnabled(True)
+                self.exportar_separado_action.setStatusTip("Exportar datos separados por columna usando plantillas Excel")
+            else:
+                self.exportar_separado_action.setEnabled(False)
+                self.exportar_separado_action.setStatusTip("Carga datos primero para habilitar esta opción")
+
     def closeEvent(self, event):
         """Manejar el cierre de la aplicación"""
         event.accept()
@@ -469,6 +731,12 @@ class MainWindow(QMainWindow):
 def main():
     """Función principal de la aplicación"""
     app = QApplication(sys.argv)
+
+    # Configurar icono de la aplicación
+    logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+    if os.path.exists(logo_path):
+        app_icon = QIcon(logo_path)
+        app.setWindowIcon(app_icon)
 
     # Crear ventana principal
     window = MainWindow()

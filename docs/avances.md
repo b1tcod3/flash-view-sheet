@@ -7,9 +7,9 @@
 
 ## Resumen de Progreso
 
-### Estado General:   Completado (Fases 0-5)
-**Última Actualización:** 27 de Octubre 2025 - 01:02 UTC
-**Versión:** 1.0.0 - Optimizada para datasets grandes
+### Estado General:   Completado (Fases 0-6)
+**Última Actualización:** 4 de Noviembre 2025 - 15:09 UTC
+**Versión:** 1.1.0 - Con Sistema de Vistas Separadas
 
 ---
 
@@ -196,10 +196,36 @@
 - [ ] Integrar vistas en MainWindow y manejar cambios
 - [ ] Actualizar manejo de datos para aplicar filtros a vista de gráficos
 
-### Próximas Mejoras (Fase 7 - Futuras)
+## Fase 7: Operaciones de Transformación de Datos - PLANIFICADA
+
+### Subfase 7.1: Arquitectura Base y Transformaciones Básicas
+- [ ] **15:09** - Diseñada arquitectura de transformaciones con patrón Command/Pipeline
+- [ ] **15:09** - Creado plan detallado en `plan7.md` con 5 subfases y 10 semanas de desarrollo
+- [ ] Implementar `base_transformation.py` con interfaz común para transformaciones
+- [ ] Crear `transformation_manager.py` para gestión centralizada
+- [ ] Implementar transformaciones de columnas (renombrar, crear calculadas, eliminar)
+- [ ] Añadir transformaciones matemáticas (log, sqrt, escalado, normalización)
+
+### Subfase 7.2: Procesamiento de Texto y Fechas
+- [ ] Implementar procesamiento de texto avanzado (limpieza, regex, case conversion)
+- [ ] Añadir manejo de fechas y tiempo (parsing, extracción de componentes, cálculos)
+- [ ] Crear transformaciones de codificación categórica (label, one-hot, ordinal)
+
+### Subfase 7.3: Sistema de Pipeline y UI
+- [ ] Implementar sistema de pipeline para cadenas de transformaciones
+- [ ] Crear nueva vista "Transformaciones" en el stacked widget
+- [ ] Añadir panel de herramientas de transformación con preview en tiempo real
+- [ ] Implementar undo/redo y guardado/carga de pipelines
+
+### Subfase 7.4: Optimización y Testing
+- [ ] Optimizar procesamiento para datasets grandes con chunks y paralelización
+- [ ] Implementar suite completa de tests unitarios (>85% cobertura)
+- [ ] Crear documentación completa con ejemplos de uso
+- [ ] Realizar pruebas de integración con UI existente
+
+### Próximas Mejoras (Fase 8+ - Futuras)
 - [ ] Implementar gráficos y visualizaciones de datos avanzadas
 - [ ] Añadir soporte para más formatos de archivo (JSON, XML, etc.)
-- [ ] Implementar operaciones de transformación de datos
 - [ ] Añadir funcionalidad de exportación a Excel
 - [ ] Crear interfaz de configuración de optimizaciones
 - [ ] Implementar temas y personalización de UI
@@ -208,11 +234,12 @@
 
 ## Métricas de Progreso
 
-### Completado: 100%
+### Completado: 100% (Fases 0-6)
 - Documentación: 100%
 - Código: 100%
 - Pruebas: 100%
 - Optimización: 100%
+- **Fase 7 Planificada**: Arquitectura diseñada, plan detallado creado en `plan7.md`
 
 ---
 
@@ -265,14 +292,15 @@ MAX_CACHE_CHUNKS = 10              # Chunks máximos en cache
 ---
 
 ## Próxima Revisión
-**Fecha:** 28 de Octubre 2025
-**Objetivo:** Iniciar Fase 7: Pruebas de Usuario y Optimizaciones de UX
+**Fecha:** 11 de Noviembre 2025
+**Objetivo:** Iniciar Fase 7: Operaciones de Transformación de Datos
 
 ### Próximos Pasos Sugeridos
-1. **Pruebas de Usuario**: Realizar pruebas exhaustivas con usuarios para validar usabilidad de las nuevas vistas.
-2. **Optimizaciones de UI/UX**: Mejorar estilos, animaciones y responsividad de la interfaz.
-3. **Funcionalidades Avanzadas**: Añadir más tipos de gráficos o herramientas de análisis adicionales.
-4. **Documentación**: Actualizar manual de usuario con las nuevas vistas y funcionalidades.
+1. **Inicio Fase 7.1**: Implementar arquitectura base de transformaciones (Command/Pipeline patterns)
+2. **Testing de Arquitectura**: Verificar compatibilidad con código existente antes de expandir
+3. **Documentación Técnica**: Completar documentación de API para transformaciones
+4. **Planificación UI**: Diseñar interfaz de usuario para el sistema de transformaciones
+5. **Optimizaciones de Rendimiento**: Preparar sistema para datasets grandes desde el inicio
 
 ---
 

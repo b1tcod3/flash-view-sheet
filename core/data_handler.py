@@ -1,8 +1,10 @@
 """
-Módulo para manejo de datos - carga, análisis y exportación
+Módulo para manejo de datos - carga, análisis, transformación y exportación
+Incluye integración con el sistema avanzado de transformaciones (Fase 7)
 """
 
 import pandas as pd
+import numpy as np
 import os
 from typing import Optional, Tuple, Dict, Any
 import sys
@@ -14,11 +16,11 @@ from config import optimization_config
 
 def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
     """
-    Cargar datos desde un archivo Excel o CSV con optimización para archivos grandes
+    Cargar datos desde un archivo usando el nuevo sistema de loaders
 
     Args:
         filepath: Ruta del archivo a cargar
-        chunk_size: Tamaño de chunk para lectura (solo para CSV grandes)
+        chunk_size: Tamaño de chunk para lectura (si el formato lo soporta)
 
     Returns:
         DataFrame de Pandas con los datos cargados
@@ -28,165 +30,97 @@ def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
         ValueError: Si el archivo no es soportado
         Exception: Para otros errores de carga
     """
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"El archivo no existe: {filepath}")
+    from core.loaders import get_file_loader
 
-    # Determinar el tipo de archivo por extensión
-    extension = os.path.splitext(filepath)[1].lower()
-
-    try:
-        if extension in ['.xlsx', '.xls']:
-            # Para Excel, verificar tamaño del archivo usando configuración
-            file_size = os.path.getsize(filepath)
-            if file_size > optimization_config.CHUNK_LOADING_THRESHOLD:
-                print(f"Archivo Excel grande detectado ({file_size / 1024 / 1024:.1f}MB), cargando con optimización...")
-                df = pd.read_excel(filepath, engine='openpyxl')
+    # Usar el factory pattern para cargar el archivo
+    loader = get_file_loader(filepath)
+    
+    # Aplicar optimización para archivos grandes
+    if chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100):
+        if chunk_size is None:
+            # Usar configuración de optimización
+            file_info = loader.get_memory_usage_info()
+            estimated_rows = file_info.get('estimated_data_rows', 1000)
+            if estimated_rows > optimization_config.VIRTUALIZATION_THRESHOLD:
+                chunk_size = 1000
             else:
-                df = pd.read_excel(filepath)
-        elif extension == '.csv':
-            # Para CSV, usar chunks si se especifica o si el archivo es muy grande
-            file_size = os.path.getsize(filepath)
-            if chunk_size or file_size > optimization_config.CHUNK_LOADING_THRESHOLD:
-                if chunk_size is None:
-                    chunk_size = optimization_config.get_csv_chunk_size(file_size)
-                df = _cargar_csv_en_chunks(filepath, chunk_size)
-            else:
-                df = pd.read_csv(filepath)
-        elif extension == '.json':
-            # Para JSON, usar pandas read_json
-            df = pd.read_json(filepath)
-        elif extension in ['.xml']:
-            # Para XML, usar pandas read_xml si está disponible, o lxml
-            try:
-                df = pd.read_xml(filepath)
-            except AttributeError:
-                # Si pandas no tiene read_xml, usar lxml
-                from lxml import etree
-                tree = etree.parse(filepath)
-                root = tree.getroot()
-                data = []
-                for child in root:
-                    row = {}
-                    for subchild in child:
-                        row[subchild.tag] = subchild.text
-                    data.append(row)
-                df = pd.DataFrame(data)
-        else:
-            raise ValueError(f"Formato de archivo no soportado: {extension}")
-    except Exception as e:
-        raise Exception(f"Error al cargar el archivo {filepath}: {str(e)}")
+                chunk_size = 10000
+        
+        try:
+            return loader.load_in_chunks(chunk_size)
+        except Exception as e:
+            # Si falla el chunk loading, usar carga normal
+            print(f"Chunk loading falló, usando carga normal: {str(e)}")
+            return loader.load()
 
-    return df
+    return loader.load()
 
 
 def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict = None, chunk_size: int = None) -> pd.DataFrame:
     """
-    Cargar datos desde un archivo con opciones adicionales como saltar filas y renombrar columnas
+    Cargar datos desde un archivo con opciones adicionales usando el sistema de loaders
 
     Args:
         filepath: Ruta del archivo a cargar
         skip_rows: Número de filas a saltar al inicio (la siguiente fila se usa como header)
         column_names: Diccionario con nombres de columnas a renombrar {original: nuevo}
-        chunk_size: Tamaño de chunk para lectura (solo para CSV grandes)
+        chunk_size: Tamaño de chunk para lectura (si el formato lo soporta)
 
     Returns:
         DataFrame de Pandas con los datos cargados y opciones aplicadas
     """
-    # Determinar el tipo de archivo por extensión
-    extension = os.path.splitext(filepath)[1].lower()
+    from core.loaders import get_file_loader
 
-    try:
-        if extension in ['.xlsx', '.xls']:
-            # Para Excel, usar header=skip_rows para usar la fila después de saltar como header
-            if skip_rows > 0:
-                df = pd.read_excel(filepath, header=skip_rows)
-                # Resetear index para que empiece desde 0
-                df = df.reset_index(drop=True)
+    # Usar el factory pattern para cargar el archivo
+    loader = get_file_loader(filepath)
+    
+    # Aplicar optimización para archivos grandes
+    if chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100):
+        if chunk_size is None:
+            # Usar configuración de optimización
+            file_info = loader.get_memory_usage_info()
+            estimated_rows = file_info.get('estimated_data_rows', 1000)
+            if estimated_rows > optimization_config.VIRTUALIZATION_THRESHOLD:
+                chunk_size = 1000
             else:
-                df = pd.read_excel(filepath)
-        elif extension == '.csv':
-            # Para CSV, usar header=skip_rows para usar la fila después de saltar como header
-            if skip_rows > 0:
-                df = pd.read_csv(filepath, header=skip_rows)
-                # Resetear index para que empiece desde 0
-                df = df.reset_index(drop=True)
-            else:
-                df = pd.read_csv(filepath)
-        elif extension == '.json':
-            # Para JSON, no se puede usar header, así que cargar normal y luego saltar
-            df = pd.read_json(filepath)
-            if skip_rows > 0:
-                df = df.iloc[skip_rows:].reset_index(drop=True)
-        elif extension in ['.xml']:
-            # Para XML, cargar normal y luego saltar
-            try:
-                df = pd.read_xml(filepath)
-            except AttributeError:
-                # Si pandas no tiene read_xml, usar lxml
-                from lxml import etree
-                tree = etree.parse(filepath)
-                root = tree.getroot()
-                data = []
-                for child in root:
-                    row = {}
-                    for subchild in child:
-                        row[subchild.tag] = subchild.text
-                    data.append(row)
-                df = pd.DataFrame(data)
-
-            if skip_rows > 0:
-                df = df.iloc[skip_rows:].reset_index(drop=True)
-        else:
-            raise ValueError(f"Formato de archivo no soportado: {extension}")
-    except Exception as e:
-        raise Exception(f"Error al cargar el archivo {filepath}: {str(e)}")
-
-    # Aplicar renombrado de columnas si se especifica
-    if column_names:
-        df = df.rename(columns=column_names)
+                chunk_size = 10000
+        
+        try:
+            df = loader.load_in_chunks(chunk_size)
+        except Exception as e:
+            # Si falla el chunk loading, usar carga normal
+            print(f"Chunk loading falló, usando carga normal: {str(e)}")
+            df = loader.load(skip_rows, column_names)
+    else:
+        # Carga normal con opciones
+        df = loader.load(skip_rows, column_names)
 
     return df
 
 
-def _cargar_csv_en_chunks(filepath: str, chunk_size: int = None) -> pd.DataFrame:
+def get_supported_file_formats() -> list:
     """
-    Cargar archivo CSV en chunks para optimizar memoria
-
-    Args:
-        filepath: Ruta del archivo CSV
-        chunk_size: Tamaño de cada chunk (si None, se calcula automáticamente)
-
+    Get list of all supported file formats
+    
     Returns:
-        DataFrame completo
+        List of supported file extensions
     """
-    if chunk_size is None:
-        # Calcular chunk_size basado en el tamaño del archivo
-        file_size = os.path.getsize(filepath)
-        if file_size > 500 * 1024 * 1024:  # 500MB
-            chunk_size = 10000
-        elif file_size > 100 * 1024 * 1024:  # 100MB
-            chunk_size = 25000
-        else:
-            chunk_size = 50000
+    from core.loaders import get_supported_formats
+    return get_supported_formats()
 
-    print(f"Cargando CSV en chunks de {chunk_size} filas...")
 
-    # Leer primera parte para obtener estructura
-    first_chunk = pd.read_csv(filepath, nrows=1)
-    columns = first_chunk.columns
-
-    # Inicializar DataFrame vacío con la estructura correcta
-    df_list = []
-
-    # Leer archivo en chunks
-    for chunk in pd.read_csv(filepath, chunksize=chunk_size):
-        df_list.append(chunk)
-
-    # Concatenar todos los chunks
-    result_df = pd.concat(df_list, ignore_index=True)
-
-    print(f"CSV cargado exitosamente: {len(result_df)} filas, {len(result_df.columns)} columnas")
-    return result_df
+def is_file_format_supported(filepath: str) -> bool:
+    """
+    Check if a file format is supported
+    
+    Args:
+        filepath: Path to the file
+        
+    Returns:
+        True if the file format is supported
+    """
+    from core.loaders import is_file_supported
+    return is_file_supported(filepath)
 
 
 def obtener_metadata(df: pd.DataFrame) -> Dict[str, Any]:
@@ -609,3 +543,927 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
     except Exception as e:
         print(f"Error al crear tabla pivote: {str(e)}")
         return pd.DataFrame()
+
+
+# ===============================
+# SISTEMA AVANZADO DE TRANSFORMACIONES (FASE 7)
+# ===============================
+
+def aplicar_transformacion(df: pd.DataFrame, tipo_transformacion: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
+    """
+    Aplicar una transformación avanzada al DataFrame usando el nuevo sistema
+    
+    Args:
+        df: DataFrame de entrada
+        tipo_transformacion: Tipo de transformación a aplicar
+        parametros: Parámetros específicos para la transformación
+        
+    Returns:
+        DataFrame transformado
+        
+    Raises:
+        ValueError: Si el tipo de transformación no es válido
+    """
+    try:
+        from core.transformations import get_transformation_manager
+        
+        if parametros is None:
+            parametros = {}
+            
+        # Usar el gestor de transformaciones
+        manager = get_transformation_manager()
+        resultado = manager.execute_transformation(df, tipo_transformacion, parametros)
+        
+        print(f"Transformación '{tipo_transformacion}' aplicada exitosamente")
+        return resultado
+        
+    except ImportError:
+        print("Sistema de transformaciones avanzadas no disponible, usando método básico")
+        return _aplicar_transformacion_basica(df, tipo_transformacion, parametros)
+    except Exception as e:
+        print(f"Error al aplicar transformación avanzada: {str(e)}")
+        # Fallback al sistema básico si está disponible
+        return _aplicar_transformacion_basica(df, tipo_transformacion, parametros)
+
+
+def aplicar_pipeline_transformaciones(df: pd.DataFrame, pasos_transformacion: list) -> pd.DataFrame:
+    """
+    Aplicar un pipeline de transformaciones al DataFrame
+    
+    Args:
+        df: DataFrame de entrada
+        pasos_transformacion: Lista de pasos de transformación
+            Cada paso: {'tipo': 'transformacion', 'parametros': {...}}
+            
+    Returns:
+        DataFrame transformado
+    """
+    try:
+        from core.transformations import get_transformation_manager
+        
+        if not pasos_transformacion:
+            return df.copy()
+            
+        # Usar el gestor de transformaciones
+        manager = get_transformation_manager()
+        resultado = manager.execute_pipeline(df, pasos_transformacion)
+        
+        print(f"Pipeline de {len(pasos_transformacion)} pasos aplicado exitosamente")
+        return resultado
+        
+    except ImportError:
+        print("Sistema de transformaciones avanzadas no disponible")
+        return df.copy()
+    except Exception as e:
+        print(f"Error al aplicar pipeline de transformaciones: {str(e)}")
+        return df.copy()
+
+
+def obtener_transformaciones_disponibles() -> Dict[str, Dict[str, Any]]:
+    """
+    Obtener lista de transformaciones disponibles en el sistema avanzado
+    
+    Returns:
+        Diccionario con transformaciones disponibles
+    """
+    try:
+        from core.transformations import get_transformation_manager
+        
+        manager = get_transformation_manager()
+        return manager.get_available_transformations()
+        
+    except ImportError:
+        print("Sistema de transformaciones avanzadas no disponible")
+        return {}
+    except Exception as e:
+        print(f"Error al obtener transformaciones: {str(e)}")
+        return {}
+
+
+def ejecutar_transformacion_con_compatibilidad(df: pd.DataFrame, operacion: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
+    """
+    Ejecutar transformación con compatibilidad entre sistema básico y avanzado
+    
+    Args:
+        df: DataFrame de entrada
+        operacion: Tipo de operación a realizar
+        parametros: Parámetros para la operación
+        
+    Returns:
+        DataFrame procesado
+    """
+    if parametros is None:
+        parametros = {}
+    
+    # Mapeo de operaciones básicas a transformaciones avanzadas
+    mapeo_transformaciones = {
+        'limpiar_datos': 'text_cleaning',  # Mapear a limpieza de texto básica
+        'renombrar_columnas': 'rename_columns',
+        'crear_columna_calculada': 'create_calculated_column',
+        'aplicar_funcion': 'apply_function',
+        'eliminar_columnas': 'drop_columns',
+        'normalizar_datos': 'normalization',
+        'escalar_datos': 'scaling',
+        'aplicar_logaritmo': 'logarithmic',
+        'convertir_texto': 'case_conversion',
+        'parsear_fechas': 'date_parsing'
+    }
+    
+    # Si la operación tiene mapeo directo, usar el sistema avanzado
+    if operacion in mapeo_transformaciones:
+        try:
+            tipo_avanzado = mapeo_transformaciones[operacion]
+            return aplicar_transformacion(df, tipo_avanzado, parametros)
+        except Exception as e:
+            print(f"Error en transformación avanzada, usando sistema básico: {str(e)}")
+    
+    # Si no hay mapeo, usar el sistema básico
+    if operacion == 'limpiar_datos':
+        return limpiar_datos(df, parametros)
+    elif operacion == 'agregar_datos':
+        return agregar_datos(df, parametros)
+    elif operacion == 'pivotar_datos':
+        index = parametros.get('index', '')
+        columns = parametros.get('columns', '')
+        values = parametros.get('values', '')
+        aggfunc = parametros.get('aggfunc', 'mean')
+        return pivotar_datos(df, index, columns, values, aggfunc)
+    else:
+        print(f"Operación '{operacion}' no reconocida, devolviendo DataFrame original")
+        return df.copy()
+
+
+def _aplicar_transformacion_basica(df: pd.DataFrame, tipo: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
+    """
+    Aplicar transformación básica usando métodos existentes (fallback)
+    
+    Args:
+        df: DataFrame de entrada
+        tipo: Tipo de transformación
+        parametros: Parámetros
+        
+    Returns:
+        DataFrame transformado
+    """
+    if parametros is None:
+        parametros = {}
+    
+    # Implementar transformaciones básicas como fallback
+    if tipo == 'text_cleaning':
+        # Limpieza básica de texto
+        df_clean = df.copy()
+        for col in df_clean.select_dtypes(include=['object']).columns:
+            df_clean[col] = df_clean[col].astype(str).str.strip()
+        return df_clean
+    
+    elif tipo == 'rename_columns':
+        mapping = parametros.get('column_mapping', {})
+        if mapping:
+            return df.rename(columns=mapping)
+        return df
+    
+    elif tipo == 'drop_columns':
+        columns = parametros.get('columns', [])
+        if columns:
+            return df.drop(columns=columns, errors='ignore')
+        return df
+    
+    else:
+        print(f"Transformación básica '{tipo}' no implementada, devolviendo DataFrame original")
+        return df.copy()
+
+
+def obtener_estadisticas_transformaciones() -> Dict[str, Any]:
+    """
+    Obtener estadísticas del sistema de transformaciones
+    
+    Returns:
+        Diccionario con estadísticas
+    """
+    try:
+        from core.transformations import get_transformation_manager
+        
+        manager = get_transformation_manager()
+        return {
+            'sistema_disponible': True,
+            'transformaciones_registradas': len(manager.get_available_transformations()),
+            'pipelines_guardados': len(manager.get_saved_pipelines()),
+            'operaciones_en_historial': len(manager.get_history()),
+            'metricas_rendimiento': manager.get_performance_report()
+        }
+        
+    except ImportError:
+        return {
+            'sistema_disponible': False,
+            'mensaje': 'Sistema de transformaciones avanzadas no disponible'
+        }
+    except Exception as e:
+        return {
+            'sistema_disponible': False,
+            'error': str(e)
+        }
+
+
+# ===============================
+# SISTEMA DE EXPORTACIÓN SEPARADA CON PLANTILLAS EXCEL (FASE 3)
+# ===============================
+
+import pandas as pd
+import numpy as np
+import os
+import tempfile
+import time
+import json
+import shutil
+import hashlib
+import re
+import gc
+from datetime import datetime
+from typing import Optional, List, Dict, Any, Union, Tuple, Iterator, Callable
+from dataclasses import dataclass, field
+from pathlib import Path
+from collections import namedtuple, defaultdict
+from enum import Enum
+
+try:
+    import openpyxl
+    from openpyxl import load_workbook, Workbook
+    from openpyxl.utils import get_column_letter, column_index_from_string, coordinate_to_tuple
+    from openpyxl.styles import Font, PatternFill, Border, Alignment
+    OPENPYXL_AVAILABLE = True
+except ImportError:
+    OPENPYXL_AVAILABLE = False
+
+# Importar optimizaciones de rendimiento
+try:
+    from core.performance_optimizer import (
+        PerformanceOptimizer, ExcelFormatOptimizer, ProgressMonitor,
+        ChunkingStrategy, SystemResources, PerformanceConfig,
+        PerformanceResult, ProgressInfo
+    )
+    PERFORMANCE_OPTIMIZER_AVAILABLE = True
+except ImportError:
+    PERFORMANCE_OPTIMIZER_AVAILABLE = False
+    # Clases fallback si no está disponible el optimizador
+    class ChunkingStrategy(Enum):
+        NONE = "none"
+        MODERATE = "moderate"
+        SIZE_BASED = "size"
+        GROUP_BASED = "group"
+        AGGRESSIVE = "aggressive"
+    
+    class SystemResources:
+        def __init__(self):
+            self.memory_usage_mb = 0.0
+            self.cpu_percent = 0.0
+            self.disk_free_gb = 0.0
+    
+    class PerformanceConfig:
+        def __init__(self):
+            self.memory_threshold_mb = 2048
+            self.chunk_size = 1000
+            self.max_concurrent_operations = 2
+            self.progress_interval = 10
+
+
+@dataclass
+class ExportSeparatedConfig:
+    """Configuración completa para separación de datos"""
+    
+    # Datos de origen - Argumentos requeridos primero
+    separator_column: str  # Columna para separar
+    template_path: str  # Ruta a plantilla .xlsx
+    output_folder: str  # Carpeta destino
+    
+    # Argumentos opcionales con valores por defecto
+    start_cell: str = "A1"  # Celda inicial para datos
+    file_template: str = "{valor}.xlsx"  # Plantilla nombre archivo
+    
+    # Mapeo de columnas
+    column_mapping: Dict[str, str] = field(default_factory=dict)
+    # Ej: {'columna_df': 'A', 'otra_columna': 'C'}
+    
+    # Opciones avanzadas
+    handle_duplicates: str = "overwrite"  # 'overwrite', 'append', 'skip'
+    create_summary: bool = True  # Crear archivo resumen
+    preserve_format: bool = True  # Preservar formato Excel
+    
+    # Opciones de rendimiento
+    enable_chunking: bool = True  # Habilitar chunking automático
+    max_memory_mb: int = 2048  # Límite de memoria
+    progress_callback: Optional[callable] = None  # Callback de progreso
+    
+    def validate(self) -> Dict[str, Any]:
+        """Validar configuración completa"""
+        errors = []
+        warnings = []
+        
+        # Validar columna de separación
+        if not self.separator_column:
+            errors.append("Columna de separación es requerida")
+        
+        # Validar plantilla Excel
+        if not os.path.exists(self.template_path):
+            errors.append(f"Plantilla no encontrada: {self.template_path}")
+        elif not self.template_path.lower().endswith(('.xlsx', '.xlsm')):
+            errors.append("Plantilla debe ser archivo .xlsx o .xlsm")
+        
+        # Validar carpeta destino
+        try:
+            os.makedirs(self.output_folder, exist_ok=True)
+            if not os.access(self.output_folder, os.W_OK):
+                errors.append(f"Sin permisos de escritura en: {self.output_folder}")
+        except Exception as e:
+            errors.append(f"Error en carpeta destino: {str(e)}")
+        
+        # Validar celda inicial
+        try:
+            coordinate_to_tuple(self.start_cell)
+        except Exception:
+            errors.append(f"Celda inicial inválida: {self.start_cell}")
+        
+        # Validar plantilla de nombre
+        if not self.file_template:
+            errors.append("Plantilla de nombre de archivo es requerida")
+        elif not self.file_template.endswith('.xlsx'):
+            warnings.append("Plantilla de nombre no tiene extensión .xlsx")
+        
+        return {
+            'valid': len(errors) == 0,
+            'errors': errors,
+            'warnings': warnings
+        }
+    
+    def get_default_mapping(self, df_columns: List[str]) -> Dict[str, str]:
+        """Obtener mapeo por defecto (posicional)"""
+        mapping = {}
+        for i, col in enumerate(df_columns):
+            if i < 26:  # A-Z
+                mapping[col] = get_column_letter(i + 1)
+            else:  # AA, AB, etc.
+                mapping[col] = get_column_letter(i + 1)
+        return mapping
+
+
+@dataclass
+class ValidationResult:
+    """Resultado de validación"""
+    is_valid: bool = True
+    errors: List[str] = field(default_factory=list)
+    warnings: List[str] = field(default_factory=list)
+    info: List[str] = field(default_factory=list)
+    
+    def add_error(self, error: str):
+        self.errors.append(error)
+        self.is_valid = False
+    
+    def add_warning(self, warning: str):
+        self.warnings.append(warning)
+    
+    def add_info(self, info: str):
+        self.info.append(info)
+
+
+@dataclass
+class ExportResult:
+    """Resultado de exportación individual"""
+    success: bool = False
+    file_path: str = ""
+    group_name: str = ""
+    rows_processed: int = 0
+    processing_time: float = 0.0
+    error: str = ""
+    timestamp: Optional[datetime] = None
+
+
+class SeparationError(Exception):
+    """Error base para separación de datos"""
+    def __init__(self, message: str, error_code: str = None, details: dict = None):
+        super().__init__(message)
+        self.error_code = error_code
+        self.details = details or {}
+
+
+class TemplateError(SeparationError):
+    """Error específico de plantilla Excel"""
+    pass
+
+
+class ConfigurationError(SeparationError):
+    """Error de configuración inválida"""
+    pass
+
+
+class MemoryError(SeparationError):
+    """Error de memoria insuficiente"""
+    pass
+
+
+class ExcelTemplateSplitter:
+    """Clase principal para separación de datos con plantillas Excel"""
+    
+    def __init__(self, df: pd.DataFrame, config: ExportSeparatedConfig):
+        """
+        Inicializar separador con DataFrame y configuración
+        
+        Args:
+            df: DataFrame a separar
+            config: Configuración de separación
+        """
+        self.df = df
+        self.config = config
+        self.progress_callback = config.progress_callback
+        self.logger = self._setup_logger()
+        self.created_files = []
+        self.failed_groups = {}
+        self._cancelled = False
+        
+        # Verificar dependencias
+        if not OPENPYXL_AVAILABLE:
+            raise ImportError("openpyxl es requerido para separación con plantillas Excel")
+        
+        # Configurar optimizaciones de rendimiento
+        self._setup_performance_optimization()
+    
+    def _setup_logger(self):
+        """Configurar logging consistente con sistema existente"""
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.INFO)
+        return logger
+    
+    def _setup_performance_optimization(self):
+        """Configurar optimizaciones de rendimiento avanzadas"""
+        # Inicializar optimizador de rendimiento si está disponible
+        if PERFORMANCE_OPTIMIZER_AVAILABLE and self.config.enable_chunking:
+            self.performance_optimizer = PerformanceOptimizer(
+                memory_threshold_mb=self.config.max_memory_mb
+            )
+            
+            # Determinar estrategia de chunking óptima
+            self.chunking_strategy = self.performance_optimizer.determine_optimal_chunking_strategy(
+                self.df, self.config.separator_column
+            )
+            
+            # Configurar optimizador de formato Excel
+            self.excel_optimizer = ExcelFormatOptimizer()
+            
+            # Configurar monitor de progreso
+            self.progress_monitor = ProgressMonitor()
+            
+            self.using_advanced_optimization = True
+        else:
+            # Fallback a optimización básica
+            self.performance_optimizer = None
+            self.excel_optimizer = None
+            self.progress_monitor = None
+            self.using_advanced_optimization = False
+            
+            # Usar optimización_config para determinar chunking básico
+            if (len(self.df) > optimization_config.VIRTUALIZATION_THRESHOLD or
+                self.df.memory_usage(deep=True).sum() > self.config.max_memory_mb * 1024 * 1024):
+                self.enable_chunking = True
+                self.chunk_size = min(
+                    optimization_config.DEFAULT_CHUNK_SIZE,
+                    max(1000, len(self.df) // 20)
+                )
+            else:
+                self.enable_chunking = False
+                self.chunk_size = len(self.df)
+    
+    def validate_configuration(self) -> ValidationResult:
+        """Validar configuración completa antes de proceder"""
+        result = ValidationResult()
+        
+        # Validación básica de configuración
+        config_validation = self.config.validate()
+        if not config_validation['valid']:
+            for error in config_validation['errors']:
+                result.add_error(error)
+            for warning in config_validation['warnings']:
+                result.add_warning(warning)
+        
+        # Validación de datos
+        if self.df.empty:
+            result.add_error("DataFrame está vacío")
+            return result
+        
+        if self.config.separator_column not in self.df.columns:
+            result.add_error(f"Columna '{self.config.separator_column}' no existe en DataFrame")
+            return result
+        
+        # Validar valores únicos en columna de separación
+        unique_values = self.df[self.config.separator_column].nunique()
+        null_count = self.df[self.config.separator_column].isnull().sum()
+        
+        if unique_values == 0:
+            result.add_error("No se encontraron valores únicos en columna de separación")
+        elif unique_values + (1 if null_count > 0 else 0) == 0:
+            result.add_error("No hay datos para separar")
+        
+        # Validación de plantilla Excel
+        if os.path.exists(self.config.template_path):
+            try:
+                workbook = load_workbook(self.config.template_path, read_only=True)
+                workbook.close()
+                result.add_info(f"Plantilla validada: {os.path.basename(self.config.template_path)}")
+            except Exception as e:
+                result.add_error(f"Error validando plantilla Excel: {str(e)}")
+        
+        return result
+    
+    def analyze_data(self) -> Dict[str, Any]:
+        """Analizar DataFrame para generar preview y validar separación"""
+        analysis = {}
+        
+        # Análisis básico
+        analysis['total_rows'] = len(self.df)
+        analysis['total_columns'] = len(self.df.columns)
+        analysis['memory_usage_mb'] = self.df.memory_usage(deep=True).sum() / 1024 / 1024
+        
+        # Análisis de columna de separación
+        if self.config.separator_column in self.df.columns:
+            separator_series = self.df[self.config.separator_column]
+            analysis['separator_column'] = self.config.separator_column
+            analysis['unique_values'] = separator_series.nunique()
+            analysis['null_count'] = separator_series.isnull().sum()
+            analysis['null_percentage'] = (analysis['null_count'] / len(separator_series)) * 100
+            
+            # Top valores más frecuentes
+            value_counts = separator_series.value_counts()
+            analysis['top_values'] = value_counts.head(10).to_dict()
+            analysis['estimated_groups'] = analysis['unique_values'] + (1 if analysis['null_count'] > 0 else 0)
+        
+        # Estimación de rendimiento
+        total_mb = analysis['memory_usage_mb']
+        estimated_processing_time = total_mb * 0.5  # 0.5 segundos por MB (estimado)
+        analysis['estimated_processing_time'] = estimated_processing_time
+        analysis['recommended_chunking'] = (
+            total_mb > 500 or
+            analysis['estimated_groups'] > 100 or
+            self.enable_chunking
+        )
+        
+        # Recomendaciones
+        recommendations = []
+        if analysis['null_percentage'] > 20:
+            recommendations.append("Alto porcentaje de nulos detectado - considerar limpieza de datos")
+        if analysis['estimated_groups'] > 500:
+            recommendations.append("Muchos grupos detectados - usar chunking para mejor rendimiento")
+        if total_mb > 1024:
+            recommendations.append("Dataset grande - habilitar chunking agresivo")
+        
+        analysis['recommendations'] = recommendations
+        
+        return analysis
+    
+    def generate_file_preview(self) -> List[Dict[str, Any]]:
+        """Generar preview de archivos que se crearán"""
+        preview = []
+        
+        try:
+            # Obtener grupos únicos
+            groups = list(self.df.groupby(self.config.separator_column))
+            
+            for group_name, group_df in groups:
+                # Generar nombre de archivo
+                filename = self._generate_filename_for_group(group_name, len(group_df))
+                file_path = os.path.join(self.config.output_folder, filename)
+                
+                # Estimar tamaño de archivo (aproximado)
+                estimated_size_kb = len(group_df) * 0.5  # ~0.5KB por fila (estimado)
+                
+                preview.append({
+                    'filename': filename,
+                    'group_name': str(group_name),
+                    'rows': len(group_df),
+                    'estimated_size_kb': estimated_size_kb,
+                    'file_path': file_path,
+                    'status': 'ready'
+                })
+        
+        except Exception as e:
+            self.logger.error(f"Error generando preview: {str(e)}")
+            return []
+        
+        return preview
+    
+    def _generate_filename_for_group(self, group_name: str, row_count: int) -> str:
+        """Generar nombre de archivo para un grupo específico"""
+        group_info = {
+            'valor': group_name,
+            'columna': self.config.separator_column,
+            'fecha': datetime.now().strftime('%Y-%m-%d'),
+            'fecha_hora': datetime.now().strftime('%Y-%m-%d_%H%M'),
+            'filas': row_count,
+            'timestamp': str(int(time.time()))
+        }
+        
+        return self._process_file_template(self.config.file_template, group_info)
+    
+    def _process_file_template(self, template: str, group_info: Dict[str, Any]) -> str:
+        """Procesar plantilla de nombre de archivo con placeholders"""
+        processed = template
+        
+        # Placeholders soportados
+        placeholders = {
+            '{valor}': str(group_info.get('valor', '')),
+            '{columna}': str(group_info.get('columna', '')),
+            '{fecha}': str(group_info.get('fecha', '')),
+            '{fecha_hora}': str(group_info.get('fecha_hora', '')),
+            '{filas}': str(group_info.get('filas', '')),
+            '{timestamp}': str(group_info.get('timestamp', ''))
+        }
+        
+        # Reemplazar placeholders
+        for placeholder, value in placeholders.items():
+            processed = processed.replace(placeholder, value)
+        
+        # Sanitizar nombre de archivo
+        return self._sanitize_filename(processed)
+    
+    def _sanitize_filename(self, filename: str) -> str:
+        """Sanitizar nombre para compatibilidad del SO"""
+        # Caracteres prohibidos
+        forbidden_chars = r'[<>:"/\\|?*]'
+        sanitized = re.sub(forbidden_chars, '_', filename)
+        
+        # Remover puntos múltiples al final
+        sanitized = re.sub(r'\.+$', '', sanitized)
+        
+        # Normalizar espacios
+        sanitized = ' '.join(sanitized.split())
+        
+        # Asegurar que no esté vacío
+        if not sanitized.strip():
+            sanitized = 'archivo_sin_nombre.xlsx'
+        
+        # Límite de longitud
+        if len(sanitized) > 255:
+            name_part, ext = os.path.splitext(sanitized)
+            available_length = 255 - len(ext)
+            sanitized = name_part[:available_length-3] + '...' + ext
+        
+        return sanitized
+    
+    def separate_and_export(self) -> Dict[str, Any]:
+        """Ejecutar separación completa y exportación"""
+        start_time = time.time()
+        
+        try:
+            # 1. Validar configuración
+            validation = self.validate_configuration()
+            if not validation.is_valid:
+                return {
+                    'success': False,
+                    'error': 'Configuración inválida: ' + '; '.join(validation.errors),
+                    'validation_errors': validation.errors,
+                    'validation_warnings': validation.warnings
+                }
+            
+            # 2. Analizar datos
+            analysis = self.analyze_data()
+            if analysis.get('estimated_groups', 0) == 0:
+                return {
+                    'success': False,
+                    'error': 'No hay grupos para separar'
+                }
+            
+            # 3. Procesar separación
+            results = []
+            groups_processed = 0
+            
+            for group_name, group_df in self.df.groupby(self.config.separator_column):
+                try:
+                    # Verificar cancelación
+                    if hasattr(self, '_cancelled') and self._cancelled:
+                        break
+                    
+                    # Procesar grupo individual
+                    result = self._export_group(str(group_name), group_df)
+                    results.append(result)
+                    
+                    groups_processed += 1
+                    
+                    # Callback de progreso
+                    if self.progress_callback:
+                        self.progress_callback(groups_processed, analysis['estimated_groups'])
+                    
+                except Exception as e:
+                    self.logger.error(f"Error procesando grupo {group_name}: {str(e)}")
+                    error_result = ExportResult(
+                        success=False,
+                        group_name=str(group_name),
+                        error=str(e)
+                    )
+                    results.append(error_result)
+                    self.failed_groups[str(group_name)] = str(e)
+            
+            # 4. Generar resumen
+            processing_time = time.time() - start_time
+            successful_exports = [r for r in results if r.success]
+            failed_exports = [r for r in results if not r.success]
+            
+            return {
+                'success': len(successful_exports) > 0,
+                'files_created': [r.file_path for r in successful_exports],
+                'groups_processed': groups_processed,
+                'total_rows': self.df.shape[0],
+                'successful_exports': len(successful_exports),
+                'failed_exports': len(failed_exports),
+                'processing_time': processing_time,
+                'errors': validation.errors,
+                'warnings': validation.warnings,
+                'failed_groups': self.failed_groups,
+                'analysis': analysis
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error crítico en separación: {str(e)}")
+            return {
+                'success': False,
+                'error': str(e),
+                'processing_time': time.time() - start_time
+            }
+    
+    def _export_group(self, group_name: str, group_df: pd.DataFrame) -> ExportResult:
+        """Exportar un grupo individual"""
+        start_time = time.time()
+        result = ExportResult()
+        result.group_name = group_name
+        result.timestamp = datetime.now()
+        
+        try:
+            # Generar nombre de archivo
+            filename = self._generate_filename_for_group(group_name, len(group_df))
+            file_path = os.path.join(self.config.output_folder, filename)
+            
+            # Verificar conflictos de nombres
+            file_path = self._resolve_filename_conflicts(file_path)
+            
+            # Crear archivo Excel con plantilla
+            success = self._create_excel_file_with_template(file_path, group_df)
+            
+            if success:
+                result.success = True
+                result.file_path = file_path
+                result.rows_processed = len(group_df)
+                result.processing_time = time.time() - start_time
+                self.created_files.append(file_path)
+            else:
+                result.success = False
+                result.error = "Error creando archivo Excel"
+            
+            return result
+            
+        except Exception as e:
+            result.success = False
+            result.error = str(e)
+            result.processing_time = time.time() - start_time
+            return result
+    
+    def _create_excel_file_with_template(self, output_path: str, data: pd.DataFrame) -> bool:
+        """Crear archivo Excel usando plantilla preservando formato"""
+        try:
+            # Cargar plantilla
+            workbook = load_workbook(self.config.template_path, data_only=False)
+            sheet = workbook.active
+            
+            # Determinar posición inicial
+            start_row, start_col = coordinate_to_tuple(self.config.start_cell)
+            
+            # Aplicar mapeo de columnas
+            if not self.config.column_mapping:
+                # Usar mapeo por defecto
+                self.config.column_mapping = self.config.get_default_mapping(data.columns.tolist())
+            
+            # Insertar datos preservando formato
+            for row_offset, (_, row_data) in enumerate(data.iterrows()):
+                excel_row = start_row + row_offset
+                
+                for df_col, excel_col_letter in self.config.column_mapping.items():
+                    if df_col in data.columns:
+                        excel_col_idx = column_index_from_string(excel_col_letter)
+                        cell = sheet.cell(row=excel_row, column=excel_col_idx)
+                        
+                        # Insertar valor
+                        value = row_data[df_col]
+                        if pd.isna(value):
+                            cell.value = None
+                        else:
+                            cell.value = value
+            
+            # Guardar archivo
+            workbook.save(output_path)
+            workbook.close()
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error creando archivo Excel: {str(e)}")
+            return False
+    
+    def _resolve_filename_conflicts(self, file_path: str) -> str:
+        """Resolver conflictos de nombres de archivo"""
+        if not os.path.exists(file_path):
+            return file_path
+        
+        # Auto-numeración
+        name_part, ext = os.path.splitext(file_path)
+        counter = 1
+        
+        while True:
+            new_path = f"{name_part}_{counter:02d}{ext}"
+            if not os.path.exists(new_path):
+                return new_path
+            counter += 1
+            
+            # Límite de seguridad
+            if counter > 999:
+                timestamp = str(int(time.time()))
+                return f"{name_part}_{timestamp}{ext}"
+    
+    def cancel_operation(self):
+        """Cancelar operación en curso"""
+        self._cancelled = True
+    
+    def cleanup_temp_files(self):
+        """Limpiar archivos temporales en caso de cancelación"""
+        for file_path in self.created_files:
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            except Exception as e:
+                self.logger.warning(f"No se pudo limpiar archivo temporal {file_path}: {str(e)}")
+
+
+def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
+    """
+    Exportar DataFrame a archivos Excel separados usando plantillas
+    
+    Args:
+        df: DataFrame a separar
+        config_dict: Configuración de separación
+            - separator_column: str
+            - template_path: str
+            - start_cell: str (ej: 'A5')
+            - output_folder: str
+            - file_template: str
+            - column_mapping: Dict[str, str]
+            - handle_duplicates: str ('overwrite', 'append', 'skip')
+    
+    Returns:
+        dict con resultado:
+            - success: bool
+            - files_created: List[str]
+            - groups_processed: int
+            - total_rows: int
+            - processing_time: float
+            - errors: List[str]
+            - warnings: List[str]
+    """
+    try:
+        # Crear configuración
+        config = ExportSeparatedConfig(
+            separator_column=config_dict.get('separator_column', ''),
+            template_path=config_dict.get('template_path', ''),
+            start_cell=config_dict.get('start_cell', 'A1'),
+            output_folder=config_dict.get('output_folder', ''),
+            file_template=config_dict.get('file_template', '{valor}.xlsx'),
+            column_mapping=config_dict.get('column_mapping', {}),
+            handle_duplicates=config_dict.get('handle_duplicates', 'overwrite'),
+            create_summary=config_dict.get('create_summary', True),
+            preserve_format=config_dict.get('preserve_format', True),
+            enable_chunking=config_dict.get('enable_chunking', True),
+            max_memory_mb=config_dict.get('max_memory_mb', 2048)
+        )
+        
+        # Crear splitter y ejecutar
+        splitter = ExcelTemplateSplitter(df, config)
+        result = splitter.separate_and_export()
+        
+        return {
+            'success': result.get('success', False),
+            'files_created': result.get('files_created', []),
+            'groups_processed': result.get('groups_processed', 0),
+            'total_rows': result.get('total_rows', 0),
+            'processing_time': result.get('processing_time', 0.0),
+            'errors': result.get('errors', []),
+            'warnings': result.get('warnings', []),
+            'failed_groups': result.get('failed_groups', {}),
+            'analysis': result.get('analysis', {})
+        }
+        
+    except Exception as e:
+        print(f"Error en separación de datos: {str(e)}")
+        return {
+            'success': False,
+            'files_created': [],
+            'groups_processed': 0,
+            'total_rows': 0,
+            'processing_time': 0.0,
+            'errors': [str(e)],
+            'warnings': [],
+            'failed_groups': {},
+            'analysis': {}
+        }
