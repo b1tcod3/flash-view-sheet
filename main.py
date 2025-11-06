@@ -148,6 +148,14 @@ class MainWindow(QMainWindow):
         exportar_separado_action.triggered.connect(self.exportar_datos_separados)
         exportar_separado_action.setEnabled(False)  # Se habilita solo con datos cargados
 
+        # Menú Ayuda
+        ayuda_menu = menu_bar.addMenu("&Ayuda")
+
+        # Acción Acerca de
+        acerca_de_action = ayuda_menu.addAction("&Acerca de...")
+        acerca_de_action.setShortcut("F1")
+        acerca_de_action.triggered.connect(self.mostrar_acerca_de)
+
         # Guardar referencia al menú para habilitar/deshabilitar
         self.separar_menu = separar_menu
         self.exportar_separado_action = exportar_separado_action
@@ -723,11 +731,94 @@ class MainWindow(QMainWindow):
                 self.exportar_separado_action.setEnabled(False)
                 self.exportar_separado_action.setStatusTip("Carga datos primero para habilitar esta opción")
 
+    def mostrar_acerca_de(self):
+        """Mostrar diálogo Acerca de con información del software y creador"""
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+        from PySide6.QtCore import Qt
+        from PySide6.QtGui import QPixmap, QIcon
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Acerca de Flash View Sheet")
+        dialog.setModal(True)
+        dialog.resize(500, 400)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Logo y título principal
+        header_layout = QHBoxLayout()
+        
+        # Intentar cargar logo si existe
+        logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+        if os.path.exists(logo_path):
+            logo_label = QLabel()
+            pixmap = QPixmap(logo_path).scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            logo_label.setPixmap(pixmap)
+            logo_label.setAlignment(Qt.AlignCenter)
+            header_layout.addWidget(logo_label)
+        
+        # Título y versión
+        title_layout = QVBoxLayout()
+        
+        title_label = QLabel("Flash View Sheet")
+        title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #2E86AB;")
+        title_layout.addWidget(title_label)
+        
+        version_label = QLabel("Versión 1.0.0")
+        version_label.setStyleSheet("font-size: 12px; color: #666;")
+        title_layout.addWidget(version_label)
+        
+        header_layout.addLayout(title_layout)
+        layout.addLayout(header_layout)
+        
+        # Descripción del software
+        desc_text = """
+        <p><b>Flash View Sheet</b> es una aplicación de escritorio ligera para visualizar y analizar datos de archivos Excel y CSV.</p>
+        
+        <p><b>Características principales:</b></p>
+        <ul>
+        <li>📊 Visualización interactiva de datos tabulares</li>
+        <li>📈 Análisis estadístico con optimizaciones para datasets grandes</li>
+        <li>🔍 Filtrado y búsqueda avanzada</li>
+        <li>📤 Exportación múltiple (PDF, Imagen, SQL)</li>
+        <li>⚡ Optimizaciones de rendimiento (paginación virtual, carga por chunks)</li>
+        </ul>
+        
+        <p><b>Desarrollado con:</b> Python 3.10+ y PySide6</p>
+        """
+        
+        desc_label = QLabel(desc_text)
+        desc_label.setWordWrap(True)
+        desc_label.setTextFormat(Qt.RichText)
+        layout.addWidget(desc_label)
+        
+        # Información del creador
+        creator_text = """
+        <p><b>Creador:</b> b1tcod3</p>
+        <p><b>GitHub:</b> <a href="https://github.com/b1tcod3">github.com/b1tcod3</a></p>
+        """
+        
+        creator_label = QLabel(creator_text)
+        creator_label.setWordWrap(True)
+        creator_label.setTextFormat(Qt.RichText)
+        creator_label.setStyleSheet("background-color: #f0f0f0; padding: 10px; border-radius: 5px;")
+        layout.addWidget(creator_label)
+        
+        # Botón OK
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        
+        ok_button = QPushButton("Aceptar")
+        ok_button.clicked.connect(dialog.accept)
+        ok_button.setDefault(True)
+        button_layout.addWidget(ok_button)
+        
+        layout.addLayout(button_layout)
+        
+        dialog.exec()
+
     def closeEvent(self, event):
         """Manejar el cierre de la aplicación"""
         event.accept()
-
-
 def main():
     """Función principal de la aplicación"""
     app = QApplication(sys.argv)

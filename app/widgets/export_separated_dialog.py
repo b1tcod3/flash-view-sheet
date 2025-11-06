@@ -923,6 +923,11 @@ class ExportSeparatedDialog(QDialog):
             output_folder = self.dest_folder_label.text().replace("📁 ", "")
             file_template = self.filename_template_edit.text().strip()
             
+            # Validar extensión de archivo de exportación
+            if file_template and not file_template.lower().endswith(('.xlsx', '.xlsm')):
+                self.status_bar.showMessage("Error: El nombre de archivo debe terminar en .xlsx o .xlsm", 5000)
+                return None
+            
             # Obtener mapeo de columnas
             column_mapping = self.mapping_widget.get_mapping()
             
