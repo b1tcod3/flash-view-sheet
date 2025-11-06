@@ -99,33 +99,94 @@ export FLASH_CACHE_CHUNKS=15
 
 ## Creación de Ejecutable
 
+### ⚠️ **Importante: Solución para Error de NumPy**
+
+Si encuentras el error `ImportError: Unable to import required dependencies: numpy` al ejecutar el archivo .exe en computadoras sin Python, usa las siguientes instrucciones específicas:
+
 ### Windows
 
-1. Instalar PyInstaller:
+1. **Instalar PyInstaller**:
    ```bash
    pip install pyinstaller
    ```
 
-2. Crear el ejecutable:
+2. **Crear el ejecutable con configuración especial para NumPy**:
    ```bash
-   pyinstaller --onefile --windowed main.py
+   pyinstaller --onefile --windowed --hidden-import=numpy --hidden-import=pandas --hidden-import=openpyxl --hidden-import=PySide6.QtCore --hidden-import=PySide6.QtGui --hidden-import=PySide6.QtWidgets --collect-all=numpy --collect-all=pandas main.py
    ```
-   El ejecutable se generará en la carpeta `dist/`.
+
+3. **Alternativa si el método anterior falla**:
+   ```bash
+   # Crear archivo .spec primero
+   pyinstaller --onefile --windowed main.py
+
+   # Luego editar el archivo main.spec generado y añadir:
+   # hiddenimports=['numpy', 'pandas', 'openpyxl', 'PySide6.QtCore', 'PySide6.QtGui', 'PySide6.QtWidgets'],
+   # Y en la sección Analysis añadir: excludes=['numpy.core._dtype_ctypes']
+
+   # Recrear el ejecutable
+   pyinstaller main.spec
+   ```
 
 ### Linux
 
-1. Instalar PyInstaller:
+1. **Instalar PyInstaller**:
    ```bash
    pip install pyinstaller
    ```
 
-2. Crear el ejecutable:
+2. **Crear el ejecutable con configuración especial**:
    ```bash
-   pyinstaller --onefile main.py
+   pyinstaller --onefile --hidden-import=numpy --hidden-import=pandas --hidden-import=openpyxl --hidden-import=PySide6.QtCore --hidden-import=PySide6.QtGui --hidden-import=PySide6.QtWidgets --collect-all=numpy --collect-all=pandas main.py
    ```
-   El ejecutable se generará en la carpeta `dist/`.
 
-**Notas**: Asegúrate de que todas las dependencias estén instaladas. Para aplicaciones GUI, `--windowed` oculta la consola en Windows. En Linux, ajusta según sea necesario para entornos gráficos.
+### 🐧 **macOS**
+
+1. **Instalar PyInstaller**:
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. **Crear la aplicación**:
+   ```bash
+   pyinstaller --onefile --windowed --hidden-import=numpy --hidden-import=pandas --hidden-import=openpyxl --hidden-import=PySide6.QtCore --hidden-import=PySide6.QtGui --hidden-import=PySide6.QtWidgets --collect-all=numpy --collect-all=pandas main.py
+   ```
+
+### 🔧 **Solución de Problemas**
+
+**Si aún tienes errores con NumPy:**
+
+1. **Limpiar caché de PyInstaller**:
+   ```bash
+   # En Windows
+   rmdir /s /q build dist
+   del main.spec
+
+   # En Linux/macOS
+   rm -rf build dist main.spec
+   ```
+
+2. **Usar entorno virtual limpio**:
+   ```bash
+   python -m venv venv_clean
+   venv_clean\Scripts\activate  # Windows
+   source venv_clean/bin/activate  # Linux/macOS
+   pip install -r requirements.txt
+   pip install pyinstaller
+   pyinstaller --onefile --windowed --hidden-import=numpy --hidden-import=pandas --collect-all=numpy --collect-all=pandas main.py
+   ```
+
+3. **Verificar dependencias**:
+   ```bash
+   pip list | grep -E "(numpy|pandas|PySide6|openpyxl)"
+   ```
+
+**Notas importantes**:
+- El parámetro `--collect-all=numpy` y `--collect-all=pandas` es crucial para evitar errores de importación
+- `--hidden-import` asegura que todos los módulos necesarios sean incluidos
+- Para aplicaciones GUI, `--windowed` oculta la consola en Windows
+- El ejecutable se generará en la carpeta `dist/`
+- Si usas un entorno virtual, actívalo antes de ejecutar PyInstaller
 
 ## Estructura del Proyecto
 
