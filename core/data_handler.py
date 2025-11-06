@@ -1325,19 +1325,57 @@ class ExcelTemplateSplitter:
     def _create_excel_file_with_template(self, output_path: str, data: pd.DataFrame) -> bool:
         """Crear archivo Excel usando plantilla preservando formato"""
         try:
+            # Usar preserver simple que evita problemas de recursión
+            from core.simple_excel_preserver import create_excel_with_simple_format_preservation
+            
+            # Aplicar mapeo de columnas
+            if not self.config.column_mapping:
+                self.config.column_mapping = self.config.get_default_mapping(data.columns.tolist())
+            
+            # Convertir DataFrame a dict para el preserver
+            data_dict = {}
+            for row_offset, (_, row_data) in enumerate(data.iterrows()):
+                data_dict[row_offset] = row_data.to_dict()
+            
+            # Crear archivo con preservación de formato
+            success = create_excel_with_simple_format_preservation(
+                template_path=self.config.template_path,
+                output_path=output_path,
+                data=data_dict,
+                column_mapping=self.config.column_mapping,
+                start_cell=self.config.start_cell
+            )
+            
+            if success:
+                self.logger.info(f"Archivo Excel creado con formato preservado: {output_path}")
+            
+            return success
+            
+        except ImportError:
+            # Fallback al método original si el preserver no está disponible
+            self.logger.warning("SimpleExcelPreserver no disponible, usando método original")
+            return self._create_excel_file_with_template_fallback(output_path, data)
+            
+        except Exception as e:
+            self.logger.error(f"Error creando archivo Excel con formato preservado: {str(e)}")
+            return False
+    
+    def _create_excel_file_with_template_fallback(self, output_path: str, data: pd.DataFrame) -> bool:
+        """Método fallback para crear archivo Excel sin preserver de formato"""
+        try:
             # Cargar plantilla
             workbook = load_workbook(self.config.template_path, data_only=False)
             sheet = workbook.active
             
             # Determinar posición inicial
+            from openpyxl.utils import coordinate_to_tuple, column_index_from_string
             start_row, start_col = coordinate_to_tuple(self.config.start_cell)
             
             # Aplicar mapeo de columnas
             if not self.config.column_mapping:
-                # Usar mapeo por defecto
                 self.config.column_mapping = self.config.get_default_mapping(data.columns.tolist())
             
-            # Insertar datos preservando formato
+            # Insertar datos MINIMALISTA para preservar formato
             for row_offset, (_, row_data) in enumerate(data.iterrows()):
                 excel_row = start_row + row_offset
                 
@@ -1346,7 +1384,7 @@ class ExcelTemplateSplitter:
                         excel_col_idx = column_index_from_string(excel_col_letter)
                         cell = sheet.cell(row=excel_row, column=excel_col_idx)
                         
-                        # Insertar valor
+                        # Solo cambiar el VALOR, no tocar otros atributos
                         value = row_data[df_col]
                         if pd.isna(value):
                             cell.value = None
@@ -1360,7 +1398,7 @@ class ExcelTemplateSplitter:
             return True
             
         except Exception as e:
-            self.logger.error(f"Error creando archivo Excel: {str(e)}")
+            self.logger.error(f"Error en método fallback creando archivo Excel: {str(e)}")
             return False
     
     def _resolve_filename_conflicts(self, file_path: str) -> str:
