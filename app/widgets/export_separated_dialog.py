@@ -704,6 +704,9 @@ class ExportSeparatedDialog(QDialog):
             template_path, sheet_name, available_sheets = dialog.get_template_info()
             
             if template_path:
+                # Almacenar la ruta de plantilla para uso posterior
+                self._template_path = template_path
+                
                 self.template_path_label.setText(f"📄 {os.path.basename(template_path)}")
                 self.template_path_label.setToolTip(template_path)
                 
