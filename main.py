@@ -9,13 +9,14 @@ import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
                               QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
                               QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog,
-                              QStackedWidget)
+                              QStackedWidget, QDialog)
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtGui import QIcon, QPixmap
 from app.widgets.main_view import MainView
 from app.widgets.info_modal import InfoModal
 from app.widgets.graphics_view import GraphicsView
 from app.widgets.transformations_view import TransformationsView
+from app.widgets.pivot_table_widget import PivotTableWidget
 from paginacion.data_view import DataView
 from core.data_handler import ExcelTemplateSplitter
 
@@ -70,6 +71,8 @@ class MainWindow(QMainWindow):
         self.view_info_btn = None
         self.view_transformations_btn = None
         self.view_graphics_btn = None
+        # self.view_pivot_table_btn = None  # Ya no se usa
+        # self.pivot_table_view = None      # Ya no se usa como vista separada
 
         # Referencias para funcionalidad de separación
         self.separar_menu = None
@@ -148,6 +151,21 @@ class MainWindow(QMainWindow):
         exportar_separado_action.triggered.connect(self.exportar_datos_separados)
         exportar_separado_action.setEnabled(False)  # Se habilita solo con datos cargados
 
+        # Nuevo Menú Tabla Pivote
+        tabla_pivote_menu = menu_bar.addMenu("&Tabla Pivote")
+
+        # Acción Pivot Simple
+        pivot_simple_action = tabla_pivote_menu.addAction("&Simple...")
+        pivot_simple_action.setShortcut("Ctrl+Alt+S")
+        pivot_simple_action.triggered.connect(self.abrir_pivot_simple)
+        pivot_simple_action.setEnabled(False)  # Se habilita solo con datos cargados
+
+        # Acción Pivot Combinada
+        pivot_combinada_action = tabla_pivote_menu.addAction("&Combinada...")
+        pivot_combinada_action.setShortcut("Ctrl+Alt+C")
+        pivot_combinada_action.triggered.connect(self.abrir_pivot_combinada)
+        pivot_combinada_action.setEnabled(False)  # Se habilita solo con datos cargados
+
         # Menú Ayuda
         ayuda_menu = menu_bar.addMenu("&Ayuda")
 
@@ -156,9 +174,12 @@ class MainWindow(QMainWindow):
         acerca_de_action.setShortcut("F1")
         acerca_de_action.triggered.connect(self.mostrar_acerca_de)
 
-        # Guardar referencia al menú para habilitar/deshabilitar
+        # Guardar referencias a los menús para habilitar/deshabilitar
         self.separar_menu = separar_menu
         self.exportar_separado_action = exportar_separado_action
+        self.tabla_pivote_menu = tabla_pivote_menu
+        self.pivot_simple_action = pivot_simple_action
+        self.pivot_combinada_action = pivot_combinada_action
 
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
@@ -261,6 +282,8 @@ class MainWindow(QMainWindow):
         # Vista de Gráficos (índice 4)
         self.graphics_view = GraphicsView()
         self.stacked_widget.addWidget(self.graphics_view)
+
+        # Vista de Tabla Pivote eliminada - ahora se usa a través de diálogos
 
         # Establecer vista inicial
         self.stacked_widget.setCurrentIndex(0)
@@ -370,6 +393,8 @@ class MainWindow(QMainWindow):
         if self.transformations_view:
             self.transformations_view.set_data(df)
 
+        # Vista de Tabla Pivote ahora se maneja a través de diálogos
+
         # Actualizar vista principal
         if self.main_view:
             self.main_view.set_file_info(self.loading_thread.filepath)
@@ -387,8 +412,9 @@ class MainWindow(QMainWindow):
         if self.filter_combo:
             self.filter_combo.setCurrentIndex(-1)
 
-        # Actualizar menú de separación
+        # Actualizar menús
         self.actualizar_menu_separar()
+        self.actualizar_menu_pivote()
 
         # Cambiar a vista de tabla por defecto
         self.switch_view(1)
@@ -442,10 +468,207 @@ class MainWindow(QMainWindow):
         if self.transformations_view:
             self.transformations_view.set_data(transformed_df)
             
-        # Actualizar menú de separación
+        # Actualizar menús
         self.actualizar_menu_separar()
+        self.actualizar_menu_pivote()
             
         self.statusBar().showMessage(f"Datos transformados: {len(transformed_df)} filas, {len(transformed_df.columns)} columnas")
+
+    def abrir_pivot_simple(self):
+        """Abrir diálogo de tabla pivote simple"""
+        if self.df_vista_actual is None or self.df_vista_actual.empty:
+            QMessageBox.warning(self, "Advertencia", "No hay datos cargados para crear tabla pivote.")
+            return
+        
+        try:
+            # Importar diálogo de configuración de pivote
+            from app.widgets.pivot_config_dialog import PivotConfigDialog
+            
+            # Crear diálogo
+            dialog = PivotConfigDialog(self.df_vista_actual, self)
+            dialog.set_data(self.df_vista_actual)
+            
+            if dialog.exec() == QDialog.Accepted:
+                pivot_config = dialog.get_config()
+                if pivot_config:
+                    self.procesar_pivot_simple(pivot_config)
+                    
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error abriendo diálogo de pivote simple: {str(e)}")
+
+    def abrir_pivot_combinada(self):
+        """Abrir diálogo de tabla pivote combinada"""
+        if self.df_vista_actual is None or self.df_vista_actual.empty:
+            QMessageBox.warning(self, "Advertencia", "No hay datos cargados para crear tabla pivote.")
+            return
+        
+        try:
+            # Importar diálogo de configuración de pivote
+            from app.widgets.pivot_config_dialog import PivotConfigDialog
+            
+            # Crear diálogo
+            dialog = PivotConfigDialog(self.df_vista_actual, self)
+            dialog.set_data(self.df_vista_actual)
+            
+            if dialog.exec() == QDialog.Accepted:
+                pivot_config = dialog.get_config()
+                if pivot_config:
+                    self.procesar_pivot_combinada(pivot_config)
+                    
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error abriendo diálogo de pivote combinada: {str(e)}")
+
+    def procesar_pivot_simple(self, config):
+        """Procesar creación de tabla pivote simple con fallback a agregación"""
+        try:
+            from core.pivot import SimplePivotTable
+            
+            # Crear instancia de tabla pivote simple
+            pivot = SimplePivotTable()
+            
+            # Intentar ejecutar pivote primero
+            result = None
+            pivot_exitoso = False
+            
+            try:
+                result = pivot.execute(self.df_vista_actual, config)
+                if result is not None and not result.empty:
+                    pivot_exitoso = True
+            except Exception as pivot_error:
+                self.statusBar().showMessage(f"Pivote falló, usando agregación como fallback: {str(pivot_error)}")
+            
+            # Si el pivote no fue exitoso, usar agregación como fallback
+            if not pivot_exitoso:
+                result = self.crear_agregacion_fallback(config, tipo_pivote="simple")
+            
+            if result is not None and not result.empty:
+                # Mostrar resultado en vista de datos
+                self.data_view.set_data(result)
+                self.switch_view(1)  # Cambiar a vista de datos
+                
+                if pivot_exitoso:
+                    self.statusBar().showMessage(f"Tabla pivote simple creada: {len(result)} filas, {len(result.columns)} columnas")
+                    QMessageBox.information(self, "Éxito", f"Tabla pivote simple creada exitosamente.\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas")
+                else:
+                    self.statusBar().showMessage(f"Agregación de fallback creada: {len(result)} filas, {len(result.columns)} columnas")
+                    QMessageBox.information(self, "Éxito", f"Tabla de agregación creada (fallback).\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas\n\nNota: Se usó agregación porque el pivote no fue posible.")
+            else:
+                QMessageBox.warning(self, "Advertencia", "No se pudo crear la tabla pivote simple ni la agregación de fallback.")
+                self.statusBar().showMessage("Error en tabla pivote simple y agregación fallback")
+                
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error procesando tabla pivote simple:\n{str(e)}")
+            self.statusBar().showMessage("Error en tabla pivote simple")
+
+    def procesar_pivot_combinada(self, config):
+        """Procesar creación de tabla pivote combinada con fallback a agregación"""
+        try:
+            from core.pivot import CombinedPivotTable
+            
+            # Crear instancia de tabla pivote combinada
+            pivot = CombinedPivotTable()
+            
+            # Intentar ejecutar pivote primero
+            result = None
+            pivot_exitoso = False
+            
+            try:
+                result = pivot.execute(self.df_vista_actual, config)
+                if result is not None and not result.empty:
+                    pivot_exitoso = True
+            except Exception as pivot_error:
+                self.statusBar().showMessage(f"Pivote combinado falló, usando agregación como fallback: {str(pivot_error)}")
+            
+            # Si el pivote no fue exitoso, usar agregación como fallback
+            if not pivot_exitoso:
+                result = self.crear_agregacion_fallback(config, tipo_pivote="combinada")
+            
+            if result is not None and not result.empty:
+                # Mostrar resultado en vista de datos
+                self.data_view.set_data(result)
+                self.switch_view(1)  # Cambiar a vista de datos
+                
+                if pivot_exitoso:
+                    self.statusBar().showMessage(f"Tabla pivote combinada creada: {len(result)} filas, {len(result.columns)} columnas")
+                    QMessageBox.information(self, "Éxito", f"Tabla pivote combinada creada exitosamente.\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas")
+                else:
+                    self.statusBar().showMessage(f"Agregación de fallback creada: {len(result)} filas, {len(result.columns)} columnas")
+                    QMessageBox.information(self, "Éxito", f"Tabla de agregación creada (fallback).\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas\n\nNota: Se usó agregación porque el pivote no fue posible.")
+            else:
+                QMessageBox.warning(self, "Advertencia", "No se pudo crear la tabla pivote combinada ni la agregación de fallback.")
+                self.statusBar().showMessage("Error en tabla pivote combinada y agregación fallback")
+                
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error procesando tabla pivote combinada:\n{str(e)}")
+            self.statusBar().showMessage("Error en tabla pivote combinada")
+
+    def crear_agregacion_fallback(self, config, tipo_pivote="simple"):
+        """Crear agregación de fallback cuando el pivote no es posible"""
+        try:
+            from core.transformations.advanced_aggregations import MultiFunctionAggregationTransformation
+            
+            # Determinar columnas de grouping (equivalente al índice del pivote)
+            groupby_columns = []
+            if tipo_pivote == "simple":
+                index = config.get('index')
+                if index:
+                    if isinstance(index, str):
+                        groupby_columns = [index]
+                    elif isinstance(index, list):
+                        groupby_columns = index[:1]  # Solo la primera columna
+            else:  # combinada
+                index = config.get('index')
+                if index:
+                    groupby_columns = index if isinstance(index, list) else [index]
+                else:
+                    groupby_columns = []  # Sin grouping = agregación global
+            
+            # Determinar columnas a agregar y funciones
+            values = config.get('values', [])
+            aggfunc = config.get('aggfunc') or config.get('aggfuncs', ['mean'])
+            
+            # Normalizar values a lista
+            if isinstance(values, str):
+                values_columns = [values]
+            elif isinstance(values, list):
+                values_columns = values
+            else:
+                values_columns = []
+            
+            if not values_columns:
+                # Si no hay valores específicos, usar todas las columnas numéricas
+                values_columns = [col for col in self.df_vista_actual.columns
+                                if self.df_vista_actual[col].dtype in ['int64', 'float64']]
+                if not values_columns:
+                    # Si no hay columnas numéricas, usar todas las columnas
+                    values_columns = self.df_vista_actual.columns.tolist()
+            
+            # Filtrar solo columnas que realmente existen
+            values_columns = [col for col in values_columns if col in self.df_vista_actual.columns]
+            
+            if not values_columns:
+                raise ValueError("No se encontraron columnas válidas para agregar")
+            
+            # Normalizar función de agregación
+            if isinstance(aggfunc, list):
+                agg_function = aggfunc[0] if aggfunc else 'mean'
+            else:
+                agg_function = aggfunc if aggfunc else 'mean'
+            
+            # Crear diccionario de funciones de agregación
+            aggregation_functions = {}
+            for col in values_columns:
+                aggregation_functions[col] = [agg_function]
+            
+            # Crear y ejecutar transformación de agregación
+            aggregation = MultiFunctionAggregationTransformation(groupby_columns, aggregation_functions)
+            result = aggregation.execute(self.df_vista_actual)
+            
+            return result
+            
+        except Exception as e:
+            self.statusBar().showMessage(f"Error en agregación de fallback: {str(e)}")
+            raise e
 
     def cargar_datos(self, filepath):
         """Cargar datos desde un archivo"""
@@ -730,6 +953,20 @@ class MainWindow(QMainWindow):
             else:
                 self.exportar_separado_action.setEnabled(False)
                 self.exportar_separado_action.setStatusTip("Carga datos primero para habilitar esta opción")
+
+    def actualizar_menu_pivote(self):
+        """Actualizar estado del menú Tabla Pivote basado en datos cargados"""
+        if hasattr(self, 'pivot_simple_action') and self.pivot_simple_action:
+            if self.df_vista_actual is not None and not self.df_vista_actual.empty:
+                self.pivot_simple_action.setEnabled(True)
+                self.pivot_simple_action.setStatusTip("Crear tabla pivote simple")
+                self.pivot_combinada_action.setEnabled(True)
+                self.pivot_combinada_action.setStatusTip("Crear tabla pivote combinada")
+            else:
+                self.pivot_simple_action.setEnabled(False)
+                self.pivot_simple_action.setStatusTip("Carga datos primero para habilitar esta opción")
+                self.pivot_combinada_action.setEnabled(False)
+                self.pivot_combinada_action.setStatusTip("Carga datos primero para habilitar esta opción")
 
     def mostrar_acerca_de(self):
         """Mostrar diálogo Acerca de con información del software y creador"""
