@@ -11,16 +11,14 @@ def test_toolbar_indices():
     # Configuración esperada de las vistas en el stacked widget
     expected_indices = {
         "Vista Principal": 0,
-        "Vista de Datos": 1, 
-        "Vista Transformaciones": 2,
-        "Vista Gráficos": 3
+        "Vista de Datos": 1,
+        "Vista Gráficos": 2
     }
-    
+
     # Orden de creación en main.py
     created_views = [
         ("main_view", "Vista Principal"),
         ("data_view", "Vista de Datos"),
-        ("transformations_view", "Vista Transformaciones"),
         ("graphics_view", "Vista Gráficos")
     ]
     
@@ -76,8 +74,7 @@ def test_toolbar_indices():
     
     if all_correct:
         print("🎉 Todos los botones de la barra de herramientas están correctamente configurados!")
-        print("   - Los transformaciones ahora apuntan al índice 2 (correcto)")
-        print("   - Los gráficos ahora apuntan al índice 3 (correcto)")
+        print("   - Los gráficos ahora apuntan al índice 2 (correcto)")
     else:
         print("⚠️  Algunos botones aún tienen índices incorrectos")
     
@@ -97,7 +94,7 @@ def test_view_mapping():
     view_creation_pattern = r'self\.stacked_widget\.addWidget\(self\.(\w+)\)'
     matches = re.findall(view_creation_pattern, content)
     
-    expected_order = ['main_view', 'data_view', 'transformations_view', 'graphics_view']
+    expected_order = ['main_view', 'data_view', 'graphics_view']
     
     print(f"📋 Orden de creación de vistas:")
     for i, view in enumerate(matches):
@@ -125,7 +122,6 @@ if __name__ == "__main__":
     
     if indices_ok and mapping_ok:
         print("🎉 ¡CORRECCIÓN COMPLETADA EXITOSAMENTE!")
-        print("   - Los controladores de transformaciones ahora funcionan correctamente")
         print("   - Los controladores de gráficos ahora funcionan correctamente")
         print("   - Los índices del stacked widget están correctamente alineados")
     else:

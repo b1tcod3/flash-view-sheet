@@ -47,38 +47,26 @@ def test_pivot_fallback_functionality():
         }
         
         # Simular escenario donde el pivote falla pero la agregación funciona
-        from core.transformations.advanced_aggregations import MultiFunctionAggregationTransformation
-        
-        # Crear agregación equivalente
-        aggregation_functions = {
-            'ventas': ['sum'],
-            'unidades': ['sum']
-        }
-        
-        aggregation = MultiFunctionAggregationTransformation(['region'], aggregation_functions)
-        result2 = aggregation.execute(df_valido)
+        # Usar pandas directamente para agregación
+        result2 = df_valido.groupby('region')[['ventas', 'unidades']].sum().reset_index()
         print(f"✅ Fallback de agregación: {result2.shape}")
         print(f"   Resultado:\n{result2}")
         
         # Test 3: Caso con columnas inexistentes
         print("\n📊 Test 3: Fallback con columnas inexistentes (debe filtrar)")
-        from core.transformations.advanced_aggregations import MultiFunctionAggregationTransformation
-        
         config_fallback_existente = {
             'index': 'region',
             'values': ['ventas', 'columna_inexistente'],  # Una columna no existe
             'aggfunc': 'mean'
         }
-        
+
         # Simular filtrado automático
         values_existentes = [col for col in config_fallback_existente['values']
                            if col in df_valido.columns]
         print(f"Columnas filtradas (solo las existentes): {values_existentes}")
-        
+
         if values_existentes:
-            aggregation_functions = {col: ['mean'] for col in values_existentes}
-            aggregation = MultiFunctionAggregationTransformation(['region'], aggregation_functions)
-            result3 = aggregation.execute(df_valido)
+            result3 = df_valido.groupby('region')[values_existentes].mean().reset_index()
             print(f"✅ Fallback con filtrado: {result3.shape}")
         
         # Test 4: Datos vacíos
@@ -161,8 +149,6 @@ def test_fallback_integration():
             def crear_agregacion_fallback(self, config, tipo_pivote="simple"):
                 """Copiar la lógica de fallback de main.py (versión corregida)"""
                 try:
-                    from core.transformations.advanced_aggregations import MultiFunctionAggregationTransformation
-                    
                     # Determinar columnas de grouping (equivalente al índice del pivote)
                     groupby_columns = []
                     if tipo_pivote == "simple":
@@ -178,11 +164,11 @@ def test_fallback_integration():
                             groupby_columns = index if isinstance(index, list) else [index]
                         else:
                             groupby_columns = []  # Sin grouping = agregación global
-                    
+
                     # Determinar columnas a agregar y funciones
                     values = config.get('values', [])
                     aggfunc = config.get('aggfunc') or config.get('aggfuncs', ['mean'])
-                    
+
                     # Normalizar values a lista
                     if isinstance(values, str):
                         values_columns = [values]
@@ -190,7 +176,7 @@ def test_fallback_integration():
                         values_columns = values
                     else:
                         values_columns = []
-                    
+
                     if not values_columns:
                         # Si no hay valores específicos, usar todas las columnas numéricas
                         values_columns = [col for col in self.df_vista_actual.columns
@@ -198,30 +184,29 @@ def test_fallback_integration():
                         if not values_columns:
                             # Si no hay columnas numéricas, usar todas las columnas
                             values_columns = self.df_vista_actual.columns.tolist()
-                    
+
                     # Filtrar solo columnas que realmente existen
                     values_columns = [col for col in values_columns if col in self.df_vista_actual.columns]
-                    
+
                     if not values_columns:
                         raise ValueError("No se encontraron columnas válidas para agregar")
-                    
+
                     # Normalizar función de agregación
                     if isinstance(aggfunc, list):
                         agg_function = aggfunc[0] if aggfunc else 'mean'
                     else:
                         agg_function = aggfunc if aggfunc else 'mean'
-                    
-                    # Crear diccionario de funciones de agregación
-                    aggregation_functions = {}
-                    for col in values_columns:
-                        aggregation_functions[col] = [agg_function]
-                    
-                    # Crear y ejecutar transformación de agregación
-                    aggregation = MultiFunctionAggregationTransformation(groupby_columns, aggregation_functions)
-                    result = aggregation.execute(self.df_vista_actual)
-                    
+
+                    # Crear agregación usando pandas directamente
+                    if groupby_columns:
+                        # Agregación por grupos
+                        result = self.df_vista_actual.groupby(groupby_columns)[values_columns].agg(agg_function).reset_index()
+                    else:
+                        # Agregación global
+                        result = self.df_vista_actual[values_columns].agg(agg_function).to_frame().T.reset_index(drop=True)
+
                     return result
-                    
+
                 except Exception as e:
                     print(f"❌ Error en fallback: {str(e)}")
                     raise e

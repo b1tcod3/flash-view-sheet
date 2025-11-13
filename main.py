@@ -15,7 +15,6 @@ from PySide6.QtGui import QIcon, QPixmap
 from app.widgets.main_view import MainView
 from app.widgets.info_modal import InfoModal
 from app.widgets.graphics_view import GraphicsView
-from app.widgets.transformations_view import TransformationsView
 from app.widgets.pivot_table_widget import PivotTableWidget
 from paginacion.data_view import DataView
 from core.data_handler import ExcelTemplateSplitter
@@ -60,7 +59,6 @@ class MainWindow(QMainWindow):
         self.data_view = None
         self.info_modal = None
         self.graphics_view = None
-        self.transformations_view = None
         self.stacked_widget = None
         self.filter_combo = None
         self.filter_input = None
@@ -69,7 +67,6 @@ class MainWindow(QMainWindow):
         self.view_main_btn = None
         self.view_data_btn = None
         self.view_info_btn = None
-        self.view_transformations_btn = None
         self.view_graphics_btn = None
         # self.view_pivot_table_btn = None  # Ya no se usa
         # self.pivot_table_view = None      # Ya no se usa como vista separada
@@ -97,9 +94,6 @@ class MainWindow(QMainWindow):
         if self.main_view:
             self.main_view.reload_with_options.connect(self.on_reload_with_options)
             
-        # Conectar señal de transformación desde la vista de transformaciones
-        if self.transformations_view:
-            self.transformations_view.data_transformed.connect(self.on_data_transformed)
             
         # Conectar señales de DataView
         if self.data_view:
@@ -131,6 +125,16 @@ class MainWindow(QMainWindow):
         imagen_action = exportar_menu.addAction("&Imagen...")
         imagen_action.setShortcut("Ctrl+I")
         imagen_action.triggered.connect(self.exportar_a_imagen)
+
+        # Acción Exportar a XLSX
+        xlsx_action = exportar_menu.addAction("&XLSX...")
+        xlsx_action.setShortcut("Ctrl+X")
+        xlsx_action.triggered.connect(self.exportar_a_xlsx)
+
+        # Acción Exportar a CSV
+        csv_action = exportar_menu.addAction("&CSV...")
+        csv_action.setShortcut("Ctrl+C")
+        csv_action.triggered.connect(self.exportar_a_csv)
 
         # Acción Exportar a SQL
         sql_action = exportar_menu.addAction("&SQL...")
@@ -166,6 +170,15 @@ class MainWindow(QMainWindow):
         pivot_combinada_action.triggered.connect(self.abrir_pivot_combinada)
         pivot_combinada_action.setEnabled(False)  # Se habilita solo con datos cargados
 
+        # Separador
+        tabla_pivote_menu.addSeparator()
+
+        # Acción Exportar Resultado de Pivote
+        export_pivot_action = tabla_pivote_menu.addAction("&Exportar Datos Actuales...")
+        export_pivot_action.setShortcut("Ctrl+Alt+E")
+        export_pivot_action.triggered.connect(self.exportar_resultado_pivote)
+        export_pivot_action.setEnabled(False)  # Se habilita solo con datos cargados
+
         # Menú Ayuda
         ayuda_menu = menu_bar.addMenu("&Ayuda")
 
@@ -180,6 +193,7 @@ class MainWindow(QMainWindow):
         self.tabla_pivote_menu = tabla_pivote_menu
         self.pivot_simple_action = pivot_simple_action
         self.pivot_combinada_action = pivot_combinada_action
+        self.export_pivot_action = export_pivot_action
 
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
@@ -208,10 +222,6 @@ class MainWindow(QMainWindow):
         self.view_info_btn.clicked.connect(self.show_info_modal)
         view_layout.addWidget(self.view_info_btn)
 
-        # Botón Vista Transformaciones
-        self.view_transformations_btn = QPushButton("Vista Transformaciones")
-        self.view_transformations_btn.clicked.connect(lambda: self.switch_view(2))
-        view_layout.addWidget(self.view_transformations_btn)
 
         # Botón Vista Gráficos
         self.view_graphics_btn = QPushButton("Vista Gráficos")
@@ -275,11 +285,7 @@ class MainWindow(QMainWindow):
         # Vista de Información (índice 2) - modal
         # Se muestra mediante show_info_modal()
 
-        # Vista de Transformaciones (índice 3)
-        self.transformations_view = TransformationsView()
-        self.stacked_widget.addWidget(self.transformations_view)
-
-        # Vista de Gráficos (índice 4)
+        # Vista de Gráficos (índice 3)
         self.graphics_view = GraphicsView()
         self.stacked_widget.addWidget(self.graphics_view)
 
@@ -389,10 +395,6 @@ class MainWindow(QMainWindow):
         if self.graphics_view:
             self.graphics_view.update_data(df)
 
-        # Actualizar vista de transformaciones
-        if self.transformations_view:
-            self.transformations_view.set_data(df)
-
         # Vista de Tabla Pivote ahora se maneja a través de diálogos
 
         # Actualizar vista principal
@@ -452,27 +454,6 @@ class MainWindow(QMainWindow):
             if not current_page_data.empty:
                 self.graphics_view.update_data(current_page_data)
         
-    def on_data_transformed(self, transformed_df):
-        """Slot para manejar datos transformados"""
-        self.df_vista_actual = transformed_df
-        
-        # Actualizar DataView con datos transformados
-        if self.data_view:
-            self.data_view.set_data(transformed_df)
-            
-        # Actualizar vista de gráficos con datos transformados
-        if self.graphics_view:
-            self.graphics_view.update_data(self.df_vista_actual)
-            
-        # Actualizar vista de transformaciones
-        if self.transformations_view:
-            self.transformations_view.set_data(transformed_df)
-            
-        # Actualizar menús
-        self.actualizar_menu_separar()
-        self.actualizar_menu_pivote()
-            
-        self.statusBar().showMessage(f"Datos transformados: {len(transformed_df)} filas, {len(transformed_df.columns)} columnas")
 
     def abrir_pivot_simple(self):
         """Abrir diálogo de tabla pivote simple"""
@@ -481,11 +462,11 @@ class MainWindow(QMainWindow):
             return
         
         try:
-            # Importar diálogo de configuración de pivote
-            from app.widgets.pivot_config_dialog import PivotConfigDialog
+            # Importar diálogo de pivote simple
+            from app.widgets.simple_pivot_dialog import SimplePivotDialog
             
-            # Crear diálogo
-            dialog = PivotConfigDialog(self.df_vista_actual, self)
+            # Crear diálogo simplificado
+            dialog = SimplePivotDialog(self.df_vista_actual, self)
             dialog.set_data(self.df_vista_actual)
             
             if dialog.exec() == QDialog.Accepted:
@@ -503,10 +484,10 @@ class MainWindow(QMainWindow):
             return
         
         try:
-            # Importar diálogo de configuración de pivote
+            # Importar diálogo de configuración de pivote combinada
             from app.widgets.pivot_config_dialog import PivotConfigDialog
             
-            # Crear diálogo
+            # Crear diálogo completo
             dialog = PivotConfigDialog(self.df_vista_actual, self)
             dialog.set_data(self.df_vista_actual)
             
@@ -523,38 +504,38 @@ class MainWindow(QMainWindow):
         try:
             from core.pivot import SimplePivotTable
             
-            # Crear instancia de tabla pivote simple
-            pivot = SimplePivotTable()
+            # Verificar si es pivote o agregación simple
+            is_pivot = config.get('is_pivot', True)
             
-            # Intentar ejecutar pivote primero
-            result = None
-            pivot_exitoso = False
-            
-            try:
+            if is_pivot:
+                # Es un pivote real - intentar ejecutar pivote
+                pivot = SimplePivotTable()
                 result = pivot.execute(self.df_vista_actual, config)
-                if result is not None and not result.empty:
-                    pivot_exitoso = True
-            except Exception as pivot_error:
-                self.statusBar().showMessage(f"Pivote falló, usando agregación como fallback: {str(pivot_error)}")
-            
-            # Si el pivote no fue exitoso, usar agregación como fallback
-            if not pivot_exitoso:
-                result = self.crear_agregacion_fallback(config, tipo_pivote="simple")
-            
-            if result is not None and not result.empty:
-                # Mostrar resultado en vista de datos
-                self.data_view.set_data(result)
-                self.switch_view(1)  # Cambiar a vista de datos
                 
-                if pivot_exitoso:
+                if result is not None and not result.empty:
+                    # Actualizar datos actuales y mostrar resultado en vista de datos
+                    self.df_vista_actual = result
+                    self.data_view.set_data(result)
+                    self.switch_view(1)  # Cambiar a vista de datos
                     self.statusBar().showMessage(f"Tabla pivote simple creada: {len(result)} filas, {len(result.columns)} columnas")
                     QMessageBox.information(self, "Éxito", f"Tabla pivote simple creada exitosamente.\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas")
                 else:
-                    self.statusBar().showMessage(f"Agregación de fallback creada: {len(result)} filas, {len(result.columns)} columnas")
-                    QMessageBox.information(self, "Éxito", f"Tabla de agregación creada (fallback).\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas\n\nNota: Se usó agregación porque el pivote no fue posible.")
+                    QMessageBox.warning(self, "Advertencia", "No se pudo crear la tabla pivote simple.")
+                    self.statusBar().showMessage("Error creando tabla pivote simple")
             else:
-                QMessageBox.warning(self, "Advertencia", "No se pudo crear la tabla pivote simple ni la agregación de fallback.")
-                self.statusBar().showMessage("Error en tabla pivote simple y agregación fallback")
+                # Es agregación simple por filas
+                result = self.crear_agregacion_simple(config)
+                
+                if result is not None and not result.empty:
+                    # Actualizar datos actuales y mostrar resultado en vista de datos
+                    self.df_vista_actual = result
+                    self.data_view.set_data(result)
+                    self.switch_view(1)  # Cambiar a vista de datos
+                    self.statusBar().showMessage(f"Agregación por filas creada: {len(result)} filas, {len(result.columns)} columnas")
+                    QMessageBox.information(self, "Éxito", f"Agregación por filas creada exitosamente.\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas\n\nNota: Se creó un resumen por filas sin pivoteo de columnas.")
+                else:
+                    QMessageBox.warning(self, "Advertencia", "No se pudo crear la agregación por filas.")
+                    self.statusBar().showMessage("Error creando agregación por filas")
                 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error procesando tabla pivote simple:\n{str(e)}")
@@ -564,30 +545,31 @@ class MainWindow(QMainWindow):
         """Procesar creación de tabla pivote combinada con fallback a agregación"""
         try:
             from core.pivot import CombinedPivotTable
-            
+
             # Crear instancia de tabla pivote combinada
             pivot = CombinedPivotTable()
-            
+
             # Intentar ejecutar pivote primero
             result = None
             pivot_exitoso = False
-            
+
             try:
                 result = pivot.execute(self.df_vista_actual, config)
                 if result is not None and not result.empty:
                     pivot_exitoso = True
             except Exception as pivot_error:
                 self.statusBar().showMessage(f"Pivote combinado falló, usando agregación como fallback: {str(pivot_error)}")
-            
+
             # Si el pivote no fue exitoso, usar agregación como fallback
             if not pivot_exitoso:
                 result = self.crear_agregacion_fallback(config, tipo_pivote="combinada")
-            
+
             if result is not None and not result.empty:
-                # Mostrar resultado en vista de datos
+                # Actualizar datos actuales y mostrar resultado en vista de datos
+                self.df_vista_actual = result
                 self.data_view.set_data(result)
                 self.switch_view(1)  # Cambiar a vista de datos
-                
+
                 if pivot_exitoso:
                     self.statusBar().showMessage(f"Tabla pivote combinada creada: {len(result)} filas, {len(result.columns)} columnas")
                     QMessageBox.information(self, "Éxito", f"Tabla pivote combinada creada exitosamente.\n\nDimensiones: {len(result)} filas x {len(result.columns)} columnas")
@@ -597,16 +579,181 @@ class MainWindow(QMainWindow):
             else:
                 QMessageBox.warning(self, "Advertencia", "No se pudo crear la tabla pivote combinada ni la agregación de fallback.")
                 self.statusBar().showMessage("Error en tabla pivote combinada y agregación fallback")
-                
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error procesando tabla pivote combinada:\n{str(e)}")
             self.statusBar().showMessage("Error en tabla pivote combinada")
 
+    def exportar_resultado_pivote(self):
+        """Exportar resultado de tabla pivote mostrándose actualmente"""
+        # Usar los datos que se están mostrando actualmente (resultado de cualquier transformación)
+        if self.df_vista_actual is None or self.df_vista_actual.empty:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar. Realice una operación de tabla pivote primero.")
+            return
+
+        # Exportar los datos actuales (que pueden ser resultado de pivote u otra transformación)
+        self._exportar_dataframe_directo(self.df_vista_actual, "Resultado_Pivote")
+
+    def _procesar_pivote_para_exportacion(self, config):
+        """Procesar pivote y devolver DataFrame para exportación"""
+        try:
+            from core.pivot import CombinedPivotTable
+
+            # Crear instancia de tabla pivote combinada
+            pivot = CombinedPivotTable()
+
+            # Intentar ejecutar pivote primero
+            result = None
+            pivot_exitoso = False
+
+            try:
+                result = pivot.execute(self.df_vista_actual, config)
+                if result is not None and not result.empty:
+                    pivot_exitoso = True
+            except Exception as pivot_error:
+                print(f"Pivote combinado falló, usando agregación como fallback: {str(pivot_error)}")
+
+            # Si el pivote no fue exitoso, usar agregación como fallback
+            if not pivot_exitoso:
+                result = self.crear_agregacion_fallback(config, tipo_pivote="combinada")
+
+            return result
+
+        except Exception as e:
+            print(f"Error procesando pivote para exportación: {str(e)}")
+            return None
+
+    def _exportar_dataframe_directo(self, df, default_filename_prefix):
+        """Exportar DataFrame directamente con diálogo de selección de formato"""
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Exportar Resultado de Pivote")
+        dialog.setModal(True)
+
+        layout = QVBoxLayout(dialog)
+
+        # Selección de formato
+        format_layout = QHBoxLayout()
+        format_layout.addWidget(QLabel("Formato:"))
+        format_combo = QComboBox()
+        format_combo.addItems(["CSV (.csv)", "Excel (.xlsx)", "PDF (.pdf)"])
+        format_combo.setCurrentText("Excel (.xlsx)")
+        format_layout.addWidget(format_combo)
+        layout.addLayout(format_layout)
+
+        # Botones
+        buttons_layout = QHBoxLayout()
+        buttons_layout.addStretch()
+
+        export_btn = QPushButton("Exportar")
+        export_btn.clicked.connect(dialog.accept)
+        buttons_layout.addWidget(export_btn)
+
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+        buttons_layout.addWidget(cancel_btn)
+
+        layout.addLayout(buttons_layout)
+
+        if dialog.exec() != QDialog.Accepted:
+            return
+
+        # Obtener formato seleccionado
+        format_text = format_combo.currentText()
+
+        # Determinar extensión y función de exportación
+        if "CSV" in format_text:
+            extension = "csv"
+            export_func_name = "exportar_a_csv"
+            file_filter = "CSV Files (*.csv);;All Files (*)"
+        elif "Excel" in format_text:
+            extension = "xlsx"
+            export_func_name = "exportar_a_xlsx"
+            file_filter = "Excel Files (*.xlsx);;All Files (*)"
+        elif "PDF" in format_text:
+            extension = "pdf"
+            export_func_name = "exportar_a_pdf"
+            file_filter = "PDF Files (*.pdf);;All Files (*)"
+        else:
+            QMessageBox.warning(self, "Error", "Formato no soportado.")
+            return
+
+        # Diálogo para guardar archivo
+        import pandas as pd
+        default_filename = f"{default_filename_prefix}_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.{extension}"
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar Resultado de Pivote",
+            default_filename,
+            file_filter
+        )
+
+        if not filepath:
+            return
+
+        # Ejecutar exportación
+        try:
+            from core.data_handler import exportar_a_csv, exportar_a_xlsx, exportar_a_pdf
+
+            # Obtener la función correcta
+            if extension == "csv":
+                success = exportar_a_csv(df, filepath, delimiter=',', encoding='utf-8')
+            elif extension == "xlsx":
+                success = exportar_a_xlsx(df, filepath)
+            elif extension == "pdf":
+                success = exportar_a_pdf(df, filepath)
+            else:
+                success = False
+
+            if success:
+                QMessageBox.information(
+                    self,
+                    "Exportación Exitosa",
+                    f"Resultado exportado exitosamente a:\n{filepath}"
+                )
+                self.statusBar().showMessage(f"Exportado resultado de pivote: {filepath}")
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Error de Exportación",
+                    "Error al exportar el archivo. Verifique los permisos y el formato."
+                )
+
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Error durante la exportación:\n{str(e)}"
+            )
+
+    def crear_agregacion_simple(self, config):
+        """Crear agregación simple por filas cuando no se selecciona columna para pivot"""
+        try:
+            # Esta es para el caso simple donde no hay columna para pivot
+            # Hace un resumen por una sola columna (índice)
+            index_column = config.get('index')
+            values_column = config.get('values')
+            agg_function = config.get('aggfunc', 'mean')
+            
+            if not index_column or not values_column:
+                raise ValueError("Se requieren columnas de índice y valores para la agregación")
+            
+            # Agrupar por la columna índice y agregar la columna de valores
+            result = self.df_vista_actual.groupby(index_column)[values_column].agg(agg_function).reset_index()
+            
+            # Renombrar la columna para que sea más clara
+            result.columns = [index_column, f"{values_column}_{agg_function}"]
+            
+            return result
+            
+        except Exception as e:
+            self.statusBar().showMessage(f"Error en agregación simple: {str(e)}")
+            raise e
+
     def crear_agregacion_fallback(self, config, tipo_pivote="simple"):
         """Crear agregación de fallback cuando el pivote no es posible"""
         try:
-            from core.transformations.advanced_aggregations import MultiFunctionAggregationTransformation
-            
             # Determinar columnas de grouping (equivalente al índice del pivote)
             groupby_columns = []
             if tipo_pivote == "simple":
@@ -622,11 +769,11 @@ class MainWindow(QMainWindow):
                     groupby_columns = index if isinstance(index, list) else [index]
                 else:
                     groupby_columns = []  # Sin grouping = agregación global
-            
+
             # Determinar columnas a agregar y funciones
             values = config.get('values', [])
             aggfunc = config.get('aggfunc') or config.get('aggfuncs', ['mean'])
-            
+
             # Normalizar values a lista
             if isinstance(values, str):
                 values_columns = [values]
@@ -634,7 +781,7 @@ class MainWindow(QMainWindow):
                 values_columns = values
             else:
                 values_columns = []
-            
+
             if not values_columns:
                 # Si no hay valores específicos, usar todas las columnas numéricas
                 values_columns = [col for col in self.df_vista_actual.columns
@@ -642,30 +789,29 @@ class MainWindow(QMainWindow):
                 if not values_columns:
                     # Si no hay columnas numéricas, usar todas las columnas
                     values_columns = self.df_vista_actual.columns.tolist()
-            
+
             # Filtrar solo columnas que realmente existen
             values_columns = [col for col in values_columns if col in self.df_vista_actual.columns]
-            
+
             if not values_columns:
                 raise ValueError("No se encontraron columnas válidas para agregar")
-            
+
             # Normalizar función de agregación
             if isinstance(aggfunc, list):
                 agg_function = aggfunc[0] if aggfunc else 'mean'
             else:
                 agg_function = aggfunc if aggfunc else 'mean'
-            
-            # Crear diccionario de funciones de agregación
-            aggregation_functions = {}
-            for col in values_columns:
-                aggregation_functions[col] = [agg_function]
-            
-            # Crear y ejecutar transformación de agregación
-            aggregation = MultiFunctionAggregationTransformation(groupby_columns, aggregation_functions)
-            result = aggregation.execute(self.df_vista_actual)
-            
+
+            # Crear agregación usando pandas directamente
+            if groupby_columns:
+                # Agregación por grupos
+                result = self.df_vista_actual.groupby(groupby_columns)[values_columns].agg(agg_function).reset_index()
+            else:
+                # Agregación global
+                result = self.df_vista_actual[values_columns].agg(agg_function).to_frame().T.reset_index(drop=True)
+
             return result
-            
+
         except Exception as e:
             self.statusBar().showMessage(f"Error en agregación de fallback: {str(e)}")
             raise e
@@ -755,6 +901,10 @@ class MainWindow(QMainWindow):
         )
 
         if filepath:
+            # Asegurar que tenga extensión .pdf
+            if not filepath.lower().endswith('.pdf'):
+                filepath += '.pdf'
+
             from core.data_handler import exportar_a_pdf
             success = exportar_a_pdf(self.df_vista_actual, filepath)
             if success:
@@ -777,6 +927,12 @@ class MainWindow(QMainWindow):
         )
 
         if filepath:
+            # Asegurar que tenga extensión de imagen
+            image_extensions = ['.png', '.jpg', '.jpeg']
+            has_extension = any(filepath.lower().endswith(ext) for ext in image_extensions)
+            if not has_extension:
+                filepath += '.png'  # Extensión por defecto
+
             from core.data_handler import exportar_a_imagen
             success = exportar_a_imagen(self.tabla_datos, filepath)
             if success:
@@ -784,6 +940,58 @@ class MainWindow(QMainWindow):
                 self.statusBar().showMessage(f"Exportado a imagen: {filepath}")
             else:
                 QMessageBox.critical(self, "Error", "No se pudo exportar a imagen.")
+
+    def exportar_a_xlsx(self):
+        """Exportar datos a archivo Excel (.xlsx)"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar como Excel",
+            "",
+            "Archivos Excel (*.xlsx)"
+        )
+
+        if filepath:
+            # Asegurar que tenga extensión .xlsx
+            if not filepath.lower().endswith('.xlsx'):
+                filepath += '.xlsx'
+
+            from core.data_handler import exportar_a_xlsx
+            success = exportar_a_xlsx(self.df_vista_actual, filepath)
+            if success:
+                QMessageBox.information(self, "Éxito", f"Datos exportados a {filepath}")
+                self.statusBar().showMessage(f"Exportado a XLSX: {filepath}")
+            else:
+                QMessageBox.critical(self, "Error", "No se pudo exportar a XLSX.")
+
+    def exportar_a_csv(self):
+        """Exportar datos a archivo CSV"""
+        if self.df_vista_actual is None:
+            QMessageBox.warning(self, "Advertencia", "No hay datos para exportar.")
+            return
+
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar como CSV",
+            "",
+            "Archivos CSV (*.csv)"
+        )
+
+        if filepath:
+            # Asegurar que tenga extensión .csv
+            if not filepath.lower().endswith('.csv'):
+                filepath += '.csv'
+
+            from core.data_handler import exportar_a_csv
+            success = exportar_a_csv(self.df_vista_actual, filepath)
+            if success:
+                QMessageBox.information(self, "Éxito", f"Datos exportados a {filepath}")
+                self.statusBar().showMessage(f"Exportado a CSV: {filepath}")
+            else:
+                QMessageBox.critical(self, "Error", "No se pudo exportar a CSV.")
 
     def exportar_a_sql(self):
         """Exportar datos a base de datos SQL"""
@@ -799,6 +1007,10 @@ class MainWindow(QMainWindow):
         )
 
         if filepath:
+            # Asegurar que tenga extensión .db
+            if not filepath.lower().endswith('.db'):
+                filepath += '.db'
+
             nombre_tabla, ok = self.get_text_input("Nombre de la Tabla", "Ingresa el nombre de la tabla:")
             if ok and nombre_tabla:
                 from core.data_handler import exportar_a_sql
@@ -962,11 +1174,15 @@ class MainWindow(QMainWindow):
                 self.pivot_simple_action.setStatusTip("Crear tabla pivote simple")
                 self.pivot_combinada_action.setEnabled(True)
                 self.pivot_combinada_action.setStatusTip("Crear tabla pivote combinada")
+                self.export_pivot_action.setEnabled(True)
+                self.export_pivot_action.setStatusTip("Exportar los datos que se muestran actualmente (resultado de transformaciones)")
             else:
                 self.pivot_simple_action.setEnabled(False)
                 self.pivot_simple_action.setStatusTip("Carga datos primero para habilitar esta opción")
                 self.pivot_combinada_action.setEnabled(False)
                 self.pivot_combinada_action.setStatusTip("Carga datos primero para habilitar esta opción")
+                self.export_pivot_action.setEnabled(False)
+                self.export_pivot_action.setStatusTip("Carga datos primero para habilitar esta opción")
 
     def mostrar_acerca_de(self):
         """Mostrar diálogo Acerca de con información del software y creador"""
@@ -1016,7 +1232,7 @@ class MainWindow(QMainWindow):
         <li>📊 Visualización interactiva de datos tabulares</li>
         <li>📈 Análisis estadístico con optimizaciones para datasets grandes</li>
         <li>🔍 Filtrado y búsqueda avanzada</li>
-        <li>📤 Exportación múltiple (PDF, Imagen, SQL)</li>
+        <li>📤 Exportación múltiple (PDF, XLSX, CSV, Imagen, SQL)</li>
         <li>⚡ Optimizaciones de rendimiento (paginación virtual, carga por chunks)</li>
         </ul>
         

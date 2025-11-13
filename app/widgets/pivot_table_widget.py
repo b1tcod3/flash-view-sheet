@@ -872,17 +872,125 @@ class PivotTableWidget(QWidget):
     def export_pivot_result(self):
         """Exportar resultado del pivoteo"""
         from PySide6.QtWidgets import QFileDialog
-        from core.data_handler import save_dataframe
-        
+        from core.data_handler import exportar_a_csv, exportar_a_xlsx, exportar_a_pdf
+        from app.models.pandas_model import VirtualizedPandasModel
+
         # Obtener resultado actual
         model = self.result_table.model()
-        if model is None:
+        if model is None or not isinstance(model, VirtualizedPandasModel):
             QMessageBox.information(self, "Información", "No hay resultado para exportar.")
             return
-            
+
         # Obtener DataFrame del modelo
-        # Nota: esto podría mejorarse para obtener el DataFrame real
-        QMessageBox.information(self, "Exportar", "Funcionalidad de exportación en desarrollo.")
+        try:
+            result_df = model.full_df
+            if result_df is None or result_df.empty:
+                QMessageBox.information(self, "Información", "No hay datos para exportar.")
+                return
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error obteniendo datos: {str(e)}")
+            return
+
+        # Diálogo para seleccionar formato y ubicación
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Exportar Resultado de Tabla Pivote")
+        dialog.setModal(True)
+
+        layout = QVBoxLayout(dialog)
+
+        # Selección de formato
+        format_layout = QHBoxLayout()
+        format_layout.addWidget(QLabel("Formato:"))
+        format_combo = QComboBox()
+        format_combo.addItems(["CSV (.csv)", "Excel (.xlsx)", "PDF (.pdf)"])
+        format_combo.setCurrentText("Excel (.xlsx)")
+        format_layout.addWidget(format_combo)
+        layout.addLayout(format_layout)
+
+        # Botones
+        buttons_layout = QHBoxLayout()
+        buttons_layout.addStretch()
+
+        export_btn = QPushButton("Exportar")
+        export_btn.clicked.connect(dialog.accept)
+        buttons_layout.addWidget(export_btn)
+
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+        buttons_layout.addWidget(cancel_btn)
+
+        layout.addLayout(buttons_layout)
+
+        if dialog.exec() != QDialog.Accepted:
+            return
+
+        # Obtener formato seleccionado
+        format_text = format_combo.currentText()
+
+        # Determinar extensión y función de exportación
+        if "CSV" in format_text:
+            extension = "csv"
+            export_func = exportar_a_csv
+            file_filter = "CSV Files (*.csv);;All Files (*)"
+        elif "Excel" in format_text:
+            extension = "xlsx"
+            export_func = exportar_a_xlsx
+            file_filter = "Excel Files (*.xlsx);;All Files (*)"
+        elif "PDF" in format_text:
+            extension = "pdf"
+            export_func = exportar_a_pdf
+            file_filter = "PDF Files (*.pdf);;All Files (*)"
+        else:
+            QMessageBox.warning(self, "Error", "Formato no soportado.")
+            return
+
+        # Diálogo para guardar archivo
+        default_filename = f"pivot_result_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.{extension}"
+        filepath, _ = QFileDialog.getSaveFileName(
+            self,
+            "Guardar Resultado de Pivoteo",
+            default_filename,
+            file_filter
+        )
+
+        if not filepath:
+            return
+
+        # Ejecutar exportación
+        try:
+            self.progress_bar.setVisible(True)
+            self.progress_bar.setValue(50)
+
+            # Para CSV, permitir configuración adicional
+            if extension == "csv":
+                success = export_func(result_df, filepath, delimiter=',', encoding='utf-8')
+            else:
+                success = export_func(result_df, filepath)
+
+            self.progress_bar.setVisible(False)
+
+            if success:
+                QMessageBox.information(
+                    self,
+                    "Exportación Exitosa",
+                    f"Resultado exportado exitosamente a:\n{filepath}"
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Error de Exportación",
+                    "Error al exportar el archivo. Verifique los permisos y el formato."
+                )
+
+        except Exception as e:
+            self.progress_bar.setVisible(False)
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Error durante la exportación:\n{str(e)}"
+            )
         
     def open_advanced_config(self):
         """Abrir diálogo de configuración avanzada"""

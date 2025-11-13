@@ -1,6 +1,5 @@
 """
-Módulo para manejo de datos - carga, análisis, transformación y exportación
-Incluye integración con el sistema avanzado de transformaciones (Fase 7)
+Módulo para manejo de datos - carga, análisis y exportación
 """
 
 import pandas as pd
@@ -408,6 +407,68 @@ def exportar_a_imagen(table_view, filepath: str) -> bool:
         return False
 
 
+def exportar_a_xlsx(df: pd.DataFrame, filepath: str) -> bool:
+    """
+    Exportar DataFrame a archivo Excel (.xlsx)
+
+    Args:
+        df: DataFrame a exportar
+        filepath: Ruta de destino
+
+    Returns:
+        True si la exportación fue exitosa
+    """
+    try:
+        # Verificar que openpyxl esté disponible
+        import openpyxl
+        from openpyxl.utils.dataframe import dataframe_to_rows
+
+        # Crear workbook y worksheet
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+
+        # Convertir DataFrame a filas y escribir en worksheet
+        for r, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
+            for c, value in enumerate(row, 1):
+                worksheet.cell(row=r, column=c, value=value)
+
+        # Guardar archivo
+        workbook.save(filepath)
+        workbook.close()
+
+        return True
+
+    except ImportError:
+        print("Error: openpyxl no está instalado. Instale con: pip install openpyxl")
+        return False
+    except Exception as e:
+        print(f"Error al exportar a XLSX: {str(e)}")
+        return False
+
+
+def exportar_a_csv(df: pd.DataFrame, filepath: str, delimiter: str = ',', encoding: str = 'utf-8') -> bool:
+    """
+    Exportar DataFrame a archivo CSV
+
+    Args:
+        df: DataFrame a exportar
+        filepath: Ruta de destino
+        delimiter: Delimitador para CSV (default: ',')
+        encoding: Codificación del archivo (default: 'utf-8')
+
+    Returns:
+        True si la exportación fue exitosa
+    """
+    try:
+        # Exportar a CSV usando pandas
+        df.to_csv(filepath, index=False, sep=delimiter, encoding=encoding)
+        return True
+
+    except Exception as e:
+        print(f"Error al exportar a CSV: {str(e)}")
+        return False
+
+
 def limpiar_datos(df: pd.DataFrame, opciones: dict = None) -> pd.DataFrame:
     """
     Limpiar datos del DataFrame aplicando varias operaciones de limpieza
@@ -545,223 +606,6 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
         return pd.DataFrame()
 
 
-# ===============================
-# SISTEMA AVANZADO DE TRANSFORMACIONES (FASE 7)
-# ===============================
-
-def aplicar_transformacion(df: pd.DataFrame, tipo_transformacion: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
-    """
-    Aplicar una transformación avanzada al DataFrame usando el nuevo sistema
-    
-    Args:
-        df: DataFrame de entrada
-        tipo_transformacion: Tipo de transformación a aplicar
-        parametros: Parámetros específicos para la transformación
-        
-    Returns:
-        DataFrame transformado
-        
-    Raises:
-        ValueError: Si el tipo de transformación no es válido
-    """
-    try:
-        from core.transformations import get_transformation_manager
-        
-        if parametros is None:
-            parametros = {}
-            
-        # Usar el gestor de transformaciones
-        manager = get_transformation_manager()
-        resultado = manager.execute_transformation(df, tipo_transformacion, parametros)
-        
-        print(f"Transformación '{tipo_transformacion}' aplicada exitosamente")
-        return resultado
-        
-    except ImportError:
-        print("Sistema de transformaciones avanzadas no disponible, usando método básico")
-        return _aplicar_transformacion_basica(df, tipo_transformacion, parametros)
-    except Exception as e:
-        print(f"Error al aplicar transformación avanzada: {str(e)}")
-        # Fallback al sistema básico si está disponible
-        return _aplicar_transformacion_basica(df, tipo_transformacion, parametros)
-
-
-def aplicar_pipeline_transformaciones(df: pd.DataFrame, pasos_transformacion: list) -> pd.DataFrame:
-    """
-    Aplicar un pipeline de transformaciones al DataFrame
-    
-    Args:
-        df: DataFrame de entrada
-        pasos_transformacion: Lista de pasos de transformación
-            Cada paso: {'tipo': 'transformacion', 'parametros': {...}}
-            
-    Returns:
-        DataFrame transformado
-    """
-    try:
-        from core.transformations import get_transformation_manager
-        
-        if not pasos_transformacion:
-            return df.copy()
-            
-        # Usar el gestor de transformaciones
-        manager = get_transformation_manager()
-        resultado = manager.execute_pipeline(df, pasos_transformacion)
-        
-        print(f"Pipeline de {len(pasos_transformacion)} pasos aplicado exitosamente")
-        return resultado
-        
-    except ImportError:
-        print("Sistema de transformaciones avanzadas no disponible")
-        return df.copy()
-    except Exception as e:
-        print(f"Error al aplicar pipeline de transformaciones: {str(e)}")
-        return df.copy()
-
-
-def obtener_transformaciones_disponibles() -> Dict[str, Dict[str, Any]]:
-    """
-    Obtener lista de transformaciones disponibles en el sistema avanzado
-    
-    Returns:
-        Diccionario con transformaciones disponibles
-    """
-    try:
-        from core.transformations import get_transformation_manager
-        
-        manager = get_transformation_manager()
-        return manager.get_available_transformations()
-        
-    except ImportError:
-        print("Sistema de transformaciones avanzadas no disponible")
-        return {}
-    except Exception as e:
-        print(f"Error al obtener transformaciones: {str(e)}")
-        return {}
-
-
-def ejecutar_transformacion_con_compatibilidad(df: pd.DataFrame, operacion: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
-    """
-    Ejecutar transformación con compatibilidad entre sistema básico y avanzado
-    
-    Args:
-        df: DataFrame de entrada
-        operacion: Tipo de operación a realizar
-        parametros: Parámetros para la operación
-        
-    Returns:
-        DataFrame procesado
-    """
-    if parametros is None:
-        parametros = {}
-    
-    # Mapeo de operaciones básicas a transformaciones avanzadas
-    mapeo_transformaciones = {
-        'limpiar_datos': 'text_cleaning',  # Mapear a limpieza de texto básica
-        'renombrar_columnas': 'rename_columns',
-        'crear_columna_calculada': 'create_calculated_column',
-        'aplicar_funcion': 'apply_function',
-        'eliminar_columnas': 'drop_columns',
-        'normalizar_datos': 'normalization',
-        'escalar_datos': 'scaling',
-        'aplicar_logaritmo': 'logarithmic',
-        'convertir_texto': 'case_conversion',
-        'parsear_fechas': 'date_parsing'
-    }
-    
-    # Si la operación tiene mapeo directo, usar el sistema avanzado
-    if operacion in mapeo_transformaciones:
-        try:
-            tipo_avanzado = mapeo_transformaciones[operacion]
-            return aplicar_transformacion(df, tipo_avanzado, parametros)
-        except Exception as e:
-            print(f"Error en transformación avanzada, usando sistema básico: {str(e)}")
-    
-    # Si no hay mapeo, usar el sistema básico
-    if operacion == 'limpiar_datos':
-        return limpiar_datos(df, parametros)
-    elif operacion == 'agregar_datos':
-        return agregar_datos(df, parametros)
-    elif operacion == 'pivotar_datos':
-        index = parametros.get('index', '')
-        columns = parametros.get('columns', '')
-        values = parametros.get('values', '')
-        aggfunc = parametros.get('aggfunc', 'mean')
-        return pivotar_datos(df, index, columns, values, aggfunc)
-    else:
-        print(f"Operación '{operacion}' no reconocida, devolviendo DataFrame original")
-        return df.copy()
-
-
-def _aplicar_transformacion_basica(df: pd.DataFrame, tipo: str, parametros: Dict[str, Any] = None) -> pd.DataFrame:
-    """
-    Aplicar transformación básica usando métodos existentes (fallback)
-    
-    Args:
-        df: DataFrame de entrada
-        tipo: Tipo de transformación
-        parametros: Parámetros
-        
-    Returns:
-        DataFrame transformado
-    """
-    if parametros is None:
-        parametros = {}
-    
-    # Implementar transformaciones básicas como fallback
-    if tipo == 'text_cleaning':
-        # Limpieza básica de texto
-        df_clean = df.copy()
-        for col in df_clean.select_dtypes(include=['object']).columns:
-            df_clean[col] = df_clean[col].astype(str).str.strip()
-        return df_clean
-    
-    elif tipo == 'rename_columns':
-        mapping = parametros.get('column_mapping', {})
-        if mapping:
-            return df.rename(columns=mapping)
-        return df
-    
-    elif tipo == 'drop_columns':
-        columns = parametros.get('columns', [])
-        if columns:
-            return df.drop(columns=columns, errors='ignore')
-        return df
-    
-    else:
-        print(f"Transformación básica '{tipo}' no implementada, devolviendo DataFrame original")
-        return df.copy()
-
-
-def obtener_estadisticas_transformaciones() -> Dict[str, Any]:
-    """
-    Obtener estadísticas del sistema de transformaciones
-    
-    Returns:
-        Diccionario con estadísticas
-    """
-    try:
-        from core.transformations import get_transformation_manager
-        
-        manager = get_transformation_manager()
-        return {
-            'sistema_disponible': True,
-            'transformaciones_registradas': len(manager.get_available_transformations()),
-            'pipelines_guardados': len(manager.get_saved_pipelines()),
-            'operaciones_en_historial': len(manager.get_history()),
-            'metricas_rendimiento': manager.get_performance_report()
-        }
-        
-    except ImportError:
-        return {
-            'sistema_disponible': False,
-            'mensaje': 'Sistema de transformaciones avanzadas no disponible'
-        }
-    except Exception as e:
-        return {
-            'sistema_disponible': False,
-            'error': str(e)
-        }
 
 
 # ===============================
