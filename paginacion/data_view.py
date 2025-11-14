@@ -4,10 +4,10 @@ Contiene tabla paginada, controles de paginación y filtros
 """
 
 import pandas as pd
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView, 
-                               QComboBox, QLineEdit, QPushButton, QLabel, 
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
+                               QComboBox, QLineEdit, QPushButton, QLabel,
                                QGroupBox, QFrame, QMessageBox, QSpinBox,
-                               QApplication)
+                               QApplication, QSizePolicy)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QColor
 
@@ -166,6 +166,7 @@ class DataView(QWidget):
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectRows)
         self.table_view.setSortingEnabled(True)
+        self.table_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         # Configurar estilo de la tabla
         self.table_view.setStyleSheet("""

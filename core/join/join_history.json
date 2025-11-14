@@ -1,0 +1,389 @@
+{
+  "entries": [
+    {
+      "id": "20251114_163307_10",
+      "timestamp": "2025-11-14T16:33:07.846477",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.0525965690612793,
+        "memory_usage": 0.000247955322265625
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_162607_10",
+      "timestamp": "2025-11-14T16:26:07.248340",
+      "left_dataset_name": "ventas.csv",
+      "right_dataset_name": "clientes.csv",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "cliente_id"
+        ],
+        "right_keys": [
+          "id"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 8,
+        "join_type": "left",
+        "join_keys": [
+          "cliente_id",
+          "id"
+        ],
+        "matched_rows": 8,
+        "processing_time": 0.024425983428955078,
+        "memory_usage": 0.0019989013671875
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_162355_14",
+      "timestamp": "2025-11-14T16:23:55.886008",
+      "left_dataset_name": "ventas.csv",
+      "right_dataset_name": "clientes.csv",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "cliente_id"
+        ],
+        "right_keys": [
+          "id"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 8,
+        "join_type": "left",
+        "join_keys": [
+          "cliente_id",
+          "id"
+        ],
+        "matched_rows": 8,
+        "processing_time": 0.02567577362060547,
+        "memory_usage": 0.0019989013671875
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_161558_13",
+      "timestamp": "2025-11-14T16:15:58.500919",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.02920818328857422,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_161213_12",
+      "timestamp": "2025-11-14T16:12:13.787902",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.03012824058532715,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_160805_11",
+      "timestamp": "2025-11-14T16:08:05.311779",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.0438079833984375,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_160734_10",
+      "timestamp": "2025-11-14T16:07:34.813433",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.027972936630249023,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_155600_11",
+      "timestamp": "2025-11-14T15:56:00.659533",
+      "left_dataset_name": "ventas.csv",
+      "right_dataset_name": "clientes.csv",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "cliente_id"
+        ],
+        "right_keys": [
+          "id"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 8,
+        "join_type": "left",
+        "join_keys": [
+          "cliente_id",
+          "id"
+        ],
+        "matched_rows": 8,
+        "processing_time": 0.027591943740844727,
+        "memory_usage": 0.0019989013671875
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_154614_10",
+      "timestamp": "2025-11-14T15:46:14.603866",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.029287099838256836,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_154509_9",
+      "timestamp": "2025-11-14T15:45:09.429369",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.02713918685913086,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "id": "20251114_154416_8",
+      "timestamp": "2025-11-14T15:44:16.044338",
+      "left_dataset_name": "test-1.xlsx",
+      "right_dataset_name": "test-2.xlsx",
+      "config": {
+        "join_type": "left",
+        "left_keys": [
+          "name"
+        ],
+        "right_keys": [
+          "name"
+        ],
+        "suffixes": [
+          "_left",
+          "_right"
+        ],
+        "validate_integrity": true,
+        "sort_results": true,
+        "indicator": false
+      },
+      "result_metadata": {
+        "result_rows": 2,
+        "join_type": "left",
+        "join_keys": [
+          "name",
+          "name"
+        ],
+        "matched_rows": 2,
+        "processing_time": 0.037058115005493164,
+        "memory_usage": 0.000263214111328125
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ]
+}

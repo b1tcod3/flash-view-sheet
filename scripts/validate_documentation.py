@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script de Validación Final - Documentación Fase 5
-Flash Sheet v1.0.0 - Exportación de Datos Separados
+Flash Sheet v1.1.0 - Funcionalidad de Cruce de Datos (Joins)
 
 Este script valida que toda la documentación generada en la Fase 5
 esté completa y consistente según el plan establecido.
@@ -31,9 +31,9 @@ def validate_documentation_structure():
             "docs/user_guide/examples_and_use_cases.md"
         ],
         "Subfase 5.3 - Preparación para Release": [
-            "docs/releases/v1.0.0/release_notes.md",
-            "docs/releases/v1.0.0/installation_guide.md",
-            "docs/releases/v1.0.0/distribution_preparation.md"
+            "docs/releases/v-1-1-0/release_notes.md",
+            "docs/releases/v-1-1-0/installation_guide.md",
+            "docs/releases/v-1-1-0/distribution_preparation.md"
         ]
     }
     
@@ -95,10 +95,10 @@ def validate_content_completeness():
         "docs/user_guide/README.md": [
             "Introducción", "Tutorial", "FAQ", "Casos de uso"
         ],
-        "docs/releases/v1.0.0/release_notes.md": [
-            "v1.0.0", "Funcionalidades", "Performance", "Testing"
+        "docs/releases/v-1-1-0/release_notes.md": [
+            "v1.1.0", "Funcionalidades", "Performance", "Testing"
         ],
-        "docs/releases/v1.0.0/installation_guide.md": [
+        "docs/releases/v-1-1-0/installation_guide.md": [
             "Instalación", "Requisitos", "Configuración", "Troubleshooting"
         ]
     }
@@ -145,7 +145,7 @@ def generate_documentation_summary():
         "docs/api/": "Técnica",
         "docs/developer_guide/": "Técnica",
         "docs/user_guide/": "Usuario",
-        "docs/releases/v1.0.0/": "Release",
+        "docs/releases/v-1-1-0/": "Release",
         "docs/testing_documentation.md": "Testing"
     }
     
@@ -187,9 +187,9 @@ def validate_consistency():
     
     # Verificar versiones consistentes
     version_files = [
-        ("docs/index.rst", "1.0.0"),
-        ("docs/releases/v1.0.0/release_notes.md", "1.0.0"),
-        ("docs/releases/v1.0.0/installation_guide.md", "1.0.0")
+        ("docs/index.rst", "1.1.0"),
+        ("docs/releases/v-1-1-0/release_notes.md", "1.1.0"),
+        ("docs/releases/v-1-1-0/installation_guide.md", "1.1.0")
     ]
     
     versions_found = {}
@@ -201,7 +201,7 @@ def validate_consistency():
                 
                 # Buscar versión en el contenido
                 for line in content.split('\n'):
-                    if '1.0.0' in line or 'v1.0.0' in line:
+                    if '1.1.0' in line or 'v1.1.0' in line:
                         versions_found[file_path] = expected_version
                         break
             except Exception as e:
@@ -217,7 +217,7 @@ def validate_consistency():
 def main():
     """Función principal de validación"""
     
-    print("Flash Sheet v1.0.0 - Validación Final de Documentación")
+    print("Flash Sheet v1.1.0 - Validación Final de Documentación")
     print("=" * 60)
     
     # Ejecutar todas las validaciones
@@ -236,7 +236,7 @@ def main():
         print("✅ Documentación de Fase 5 COMPLETA Y CONSISTENTE")
         print(f"✅ {summary['Total de archivos de documentación']} archivos de documentación")
         print(f"✅ {summary['Tamaño total de documentación']:,} bytes de contenido")
-        print("\n🚀 LISTO PARA RELEASE v1.0.0")
+        print("\n🚀 LISTO PARA RELEASE v1.1.0")
         return True
     else:
         print("❌ ALGUNAS VALIDACIONES FALLARON")

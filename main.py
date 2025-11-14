@@ -17,7 +17,9 @@ from app.widgets.info_modal import InfoModal
 from app.widgets.graphics_view import GraphicsView
 from app.widgets.pivot_table_widget import PivotTableWidget
 from paginacion.data_view import DataView
+from app.widgets.join.joined_data_view import JoinedDataView
 from core.data_handler import ExcelTemplateSplitter
+from core.join.join_history import JoinHistory
 
 class DataLoaderThread(QThread):
     """Hilo para cargar datos en segundo plano"""
@@ -68,12 +70,21 @@ class MainWindow(QMainWindow):
         self.view_data_btn = None
         self.view_info_btn = None
         self.view_graphics_btn = None
+        self.view_joined_data_btn = None
         # self.view_pivot_table_btn = None  # Ya no se usa
         # self.pivot_table_view = None      # Ya no se usa como vista separada
+        self.joined_data_view = None
 
         # Referencias para funcionalidad de separación
         self.separar_menu = None
         self.exportar_separado_action = None
+
+        # Referencias para funcionalidad de datos
+        self.datos_menu = None
+        self.cruzar_datos_action = None
+
+        # Sistema de historial de joins
+        self.join_history = JoinHistory()
 
         self.setup_ui()
         self.setup_connections()
@@ -155,6 +166,15 @@ class MainWindow(QMainWindow):
         exportar_separado_action.triggered.connect(self.exportar_datos_separados)
         exportar_separado_action.setEnabled(False)  # Se habilita solo con datos cargados
 
+        # Nuevo Menú Datos
+        datos_menu = menu_bar.addMenu("&Datos")
+
+        # Acción Cruzar Datos
+        cruzar_datos_action = datos_menu.addAction("&Cruzar Datos...")
+        cruzar_datos_action.setShortcut("Ctrl+Shift+J")
+        cruzar_datos_action.triggered.connect(self.abrir_cruzar_datos)
+        cruzar_datos_action.setEnabled(False)  # Se habilita solo con datos cargados
+
         # Nuevo Menú Tabla Pivote
         tabla_pivote_menu = menu_bar.addMenu("&Tabla Pivote")
 
@@ -190,6 +210,8 @@ class MainWindow(QMainWindow):
         # Guardar referencias a los menús para habilitar/deshabilitar
         self.separar_menu = separar_menu
         self.exportar_separado_action = exportar_separado_action
+        self.datos_menu = datos_menu
+        self.cruzar_datos_action = cruzar_datos_action
         self.tabla_pivote_menu = tabla_pivote_menu
         self.pivot_simple_action = pivot_simple_action
         self.pivot_combinada_action = pivot_combinada_action
@@ -225,8 +247,14 @@ class MainWindow(QMainWindow):
 
         # Botón Vista Gráficos
         self.view_graphics_btn = QPushButton("Vista Gráficos")
-        self.view_graphics_btn.clicked.connect(lambda: self.switch_view(3))
+        self.view_graphics_btn.clicked.connect(lambda: self.switch_view(2))
         view_layout.addWidget(self.view_graphics_btn)
+
+        # Botón Vista Datos Cruzados
+        self.view_joined_data_btn = QPushButton("Cruzar Datos")
+        self.view_joined_data_btn.clicked.connect(lambda: self.switch_view(3))
+        self.view_joined_data_btn.setEnabled(False)  # Se habilita cuando hay resultados de join
+        view_layout.addWidget(self.view_joined_data_btn)
 
         # Añadir el widget a la barra de herramientas
         tool_bar.addWidget(view_widget)
@@ -288,6 +316,11 @@ class MainWindow(QMainWindow):
         # Vista de Gráficos (índice 3)
         self.graphics_view = GraphicsView()
         self.stacked_widget.addWidget(self.graphics_view)
+
+        # Vista de Datos Cruzados (índice 4)
+        self.joined_data_view = JoinedDataView()
+        self.joined_data_view.new_join_requested.connect(self.abrir_cruzar_datos)
+        self.stacked_widget.addWidget(self.joined_data_view)
 
         # Vista de Tabla Pivote eliminada - ahora se usa a través de diálogos
 
@@ -417,6 +450,7 @@ class MainWindow(QMainWindow):
         # Actualizar menús
         self.actualizar_menu_separar()
         self.actualizar_menu_pivote()
+        self.actualizar_menu_datos()
 
         # Cambiar a vista de tabla por defecto
         self.switch_view(1)
@@ -454,6 +488,52 @@ class MainWindow(QMainWindow):
             if not current_page_data.empty:
                 self.graphics_view.update_data(current_page_data)
         
+
+    def abrir_cruzar_datos(self):
+        """Abrir diálogo para cruzar datos"""
+        if self.df_vista_actual is None or self.df_vista_actual.empty:
+            QMessageBox.warning(self, "Advertencia", "No hay datos cargados para cruzar.")
+            return
+
+        try:
+            # Importar diálogo de join
+            from app.widgets.join.join_dialog import JoinDialog
+
+            # Crear diálogo
+            dialog = JoinDialog(self.df_vista_actual, self)
+            dialog.join_completed.connect(self.on_join_completed)
+
+            if dialog.exec() == QDialog.Accepted:
+                # El diálogo ya maneja la configuración, pero si se acepta sin configurar,
+                # no debería pasar nada
+                pass
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error abriendo diálogo de cruce de datos: {str(e)}")
+
+    def on_join_completed(self, result, right_file_path):
+        """Manejar resultado de join completado"""
+        try:
+            # Establecer resultado en vista de datos cruzados
+            left_name = os.path.basename(self.loading_thread.filepath) if self.loading_thread else "Dataset Izquierdo"
+            right_name = os.path.basename(right_file_path) if right_file_path else "Dataset Derecho"
+
+            self.joined_data_view.set_join_result(result, left_name, right_name)
+
+            # Añadir al historial
+            if result.success and result.config:
+                self.join_history.add_entry(left_name, right_name, result.config, result)
+
+            # Habilitar botón de vista
+            self.view_joined_data_btn.setEnabled(True)
+
+            # Cambiar a vista de datos cruzados
+            self.switch_view(3)
+
+            self.statusBar().showMessage(f"Cruce completado: {result.metadata.result_rows} filas resultantes")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error procesando resultado del join: {str(e)}")
 
     def abrir_pivot_simple(self):
         """Abrir diálogo de tabla pivote simple"""
@@ -1059,6 +1139,7 @@ class MainWindow(QMainWindow):
         try:
             from core.data_handler import exportar_datos_separados
             from core.data_handler import ExcelTemplateSplitter
+            from core.join.join_history import JoinHistory
             from PySide6.QtWidgets import QProgressDialog
             from PySide6.QtCore import Qt, QTimer
             from PySide6.QtTest import QTest
@@ -1184,6 +1265,16 @@ class MainWindow(QMainWindow):
                 self.export_pivot_action.setEnabled(False)
                 self.export_pivot_action.setStatusTip("Carga datos primero para habilitar esta opción")
 
+    def actualizar_menu_datos(self):
+        """Actualizar estado del menú Datos basado en datos cargados"""
+        if hasattr(self, 'cruzar_datos_action') and self.cruzar_datos_action:
+            if self.df_vista_actual is not None and not self.df_vista_actual.empty:
+                self.cruzar_datos_action.setEnabled(True)
+                self.cruzar_datos_action.setStatusTip("Cruzar datos con otro dataset usando operaciones de join")
+            else:
+                self.cruzar_datos_action.setEnabled(False)
+                self.cruzar_datos_action.setStatusTip("Carga datos primero para habilitar esta opción")
+
     def mostrar_acerca_de(self):
         """Mostrar diálogo Acerca de con información del software y creador"""
         from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
@@ -1216,7 +1307,7 @@ class MainWindow(QMainWindow):
         title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #2E86AB;")
         title_layout.addWidget(title_label)
         
-        version_label = QLabel("Versión 1.0.0")
+        version_label = QLabel("Versión 1.1.0")
         version_label.setStyleSheet("font-size: 12px; color: #666;")
         title_layout.addWidget(version_label)
         

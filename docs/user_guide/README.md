@@ -1,11 +1,13 @@
-# Guía de Usuario - Exportación de Datos Separados
+# Guía de Usuario - Flash View Sheet
 
 ## 📋 Índice
 
 1. [Introducción](#introducción)
-2. [¿Qué es la Exportación Separada?](#qué-es-la-exportación-separada)
-3. [Requisitos Previos](#requisitos-previos)
-4. [Tutorial Rápido](#tutorial-rápido)
+2. [Funcionalidades Principales](#funcionalidades-principales)
+   - [Cruce de Datos (Joins)](#cruce-de-datos-joins)
+   - [Exportación Separada](#exportación-separada)
+3. [Cruce de Datos - Tutorial](#cruce-de-datos---tutorial)
+4. [Exportación Separada - Tutorial](#exportación-separada---tutorial)
 5. [Guía Detallada](#guía-detallada)
 6. [Configuración Avanzada](#configuración-avanzada)
 7. [Ejemplos Prácticos](#ejemplos-prácticos)
@@ -14,14 +16,120 @@
 
 ## Introducción
 
-La **Exportación de Datos Separados** es una funcionalidad avanzada de Flash Sheet que permite dividir un conjunto de datos en múltiples archivos Excel personalizados usando plantillas predefinidas. Esta herramienta es especialmente útil para:
+**Flash View Sheet** es una herramienta poderosa para análisis y manipulación de datos que incluye múltiples funcionalidades avanzadas:
+
+- **Cruce de Datos (Joins)**: Combinar datasets mediante operaciones de join
+- **Exportación Separada**: Dividir datos en múltiples archivos Excel personalizados
+- **Visualización Interactiva**: Tablas dinámicas, gráficos y análisis
+- **Soporte Multi-Formato**: CSV, Excel, JSON, SQL y más
+
+## Funcionalidades Principales
+
+### Cruce de Datos (Joins)
+
+La funcionalidad de **Cruce de Datos** permite combinar dos datasets mediante operaciones de join directamente desde la interfaz, similar a las consultas SQL. Es ideal para:
+
+- **Enriquecimiento de Datos**: Añadir información de clientes a ventas
+- **Análisis Combinado**: Unir datos de múltiples fuentes
+- **Consolidación**: Merge de datasets relacionados
+- **Limpieza de Datos**: Identificar coincidencias y diferencias
+
+#### Tipos de Join Soportados
+
+- **Inner Join**: Solo filas con coincidencias en ambas tablas
+- **Left Join**: Todas las filas del primer dataset + coincidencias del segundo
+- **Right Join**: Todas las filas del segundo dataset + coincidencias del primero
+- **Cross Join**: Producto cartesiano de ambas tablas
+
+#### Características
+
+✅ **Interfaz Intuitiva**: Configuración visual paso a paso
+✅ **Preview en Tiempo Real**: Ver resultados antes de ejecutar
+✅ **Validación Automática**: Detección de errores y sugerencias
+✅ **Optimización de Rendimiento**: Manejo eficiente de datasets grandes
+✅ **Historial Completo**: Re-ejecución de operaciones previas
+✅ **Exportación**: Resultados en múltiples formatos
+
+### Exportación Separada
+
+La **Exportación de Datos Separados** permite dividir un conjunto de datos en múltiples archivos Excel personalizados usando plantillas predefinidas. Esta herramienta es especialmente útil para:
 
 - **Reportes Empresariales**: Separar datos por región, departamento, período
 - **Análisis por Categorías**: Dividir datos por tipos de productos, clientes, etc.
 - **Distribuciones Automatizadas**: Generar reportes individuales para diferentes entidades
 - **Plantillas Personalizadas**: Mantener formato corporativo consistente
 
-## ¿Qué es la Exportación Separada?
+## Cruce de Datos - Tutorial
+
+### Paso 1: Preparar tus Datos
+
+1. **Carga el dataset principal** en Flash Sheet (ventas, transacciones, etc.)
+2. **Identifica qué información adicional** necesitas añadir
+3. **Prepara el dataset secundario** con los datos complementarios
+
+### Paso 2: Acceder a la Función
+
+1. En el menú **Datos**, selecciona **"Cruzar Datos..."**
+2. Se abre el diálogo de configuración de cruce
+
+### Paso 3: Configuración Básica
+
+1. **Carga el dataset derecho** usando "Cargar Dataset Derecho"
+2. **Selecciona el tipo de join** apropiado para tu caso:
+   - Inner Join: Solo datos que existen en ambas tablas
+   - Left Join: Todos los datos principales + matches del secundario
+   - Right Join: Todos los datos secundarios + matches del principal
+   - Cross Join: Combinación completa (usar con cuidado)
+
+3. **Selecciona las columnas de join**:
+   - Columna del dataset izquierdo
+   - Columna del dataset derecho
+   - Deben tener tipos de datos compatibles
+
+### Paso 4: Opciones Avanzadas (Opcional)
+
+- **Sufijos para columnas duplicadas**: Personaliza `_left` y `_right`
+- **Validación de integridad**: Verifica consistencia de datos
+- **Columna indicador**: Añade `_merge` para ver origen de datos
+- **Ordenar resultados**: Ordena por columna de join
+
+### Paso 5: Preview y Ejecución
+
+1. **Haz clic en "Actualizar Preview"** para ver resultados
+2. **Revisa las estadísticas**: filas resultantes, tiempo estimado
+3. **Ejecuta el join** con "🚀 Ejecutar Join"
+
+### Paso 6: Visualizar Resultados
+
+- Los resultados se muestran en una vista especializada
+- **Metadatos del cruce**: estadísticas detalladas
+- **Opciones de filtrado**: búsqueda y filtrado específico
+- **Exportación**: guarda resultados en Excel, CSV, PDF
+
+### Ejemplo Práctico
+
+**Dataset Ventas:**
+```
+cliente_id | producto | cantidad
+1          | Laptop   | 2
+2          | Mouse    | 1
+```
+
+**Dataset Clientes:**
+```
+id | nombre      | ciudad
+1  | Juan Pérez  | Madrid
+2  | Ana García  | Barcelona
+```
+
+**Resultado Left Join (cliente_id = id):**
+```
+cliente_id | producto | cantidad | id | nombre      | ciudad
+1          | Laptop   | 2        | 1  | Juan Pérez  | Madrid
+2          | Mouse    | 1        | 2  | Ana García  | Barcelona
+```
+
+## Exportación Separada - Tutorial
 
 ### Concepto Básico
 
@@ -318,7 +426,54 @@ Reporte_{valor}_{contador}.xlsx
 
 ## Preguntas Frecuentes
 
-### ¿Qué formatos de archivo soporta?
+### Preguntas sobre Cruce de Datos (Joins)
+
+#### ¿Qué tipos de join están disponibles?
+
+- **Inner Join**: Solo filas con coincidencias en ambas tablas
+- **Left Join**: Todas las filas de la tabla izquierda + coincidencias de la derecha
+- **Right Join**: Todas las filas de la tabla derecha + coincidencias de la izquierda
+- **Cross Join**: Producto cartesiano (todas las combinaciones posibles)
+
+#### ¿Cuántos datasets puedo cruzar a la vez?
+
+Actualmente, se soporta el cruce entre **2 datasets**:
+- Un dataset principal (izquierdo)
+- Un dataset adicional (derecho)
+
+Para cruces más complejos, puedes encadenar operaciones de join.
+
+#### ¿Qué pasa si las columnas de join tienen tipos diferentes?
+
+El sistema **advierte automáticamente** sobre incompatibilidades de tipos:
+- `cliente_id (str) ≠ id (int)` → Sugiere conversión
+- Puedes elegir columnas diferentes o convertir tipos manualmente
+
+#### ¿Se preservan los datos originales?
+
+✅ **Sí, completamente**. Los datasets originales no se modifican. Los resultados del cruce se almacenan en una vista separada.
+
+#### ¿Cómo funciona el preview?
+
+- **Muestreo inteligente**: Para cross joins grandes, usa subconjuntos
+- **Estimación rápida**: Calcula filas y columnas resultantes
+- **Validación en tiempo real**: Detecta errores antes de ejecutar
+
+#### ¿Hay límite en el tamaño de los datasets?
+
+- **Sin límite técnico** (depende de memoria disponible)
+- **Optimización automática**: Chunking para datasets grandes
+- **Recomendado**: Hasta 1M filas por dataset para buen rendimiento
+
+#### ¿Se puede deshacer un join?
+
+- Los datos originales **siempre se preservan**
+- Puedes **volver a la vista anterior** sin perder información
+- El **historial** permite re-ejecutar joins previos
+
+### Preguntas sobre Exportación Separada
+
+#### ¿Qué formatos de archivo soporta?
 
 - ✅ **Entrada**: CSV, Excel (.xlsx), JSON, Parquet, HDF5
 - ✅ **Plantillas**: Solo Excel (.xlsx, .xlsm)
