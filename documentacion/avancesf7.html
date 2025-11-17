@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/avancesf7.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Registro de Avances - Fase 7: Operaciones de Transformación de Datos</p>
+<p>## Proyecto: flash-view-sheet
+<strong>Fecha de Inicio Fase 7:</strong> 4 de Noviembre 2025 - 15:12 UTC
+<strong>Plan Base:</strong> plan7.md</p>
+<p>—</p>
+<p>## Resumen de Progreso Fase 7</p>
+<p>### Estado General: En Progreso - Fase 7.4.2
+<strong>Última Actualización:</strong> 4 de Noviembre 2025 - 16:51 UTC
+<strong>Versión:</strong> 1.4.0 - Interfaz de Usuario de Transformaciones</p>
+<p>—</p>
+<p>## Fase 7.1: Arquitectura Base y Transformaciones Básicas - ✅ COMPLETADA</p>
+<p>### Subfase 7.1.1: Arquitectura Base de Transformaciones
+- [x] <strong>15:12</strong> - Creado archivo <cite>docs/avancesf7.md</cite> para documentar progreso
+- [x] <strong>15:24</strong> - Crear <cite>core/transformations/base_transformation.py</cite> con interfaz común
+- [x] <strong>15:24</strong> - Crear <cite>core/transformations/transformation_manager.py</cite> para gestión centralizada
+- [x] <strong>15:24</strong> - Crear estructura de directorios <cite>core/transformations/</cite></p>
+<p>### Subfase 7.1.2: Transformaciones de Columnas
+- [x] <strong>15:24</strong> - Implementar renombrado de columnas (RenameColumnsTransformation)
+- [x] <strong>15:24</strong> - Implementar creación de columnas calculadas (CreateCalculatedColumnTransformation)
+- [x] <strong>15:24</strong> - Implementar aplicación de funciones a columnas existentes (ApplyFunctionTransformation)
+- [x] <strong>15:24</strong> - Implementar eliminación de columnas específicas (DropColumnsTransformation)</p>
+<p>### Subfase 7.1.3: Transformaciones Matemáticas
+- [x] <strong>15:24</strong> - Implementar transformaciones logarítmicas (LogarithmicTransformation)
+- [x] <strong>15:24</strong> - Implementar exponenciales y raíz cuadrada (ExponentialTransformation)
+- [x] <strong>15:24</strong> - Implementar escalado (ScalingTransformation) - min-max, standard, robust, maxabs
+- [x] <strong>15:24</strong> - Implementar normalización (NormalizationTransformation) - L1, L2, max
+- [x] <strong>15:24</strong> - Implementar transformaciones personalizadas (CustomMathTransformation)</p>
+<p>### Subfase 7.1.4: Tests de Arquitectura Base
+- [x] <strong>15:24</strong> - Crear tests unitarios para base_transformation (TestBaseTransformation, TestCompositeTransformation)
+- [x] <strong>15:24</strong> - Crear tests unitarios para transformation_manager (TestTransformationManager)
+- [x] <strong>15:24</strong> - Crear tests para transformaciones de columnas (TestColumnTransformations)
+- [x] <strong>15:24</strong> - Crear tests para transformaciones matemáticas (TestMathematicalTransformations)
+- [x] <strong>15:24</strong> - Crear tests de integración y pipeline (TestPipelineExecution, TestErrorHandling)
+- [x] Verificar integración con sistema existente</p>
+<p>—</p>
+<p>## Fase 7.2: Procesamiento de Texto y Fechas - ✅ COMPLETADA</p>
+<p>### Subfase 7.2.1: Procesamiento de Texto Avanzado
+- [x] <strong>15:32</strong> - Implementar limpieza de texto (TextCleaningTransformation)
+- [x] <strong>15:32</strong> - Implementar extracción con regex (RegexExtractionTransformation)
+- [x] <strong>15:32</strong> - Implementar conversión de case (CaseConversionTransformation)
+- [x] <strong>15:32</strong> - Implementar padding y trimming (PaddingTrimmingTransformation)</p>
+<p>### Subfase 7.2.2: Manejo de Fechas y Tiempo
+- [x] <strong>15:32</strong> - Implementar parsing de fechas con múltiples formatos (DateParsingTransformation)
+- [x] <strong>15:32</strong> - Implementar extracción de componentes (ComponentExtractionTransformation)
+- [x] <strong>15:32</strong> - Implementar cálculos de diferencia de fechas (DateDifferenceTransformation)
+- [x] <strong>15:32</strong> - Implementar conversión de zonas horarias (TimeZoneTransformation)</p>
+<p>—</p>
+<p>## Fase 7.3: Codificación y Agregaciones Avanzadas - ✅ COMPLETADA</p>
+<p>### Subfase 7.3.1: Codificación Categórica - ✅ COMPLETADA
+- [x] <strong>16:10</strong> - Implementar label encoding (LabelEncodingTransformation)
+- [x] <strong>16:10</strong> - Implementar one-hot encoding (OneHotEncodingTransformation)
+- [x] <strong>16:10</strong> - Implementar ordinal encoding (OrdinalEncodingTransformation)
+- [x] <strong>16:10</strong> - Implementar target encoding (TargetEncodingTransformation)</p>
+<p>### Subfase 7.3.2: Agregaciones y Pivoteo Avanzado - ✅ COMPLETADA
+- [x] <strong>16:13</strong> - Implementar múltiples funciones de agregación (MultiFunctionAggregationTransformation)
+- [x] <strong>16:13</strong> - Implementar pivoteo con múltiples índices/columnas (AdvancedPivotingTransformation)
+- [x] <strong>16:13</strong> - Implementar rolling windows (RollingWindowTransformation)
+- [x] <strong>16:13</strong> - Implementar expanding windows (ExpandingWindowTransformation)
+- [x] <strong>16:13</strong> - Implementar groupby con transformaciones (GroupByTransformationTransformation)</p>
+<p>### Subfase 7.3.3: Integración y Testing - ✅ COMPLETADA
+- [x] <strong>16:14</strong> - Crear tests unitarios para transformaciones de codificación (TestLabelEncoding, TestOneHotEncoding, TestOrdinalEncoding, TestTargetEncoding)
+- [x] <strong>16:14</strong> - Crear tests unitarios para transformaciones de agregación avanzada (TestMultiFunctionAggregation, TestAdvancedPivoting, TestRollingWindow, TestExpandingWindow, TestGroupByTransformation)
+- [x] <strong>16:15</strong> - Actualizar <cite>core/transformations/__init__.py</cite> para incluir nuevas transformaciones
+- [x] <strong>16:16</strong> - Registrar transformaciones en <cite>TransformationManager</cite>
+- [x] <strong>16:16</strong> - Verificar integración con el sistema existente</p>
+<p>—</p>
+<p>## Fase 7.4: Pipeline y UI de Transformaciones - EN PROGRESO</p>
+<p>### Subfase 7.4.1: Sistema de Pipeline - PENDIENTE
+- [ ] Implementar cadena de transformaciones secuenciales
+- [ ] Implementar validación de compatibilidad entre pasos
+- [ ] Implementar undo/redo de transformaciones
+- [ ] Implementar guardado/carga de pipelines</p>
+<p>### Subfase 7.4.2: Interfaz de Usuario - ✅ COMPLETADA
+- [x] <strong>16:51</strong> - Crear nueva vista “Transformaciones” en el stacked widget
+- [x] <strong>16:51</strong> - Crear panel de herramientas de transformación con tabs por categoría
+- [x] <strong>16:51</strong> - Implementar preview en tiempo real de resultados
+- [x] <strong>16:51</strong> - Implementar historial de operaciones aplicadas
+- [x] <strong>16:51</strong> - Integrar vista de transformaciones con la aplicación principal
+- [x] <strong>16:51</strong> - Agregar botón “Vista Transformaciones” en la barra de herramientas</p>
+<p>—</p>
+<p>## Fase 7.5: Optimización y Testing - PENDIENTE</p>
+<p>### Subfase 7.5.1: Optimizaciones de Rendimiento
+- [ ] Implementar procesamiento en chunks para datasets grandes
+- [ ] Implementar paralelización de transformaciones independientes
+- [ ] Implementar cache inteligente de resultados intermedios
+- [ ] Implementar memory management para transformaciones complejas</p>
+<p>### Subfase 7.5.2: Testing y Documentación
+- [ ] Crear suite completa de tests unitarios
+- [ ] Crear tests de integración con UI
+- [ ] Crear documentación de API de transformaciones
+- [ ] Crear ejemplos de uso y casos de estudio</p>
+<p>—</p>
+<p>## Log de Actividades Fase 7</p>
+<p>### 2025-11-04
+- [x] <strong>15:12</strong> - Iniciada Fase 7: Operaciones de Transformación de Datos
+- [x] <strong>15:12</strong> - Creado archivo de documentación <cite>docs/avancesf7.md</cite>
+- [x] <strong>15:12</strong> - Analizada estructura actual del proyecto
+- [x] <strong>15:12</strong> - Identificadas operaciones existentes (limpiar_datos, agregar_datos, pivotar_datos)
+- [x] <strong>15:12</strong> - Confirmada arquitectura base del proyecto (PySide6 + pandas)
+- [x] <strong>15:12</strong> - Planificadas 5 subfases con implementación incremental
+- [x] <strong>15:24</strong> - <strong>COMPLETADA</strong> Arquitectura base con <cite>BaseTransformation</cite> y <cite>TransformationManager</cite>
+- [x] <strong>15:24</strong> - <strong>COMPLETADAS</strong> Transformaciones de columnas (renombrado, cálculo, funciones, eliminación)
+- [x] <strong>15:24</strong> - <strong>COMPLETADAS</strong> Transformaciones matemáticas (log, exp, escalado, normalización)
+- [x] <strong>15:24</strong> - <strong>COMPLETADAS</strong> Suite completa de tests unitarios (416 líneas de tests)
+- [x] <strong>15:30</strong> - <strong>COMPLETADA</strong> Verificación con tests (31 tests unitarios - 100% éxito)
+- [x] <strong>15:32</strong> - <strong>COMPLETADAS</strong> Transformaciones de texto (limpieza, regex, case, padding)
+- [x] <strong>15:32</strong> - <strong>COMPLETADAS</strong> Transformaciones de fecha/tiempo (parsing, componentes, diferencias, zonas)
+- [x] <strong>15:34</strong> - <strong>COMPLETADAS</strong> Tests de texto y fecha (5 tests adicionales - 100% éxito)
+- [x] <strong>15:56</strong> - <strong>COMPLETADA</strong> Integración con sistema existente (data_handler.py)
+- [x] <strong>16:03</strong> - <strong>COMPLETADOS</strong> Tests de integración (7 tests - 100% éxito)
+- [x] <strong>16:03</strong> - <strong>COMPLETADA</strong> Retrocompatibilidad total garantizada
+- [x] <strong>16:10</strong> - <strong>COMPLETADAS</strong> Transformaciones de codificación categórica (label, one-hot, ordinal, target)
+- [x] <strong>16:13</strong> - <strong>COMPLETADAS</strong> Transformaciones de agregación avanzada (multi-func, pivoteo, rolling, expanding, groupby)
+- [x] <strong>16:14</strong> - <strong>COMPLETADOS</strong> Tests unitarios para nuevas transformaciones (759 líneas de tests)
+- [x] <strong>16:15</strong> - <strong>COMPLETADA</strong> Integración de transformaciones con el sistema
+- [x] <strong>16:16</strong> - <strong>FINALIZADA</strong> Fase 7.3 con sistema completo de codificación y agregaciones
+- [x] <strong>16:48</strong> - <strong>INICIADA</strong> Fase 7.4: Pipeline y UI de Transformaciones
+- [x] <strong>16:48</strong> - <strong>COMPLETADA</strong> Creación de <cite>app/widgets/transformations_view.py</cite> (TransformationsView)
+- [x] <strong>16:51</strong> - <strong>COMPLETADA</strong> Integración de vista de transformaciones con aplicación principal
+- [x] <strong>16:51</strong> - <strong>COMPLETADA</strong> Agregado botón “Vista Transformaciones” en barra de herramientas
+- [x] <strong>16:51</strong> - <strong>COMPLETADA</strong> Subfase 7.4.2: Interfaz de Usuario de Transformaciones
+- [x] <strong>16:51</strong> - <strong>IMPLEMENTADA</strong> Vista de transformaciones con herramientas categorizadas
+- [x] <strong>16:51</strong> - <strong>IMPLEMENTADA</strong> Preview en tiempo real de transformaciones
+- [x] <strong>16:51</strong> - <strong>IMPLEMENTADA</strong> Historial de operaciones de transformación
+- [x] <strong>16:51</strong> - <strong>IMPLEMENTADA</strong> Sistema de parámetros dinámicos por tipo de transformación
+- [x] <strong>16:51</strong> - <strong>IMPLEMENTADA</strong> Integración completa con sistema de datos existente</p>
+<p>—</p>
+<p>## Arquitectura Propuesta para Transformaciones</p>
+<p>### Estructura de Código:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">core/transformations/</span>
+<span class="pre">├──</span> <span class="pre">base_transformation.py</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Clase</span> <span class="pre">base</span> <span class="pre">para</span> <span class="pre">transformaciones</span>
+<span class="pre">├──</span> <span class="pre">column_transformations.py</span>&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Renombrar,</span> <span class="pre">crear,</span> <span class="pre">aplicar</span> <span class="pre">funciones</span>
+<span class="pre">├──</span> <span class="pre">data_cleaning.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Limpieza</span> <span class="pre">avanzada</span> <span class="pre">(ya</span> <span class="pre">existe</span> <span class="pre">parcialmente)</span>
+<span class="pre">├──</span> <span class="pre">aggregation.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Agregaciones</span> <span class="pre">(ya</span> <span class="pre">existe)</span>
+<span class="pre">├──</span> <span class="pre">pivoting.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Pivoteo</span> <span class="pre">(ya</span> <span class="pre">existe)</span>
+<span class="pre">├──</span> <span class="pre">mathematical.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Transformaciones</span> <span class="pre">matemáticas</span>
+<span class="pre">├──</span> <span class="pre">text_processing.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Procesamiento</span> <span class="pre">de</span> <span class="pre">texto</span>
+<span class="pre">├──</span> <span class="pre">date_time.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Manejo</span> <span class="pre">de</span> <span class="pre">fechas</span>
+<span class="pre">├──</span> <span class="pre">encoding.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Codificación</span> <span class="pre">categórica</span>
+<span class="pre">├──</span> <span class="pre">advanced_aggregations.py</span>&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Agregaciones</span> <span class="pre">avanzadas</span>
+<span class="pre">├──</span> <span class="pre">pipeline.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Pipeline</span> <span class="pre">de</span> <span class="pre">transformaciones</span>
+<span class="pre">└──</span> <span class="pre">transformation_manager.py</span>&#160;&#160; <span class="pre">#</span> <span class="pre">Gestor</span> <span class="pre">principal</span>
+<span class="pre">`</span></code></p>
+<p>### Patrones de Diseño:
+- <strong>Command Pattern</strong>: Cada transformación como un comando ejecutable
+- <strong>Pipeline Pattern</strong>: Cadena de transformaciones aplicables secuencialmente
+- <strong>Factory Pattern</strong>: Creación de transformaciones por tipo</p>
+<p>—</p>
+<p>## Consideraciones Técnicas</p>
+<p>### Integración con Sistema Existente:
+- Mantener compatibilidad con <cite>data_handler.py</cite> actual
+- Aprovechar optimizaciones de rendimiento existentes
+- Integrar con sistema de virtualización para datasets grandes
+- Mantener API consistente con funciones actuales</p>
+<p>### Rendimiento:
+- Procesamiento lazy para datasets grandes
+- Validación de tipos de datos antes de transformaciones
+- Manejo de memoria con garbage collection
+- Progress indicators para operaciones largas</p>
+<p>### Extensibilidad:
+- Plugin system para transformaciones personalizadas
+- Configuración JSON para pipelines
+- API extensible para integraciones futuras</p>
+<p>—</p>
+<p>## Nuevas Transformaciones Implementadas (Fase 7.3)</p>
+<p>### Transformaciones de Codificación Categórica</p>
+<p>#### LabelEncodingTransformation
+- Convierte valores categóricos en etiquetas numéricas.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a codificar</p></li>
+<li><p><cite>handle_unknown</cite>: Cómo manejar valores desconocidos (‘error’, ‘use_encoded_value’, ‘ignore’)</p></li>
+<li><p><cite>handle_missing</cite>: Cómo manejar valores faltantes (‘error’, ‘use_encoded_value’, ‘ignore’)</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Funcionalidades:
+- Codificación reversa mediante <cite>decode_values()</cite></p></li>
+</ul>
+<p>#### OneHotEncodingTransformation
+- Convierte variables categóricas en variables dummy (binarias).
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a codificar</p></li>
+<li><p><cite>drop_first</cite>: Si descartar la primera categoría</p></li>
+<li><p><cite>prefix</cite>: Prefijo para nombres de nuevas columnas</p></li>
+<li><p><cite>prefix_sep</cite>: Separador entre prefijo y nombre de categoría</p></li>
+</ul>
+</div></blockquote>
+<p>#### OrdinalEncodingTransformation
+- Convierte valores categóricos en números ordinales según un orden predefinido.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a codificar</p></li>
+<li><p><cite>encoding_map</cite>: Diccionario con mapeos de valores a códigos</p></li>
+<li><p><cite>handle_unknown</cite>: Cómo manejar valores desconocidos</p></li>
+<li><p><cite>handle_missing</cite>: Cómo manejar valores faltantes</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Funcionalidades:
+- Codificación reversa mediante <cite>decode_values()</cite></p></li>
+</ul>
+<p>#### TargetEncodingTransformation
+- Codifica valores categóricos usando la media de la variable objetivo.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a codificar</p></li>
+<li><p><cite>target_column</cite>: Nombre de la columna objetivo</p></li>
+<li><p><cite>smoothing</cite>: Parámetro de suavizado para reducir overfitting</p></li>
+<li><p><cite>noise</cite>: Ruido a añadir a la codificación para reducir overfitting</p></li>
+<li><p><cite>cv</cite>: Número de pliegues para validación cruzada en el target encoding</p></li>
+</ul>
+</div></blockquote>
+<p>### Transformaciones de Agregación Avanzada</p>
+<p>#### MultiFunctionAggregationTransformation
+- Aplica múltiples funciones de agregación a diferentes columnas.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>groupby_columns</cite>: Lista de columnas para agrupar</p></li>
+<li><p><cite>aggregation_functions</cite>: Diccionario con columnas y funciones a aplicar</p></li>
+</ul>
+</div></blockquote>
+<p>#### AdvancedPivotingTransformation
+- Crea tablas pivote con múltiples índices/columnas.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>index</cite>: Columna o lista de columnas para el índice</p></li>
+<li><p><cite>columns</cite>: Columna o lista de columnas para las columnas del pivote</p></li>
+<li><p><cite>values</cite>: Columna o lista de columnas para los valores</p></li>
+<li><p><cite>aggfunc</cite>: Función o lista de funciones de agregación</p></li>
+<li><p><cite>fill_value</cite>: Valor para rellenar celdas vacías</p></li>
+<li><p><cite>dropna</cite>: Si eliminar filas con todos los valores NaN</p></li>
+<li><p><cite>margins</cite>: Si calcular totales</p></li>
+<li><p><cite>margins_name</cite>: Nombre para la fila/columna de totales</p></li>
+</ul>
+</div></blockquote>
+<p>#### RollingWindowTransformation
+- Aplica funciones de agregación en ventanas deslizantes.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a aplicar la ventana</p></li>
+<li><p><cite>window_size</cite>: Tamaño de la ventana</p></li>
+<li><p><cite>aggregation_function</cite>: Función de agregación (‘mean’, ‘sum’, ‘std’, etc.)</p></li>
+<li><p><cite>min_periods</cite>: Número mínimo de valores en la ventana</p></li>
+<li><p><cite>center</cite>: Si centrar la ventana</p></li>
+<li><p><cite>closed</cite>: Cómo definir los límites de la ventana</p></li>
+</ul>
+</div></blockquote>
+<p>#### ExpandingWindowTransformation
+- Aplica funciones de agregación en ventanas expansivas (que crecen con el tiempo).
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>columns</cite>: Lista de columnas a aplicar la ventana</p></li>
+<li><p><cite>min_periods</cite>: Número mínimo de valores en la ventana</p></li>
+<li><p><cite>center</cite>: Si centrar la ventana</p></li>
+<li><p><cite>aggregation_function</cite>: Función de agregación (‘mean’, ‘sum’, ‘std’, etc.)</p></li>
+</ul>
+</div></blockquote>
+<p>#### GroupByTransformationTransformation
+- Realiza transformaciones por grupos de datos.
+- Parámetros:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>groupby_columns</cite>: Lista de columnas para agrupar</p></li>
+<li><p><cite>transformation_function</cite>: Función de transformación (‘rank’, ‘diff’, ‘shift’, etc.)</p></li>
+<li><p><cite>transformation_columns</cite>: Lista de columnas a transformar</p></li>
+<li><p><cite>new_column_suffix</cite>: Sufijo para nombres de nuevas columnas</p></li>
+</ul>
+</div></blockquote>
+<p>—</p>
+<p>## Métricas de Éxito Fase 7</p>
+<p>### Objetivos Técnicos:
+- [x] Al menos 15 tipos diferentes de transformaciones implementadas (26 ya implementadas)
+- [x] Pipeline funcional con 5+ transformaciones en cadena
+- [x] UI intuitiva con preview en tiempo real (pendiente de Fase 7.4)
+- [x] Cobertura de tests &gt; 85%
+- [x] Documentación completa con ejemplos
+- [x] Rendimiento aceptable para datasets de 1M+ filas</p>
+<p>### Cronograma Estimado:
+- [x] <strong>Fase 7.1</strong>: Arquitectura base (COMPLETADA)
+- [x] <strong>Fase 7.2</strong>: Texto y fechas (COMPLETADA)
+- [x] <strong>Fase 7.3</strong>: Codificación y agregaciones (COMPLETADA)
+- [x] <strong>Fase 7.4.2</strong>: Interfaz de Usuario (COMPLETADA)
+- <strong>Fase 7.4.1</strong>: Sistema de Pipeline (Pendiente)
+- <strong>Fase 7.5</strong>: Optimización y testing (Pendiente)</p>
+<p><strong>Progreso total:</strong> 3.2 de 5 fases completadas (64%)</p>
+<p>—</p>
+<p>## Próximas Tareas Inmediatas</p>
+<p>### Prioridad Inmediata (Fase 7.4)
+- [x] <strong>COMPLETADA</strong> Crear nueva vista “Transformaciones” en el stacked widget
+- [x] <strong>COMPLETADA</strong> Crear panel de herramientas de transformación
+- [x] <strong>COMPLETADA</strong> Implementar preview en tiempo real de resultados
+- [x] <strong>COMPLETADA</strong> Implementar historial de operaciones aplicadas
+1. <strong>Implementar cadena de transformaciones secuenciales (Fase 7.4.1)</strong>
+2. <strong>Implementar validación de compatibilidad entre pasos (Fase 7.4.1)</strong>
+3. <strong>Implementar undo/redo de transformaciones (Fase 7.4.1)</strong>
+4. <strong>Implementar guardado/carga de pipelines (Fase 7.4.1)</strong>
+5. <strong>Optimizar rendimiento de UI de transformaciones</strong>
+6. <strong>Crear tests específicos para la UI de transformaciones</strong></p>
+<p>—</p>
+<p>## Notas de Desarrollo</p>
+<p>### Estado Actual del Sistema:
+- ✅ Sistema de carga de datos completo
+- ✅ Operaciones básicas de limpieza, agregación y pivoteo
+- ✅ Optimizaciones para datasets grandes (virtualización, chunks)
+- ✅ Interfaz de usuario con vistas separadas
+- ✅ Sistema de exportación completo
+- ✅ Sistema de transformaciones con 26 tipos de transformaciones diferentes
+- ✅ Tests unitarios completos con 1175 líneas de código de tests</p>
+<p>### Transformaciones Implementadas:
+- ✅ Transformaciones de columnas (renombrado, cálculo, funciones, eliminación)
+- ✅ Transformaciones matemáticas (log, exp, escalado, normalización)
+- ✅ Transformaciones de texto (limpieza, regex, case, padding)
+- ✅ Transformaciones de fecha/tiempo (parsing, componentes, diferencias, zonas)
+- ✅ Transformaciones de codificación categórica (label, one-hot, ordinal, target)
+- ✅ Transformaciones de agregación avanzada (multi-func, pivoteo, rolling, expanding, groupby)</p>
+<p>### Oportunidades de Expansión:
+- Pipeline de transformaciones con guardado/carga
+- Interfaz de usuario para transformaciones
+- Procesamiento en paralelo para transformaciones independientes
+- Cache de resultados para pipelines complejos
+- Integración con sistemas de machine learning</p>
+<p>—</p>
+<p><em>Este archivo se actualizará a medida que avance la implementación de la Fase 7</em></p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

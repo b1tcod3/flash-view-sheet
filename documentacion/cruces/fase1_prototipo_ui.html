@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cruces/fase1_prototipo_ui.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Prototipo de UI: Funcionalidad de Cruce de Datos</p>
+<p>## Resumen Ejecutivo</p>
+<p>Este documento presenta el diseño de interfaz de usuario para la funcionalidad de cruce de datos, incluyendo mockups detallados, diagramas de flujo y plan de integración con el sistema existente.</p>
+<p>## Diálogo de Configuración de Join (JoinDialog)</p>
+<p>### Mockup Principal</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">┌─────────────────────────────────────────────────────────────┐</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Configurar</span> <span class="pre">Cruce</span> <span class="pre">de</span> <span class="pre">Datos</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">Dataset</span> <span class="pre">Izquierdo:</span> <span class="pre">[ventas_2023.xlsx]</span> <span class="pre">📄</span> <span class="pre">[Cambiar...]</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">(1,250</span> <span class="pre">filas</span> <span class="pre">×</span> <span class="pre">8</span> <span class="pre">columnas)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Cargar</span> <span class="pre">Dataset</span> <span class="pre">Derecho</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">[📁</span> <span class="pre">Seleccionar</span> <span class="pre">archivo...]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Formatos</span> <span class="pre">soportados:</span> <span class="pre">CSV,</span> <span class="pre">Excel,</span> <span class="pre">JSON,</span> <span class="pre">etc.</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">Dataset</span> <span class="pre">Derecho:</span> <span class="pre">[clientes.xlsx]</span> <span class="pre">📄</span> <span class="pre">[Cambiar...]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">(850</span> <span class="pre">filas</span> <span class="pre">×</span> <span class="pre">5</span> <span class="pre">columnas)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160; <span class="pre">Configuración</span> <span class="pre">del</span> <span class="pre">Join</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">Tipo</span> <span class="pre">de</span> <span class="pre">Join:</span> <span class="pre">[Inner</span> <span class="pre">Join</span> <span class="pre">▼]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160; <span class="pre">○</span> <span class="pre">Inner</span> <span class="pre">Join</span> <span class="pre">-</span> <span class="pre">Solo</span> <span class="pre">coincidencias</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160; <span class="pre">○</span> <span class="pre">Left</span> <span class="pre">Join</span>&#160; <span class="pre">-</span> <span class="pre">Todo</span> <span class="pre">izquierdo</span> <span class="pre">+</span> <span class="pre">coincidencias</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160; <span class="pre">○</span> <span class="pre">Right</span> <span class="pre">Join</span> <span class="pre">-</span> <span class="pre">Todo</span> <span class="pre">derecho</span> <span class="pre">+</span> <span class="pre">coincidencias</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160; <span class="pre">○</span> <span class="pre">Cross</span> <span class="pre">Join</span> <span class="pre">-</span> <span class="pre">Producto</span> <span class="pre">cartesiano</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Columnas</span> <span class="pre">para</span> <span class="pre">Join</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Izquierdo:</span> <span class="pre">[cliente_id</span> <span class="pre">▼]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Derecho:</span>&#160; <span class="pre">[id</span> <span class="pre">▼]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">[+</span> <span class="pre">Añadir</span> <span class="pre">columna]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">Opciones</span> <span class="pre">Avanzadas</span> <span class="pre">▼</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Sufijos</span> <span class="pre">para</span> <span class="pre">columnas</span> <span class="pre">duplicadas:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Izquierdo:</span> <span class="pre">[_left]</span>&#160; <span class="pre">Derecho:</span> <span class="pre">[_right]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">□</span> <span class="pre">Validar</span> <span class="pre">integridad</span> <span class="pre">referencial</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">□</span> <span class="pre">Añadir</span> <span class="pre">columna</span> <span class="pre">indicador</span> <span class="pre">(_merge)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">□</span> <span class="pre">Ordenar</span> <span class="pre">resultados</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160; <span class="pre">Preview</span> <span class="pre">de</span> <span class="pre">Resultados</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Estimación:</span> <span class="pre">980</span> <span class="pre">filas</span> <span class="pre">×</span> <span class="pre">12</span> <span class="pre">columnas</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Tiempo</span> <span class="pre">estimado:</span> <span class="pre">~2.3</span> <span class="pre">segundos</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Memoria</span> <span class="pre">requerida:</span> <span class="pre">~45</span> <span class="pre">MB</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">[🔄</span> <span class="pre">Actualizar</span> <span class="pre">Preview]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">Preview</span> <span class="pre">(primeras</span> <span class="pre">10</span> <span class="pre">filas):</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">┌─────────┬────────────┬─────────┬─────────┐</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">│cliente_id│nombre</span>&#160;&#160;&#160;&#160; <span class="pre">│producto│cantidad│</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">├─────────┼────────────┼─────────┼─────────┤</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">│CLI001</span>&#160;&#160; <span class="pre">│Juan</span> <span class="pre">Pérez</span> <span class="pre">│Laptop</span>&#160; <span class="pre">│2</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">│CLI002</span>&#160;&#160; <span class="pre">│María</span> <span class="pre">García│Mouse</span>&#160;&#160; <span class="pre">│1</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">│...</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">│</span> <span class="pre">└─────────┴────────────┴─────────┴─────────┘</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160; <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[⚠️</span> <span class="pre">Validar]</span>&#160;&#160;&#160; <span class="pre">[🚀</span> <span class="pre">Ejecutar</span> <span class="pre">Join]</span>&#160;&#160;&#160; <span class="pre">[❌</span> <span class="pre">Cancelar]</span> <span class="pre">│</span>
+<span class="pre">└─────────────────────────────────────────────────────────────┘</span>
+<span class="pre">`</span></code></p>
+<p>### Estados del Diálogo</p>
+<p>#### Estado Inicial
+- Solo dataset izquierdo disponible (datos principales)
+- Botón “Cargar Dataset Derecho” prominente
+- Opciones de join deshabilitadas</p>
+<p>#### Estado con Datasets Cargados
+- Ambos datasets mostrados con información básica
+- Configuración de join habilitada
+- Preview disponible</p>
+<p>#### Estado con Errores de Validación
+- Iconos de advertencia en campos problemáticos
+- Mensajes de error descriptivos
+- Sugerencias de corrección</p>
+<p>## Vista de Datos Cruzados (JoinedDataView)</p>
+<p>### Mockup de Vista Principal</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">┌─────────────────────────────────────────────────────────────┐</span>
+<span class="pre">│</span> <span class="pre">Flash</span> <span class="pre">View</span> <span class="pre">Sheet</span> <span class="pre">-</span> <span class="pre">Datos</span> <span class="pre">Cruzados</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">📊</span> <span class="pre">Metadatos</span> <span class="pre">del</span> <span class="pre">Cruce</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Tipo:</span> <span class="pre">Inner</span> <span class="pre">Join</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Datasets:</span> <span class="pre">ventas_2023.xlsx</span> <span class="pre">+</span> <span class="pre">clientes.xlsx</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Columnas</span> <span class="pre">join:</span> <span class="pre">cliente_id</span> <span class="pre">=</span> <span class="pre">id</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Resultado:</span> <span class="pre">980</span> <span class="pre">filas</span> <span class="pre">×</span> <span class="pre">12</span> <span class="pre">columnas</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Tiempo</span> <span class="pre">procesamiento:</span> <span class="pre">2.1</span> <span class="pre">segundos</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Memoria</span> <span class="pre">usada:</span> <span class="pre">42</span> <span class="pre">MB</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Estadísticas:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">•</span> <span class="pre">Coincidencias:</span> <span class="pre">980/1,250</span> <span class="pre">(78.4%)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">•</span> <span class="pre">Pérdidas</span> <span class="pre">izquierdo:</span> <span class="pre">270/1,250</span> <span class="pre">(21.6%)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">•</span> <span class="pre">Pérdidas</span> <span class="pre">derecho:</span> <span class="pre">0/850</span> <span class="pre">(0%)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Filtros</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Columna:</span> <span class="pre">[cliente_id</span> <span class="pre">▼]</span>&#160; <span class="pre">Buscar:</span> <span class="pre">[</span>&#160;&#160;&#160;&#160; <span class="pre">]</span> <span class="pre">[Aplicar]</span>&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">[Limpiar</span> <span class="pre">Filtro]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">┌─────────────────────────────────────────────────────┐</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Datos</span> <span class="pre">Cruzados</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">┌─────────┬────────────┬─────────┬─────────┬─────┐</span>&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">│cliente_id│nombre</span>&#160;&#160;&#160;&#160; <span class="pre">│producto│cantidad│origen│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">├─────────┼────────────┼─────────┼─────────┼─────┤</span>&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">│CLI001</span>&#160;&#160; <span class="pre">│Juan</span> <span class="pre">Pérez</span> <span class="pre">│Laptop</span>&#160; <span class="pre">│2</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│ambos</span> <span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">│CLI002</span>&#160;&#160; <span class="pre">│María</span> <span class="pre">García│Mouse</span>&#160;&#160; <span class="pre">│1</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│ambos</span> <span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">│CLI003</span>&#160;&#160; <span class="pre">│Carlos</span> <span class="pre">Ruiz│Teclado</span> <span class="pre">│3</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│izq</span>&#160; <span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">│...</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160;&#160;&#160;&#160; <span class="pre">│...</span>&#160; <span class="pre">│</span>&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">└─────────┴────────────┴─────────┴─────────┴─────┘</span>&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">Página</span> <span class="pre">1</span> <span class="pre">de</span> <span class="pre">98</span> <span class="pre">(1-10</span> <span class="pre">de</span> <span class="pre">980</span> <span class="pre">filas)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">│</span> <span class="pre">[⏮️]</span> <span class="pre">[◀️]</span> <span class="pre">[▶️]</span> <span class="pre">[⏭️]</span>&#160; <span class="pre">Filas</span> <span class="pre">por</span> <span class="pre">página:</span> <span class="pre">[10</span> <span class="pre">▼]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span> <span class="pre">└─────────────────────────────────────────────────────┘</span>&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">│</span>
+<span class="pre">├─────────────────────────────────────────────────────────────┤</span>
+<span class="pre">│</span> <span class="pre">[💾</span> <span class="pre">Exportar...]</span> <span class="pre">[🔄</span> <span class="pre">Nuevo</span> <span class="pre">Cruce]</span> <span class="pre">[📋</span> <span class="pre">Historial]</span> <span class="pre">[❓</span> <span class="pre">Ayuda]</span>&#160; <span class="pre">│</span>
+<span class="pre">└─────────────────────────────────────────────────────────────┘</span>
+<span class="pre">`</span></code></p>
+<p>### Indicadores Visuales</p>
+<p>#### Columna de Origen
+- <strong>ambos</strong>: Fila con datos de ambos datasets
+- <strong>izq</strong>: Fila solo del dataset izquierdo
+- <strong>der</strong>: Fila solo del dataset derecho</p>
+<p>#### Resaltado de Columnas
+- Columnas de join en negrita
+- Columnas con sufijos coloreadas
+- Tooltips con información de origen</p>
+<p>## Integración con UI Existente</p>
+<p>### Modificaciones al Menú Principal</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+Archivo    Editar    Ver    Datos    Ayuda</p>
+<blockquote>
+<div><p>│
+├── Cruzar Datos…
+├── Separar Datos…
+└── Tabla Pivote</p>
+<blockquote>
+<div><p>├── Simple…
+└── Combinada…</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>### Nuevo Menú “Datos”
+- <strong>Cruzar Datos…</strong>: Abre JoinDialog
+- <strong>Separar Datos…</strong>: Funcionalidad existente
+- <strong>Tabla Pivote</strong>: Funcionalidad existente</p>
+<p>### Toolbar Actualizada</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Vista</span> <span class="pre">Principal</span> <span class="pre">|</span> <span class="pre">Vista</span> <span class="pre">de</span> <span class="pre">Datos</span> <span class="pre">|</span> <span class="pre">Vista</span> <span class="pre">Información</span> <span class="pre">|</span> <span class="pre">Vista</span> <span class="pre">Gráficos</span> <span class="pre">|</span> <span class="pre">Cruzar</span> <span class="pre">Datos</span>
+<span class="pre">`</span></code></p>
+<p>## Diagramas de Flujo</p>
+<p>### Flujo de Configuración de Join</p>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a>mermaid
+graph TD</p>
+<blockquote>
+<div><p>A[Usuario selecciona ‘Cruzar Datos’] –&gt; B[JoinDialog se abre]
+B –&gt; C[Dataset izquierdo precargado]
+C –&gt; D[Usuario carga dataset derecho]
+D –&gt; E[Validación automática de compatibilidad]
+E –&gt; F[Usuario configura tipo de join]
+F –&gt; G[Usuario selecciona columnas de join]
+G –&gt; H[Preview automático de resultados]
+H –&gt; I[Usuario ajusta opciones avanzadas]
+I –&gt; J[Validación final]
+J –&gt; K[Usuario ejecuta join]
+K –&gt; L[JoinedDataView muestra resultados]</p>
+</div></blockquote>
+<p><a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a></p>
+<p>### Flujo de Navegación</p>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a>mermaid
+graph TD</p>
+<blockquote>
+<div><p>A[MainWindow] –&gt; B{¿Datos cargados?}
+B –&gt;|No| C[Mostrar MainView]
+B –&gt;|Sí| D[Mostrar DataView]
+D –&gt; E[Usuario selecciona ‘Cruzar Datos’]
+E –&gt; F[JoinDialog modal]
+F –&gt; G{¿Join exitoso?}
+G –&gt;|Sí| H[JoinedDataView]
+G –&gt;|No| I[Mostrar error]
+H –&gt; J[Usuario puede exportar/filtrar]
+J –&gt; K[Volver a DataView normal]</p>
+</div></blockquote>
+<p><a href="#id19"><span class="problematic" id="id20">``</span></a><a href="#id21"><span class="problematic" id="id22">`</span></a></p>
+<p>## Validaciones y Feedback</p>
+<p>### Validaciones en Tiempo Real</p>
+<p>#### Durante Carga de Dataset
+- ✅ Archivo válido
+- ✅ Formato soportado
+- ⚠️ Archivo muy grande (advertencia)
+- ❌ Archivo corrupto</p>
+<p>#### Durante Configuración
+- ✅ Columnas de join compatibles
+- ✅ Tipos de datos matching
+- ⚠️ Columnas duplicadas detectadas
+- ❌ Columnas de join no existen</p>
+<p>#### Durante Preview
+- ✅ Estimación de resultados calculada
+- ✅ Memoria suficiente disponible
+- ⚠️ Tiempo de procesamiento largo
+- ❌ Join causaría out of memory</p>
+<p>### Mensajes de Error</p>
+<p>#### Errores Críticos
+<a href="#id23"><span class="problematic" id="id24">``</span></a>`
+❌ Error: Las columnas de join tienen tipos incompatibles</p>
+<blockquote>
+<div><p>cliente_id (str) ≠ id (int)</p>
+<p>Sugerencia: Convertir tipos o elegir columnas diferentes</p>
+</div></blockquote>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a></p>
+<p>#### Advertencias
+<a href="#id29"><span class="problematic" id="id30">``</span></a>`
+⚠️ Advertencia: Se detectaron 5 columnas duplicadas</p>
+<blockquote>
+<div><p>Se aplicarán sufijos automáticamente: _left, _right</p>
+<p>Columnas afectadas: nombre, email, telefono</p>
+</div></blockquote>
+<p><a href="#id31"><span class="problematic" id="id32">``</span></a><a href="#id33"><span class="problematic" id="id34">`</span></a></p>
+<p>## Optimizaciones de UX</p>
+<p>### Progressive Disclosure
+- Opciones básicas visibles por defecto
+- Opciones avanzadas colapsadas inicialmente
+- Preview se actualiza automáticamente</p>
+<p>### Context-Aware Defaults
+- Sufijos inteligentes basados en nombres de archivos
+- Tipo de join recomendado basado en análisis de datos
+- Columnas de join sugeridas por matching de nombres</p>
+<p>### Performance Indicators
+- Barra de progreso durante carga y procesamiento
+- Estimaciones de tiempo y memoria
+- Cancelación disponible en operaciones largas</p>
+<p>## Accesibilidad</p>
+<p>### Navegación por Teclado
+- Tab order lógico a través de todos los controles
+- Shortcuts para acciones comunes (Ctrl+O para cargar)
+- Enter para ejecutar join</p>
+<p>### Soporte para Lectores de Pantalla
+- Labels descriptivos en todos los controles
+- Información de estado anunciada
+- Tablas con headers apropiados</p>
+<p>## Próximos Pasos</p>
+<ol class="arabic simple">
+<li><p>Implementar JoinDialog con validación básica</p></li>
+<li><p>Crear JoinedDataView heredando de DataView</p></li>
+<li><p>Integrar con MainWindow y menú principal</p></li>
+<li><p>Añadir indicadores visuales y metadatos</p></li>
+<li><p>Implementar sistema de preview</p></li>
+<li><p>Testing de UX con usuarios reales</p></li>
+<li><p>Optimizaciones de performance y accesibilidad</p></li>
+</ol>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

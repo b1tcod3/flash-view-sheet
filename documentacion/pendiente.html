@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pendiente.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan de Tareas Pendientes - Flash View Sheet</p>
+<p>## Análisis de Estado Actual</p>
+<p>Después de revisar el archivo <cite>docs/avances.md</cite> y el código actual del proyecto, se ha identificado que <strong>todas las tareas inmediatas próximas listadas en la sección “Próximas Tareas Inmediatas” ya han sido implementadas</strong>. Específicamente:</p>
+<p>### Tareas Listadas como Pendientes (que ya están completadas):
+- [x] Crear widget de vista principal con botón de carga, card e icono
+- [x] Crear modal de información para detalles del archivo
+- [x] Crear widget de vista de gráficos para charts y stats
+- [x] Actualizar barra de herramientas con botones para cambiar vistas
+- [x] Integrar vistas en MainWindow y manejar cambios
+- [x] Actualizar manejo de datos para aplicar filtros a vista de gráficos</p>
+<p>### Verificación de Implementación:</p>
+<ol class="arabic simple">
+<li><p><strong>Vista Principal (MainView)</strong>: ✅ Implementada en <cite>app/widgets/main_view.py</cite>
+- Contiene botón de carga de archivo
+- Muestra card con información del archivo
+- Incluye icono de spreadsheet (📊)
+- Botón de opciones de carga (visible después de cargar datos)</p></li>
+<li><p><strong>Modal de Información (InfoModal)</strong>: ✅ Implementada en <cite>app/widgets/info_modal.py</cite>
+- Muestra detalles del archivo (nombre, filas, columnas)
+- Lista tipos de datos de columnas
+- Incluye estadísticas descriptivas
+- Funciona como modal (QDialog)</p></li>
+<li><p><strong>Vista de Gráficos (GraphicsView)</strong>: ✅ Implementada en <cite>app/widgets/graphics_view.py</cite>
+- Soporta múltiples tipos de gráficos (histograma, scatter plot, box plot, correlación, línea)
+- Incluye controles para selección de columnas
+- Muestra tabla de datos filtrados
+- Generación asíncrona de gráficos con barra de progreso</p></li>
+<li><p><strong>Barra de Herramientas</strong>: ✅ Implementada en <cite>main.py</cite>
+- Botones para cambiar entre vistas (Vista Principal, Información, Gráficos)
+- Funcionalidad de filtrado integrada
+- Conexiones de señales implementadas</p></li>
+<li><p><strong>Integración en MainWindow</strong>: ✅ Implementada en <cite>main.py</cite>
+- QStackedWidget para manejo de vistas
+- Métodos <cite>switch_view()</cite> y <cite>show_info_modal()</cite>
+- Actualización de datos entre vistas</p></li>
+<li><p><strong>Manejo de Datos con Filtros</strong>: ✅ Implementado
+- Filtros aplicados a vista de gráficos (<cite>graphics_view.update_data()</cite>)
+- Sincronización entre tabla y gráficos
+- Modelo virtualizado para datasets grandes</p></li>
+</ol>
+<p>## Estado del Proyecto</p>
+<p><strong>Conclusión</strong>: El proyecto se encuentra <strong>completamente actualizado</strong> con respecto a las tareas inmediatas listadas. La Fase 6 “Separación de Vistas” está marcada como COMPLETADA en el archivo de avances, y la implementación actual refleja esto.</p>
+<p>### Próximas Fases Futuras (Fase 7+):
+Según el documento de avances, las siguientes mejoras están planificadas pero no son inmediatas:
+- Implementar gráficos y visualizaciones de datos avanzadas
+- <strong>Añadir soporte para más formatos de archivo (JSON, XML, etc.) - PLAN DETALLADO ABAJO</strong>
+- Implementar operaciones de transformación de datos
+- Añadir funcionalidad de exportación a Excel
+- Crear interfaz de configuración de optimizaciones
+- Implementar temas y personalización de UI</p>
+<p>—</p>
+<p>## Plan Detallado: Soporte para Más Formatos de Archivo (Fase 7.2)</p>
+<p>### Formatos Ya Soportados
+- ✅ <strong>Excel</strong>: <cite>.xlsx</cite>, <cite>.xls</cite> (usando <cite>openpyxl</cite> y <cite>pandas</cite>)
+- ✅ <strong>CSV</strong>: <cite>.csv</cite> (con carga por chunks para archivos grandes)
+- ✅ <strong>JSON</strong>: <cite>.json</cite> (usando <cite>pandas.read_json</cite>)
+- ✅ <strong>XML</strong>: <cite>.xml</cite> (usando <cite>pandas.read_xml</cite> o <cite>lxml</cite> como fallback)</p>
+<p>### Formatos Adicionales a Implementar</p>
+<p>#### 1. <strong>TSV (Tab-Separated Values)</strong>
+- <strong>Prioridad</strong>: Alta
+- <strong>Complejidad</strong>: Baja
+- <strong>Implementación</strong>: Extensión de funcionalidad CSV existente
+- <strong>Dependencias</strong>: Ninguna adicional</p>
+<p>#### 2. <strong>Parquet</strong>
+- <strong>Prioridad</strong>: Alta
+- <strong>Complejidad</strong>: Media
+- <strong>Implementación</strong>: Usar <cite>pandas.read_parquet</cite> con <cite>pyarrow</cite> o <cite>fastparquet</cite>
+- <strong>Dependencias</strong>: <cite>pyarrow&gt;=10.0.0</cite> o <cite>fastparquet&gt;=2023.0.0</cite>
+- <strong>Ventajas</strong>: Excelente compresión, rápido para datasets grandes</p>
+<p>#### 3. <strong>HDF5</strong>
+- <strong>Prioridad</strong>: Media
+- <strong>Complejidad</strong>: Media-Alta
+- <strong>Implementación</strong>: Usar <cite>pandas.read_hdf</cite> con <cite>tables</cite> (PyTables)
+- <strong>Dependencias</strong>: <cite>tables&gt;=3.8.0</cite>
+- <strong>Uso</strong>: Datasets científicos grandes</p>
+<p>#### 4. <strong>Feather</strong>
+- <strong>Prioridad</strong>: Media
+- <strong>Complejidad</strong>: Baja
+- <strong>Implementación</strong>: Usar <cite>pandas.read_feather</cite> con <cite>pyarrow</cite>
+- <strong>Dependencias</strong>: <cite>pyarrow&gt;=10.0.0</cite>
+- <strong>Ventajas</strong>: Muy rápido, formato columnar</p>
+<p>#### 5. <strong>Pickle (PKL)</strong>
+- <strong>Prioridad</strong>: Baja
+- <strong>Complejidad</strong>: Baja
+- <strong>Implementación</strong>: Usar <cite>pandas.read_pickle</cite>
+- <strong>Dependencias</strong>: Ninguna adicional
+- <strong>Nota</strong>: Solo para confianza total en la fuente</p>
+<p>#### 6. <strong>SQLite</strong>
+- <strong>Prioridad</strong>: Media
+- <strong>Complejidad</strong>: Media
+- <strong>Implementación</strong>: Usar <cite>pandas.read_sql</cite> con <cite>sqlalchemy</cite>
+- <strong>Dependencias</strong>: Ya incluida (<cite>sqlalchemy&gt;=2.0.0</cite>)
+- <strong>Uso</strong>: Importar desde bases de datos</p>
+<p>#### 7. <strong>YAML</strong>
+- <strong>Prioridad</strong>: Baja
+- <strong>Complejidad</strong>: Media
+- <strong>Implementación</strong>: Usar <cite>pandas.read_json</cite> con preprocesamiento YAML
+- <strong>Dependencias</strong>: <cite>pyyaml&gt;=6.0</cite></p>
+<p>### Arquitectura de Implementación</p>
+<p>#### Patrón de Diseño
+- <strong>Loader Pattern</strong>: Crear una clase base <cite>FileLoader</cite> con método <cite>load()</cite> abstracto
+- <strong>Factory Pattern</strong>: <cite>FileLoaderFactory</cite> que retorna el loader apropiado según extensión
+- <strong>Strategy Pattern</strong>: Cada formato implementa su propia estrategia de carga</p>
+<p>#### Estructura de Código
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">core/loaders/</span>
+<span class="pre">├──</span> <span class="pre">base_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Clase</span> <span class="pre">base</span> <span class="pre">FileLoader</span>
+<span class="pre">├──</span> <span class="pre">csv_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">CSV/TSV</span>
+<span class="pre">├──</span> <span class="pre">excel_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">Excel</span>
+<span class="pre">├──</span> <span class="pre">json_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">JSON</span>
+<span class="pre">├──</span> <span class="pre">xml_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">XML</span>
+<span class="pre">├──</span> <span class="pre">parquet_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">Parquet</span>
+<span class="pre">├──</span> <span class="pre">hdf5_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">HDF5</span>
+<span class="pre">├──</span> <span class="pre">feather_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">Feather</span>
+<span class="pre">├──</span> <span class="pre">pickle_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">Pickle</span>
+<span class="pre">├──</span> <span class="pre">sqlite_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">SQLite</span>
+<span class="pre">└──</span> <span class="pre">yaml_loader.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Loader</span> <span class="pre">para</span> <span class="pre">YAML</span>
+<span class="pre">`</span></code></p>
+<p>#### Integración con UI
+- Actualizar <cite>QFileDialog</cite> en <cite>main.py</cite> para incluir nuevos formatos
+- Modificar <cite>cargar_datos_con_opciones()</cite> para delegar a factory
+- Mantener compatibilidad con opciones existentes (skip_rows, column_names)</p>
+<p>### Plan de Implementación por Fases</p>
+<p>#### Fase 7.2.1: Formatos de Alta Prioridad (Semana 1-2)
+1. <strong>TSV Support</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Extender <cite>csv_loader.py</cite> para detectar TSV por extensión</p></li>
+<li><p>Usar <cite>sep=’t’</cite> en <cite>pandas.read_csv</cite></p></li>
+<li><p>Tests unitarios</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><strong>Parquet Support</strong>
+- Instalar <cite>pyarrow</cite>
+- Crear <cite>parquet_loader.py</cite>
+- Soporte para opciones de carga
+- Tests unitarios</p></li>
+</ol>
+<p>#### Fase 7.2.2: Formatos de Media Prioridad (Semana 3-4)
+3. <strong>Feather Support</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Usar <cite>pyarrow</cite> (ya incluido para Parquet)</p></li>
+<li><p>Crear <cite>feather_loader.py</cite></p></li>
+<li><p>Tests unitarios</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p><strong>SQLite Import Support</strong>
+- Extender funcionalidad existente
+- Crear <cite>sqlite_loader.py</cite>
+- Diálogo para selección de tabla
+- Tests unitarios</p></li>
+</ol>
+<p>#### Fase 7.2.3: Formatos Avanzados (Semana 5-6)
+5. <strong>HDF5 Support</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Instalar <cite>tables</cite></p></li>
+<li><p>Crear <cite>hdf5_loader.py</cite></p></li>
+<li><p>Manejo de keys/grupos HDF5</p></li>
+<li><p>Tests unitarios</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p><strong>YAML Support</strong>
+- Instalar <cite>pyyaml</cite>
+- Crear <cite>yaml_loader.py</cite>
+- Conversión YAML a JSON para pandas
+- Tests unitarios</p></li>
+</ol>
+<p>#### Fase 7.2.4: Formatos de Baja Prioridad (Semana 7-8)
+7. <strong>Pickle Support</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Crear <cite>pickle_loader.py</cite></p></li>
+<li><p>Advertencias de seguridad</p></li>
+<li><p>Tests unitarios</p></li>
+</ul>
+</div></blockquote>
+<p>### Consideraciones Técnicas</p>
+<p>#### Optimización de Rendimiento
+- Mantener carga por chunks para formatos que lo soporten
+- Implementar sampling para preview de archivos grandes
+- Cache inteligente para formatos comprimidos</p>
+<p>#### Manejo de Errores
+- Validación de dependencias al inicio
+- Mensajes de error específicos por formato
+- Fallback a formatos similares cuando sea posible</p>
+<p>#### Compatibilidad
+- Mantener API existente de <cite>cargar_datos_con_opciones()</cite>
+- Soporte para <cite>skip_rows</cite> y <cite>column_names</cite> en todos los formatos
+- Actualizar documentación y tooltips</p>
+<p>#### Testing
+- Tests unitarios para cada loader
+- Tests de integración con UI
+- Tests de rendimiento con archivos grandes
+- Tests de edge cases (archivos corruptos, formatos inválidos)</p>
+<p>### Dependencias Adicionales Requeridas
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">requirements.txt</span> <span class="pre">additions</span>
+<span class="pre">pyarrow&gt;=10.0.0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Para</span> <span class="pre">Parquet</span> <span class="pre">y</span> <span class="pre">Feather</span>
+<span class="pre">tables&gt;=3.8.0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Para</span> <span class="pre">HDF5</span>
+<span class="pre">pyyaml&gt;=6.0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Para</span> <span class="pre">YAML</span>
+<span class="pre">fastparquet&gt;=2023.0.0</span>&#160;&#160; <span class="pre">#</span> <span class="pre">Alternativa</span> <span class="pre">opcional</span> <span class="pre">para</span> <span class="pre">Parquet</span>
+<span class="pre">`</span></code></p>
+<p>### Métricas de Éxito
+- ✅ Soporte para al menos 5 formatos adicionales
+- ✅ Tiempo de carga &lt; 30s para archivos de 100MB
+- ✅ Cobertura de tests &gt; 90%
+- ✅ Compatibilidad backward completa
+- ✅ Documentación actualizada</p>
+<p>### Riesgos y Mitigaciones
+- <strong>Dependencias grandes</strong>: Usar instalación opcional para formatos avanzados
+- <strong>Compatibilidad</strong>: Tests exhaustivos en múltiples plataformas
+- <strong>Rendimiento</strong>: Profiling y optimización durante desarrollo
+- <strong>Seguridad</strong>: Validaciones estrictas para formatos binarios</p>
+<p>## Recomendaciones</p>
+<ol class="arabic simple">
+<li><p><strong>Actualizar Documentación</strong>: El archivo <cite>avances.md</cite> refleja correctamente el estado actual del proyecto.</p></li>
+<li><p><strong>Pruebas de Usuario</strong>: Como sugiere la “Próxima Revisión”, sería beneficioso realizar pruebas exhaustivas con usuarios para validar la usabilidad de las nuevas vistas.</p></li>
+<li><p><strong>Optimizaciones de UX</strong>: Mejorar estilos, animaciones y responsividad de la interfaz.</p></li>
+<li><p><strong>Funcionalidades Avanzadas</strong>: Considerar implementar algunas de las mejoras futuras mencionadas.</p></li>
+</ol>
+<p>## Plan de Acción Inmediato</p>
+<p>Dado que no hay tareas pendientes inmediatas, se recomienda:</p>
+<ol class="arabic simple">
+<li><p>Realizar pruebas exhaustivas de la aplicación completa</p></li>
+<li><p>Documentar cualquier bug o mejora de UX identificada</p></li>
+<li><p>Preparar el proyecto para la siguiente fase de desarrollo</p></li>
+<li><p>Actualizar la fecha de “Próxima Revisión” en <cite>avances.md</cite></p></li>
+</ol>
+<p><strong>Estado Final</strong>: ✅ <strong>No hay tareas pendientes inmediatas</strong> - El proyecto está al día con las especificaciones documentadas.</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

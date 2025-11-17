@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cargar-carpeta/plan.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan de Implementación: Carga de Carpeta con Múltiples Archivos Excel</p>
+<p>## Resumen Ejecutivo</p>
+<p>Se implementará una nueva funcionalidad que permita cargar una carpeta completa con múltiples archivos Excel y consolidarlos en un único dataset. La funcionalidad se integrará en las opciones de carga existentes y en el menú principal de la aplicación.</p>
+<p>## Requerimientos Funcionales</p>
+<p>### Funcionalidades Principales
+- <strong>Selección de carpeta</strong>: Permitir al usuario seleccionar una carpeta que contenga archivos Excel
+- <strong>Escaneo automático</strong>: Identificar automáticamente todos los archivos Excel (.xlsx, .xls) en la carpeta seleccionada
+- <strong>Selección de archivos</strong>: Mostrar lista de archivos encontrados con opción para ignorar archivos específicos por nombre
+- <strong>Alineación de columnas</strong>: Las columnas se alinearán por posición (orden) en lugar de por nombre
+- <strong>Alineación manual</strong>: Permitir arrastrar y soltar columnas para alinearlas manualmente entre archivos
+- <strong>Vista previa</strong>: Mostrar tabla de alineación de columnas antes de la consolidación
+- <strong>Renombrado de columnas</strong>: Permitir cambiar los nombres de las columnas consolidadas
+- <strong>Selección de columnas</strong>: Permitir al usuario seleccionar qué columnas incluir en el consolidado final
+- <strong>Consolidación</strong>: Unir todos los datos en un único DataFrame de Pandas</p>
+<p>### Manejo de Diferencias entre Archivos
+- <strong>Columnas desiguales</strong>: Cuando archivos tienen diferente número de columnas, el usuario podrá elegir:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ignorar columnas adicionales</p></li>
+<li><p>Crear columnas vacías para archivos con menos columnas</p></li>
+<li><p>Decidir caso por caso</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>Nombres de columnas</strong>: Los nombres originales se preservarán pero podrán ser renombrados globalmente</p></li>
+</ul>
+<p>## Arquitectura Propuesta</p>
+<p>### Componentes del Sistema</p>
+<p>#### 1. Core Components
+- <strong>`FolderLoader`</strong>: Clase principal para manejar la carga de carpetas</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ubicación: <cite>core/loaders/folder_loader.py</cite></p></li>
+<li><p>Responsabilidades:
+- Escanear carpeta en busca de archivos Excel
+- Validar archivos soportados
+- Cargar metadata de cada archivo (columnas, filas, etc.)</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>`ExcelConsolidator`</strong>: Clase para consolidar múltiples DataFrames
+- Ubicación: <cite>core/consolidation/excel_consolidator.py</cite>
+- Responsabilidades:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Alinear columnas por posición</p></li>
+<li><p>Manejar diferencias en estructura</p></li>
+<li><p>Aplicar selección de columnas</p></li>
+<li><p>Aplicar renombrado de columnas</p></li>
+<li><p>Consolidar datos en único DataFrame</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>#### 2. UI Components
+- <strong>`FolderLoadDialog`</strong>: Diálogo principal para configuración de carga de carpeta</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ubicación: <cite>app/widgets/folder_load_dialog.py</cite></p></li>
+<li><p>Elementos:
+- Selector de carpeta
+- Lista de archivos con checkboxes para selección
+- Vista previa de alineación de columnas
+- Opciones de selección de columnas
+- Opciones de renombrado de columnas
+- Configuración de manejo de diferencias</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>`ColumnAlignmentPreview`</strong>: Widget para mostrar vista previa de alineación
+- Ubicación: <cite>app/widgets/column_alignment_preview.py</cite>
+- Funcionalidad:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Tabla que muestra columnas de cada archivo alineadas por posición</p></li>
+<li><p>Funcionalidad de arrastrar y soltar para realinear columnas manualmente</p></li>
+<li><p>Checkboxes para incluir/excluir columnas del consolidado</p></li>
+<li><p>Indicadores visuales para diferencias y alineaciones automáticas</p></li>
+<li><p>Opciones de renombrado inline</p></li>
+<li><p>Botones para auto-alinear por posición o nombre</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>#### 3. Modelos de Datos
+- <strong>`FolderLoadConfig`</strong>: Configuración para carga de carpeta</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ubicación: <cite>core/models/folder_load_config.py</cite></p></li>
+<li><p>Propiedades:
+- Ruta de carpeta
+- Lista de archivos a incluir/excluir
+- Lista de columnas a incluir/excluir
+- Estrategia de alineación de columnas
+- Mapeo de renombrado de columnas</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>`FileMetadata`</strong>: Metadata de cada archivo Excel
+- Ubicación: <cite>core/models/file_metadata.py</cite>
+- Propiedades:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Nombre de archivo</p></li>
+<li><p>Número de filas/columnas</p></li>
+<li><p>Nombres de columnas</p></li>
+<li><p>Tamaño del archivo</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Flujo de Usuario</p>
+<p>### Paso 1: Selección de Carpeta
+1. Usuario hace clic en “Cargar Carpeta” en la vista principal
+2. Se abre diálogo de selección de carpeta
+3. Sistema escanea automáticamente archivos Excel en la carpeta</p>
+<p>### Paso 2: Configuración de Archivos
+1. Se muestra lista de archivos encontrados
+2. Usuario puede desmarcar archivos que desea ignorar
+3. Sistema carga metadata de cada archivo seleccionado</p>
+<p>### Paso 3: Vista Previa de Alineación
+1. Se muestra tabla con columnas alineadas automáticamente por posición
+2. Cada columna muestra los nombres de las columnas correspondientes de cada archivo
+3. Usuario puede arrastrar y soltar columnas para realinearlas manualmente
+4. Botones disponibles para auto-alinear por posición o intentar por nombre
+5. Usuario puede identificar y resolver conflictos o diferencias</p>
+<p>### Paso 4: Configuración de Columnas
+1. Usuario puede seleccionar qué columnas incluir/excluir del consolidado
+2. Usuario puede renombrar las columnas consolidadas
+3. Se configuran opciones para manejar diferencias entre archivos
+4. Se valida la configuración</p>
+<p>### Paso 5: Consolidación
+1. Sistema procesa todos los archivos según configuración
+2. Se muestra progreso de carga
+3. Datos consolidados se cargan en la aplicación principal</p>
+<p>## Consideraciones Técnicas</p>
+<p>### Rendimiento
+- <strong>Carga diferida</strong>: Los archivos se cargarán completamente solo cuando sea necesario
+- <strong>Procesamiento por lotes</strong>: Para carpetas grandes, procesar archivos en lotes
+- <strong>Validación previa</strong>: Verificar compatibilidad antes de procesar completamente</p>
+<p>### Manejo de Errores
+- <strong>Archivos corruptos</strong>: Saltar archivos que no se puedan leer
+- <strong>Estructuras incompatibles</strong>: Alertar sobre diferencias críticas
+- <strong>Límites de memoria</strong>: Implementar chunking para datasets grandes</p>
+<p>### Compatibilidad
+- <strong>Formatos soportados</strong>: .xlsx y .xls inicialmente
+- <strong>Extensiones futuras</strong>: Posibilidad de extender a otros formatos
+- <strong>Versiones de Excel</strong>: Compatibilidad con diferentes versiones</p>
+<p>## Plan de Implementación</p>
+<p>### Fase 1: Arquitectura Base (Semanas 1-2)
+- [ ] Crear clases base <cite>FolderLoader</cite> y <cite>ExcelConsolidator</cite>
+- [ ] Implementar modelos de datos <cite>FolderLoadConfig</cite> y <cite>FileMetadata</cite>
+- [ ] Crear estructura básica del diálogo <cite>FolderLoadDialog</cite></p>
+<p>### Fase 2: Funcionalidad Core (Semanas 3-4)
+- [ ] Implementar escaneo de carpeta y detección de archivos
+- [ ] Desarrollar lógica de alineación de columnas por posición
+- [ ] Crear sistema de consolidación de DataFrames</p>
+<p>### Fase 3: Interfaz de Usuario (Semanas 5-6)
+- [ ] Desarrollar <cite>ColumnAlignmentPreview</cite> widget con drag-and-drop
+- [ ] Implementar lista de archivos con selección
+- [ ] Crear opciones de selección de columnas
+- [ ] Crear opciones de renombrado de columnas
+- [ ] Implementar lógica de arrastrar y soltar para realineación manual</p>
+<p>### Fase 4: Integración y Testing (Semanas 7-8)
+- [ ] Integrar con sistema existente de carga
+- [ ] Crear tests unitarios y de integración
+- [ ] Probar casos edge y manejo de errores</p>
+<p>### Fase 5: Documentación y Optimización (Semana 9)
+- [ ] Actualizar documentación de usuario
+- [ ] Optimizar rendimiento para casos de uso comunes
+- [ ] Crear ejemplos de uso</p>
+<p>## Riesgos y Mitigaciones</p>
+<p>### Riesgos Técnicos
+- <strong>Diferencias en estructura de archivos</strong>: Mitigación - Vista previa detallada y opciones flexibles
+- <strong>Rendimiento con carpetas grandes</strong>: Mitigación - Procesamiento por lotes y carga diferida
+- <strong>Compatibilidad con versiones de Excel</strong>: Mitigación - Usar librerías robustas como openpyxl</p>
+<p>### Riesgos de Usuario
+- <strong>Complejidad de configuración</strong>: Mitigación - Interfaz intuitiva con vista previa
+- <strong>Errores de alineación</strong>: Mitigación - Validación automática y advertencias claras</p>
+<p>## Métricas de Éxito</p>
+<ul class="simple">
+<li><p><strong>Funcionalidad</strong>: Capacidad de consolidar correctamente archivos con diferentes estructuras</p></li>
+<li><p><strong>Usabilidad</strong>: Tiempo promedio para configurar una carga de carpeta &lt; 5 minutos</p></li>
+<li><p><strong>Rendimiento</strong>: Procesar carpeta con 50 archivos en &lt; 30 segundos</p></li>
+<li><p><strong>Confiabilidad</strong>: Tasa de éxito &gt; 95% en archivos Excel válidos</p></li>
+</ul>
+<p>## Próximos Pasos</p>
+<ol class="arabic simple">
+<li><p>Revisar y aprobar este plan</p></li>
+<li><p>Comenzar implementación de la Fase 1</p></li>
+<li><p>Crear prototipos de UI para validar la experiencia de usuario</p></li>
+<li><p>Definir casos de prueba específicos</p></li>
+</ol>
+<p>—</p>
+<p><strong>Fecha de creación</strong>: Noviembre 2025
+<strong>Versión del plan</strong>: 1.0
+<strong>Estado</strong>: Pendiente de aprobación</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

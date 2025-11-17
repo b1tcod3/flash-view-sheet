@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>} &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">}</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/testing_documentation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Documentación de Testing: Exportación de Datos Separados</p>
+<p>## Resumen Ejecutivo</p>
+<p>Esta documentación cubre la suite completa de testing implementada para la funcionalidad de exportación de datos separados con plantillas Excel. El sistema de testing incluye pruebas unitarias, de integración, de rendimiento y benchmarks específicos, garantizando la calidad y eficiencia de la implementación.</p>
+<p>## Tabla de Contenidos</p>
+<ol class="arabic simple">
+<li><p>[Descripción General](#descripción-general)</p></li>
+<li><p>[Tests Unitarios](#tests-unitarios)</p></li>
+<li><p>[Tests de Integración](#tests-de-integración)</p></li>
+<li><p>[Tests de Rendimiento](#tests-de-rendimiento)</p></li>
+<li><p>[Benchmarks y Métricas](#benchmarks-y-métricas)</p></li>
+<li><p>[Configuración del Entorno de Testing](#configuración-del-entorno-de-testing)</p></li>
+<li><p>[Ejecución de Tests](#ejecución-de-tests)</p></li>
+<li><p>[Interpretación de Resultados](#interpretación-de-resultados)</p></li>
+<li><p>[Troubleshooting](#troubleshooting)</p></li>
+<li><p>[Mantenimiento de Tests](#mantenimiento-de-tests)</p></li>
+</ol>
+<p>## Descripción General</p>
+<p>### Objetivos del Testing
+- <strong>Calidad</strong>: Garantizar que todas las funcionalidades trabajen correctamente
+- <strong>Rendimiento</strong>: Validar que se cumplan los objetivos de velocidad y memoria
+- <strong>Robustez</strong>: Probar manejo de casos especiales y errores
+- <strong>Integración</strong>: Verificar compatibilidad con el sistema existente
+- <strong>Regresión</strong>: Prevenir que nuevas funcionalidades rompan las existentes</p>
+<p>### Arquitectura del Testing
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">tests/</span>
+<span class="pre">├──</span> <span class="pre">test_excel_template_splitter.py</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">unitarios</span>
+<span class="pre">├──</span> <span class="pre">test_export_separated_dialog.py</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">de</span> <span class="pre">UI</span>
+<span class="pre">├──</span> <span class="pre">test_integration_export_separated.py</span> <span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">de</span> <span class="pre">integración</span>
+<span class="pre">├──</span> <span class="pre">test_performance_export_separated.py</span> <span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">de</span> <span class="pre">rendimiento</span>
+<span class="pre">└──</span> <span class="pre">test_integration_export_separated_expanded.py</span> <span class="pre">#</span> <span class="pre">Tests</span> <span class="pre">extendidos</span>
+<span class="pre">`</span></code></p>
+<p>## Tests Unitarios</p>
+<p>### Archivo: <cite>test_excel_template_splitter.py</cite></p>
+<p><strong>Propósito</strong>: Validar componentes individuales de la lógica de separación</p>
+<p><strong>Cobertura Principal</strong>:
+- ExcelTemplateSplitter class
+- Funciones de configuración
+- Validación de parámetros
+- Manejo de casos especiales básicos</p>
+<p><strong>Tests Incluidos</strong>:
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+class TestExcelTemplateSplitter(unittest.TestCase):</p>
+<blockquote>
+<div><p>def test_splitter_initialization()
+def test_configuration_validation()
+def test_dataframe_processing()
+def test_error_handling()
+def test_column_mapping()</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p><strong>Métricas de Cobertura</strong>:
+- Cobertura de código: &gt; 90%
+- Líneas de código probadas: 200+ líneas
+- Casos de prueba: 15+ casos</p>
+<p>### Archivo: <cite>test_export_separated_dialog.py</cite></p>
+<p><strong>Propósito</strong>: Validar la interfaz de usuario y sus componentes</p>
+<p><strong>Cobertura Principal</strong>:
+- ExportSeparatedDialog widget
+- Componentes de mapeo de columnas
+- Validación en tiempo real
+- Interacción usuario-sistema</p>
+<p><strong>Tests Incluidos</strong>:
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+class TestExportSeparatedDialog(unittest.TestCase):</p>
+<blockquote>
+<div><p>def test_dialog_initialization()
+def test_column_selection_validation()
+def test_template_selection()
+def test_file_preview_generation()
+def test_configuration_validation()</p>
+</div></blockquote>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>## Tests de Integración</p>
+<p>### Archivo: <cite>test_integration_export_separated.py</cite></p>
+<p><strong>Propósito</strong>: Validar el flujo completo de extremo a extremo</p>
+<p><strong>Casos de Prueba Principales</strong>:
+1. <strong>Separación Básica</strong>: DataFrame simple → archivos Excel separados
+2. <strong>Plantilla Excel</strong>: Uso de plantilla con preservación de formato
+3. <strong>Mapeo de Columnas</strong>: Conversión automática DataFrame → Excel
+4. <strong>Manejo de Nulos</strong>: Procesamiento de valores nulos en columna de separación
+5. <strong>Manejo de Errores</strong>: Respuesta ante configuraciones inválidas</p>
+<p><strong>Configuración de Pruebas</strong>:
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+# Datos de prueba estándar
+df_test = pd.DataFrame({</p>
+<blockquote>
+<div><p>‘Categoria’: [‘A’, ‘B’, ‘C’] * 100,
+‘Valor1’: range(300),
+‘Valor2’: [f’Texto_{i}’ for i in range(300)],
+‘Fecha’: pd.date_range(‘2020-01-01’, periods=300, freq=’D’)</p>
+</div></blockquote>
+<p>})</p>
+<p># Configuración estándar
+config_test = {</p>
+<blockquote>
+<div><p>‘separator_column’: ‘Categoria’,
+‘template_path’: ‘path/to/template.xlsx’,
+‘start_cell’: ‘A2’,
+‘output_folder’: ‘output/’,
+‘file_template’: ‘{valor}.xlsx’</p>
+</div></blockquote>
+<section id="id21">
+<h1>}<a class="headerlink" href="#id21" title="Link to this heading"></a></h1>
+<p>### Archivo: <cite>test_integration_export_separated_expanded.py</cite></p>
+<p><strong>Propósito</strong>: Pruebas extendidas de integración para casos complejos</p>
+<p><strong>Casos de Prueba Extendidos</strong>:
+- Datasets grandes (&gt;50K filas)
+- Múltiples hojas Excel
+- Plantillas con formatos complejos
+- Concurrencia básica
+- Cancelación de operaciones</p>
+<p>## Tests de Rendimiento</p>
+<p>### Archivo: <cite>test_performance_export_separated.py</cite></p>
+<p><strong>Propósito</strong>: Validar que el sistema cumple con objetivos de rendimiento</p>
+<p>#### Métricas de Rendimiento Medidas</p>
+<p><strong>Objetivos de Referencia</strong>:
+- Datasets Pequeños (&lt; 10K filas): &lt; 30 segundos, &lt; 100MB memoria
+- Datasets Medianos (10K-100K filas): &lt; 3 minutos, &lt; 500MB memoria
+- Datasets Grandes (100K-1M filas): &lt; 15 minutos, &lt; 2GB memoria
+- Throughput: &gt; 50 filas/segundo para datasets grandes</p>
+<p>#### Tests de Rendimiento Implementados</p>
+<ol class="arabic simple">
+<li><p><strong>test_small_dataset_performance()</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Dataset:</span> <span class="pre">500</span> <span class="pre">filas,</span> <span class="pre">5</span> <span class="pre">grupos</span>
+<span class="pre">#</span> <span class="pre">Verificaciones:</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Tiempo</span> <span class="pre">&lt;</span> <span class="pre">10</span> <span class="pre">segundos</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Throughput</span> <span class="pre">&gt;</span> <span class="pre">50</span> <span class="pre">filas/segundo</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Memoria</span> <span class="pre">&lt;</span> <span class="pre">50MB</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>test_medium_dataset_performance()</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Dataset:</span> <span class="pre">5,000</span> <span class="pre">filas,</span> <span class="pre">10</span> <span class="pre">grupos</span>
+<span class="pre">#</span> <span class="pre">Verificaciones:</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Tiempo</span> <span class="pre">&lt;</span> <span class="pre">60</span> <span class="pre">segundos</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Throughput</span> <span class="pre">&gt;</span> <span class="pre">50</span> <span class="pre">filas/segundo</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Éxito</span> <span class="pre">en</span> <span class="pre">procesamiento</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>test_memory_usage_optimization()</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Dataset:</span> <span class="pre">10,000</span> <span class="pre">filas</span>
+<span class="pre">#</span> <span class="pre">Verificaciones:</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Uso</span> <span class="pre">de</span> <span class="pre">memoria</span> <span class="pre">&lt;</span> <span class="pre">límite</span> <span class="pre">configurado</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Gestión</span> <span class="pre">eficiente</span> <span class="pre">de</span> <span class="pre">recursos</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Sin</span> <span class="pre">memory</span> <span class="pre">leaks</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>test_chunking_performance_impact()</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Comparación:</span> <span class="pre">con</span> <span class="pre">y</span> <span class="pre">sin</span> <span class="pre">chunking</span>
+<span class="pre">#</span> <span class="pre">Verificaciones:</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Chunking</span> <span class="pre">reduce</span> <span class="pre">uso</span> <span class="pre">de</span> <span class="pre">memoria</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Tiempo</span> <span class="pre">adicional</span> <span class="pre">aceptable</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Funcionalidad</span> <span class="pre">preservada</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>test_stress_test_extreme_conditions()</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Dataset:</span> <span class="pre">5,000</span> <span class="pre">filas,</span> <span class="pre">100</span> <span class="pre">grupos</span>
+<span class="pre">#</span> <span class="pre">Verificaciones:</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Sistema</span> <span class="pre">sobrevive</span> <span class="pre">condiciones</span> <span class="pre">extremas</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Procesa</span> <span class="pre">mayoría</span> <span class="pre">de</span> <span class="pre">grupos</span>
+<span class="pre">#</span> <span class="pre">-</span> <span class="pre">Manejo</span> <span class="pre">robusto</span> <span class="pre">de</span> <span class="pre">memoria</span>
+<span class="pre">`</span></code></p></li>
+</ol>
+<p>#### Sistema de Medición</p>
+<p><strong>Clase PerformanceMetrics</strong>:
+<a href="#id22"><span class="problematic" id="id23">``</span></a><a href="#id24"><span class="problematic" id="id25">`</span></a>python
+class PerformanceMetrics:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def add_measurement(name, duration, memory_peak_mb,</dt><dd><p>rows_processed, groups_processed, success=True)</p>
+</dd>
+</dl>
+<p>def get_summary() -&gt; dict  # Resumen estadístico
+def generate_report() -&gt; str  # Reporte legible</p>
+</div></blockquote>
+<p><a href="#id26"><span class="problematic" id="id27">``</span></a><a href="#id28"><span class="problematic" id="id29">`</span></a></p>
+<p><strong>Clase MemoryMonitor</strong>:
+<a href="#id30"><span class="problematic" id="id31">``</span></a><a href="#id32"><span class="problematic" id="id33">`</span></a>python
+class MemoryMonitor:</p>
+<blockquote>
+<div><p>&#64;staticmethod
+def get_memory_mb()  # Memoria actual
+&#64;staticmethod
+def get_peak_memory_mb()  # Memoria pico usando tracemalloc</p>
+</div></blockquote>
+<p><a href="#id34"><span class="problematic" id="id35">``</span></a><a href="#id36"><span class="problematic" id="id37">`</span></a></p>
+<p><strong>Context Manager measure_performance</strong>:
+<a href="#id38"><span class="problematic" id="id39">``</span></a><a href="#id40"><span class="problematic" id="id41">`</span></a>python
+&#64;contextmanager
+def measure_performance(test_name, metrics):</p>
+<blockquote>
+<div><p># Medición automática de tiempo y memoria
+# Cleanup automático de tracemalloc
+# Cálculo de métricas derivadas</p>
+</div></blockquote>
+<p><a href="#id42"><span class="problematic" id="id43">``</span></a><a href="#id44"><span class="problematic" id="id45">`</span></a></p>
+<p>## Benchmarks y Métricas</p>
+<p>### Objetivos de Benchmark</p>
+<div class="line-block">
+<div class="line">Categoría | Métrica | Objetivo | Resultado Típico |</div>
+</div>
+<p><a href="#id89"><span class="problematic" id="id90">|-----------|</span></a>———<a href="#id91"><span class="problematic" id="id92">|----------|</span></a>——————|
+| <strong>Velocidad</strong> | Tiempo procesamiento | &lt; 3x exportación normal | 2-5x típico |
+| <strong>Memoria</strong> | Pico de memoria | &lt; 2GB para 1M filas | 500MB-1GB |
+| <strong>Throughput</strong> | Filas procesadas/segundo | &gt; 50 filas/s | 100-500 filas/s |
+| <strong>Fiabilidad</strong> | Tasa de éxito | &gt; 95% | 98-100% |
+| <strong>Formato</strong> | Preservación Excel | 100% | 100% |</p>
+<p>### Reportes Generados</p>
+<p><strong>Ejemplo de Reporte de Rendimiento</strong>:
+<a href="#id46"><span class="problematic" id="id47">``</span></a>`
+=== REPORTE DE RENDIMIENTO ===
+Total de pruebas: 5
+Pruebas exitosas: 5
+Pruebas fallidas: 0</p>
+<p>MÉTRICAS PROMEDIO:
+- Duración: 4.23 segundos
+- Memoria pico: 45.67 MB
+- Rendimiento: 2,156 filas/segundo</p>
+<p>MÉTRICAS EXTREMAS:
+- Memoria máxima: 67.32 MB
+- Rendimiento mínimo: 1,234 filas/segundo
+- Rendimiento máximo: 3,456 filas/segundo</p>
+<p>DETALLES POR PRUEBA:
+1. Dataset Pequeño (500 filas) ✓</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Duración: 0.34s</p></li>
+<li><p>Memoria: 12.45MB</p></li>
+<li><p>Rendimiento: 1,470 filas/s</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id48">
+<h1>…<a class="headerlink" href="#id48" title="Link to this heading"></a></h1>
+<p>## Configuración del Entorno de Testing</p>
+<p>### Dependencias Requeridas</p>
+<p><strong>Dependencias Principales</strong>:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pandas&gt;=1.5.0</span>
+<span class="pre">openpyxl&gt;=3.1.0</span>
+<span class="pre">PySide6&gt;=6.0.0</span>
+<span class="pre">`</span></code></p>
+<p><strong>Dependencias de Testing</strong> (opcional):
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">psutil&gt;=5.8.0</span>&#160; <span class="pre">#</span> <span class="pre">Para</span> <span class="pre">medición</span> <span class="pre">avanzada</span> <span class="pre">de</span> <span class="pre">memoria</span>
+<span class="pre">pytest&gt;=7.0.0</span>&#160; <span class="pre">#</span> <span class="pre">Framework</span> <span class="pre">de</span> <span class="pre">testing</span>
+<span class="pre">`</span></code></p>
+<p><strong>Dependencias Estándar</strong> (sin instalación):
+- unittest (incluido en Python)
+- tempfile, os, shutil
+- tracemalloc (incluido en Python)
+- resource (incluido en Python)</p>
+<p>### Configuración de Pytest</p>
+<p><strong>Archivo: pytest.ini</strong> (opcional):
+<code class="docutils literal notranslate"><span class="pre">`ini</span>
+<span class="pre">[tool:pytest]</span>
+<span class="pre">testpaths</span> <span class="pre">=</span> <span class="pre">tests</span>
+<span class="pre">python_files</span> <span class="pre">=</span> <span class="pre">test_*.py</span>
+<span class="pre">python_classes</span> <span class="pre">=</span> <span class="pre">Test*</span>
+<span class="pre">addopts</span> <span class="pre">=</span> <span class="pre">-v</span> <span class="pre">--tb=short</span>
+<span class="pre">`</span></code></p>
+<p>## Ejecución de Tests</p>
+<p>### Ejecución Completa
+<a href="#id49"><span class="problematic" id="id50">``</span></a><a href="#id51"><span class="problematic" id="id52">`</span></a>bash
+# Todos los tests
+python3 -m pytest tests/ -v</p>
+<p># Tests de rendimiento específicamente
+python3 -m pytest tests/test_performance_export_separated.py -v</p>
+<p># Con reporte de cobertura
+python3 -m pytest tests/ –cov=core.data_handler –cov-report=html
+<a href="#id53"><span class="problematic" id="id54">``</span></a><a href="#id55"><span class="problematic" id="id56">`</span></a></p>
+<p>### Ejecución Individual
+<a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a>bash
+# Test específico
+python3 -m pytest tests/test_performance_export_separated.py::TestExportSeparatedPerformance::test_small_dataset_performance -v</p>
+<p># Test unitario
+python3 -m pytest tests/test_excel_template_splitter.py -v</p>
+<p># Test de integración
+python3 -m pytest tests/test_integration_export_separated.py -v
+<a href="#id61"><span class="problematic" id="id62">``</span></a><a href="#id63"><span class="problematic" id="id64">`</span></a></p>
+<p>### Ejecución con Python Directo
+<a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a>bash
+# Test de rendimiento standalone
+python3 tests/test_performance_export_separated.py</p>
+<p># Generar reporte de rendimiento
+python3 -c ”
+import sys
+sys.path.insert(0, ‘.’)
+from tests.test_performance_export_separated import *
+suite = unittest.TestLoader().loadTestsFromModule(sys.modules[‘tests.test_performance_export_separated’])
+runner = unittest.TextTestRunner(verbosity=2)
+result = runner.run(suite)
+”
+<a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a></p>
+<p>## Interpretación de Resultados</p>
+<p>### Códigos de Estado</p>
+<p><strong>Tests Unitarios</strong>:
+- ✅ <strong>PASS</strong>: Funcionalidad trabajando correctamente
+- ❌ <strong>FAIL</strong>: Error en lógica o configuración incorrecta
+- ⚠️ <strong>SKIP</strong>: Test omitido (dependencia faltante)
+- 🔄 <strong>ERROR</strong>: Error en ejecución del test</p>
+<p><strong>Tests de Rendimiento</strong>:
+- ✅ <strong>OPTIMAL</strong>: Mejor que objetivo establecido
+- ✓ <strong>GOOD</strong>: Cumple objetivos
+- ⚠️ <strong>SLOW</strong>: Dentro de límites pero lento
+- ❌ <strong>FAILED</strong>: Excede límites de rendimiento</p>
+<p>### Análisis de Métricas</p>
+<p><strong>Tiempo de Procesamiento</strong>:
+- <strong>Dataset Pequeño (&lt;1K)</strong>: &lt; 10 segundos (excelente)
+- <strong>Dataset Mediano (1K-50K)</strong>: &lt; 60 segundos (bueno)
+- <strong>Dataset Grande (&gt;50K)</strong>: &lt; 300 segundos (aceptable)</p>
+<p><strong>Uso de Memoria</strong>:
+- <strong>Base System</strong>: &lt; 50MB adicional
+- <strong>Dataset Pequeño</strong>: &lt; 100MB pico
+- <strong>Dataset Mediano</strong>: &lt; 500MB pico
+- <strong>Dataset Grande</strong>: &lt; 2GB pico</p>
+<p>### Reportes de Análisis</p>
+<p><strong>Tendencias a Monitorear</strong>:
+- Tiempo promedio por tamaño de dataset
+- Uso de memoria pico por número de grupos
+- Tasa de éxito por tipo de configuración
+- Throughput por características de datos</p>
+<p>## Troubleshooting</p>
+<p>### Problemas Comunes</p>
+<p><strong>1. ImportError: cannot import name ‘OptimizationConfig’</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Solución:</span> <span class="pre">Verificar</span> <span class="pre">que</span> <span class="pre">se</span> <span class="pre">importe</span> <span class="pre">desde</span> <span class="pre">config.py</span>
+<span class="pre">from</span> <span class="pre">config</span> <span class="pre">import</span> <span class="pre">optimization_config</span>
+<span class="pre">#</span> <span class="pre">NO:</span> <span class="pre">from</span> <span class="pre">core.data_handler</span> <span class="pre">import</span> <span class="pre">OptimizationConfig</span>
+<span class="pre">`</span></code></p>
+<p><strong>2. openpyxl ImportError</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Solución:</span> <span class="pre">Instalar</span> <span class="pre">openpyxl</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">openpyxl&gt;=3.1.0</span>
+<span class="pre">`</span></code></p>
+<p><strong>3. psutil ImportError (Warning)</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">No</span> <span class="pre">es</span> <span class="pre">crítico</span> <span class="pre">-</span> <span class="pre">el</span> <span class="pre">sistema</span> <span class="pre">usa</span> <span class="pre">fallback</span> <span class="pre">automáticamente</span>
+<span class="pre">#</span> <span class="pre">Para</span> <span class="pre">eliminar</span> <span class="pre">warning:</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">psutil&gt;=5.8.0</span>
+<span class="pre">`</span></code></p>
+<p><strong>4. Tests de Rendimiento Lentos</strong>
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">#</span> <span class="pre">Reducir</span> <span class="pre">tamaño</span> <span class="pre">de</span> <span class="pre">datasets</span> <span class="pre">en</span> <span class="pre">configuración</span> <span class="pre">de</span> <span class="pre">test</span>
+<span class="pre">df_small</span> <span class="pre">=</span> <span class="pre">self.create_test_dataframe(100,</span> <span class="pre">num_groups=2)</span>&#160; <span class="pre">#</span> <span class="pre">Reducido</span> <span class="pre">de</span> <span class="pre">500</span>
+<span class="pre">df_medium</span> <span class="pre">=</span> <span class="pre">self.create_test_dataframe(1000,</span> <span class="pre">num_groups=5)</span>&#160; <span class="pre">#</span> <span class="pre">Reducido</span> <span class="pre">de</span> <span class="pre">5000</span>
+<span class="pre">`</span></code></p>
+<p>### Debugging de Tests</p>
+<p><strong>Habilitar Logging Detallado</strong>:
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">import</span> <span class="pre">logging</span>
+<span class="pre">logging.basicConfig(level=logging.DEBUG)</span>
+<span class="pre">`</span></code></p>
+<p><strong>Ejecutar con Pdb</strong>:
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">import</span> <span class="pre">pdb;</span> <span class="pre">pdb.set_trace()</span>&#160; <span class="pre">#</span> <span class="pre">Breakpoint</span> <span class="pre">en</span> <span class="pre">test</span> <span class="pre">específico</span>
+<span class="pre">`</span></code></p>
+<p><strong>Verificar Estado de Datos</strong>:
+<a href="#id73"><span class="problematic" id="id74">``</span></a><a href="#id75"><span class="problematic" id="id76">`</span></a>python
+def test_debug_data(self):</p>
+<blockquote>
+<div><p>print(f”DataFrame shape: {self.df.shape}”)
+print(f”Columna separación: {self.df[‘columna’].value_counts()}”)
+print(f”Archivos generados: {os.listdir(self.output_dir)}”)</p>
+</div></blockquote>
+<p><a href="#id77"><span class="problematic" id="id78">``</span></a><a href="#id79"><span class="problematic" id="id80">`</span></a></p>
+<p>## Mantenimiento de Tests</p>
+<p>### Actualización Regular</p>
+<p><strong>Revisión Mensual</strong>:
+- Verificar que tests sigan pasando con nuevas funcionalidades
+- Actualizar datasets de prueba si cambian formatos
+- Revisar métricas de rendimiento contra benchmarks</p>
+<p><strong>Revisión Trimestral</strong>:
+- Evaluar cobertura de código
+- Actualizar objetivos de rendimiento si es necesario
+- Agregar tests para nuevos casos de uso</p>
+<p>### Expansión de Tests</p>
+<p><strong>Nuevos Casos de Uso</strong>:
+- Agregar tests específicos para nuevas funcionalidades
+- Extender tests de rendimiento para nuevos tipos de datos
+- Incluir tests de compatibilidad con nuevas versiones</p>
+<p><strong>Optimización de Performance</strong>:
+- Reducir tiempo de tests unitarios (&lt; 30 segundos total)
+- Mantener tests de rendimiento informativos pero rápidos
+- Implementar paralelización donde sea apropiado</p>
+<p>### Documentación de Cambios</p>
+<p><strong>Registro de Modificaciones</strong>:
+<a href="#id81"><span class="problematic" id="id82">``</span></a><a href="#id83"><span class="problematic" id="id84">`</span></a>markdown
+# CHANGELOG de Tests
+## [v1.0.1] - 2025-11-05
+### Agregado
+- test_performance_export_separated.py (suite completa)
+- Sistema de medición de memoria sin dependencias</p>
+<p>### Modificado
+- Corregidos imports de OptimizationConfig
+- Optimizados datasets de prueba para velocidad</p>
+<p>### Corregido
+- ImportError de psutil en sistemas sin dependencia
+<a href="#id85"><span class="problematic" id="id86">``</span></a><a href="#id87"><span class="problematic" id="id88">`</span></a></p>
+<p>—</p>
+<p><strong>Documentación Técnica</strong>: Testing Suite para Exportación de Datos Separados
+<strong>Versión</strong>: 1.0.0
+<strong>Fecha</strong>: 2025-11-05
+<strong>Estado</strong>: Completa - Listo para Producción</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,43 +1,39 @@
-Flash Sheet - Data Analysis and Export Tool
-=============================================
-
-Flash Sheet is a comprehensive application for data analysis, visualization, and export with advanced features for data manipulation and reporting.
+Flash Sheet - Sistema de Exportación de Datos Separados
+=========================================================
 
 .. toctree::
-    :maxdepth: 2
-    :caption: User Guide:
+   :maxdepth: 2
+   :caption: User Guide:
 
-    user_guide/getting_started
-    user_guide/basic_usage
-    user_guide/data_visualization
-    user_guide/graphics
-    user_guide/basic_export
-    user_guide/advanced_features
-    user_guide/troubleshooting
+   user_guide/README
+   user_guide/tutorial/basic_usage
+   user_guide/tutorial/advanced_config
+   user_guide/troubleshooting/common_issues
 
 .. toctree::
-    :maxdepth: 2
-    :caption: Developer Guide:
+   :maxdepth: 2
+   :caption: Developer Guide:
 
-    developer_guide/architecture
-    developer_guide/code_walkthrough/main_window
-    developer_guide/code_walkthrough/data_handler
-    developer_guide/code_walkthrough/views_system
-    developer_guide/code_walkthrough/advanced_features
-    developer_guide/api_reference
-    developer_guide/development_guide
+   developer_guide/architecture
+   developer_guide/contributing
+   developer_guide/testing
+   developer_guide/deployment
 
 .. toctree::
-    :maxdepth: 2
-    :caption: Releases:
+   :maxdepth: 2
+   :caption: API Reference:
 
-    releases/installation_guide
-    releases/v1.0.0/release_notes
-    releases/v1.0.0/installation_guide
-    releases/v1.0.0/upgrade_guide
-    releases/v1.1.0/release_notes
-    releases/v1.1.0/installation_guide
-    releases/v1.1.0/upgrade_guide
+   api/overview
+   api/classes
+   api/configuration
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Releases:
+
+   releases/v1.0.0/release_notes
+   releases/v1.0.0/installation
+   releases/v1.0.0/upgrade_guide
 
 Overview
 ========

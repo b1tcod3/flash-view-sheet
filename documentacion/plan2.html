@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plan2.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Plan de Desarrollo: Visor y Analizador de Datos con PySide6Este documento detalla el plan de desarrollo para una aplicación de escritorio construida con Python 3 y PySide6, diseñada para leer, analizar y exportar datos de archivos tabulares como Excel y CSV.1. Visión General y ObjetivosEl objetivo es crear un “Visor de Datos Ligero” que permita a un usuario:Abrir archivos .xlsx, .xls, y .csv.Ver un resumen inmediato de la estructura de los datos.Obtener estadísticas descriptivas básicas.Visualizar los datos en una tabla interactiva.Realizar operaciones simples como filtrado y búsqueda.Exportar la vista de datos actual a formatos comunes (PDF, Imagen, SQL).2. Stack TecnológicoLenguaje: Python 3.10+GUI: PySide6 (El binding oficial de Qt para Python)Análisis de Datos (El Motor): Pandas (para lectura, manipulación y estadísticas)Lectura de Excel: openpyxl (requerido por Pandas para .xlsx)Exportación a SQL: SQLAlchemy (requerido por Pandas para .to_sql())Exportación a PDF: reportlab (para generar documentos PDF desde cero)Exportación a Imagen: No se necesita librería externa; usaremos los métodos nativos de Qt (QPixmap.grab()).3. Estructura del Proyecto (Sugerida)/visor_excel_pyside/
+|
+├── main.py                 # Punto de entrada (Inicia QApplication y MainWindow)
+|
+├── app/
+│   ├── __init__.py
+│   ├── main_window.py      # Define la clase MainWindow (la GUI principal)
+│   ├── ui_main_window.ui   # (Opcional) Archivo de Qt Designer
+│   |
+│   ├── widgets/
+│   │   ├── __init__.py
+│   │   └── info_panel.py   # Un widget para mostrar estadísticas y metadata
+│   |
+│   └── models/
+│       ├── __init__.py
+│       └── pandas_model.py # Clase QAbstractTableModel para linkear Pandas -&gt; QTableView
+|
+├── core/
+│   ├── __init__.py
+│   ├── data_handler.py     # Lógica para cargar, analizar y exportar el DataFrame
+|
+└── requirements.txt        # Lista de dependencias
+4. Arquitectura: Modelo-Vista-Controlador (MVC)Modelo (Model):El DataFrame de Pandas (self.df_original) que contiene todos los datos cargados.Una clase PandasTableModel que hereda de QAbstractTableModel. Esta es la pieza clave que actúa como puente entre el DataFrame de Pandas y la QTableView de PySide6.Vista (View):MainWindow (definida en main_window.py).Una QTableView central para mostrar los datos.Un QMenuBar y QToolBar para acciones (Abrir, Exportar).Widgets de entrada (QLineEdit, QComboBox) para filtrado.Un panel lateral (ej. QDockWidget) para mostrar la información y estadísticas.Controlador (Controller):Los slots (métodos) dentro de MainWindow que responden a eventos de la UI (ej. abrir_archivo(), aplicar_filtro(), exportar_a_pdf()).Estos métodos llamarán a la lógica en data_handler.py para manipular el DataFrame y luego actualizarán la Vista (reiniciando el PandasTableModel con los nuevos datos).5. Fases de Desarrollo (Paso a Paso)Fase 0: Configuración del EntornoCrear un entorno virtual: python -m venv venvActivar el entorno.Instalar dependencias:pip install pyside6 pandas openpyxl sqlalchemy reportlab
+Crear el archivo main.py con una QApplication y una QMainWindow básica para verificar que PySide6 funciona.Fase 1: Carga de Archivos y Visualización Básica (Core)UI: En MainWindow, añadir un QMenuBar con la acción “Archivo” -&gt; “Abrir…”.Controlador: Implementar el slot abrir_archivo().Usar QFileDialog.getOpenFileName() para permitir al usuario seleccionar un archivo (.xlsx, .xls, .csv).Filtrar por tipo de archivo: (“Archivos de Excel (<em>.xlsx *.xls);;Archivos CSV (</em>.csv)”).Lógica: En data_handler.py, crear una función cargar_datos(filepath).Usar pd.read_excel(filepath) o pd.read_csv(filepath) según la extensión.Usar try…except para capturar errores de carga (archivo corrupto, protegido).Mostrar errores al usuario con un QMessageBox.critical().Almacenar el DataFrame cargado en MainWindow (ej. self.df_original).Modelo (El paso crucial): Crear la clase PandasTableModel(QAbstractTableModel).Implementar los métodos requeridos:rowCount(): Devuelve self.df.shape[0] (filas).columnCount(): Devuelve self.df.shape[1] (columnas).data(index, role): Si role == Qt.DisplayRole, devuelve str(self.df.iloc[index.row(), index.column()]).headerData(section, orientation, role): Devuelve los nombres de las columnas (si orientation == Qt.Horizontal) o los índices de las filas (si orientation == Qt.Vertical).Conexión:En MainWindow, añadir una QTableView (ej. self.tabla_datos).Cuando el self.df_original se carga:self.pandas_model = PandasTableModel(self.df_original)
+self.tabla_datos.setModel(self.pandas_model)
+Fase 2: Mostrar Información de Relevancia y EstadísticasUI: Crear un QDockWidget o un panel lateral (QFrame).Lógica: Cuando el self.df_original se cargue, extraer la metadata:Filas: self.df_original.shape[0]Columnas: self.df_original.shape[1]Nombres y Tipos: self.df_original.dtypes (esto da ambos). Iterar sobre esto para mostrarlo en una QTextEdit o QTableWidget.Estadísticas:Obtener self.df_original.describe(include=’all’). Esto da un resumen estadístico (conteo, media, std, min, max) para columnas numéricas y (conteo, unique, top, freq) para columnas de texto.Formatear este DataFrame de descripción y mostrarlo en el panel de información.Fase 3: Operaciones (Filtrado y Búsqueda)UI: Añadir:Un QComboBox (self.combo_columna_filtro) para seleccionar la columna a filtrar.Un QLineEdit (self.input_filtro) para escribir el término de búsqueda.Un QPushButton (self.boton_aplicar_filtro).Un QPushButton (self.boton_limpiar_filtro).Poblar ComboBox: Después de cargar el archivo, poblar self.combo_columna_filtro con self.df_original.columns.tolist().Controlador (Filtrado): Implementar aplicar_filtro().Importante: Nunca modificar self.df_original. Crear una nueva vista filtrada.columna = self.combo_columna_filtro.currentText()termino = self.input_filtro.text()df_filtrado = self.df_original[self.df_original[columna].astype(str).str.contains(termino, case=False, na=False)]Actualizar Vista: Crear un nuevo modelo con los datos filtrados:self.df_vista_actual = df_filtrado # Guardar referencia
+self.pandas_model = PandasTableModel(self.df_vista_actual)
+self.tabla_datos.setModel(self.pandas_model)
+Controlador (Limpiar): Implementar limpiar_filtro().Simplemente, volver a mostrar el DataFrame original:self.df_vista_actual = self.df_original
+self.pandas_model = PandasTableModel(self.df_vista_actual)
+self.tabla_datos.setModel(self.pandas_model)
+self.input_filtro.clear()
+Fase 4: Métodos de ExportaciónUI: Añadir un submenú “Exportar como…” a “Archivo”.DataFrame a usar: Todas las exportaciones deben usar self.df_vista_actual (que será el DataFrame filtrado o el original si no hay filtro).Slot exportar_a_pdf():Usar QFileDialog.getSaveFileName() para obtener la ruta de guardado (.pdf).Usar reportlab para construir el PDF. Esto es manual:Crear un SimpleDocTemplate.Convertir el self.df_vista_actual a una lista de listas (incluyendo cabeceras).Crear un objeto Table de reportlab con esos datos.Añadir estilos (TableStyle) y construir el documento.Slot exportar_a_imagen():Usar QFileDialog.getSaveFileName() (.png, .jpg).Método fácil: Tomar una “foto” de la QTableView:pixmap = self.tabla_datos.grab()
+pixmap.save(ruta_guardado)
+Slot exportar_a_sql():Usar QFileDialog.getSaveFileName() para obtener una ruta (ej. datos.db).Pedir al usuario un nombre de tabla usando un QInputDialog.getText().Usar SQLAlchemy y pandas.to_sql():from sqlalchemy import create_engine
+# Usar SQLite como ejemplo
+engine = create_engine(f’sqlite:///{ruta_guardado}’)
+self.df_vista_actual.to_sql(nombre_tabla, engine, if_exists=’replace’, index=False)
+QMessageBox.information(self, “Exportado”, “Datos guardados en la base de datos SQLite.”)
+6. Consideraciones Adicionales y MejorasRendimiento: Si se cargan archivos muy grandes (ej. +500,000 filas), la aplicación se volverá lenta. PandasTableModel carga todo en memoria. Una versión avanzada (v2) debería implementar “paginación virtual” (cargar solo los datos que se van a mostrar en la vista).Manejo de Errores: Envolver todas las operaciones de archivos y datos en bloques try…except robustos.Asincronía: La carga de archivos grandes o la exportación deben ejecutarse en un hilo separado (QThread) para no congelar la GUI.Edición de Datos: El PandasTableModel actual es de solo lectura. Para permitir la edición, se debe implementar el método setData().</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

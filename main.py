@@ -7,9 +7,9 @@ Punto de entrada principal de la aplicación
 import sys
 import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QTableView,
-                              QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
-                              QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog,
-                              QStackedWidget, QDialog)
+                               QFileDialog, QMessageBox, QProgressDialog, QDockWidget,
+                               QComboBox, QLineEdit, QPushButton, QHBoxLayout, QWidget, QInputDialog,
+                               QStackedWidget, QDialog)
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtGui import QIcon, QPixmap
 from app.widgets.main_view import MainView
@@ -20,6 +20,7 @@ from paginacion.data_view import DataView
 from app.widgets.join.joined_data_view import JoinedDataView
 from core.data_handler import ExcelTemplateSplitter
 from core.join.join_history import JoinHistory
+import pandas as pd
 
 class DataLoaderThread(QThread):
     """Hilo para cargar datos en segundo plano"""
@@ -123,6 +124,11 @@ class MainWindow(QMainWindow):
         abrir_action = archivo_menu.addAction("&Abrir...")
         abrir_action.setShortcut("Ctrl+O")
         abrir_action.triggered.connect(self.abrir_archivo)
+
+        # Acción Cargar Carpeta
+        cargar_carpeta_action = archivo_menu.addAction("&Cargar Carpeta...")
+        cargar_carpeta_action.setShortcut("Ctrl+Shift+O")
+        cargar_carpeta_action.triggered.connect(self.cargar_carpeta)
 
         # Menú Exportar
         exportar_menu = archivo_menu.addMenu("&Exportar como...")
@@ -467,6 +473,113 @@ class MainWindow(QMainWindow):
         if column_names is None:
             column_names = {}
         self.mostrar_loading_indicator(filepath, skip_rows, column_names)
+
+    def cargar_carpeta(self):
+        """Abrir diálogo para cargar carpeta con archivos Excel"""
+        try:
+            from app.widgets.folder_load_dialog import FolderLoadDialog
+            dialog = FolderLoadDialog(self)
+
+            if dialog.exec() == QDialog.Accepted:
+                config = dialog.get_config()
+                if config and config.folder_path:
+                    self.procesar_carga_carpeta(config)
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error abriendo diálogo de carga de carpeta: {str(e)}")
+
+    def procesar_carga_carpeta(self, config):
+        """Procesar la carga de carpeta según configuración"""
+        try:
+            from core.loaders.folder_loader import FolderLoader
+            from core.consolidation.excel_consolidator import ExcelConsolidator
+            from PySide6.QtWidgets import QProgressDialog
+            from PySide6.QtCore import Qt
+
+            # Crear diálogo de progreso
+            progress = QProgressDialog("Cargando archivos de carpeta...", "Cancelar", 0, 100, self)
+            progress.setWindowTitle("Carga de Carpeta")
+            progress.setWindowModality(Qt.WindowModal)
+            progress.show()
+
+            # Escanear carpeta
+            progress.setLabelText("Escaneando carpeta...")
+            folder_loader = FolderLoader(config.folder_path)
+
+            # Filtrar archivos según configuración
+            selected_files = []
+            all_metadata = folder_loader.get_all_metadata()
+
+            for meta in all_metadata:
+                if config.should_include_file(meta['filename']):
+                    selected_files.append(meta['filepath'])
+
+            if not selected_files:
+                QMessageBox.warning(self, "Advertencia", "No se encontraron archivos Excel válidos en la carpeta seleccionada.")
+                return
+
+            # Cargar y consolidar archivos usando procesamiento por lotes
+            consolidator = ExcelConsolidator()
+
+            # Aplicar renombrado de columnas si configurado
+            if config.column_rename_mapping:
+                consolidator.set_column_mappings(config.column_rename_mapping)
+
+            # Usar consolidación por lotes para mejor rendimiento
+            progress_callback = lambda p: (
+                progress.setValue(int(50 + (p * 0.4))),  # 50-90% para consolidación
+                progress.setLabelText(f"Procesando archivos... {int(p)}% completado")
+            )
+
+            consolidated_df = consolidator.consolidate_chunked(
+                selected_files,
+                alignment_method='position',
+                chunk_size=10,  # Procesar de 10 en 10 archivos
+                progress_callback=progress_callback
+            )
+
+            progress.setValue(100)
+            progress.close()
+
+            # Establecer datos consolidados
+            self.df_original = consolidated_df
+            self.df_vista_actual = consolidated_df
+
+            # Actualizar vistas
+            if self.data_view:
+                self.data_view.set_data(consolidated_df)
+
+            # Actualizar interfaz
+            self.actualizar_vista()
+            self.statusBar().showMessage(f"Carpeta cargada: {len(selected_files)} archivos consolidados")
+
+            # Actualizar vista de gráficos
+            if self.graphics_view:
+                self.graphics_view.update_data(consolidated_df)
+
+            # Poblar filtros
+            if self.filter_combo:
+                self.filter_combo.clear()
+                self.filter_combo.addItems(consolidated_df.columns.tolist())
+
+            # Actualizar menús
+            self.actualizar_menu_separar()
+            self.actualizar_menu_pivote()
+            self.actualizar_menu_datos()
+
+            # Cambiar a vista de tabla
+            self.switch_view(1)
+
+            QMessageBox.information(self, "Éxito",
+                                  f"Carpeta cargada exitosamente.\n\n"
+                                  f"Archivos procesados: {len(selected_files)}\n"
+                                  f"Filas totales: {len(consolidated_df)}\n"
+                                  f"Columnas: {len(consolidated_df.columns)}")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error procesando carga de carpeta: {str(e)}")
+            if 'progress' in locals():
+                progress.close()
 
     def on_reload_with_options(self, filepath, skip_rows, column_names):
         """Slot para manejar recarga de archivo con nuevas opciones"""

@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ejemplos Prácticos - Cruce de Datos (Joins) &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Ejemplos Prácticos - Cruce de Datos (Joins)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/join_examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ejemplos-practicos-cruce-de-datos-joins">
+<h1>Ejemplos Prácticos - Cruce de Datos (Joins)<a class="headerlink" href="#ejemplos-practicos-cruce-de-datos-joins" title="Link to this heading"></a></h1>
+<p>Esta guía proporciona ejemplos prácticos del uso de la funcionalidad de cruce de datos en Flash Sheet, con casos de uso reales y código de ejemplo.</p>
+<section id="casos-de-uso-empresariales">
+<h2>Casos de Uso Empresariales<a class="headerlink" href="#casos-de-uso-empresariales" title="Link to this heading"></a></h2>
+<section id="enriquecimiento-de-datos-de-ventas">
+<h3>Enriquecimiento de Datos de Ventas<a class="headerlink" href="#enriquecimiento-de-datos-de-ventas" title="Link to this heading"></a></h3>
+<p><strong>Escenario</strong>: Una empresa de e-commerce tiene datos de ventas pero necesita información adicional de clientes para análisis.</p>
+<p><strong>Datos de Ventas</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| order_id | customer_id | product_id | quantity | order_date |
+|----------|-------------|------------|----------|------------|
+| 1001     | CUST001     | PROD001    | 2        | 2025-01-15 |
+| 1002     | CUST002     | PROD002    | 1        | 2025-01-16 |
+| 1003     | CUST001     | PROD003    | 3        | 2025-01-17 |
+</pre></div>
+</div>
+<p><strong>Datos de Clientes</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| customer_id | name       | region | customer_type |
+|-------------|------------|--------|---------------|
+| CUST001     | Juan Pérez | Norte  | Premium      |
+| CUST002     | Ana García | Sur    | Standard     |
+| CUST003     | Carlos Ruiz| Este   | Premium      |
+</pre></div>
+</div>
+<p><strong>Join Recomendado</strong>: Left Join</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">core.join.data_join_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataJoinManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.join.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">JoinType</span>
+
+<span class="c1"># Cargar datasets</span>
+<span class="n">sales_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;sales_data.csv&#39;</span><span class="p">)</span>
+<span class="n">customers_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;customers_data.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Configurar join</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">],</span>
+    <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_sales&#39;</span><span class="p">,</span> <span class="s1">&#39;_customer&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Ejecutar join</span>
+<span class="n">join_manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="n">sales_df</span><span class="p">,</span> <span class="n">customers_df</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># Resultado incluye toda la información de ventas + datos de clientes</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| order_id | customer_id | product_id | quantity | order_date | name       | region | customer_type |
+|----------|-------------|------------|----------|------------|------------|--------|---------------|
+| 1001     | CUST001     | PROD001    | 2        | 2025-01-15 | Juan Pérez | Norte  | Premium      |
+| 1002     | CUST002     | PROD002    | 1        | 2025-01-16 | Ana García | Sur    | Standard     |
+| 1003     | CUST001     | PROD003    | 3        | 2025-01-17 | Juan Pérez | Norte  | Premium      |
+</pre></div>
+</div>
+</section>
+<section id="analisis-de-inventario-y-proveedores">
+<h3>Análisis de Inventario y Proveedores<a class="headerlink" href="#analisis-de-inventario-y-proveedores" title="Link to this heading"></a></h3>
+<p><strong>Escenario</strong>: Un minorista necesita combinar información de productos con datos de proveedores.</p>
+<p><strong>Datos de Productos</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| product_id | product_name | category | stock_quantity |
+|------------|--------------|----------|----------------|
+| PROD001    | Laptop A1    | Electronics | 50         |
+| PROD002    | Mouse B2     | Accessories| 200        |
+| PROD003    | Keyboard C3  | Accessories| 75         |
+</pre></div>
+</div>
+<p><strong>Datos de Proveedores</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| supplier_id | product_id | supplier_name | cost_price | lead_time |
+|-------------|------------|---------------|------------|-----------|
+| SUP001      | PROD001    | TechCorp      | 800.00     | 7         |
+| SUP002      | PROD002    | AccSupplier   | 15.50      | 3         |
+| SUP003      | PROD003    | AccSupplier   | 25.00      | 3         |
+</pre></div>
+</div>
+<p><strong>Join Recomendado</strong>: Inner Join</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;product_id&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;product_id&#39;</span><span class="p">],</span>
+    <span class="n">validate_integrity</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">join_manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="n">products_df</span><span class="p">,</span> <span class="n">suppliers_df</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>: Solo productos que tienen proveedores asignados.</p>
+</section>
+<section id="consolidacion-de-datos-financieros">
+<h3>Consolidación de Datos Financieros<a class="headerlink" href="#consolidacion-de-datos-financieros" title="Link to this heading"></a></h3>
+<p><strong>Escenario</strong>: Un banco necesita combinar transacciones con información de cuentas.</p>
+<p><strong>Datos de Transacciones</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| transaction_id | account_id | amount | transaction_date |
+|----------------|------------|--------|------------------|
+| TXN001         | ACC001     | 500.00 | 2025-01-15      |
+| TXN002         | ACC002     | 250.00 | 2025-01-16      |
+| TXN003         | ACC001     | -100.00| 2025-01-17      |
+</pre></div>
+</div>
+<p><strong>Datos de Cuentas</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| account_id | customer_name | account_type | balance |
+|------------|---------------|--------------|---------|
+| ACC001     | Juan Pérez    | Checking     | 2500.00 |
+| ACC002     | Ana García    | Savings      | 5000.00 |
+| ACC003     | Carlos Ruiz   | Checking     | 1200.00 |
+</pre></div>
+</div>
+<p><strong>Join Recomendado</strong>: Left Join con indicador</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;account_id&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;account_id&#39;</span><span class="p">],</span>
+    <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Añadir columna _merge</span>
+    <span class="n">sort_results</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>: Todas las transacciones con información de cuenta, columna _merge indica origen.</p>
+</section>
+<section id="analisis-de-recursos-humanos">
+<h3>Análisis de Recursos Humanos<a class="headerlink" href="#analisis-de-recursos-humanos" title="Link to this heading"></a></h3>
+<p><strong>Escenario</strong>: Departamento de RRHH combina datos de empleados con evaluaciones de desempeño.</p>
+<p><strong>Datos de Empleados</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| employee_id | name       | department | hire_date  |
+|-------------|------------|------------|------------|
+| EMP001      | Juan Pérez | IT         | 2023-01-15 |
+| EMP002      | Ana García | HR         | 2023-03-20 |
+| EMP003      | Carlos Ruiz| Finance    | 2023-06-10 |
+</pre></div>
+</div>
+<p><strong>Datos de Evaluaciones</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| employee_id | review_date | rating | reviewer    |
+|-------------|-------------|--------|-------------|
+| EMP001      | 2024-12-01 | 4.5    | Manager A   |
+| EMP002      | 2024-12-01 | 4.2    | Manager B   |
+| EMP004      | 2024-12-01 | 3.8    | Manager C   |
+</pre></div>
+</div>
+<p><strong>Join Recomendado</strong>: Left Join (todos los empleados, incluso sin evaluación)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;employee_id&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;employee_id&#39;</span><span class="p">],</span>
+    <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_emp&#39;</span><span class="p">,</span> <span class="s1">&#39;_review&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>: Todos los empleados con sus evaluaciones (si existen).</p>
+</section>
+<section id="cross-join-para-analisis-de-escenarios">
+<h3>Cross Join para Análisis de Escenarios<a class="headerlink" href="#cross-join-para-analisis-de-escenarios" title="Link to this heading"></a></h3>
+<p><strong>Escenario</strong>: Análisis de sensibilidad con múltiples escenarios.</p>
+<p><strong>Datos de Productos</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| product_id | product_name | base_price |
+|------------|--------------|------------|
+| PROD001    | Laptop       | 1000.00    |
+| PROD002    | Monitor      | 300.00     |
+</pre></div>
+</div>
+<p><strong>Escenarios de Descuento</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>| scenario_id | discount_pct | description    |
+|-------------|--------------|----------------|
+| SCEN001     | 0.05         | Light Discount |
+| SCEN002     | 0.10         | Medium Discount|
+| SCEN003     | 0.15         | Heavy Discount |
+</pre></div>
+</div>
+<p><strong>Join Recomendado</strong>: Cross Join</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span>
+    <span class="c1"># No keys needed for cross join</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>: Todas las combinaciones producto-escenario para análisis de sensibilidad.</p>
+</section>
+</section>
+<section id="ejemplos-avanzados">
+<h2>Ejemplos Avanzados<a class="headerlink" href="#ejemplos-avanzados" title="Link to this heading"></a></h2>
+<section id="join-con-multiples-columnas">
+<h3>Join con Múltiples Columnas<a class="headerlink" href="#join-con-multiples-columnas" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Join usando múltiples columnas como clave</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">,</span> <span class="s1">&#39;product_category&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;client_id&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">],</span>
+    <span class="n">validate_integrity</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="join-con-preview">
+<h3>Join con Preview<a class="headerlink" href="#join-con-preview" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtener preview antes de ejecutar join completo</span>
+<span class="n">preview</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">get_join_preview</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">preview</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>  <span class="c1"># Si el resultado será muy grande</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resultado muy grande, considere filtrar datos primero&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="manejo-de-errores">
+<h3>Manejo de Errores<a class="headerlink" href="#manejo-de-errores" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">core.join.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">JoinValidationError</span><span class="p">,</span>
+    <span class="n">JoinExecutionError</span><span class="p">,</span>
+    <span class="n">MemoryLimitExceededError</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">join_manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Join exitoso: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">result_rows</span><span class="si">}</span><span class="s2"> filas&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Join falló: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">JoinValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error de validación: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Corregir configuración</span>
+<span class="k">except</span> <span class="n">MemoryLimitExceededError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Memoria insuficiente, considere datasets más pequeños&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">JoinExecutionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error de ejecución: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="uso-del-historial">
+<h3>Uso del Historial<a class="headerlink" href="#uso-del-historial" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">core.join.join_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinHistory</span>
+
+<span class="c1"># Inicializar historial</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">JoinHistory</span><span class="p">()</span>
+
+<span class="c1"># Después de ejecutar join</span>
+<span class="n">history</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="s2">&quot;sales.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;customers.csv&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+<span class="c1"># Recuperar joins anteriores</span>
+<span class="n">recent_joins</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">get_entries</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Re-ejecutar join anterior</span>
+<span class="n">old_config</span> <span class="o">=</span> <span class="n">recent_joins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">config</span>
+<span class="c1"># ... cargar datasets y ejecutar</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="casos-de-uso-por-industria">
+<h2>Casos de Uso por Industria<a class="headerlink" href="#casos-de-uso-por-industria" title="Link to this heading"></a></h2>
+<section id="retail-y-e-commerce">
+<h3>Retail y E-commerce<a class="headerlink" href="#retail-y-e-commerce" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Customer 360</strong>: Unir datos de compras, navegación web y soporte al cliente</p></li>
+<li><p><strong>Análisis de Inventario</strong>: Combinar niveles de stock con datos de proveedores</p></li>
+<li><p><strong>Segmentación de Clientes</strong>: Unir datos demográficos con comportamiento de compra</p></li>
+</ul>
+</section>
+<section id="finanzas-y-banca">
+<h3>Finanzas y Banca<a class="headerlink" href="#finanzas-y-banca" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Risk Assessment</strong>: Combinar datos de transacciones con scores de riesgo</p></li>
+<li><p><strong>Portfolio Analysis</strong>: Unir posiciones de inversión con datos de mercado</p></li>
+<li><p><strong>Compliance Reporting</strong>: Combinar datos de clientes con requisitos regulatorios</p></li>
+</ul>
+</section>
+<section id="salud-y-farmaceutica">
+<h3>Salud y Farmacéutica<a class="headerlink" href="#salud-y-farmaceutica" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Patient Records</strong>: Unir historiales médicos con datos de tratamientos</p></li>
+<li><p><strong>Clinical Trials</strong>: Combinar datos de pacientes con resultados de estudios</p></li>
+<li><p><strong>Drug Interaction Analysis</strong>: Unir prescripciones con bases de datos de interacciones</p></li>
+</ul>
+</section>
+<section id="manufactura-e-industria">
+<h3>Manufactura e Industria<a class="headerlink" href="#manufactura-e-industria" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Supply Chain</strong>: Combinar datos de proveedores con requerimientos de producción</p></li>
+<li><p><strong>Quality Control</strong>: Unir datos de producción con resultados de inspección</p></li>
+<li><p><strong>Maintenance Planning</strong>: Combinar datos de equipos con historiales de mantenimiento</p></li>
+</ul>
+</section>
+</section>
+<section id="mejores-practicas">
+<h2>Mejores Prácticas<a class="headerlink" href="#mejores-practicas" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Validación de Datos</strong>
+- Siempre usar <cite>validate_integrity=True</cite> para joins importantes
+- Verificar tipos de datos antes de join
+- Usar preview para estimar tamaño del resultado</p></li>
+<li><p><strong>Gestión de Memoria</strong>
+- Para datasets grandes, el sistema automáticamente usa chunking
+- Monitorear uso de memoria en operaciones complejas
+- Considerar filtrado previo para reducir tamaño de datos</p></li>
+<li><p><strong>Nombres de Columnas</strong>
+- Usar sufijos descriptivos para columnas duplicadas
+- Evitar nombres de columnas demasiado largos
+- Mantener consistencia en nomenclatura</p></li>
+<li><p><strong>Historial y Reproducibilidad</strong>
+- Guardar configuraciones importantes en historial
+- Documentar propósito de cada join
+- Usar nombres descriptivos para datasets</p></li>
+<li><p><strong>Performance</strong>
+- Para cross joins, limitar tamaño de datasets
+- Usar inner joins cuando sea posible (más eficientes)
+- Considerar índices en columnas de join si es aplicable</p></li>
+</ol>
+</section>
+<section id="solucion-de-problemas-comunes">
+<h2>Solución de Problemas Comunes<a class="headerlink" href="#solucion-de-problemas-comunes" title="Link to this heading"></a></h2>
+<p><strong>Join Produce Muy Pocas Filas</strong>
+- Verificar que las columnas de join tienen valores matching
+- Revisar tipos de datos (string vs integer)
+- Considerar usar left join en lugar de inner</p>
+<p><strong>Join Produce Demasiadas Filas</strong>
+- Verificar cardinalidad de la relación
+- Revisar si se necesita distinct en alguna tabla
+- Considerar agregar más columnas a la clave de join</p>
+<p><strong>Out of Memory Error</strong>
+- Reducir tamaño de datasets con filtros
+- Usar chunking (automático para datasets grandes)
+- Considerar joins en etapas</p>
+<p><strong>Columnas Duplicadas Confusas</strong>
+- Usar sufijos claros y descriptivos
+- Renombrar columnas antes del join si es necesario
+- Revisar esquema de resultado antes de proceder</p>
+</section>
+<section id="recursos-adicionales">
+<h2>Recursos Adicionales<a class="headerlink" href="#recursos-adicionales" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Documentación Técnica</strong>: <cite>docs/developer_guide/architecture.rst</cite></p></li>
+<li><p><strong>API Reference</strong>: <cite>docs/api/classes.rst</cite></p></li>
+<li><p><strong>Guía de Usuario</strong>: <cite>docs/user_guide/README.md</cite></p></li>
+<li><p><strong>Testing</strong>: <cite>tests/test_join.py</cite> para ejemplos de uso en código</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

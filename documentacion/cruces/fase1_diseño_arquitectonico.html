@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cruces/fase1_diseño_arquitectonico.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Diseño Arquitectónico: Funcionalidad de Cruce de Datos</p>
+<p>## Resumen Ejecutivo</p>
+<p>Este documento detalla el diseño arquitectónico para la implementación de la funcionalidad de cruce de datos en Flash View Sheet. Se define la estructura de componentes, interfaces, formatos de datos y sistemas de validación que permitirán integrar operaciones de join con el sistema existente.</p>
+<p>## Arquitectura General</p>
+<p>### Componentes Principales</p>
+<p>#### 1. DataJoinManager
+<strong>Ubicación:</strong> <cite>core/join/data_join_manager.py</cite></p>
+<p>Clase principal responsable de ejecutar operaciones de cruce entre datasets.</p>
+<p><strong>Responsabilidades:</strong>
+- Ejecutar operaciones de join (inner, left, right, cross)
+- Gestionar memoria para datasets grandes
+- Optimizar rendimiento con chunking
+- Validar compatibilidad de datos
+- Generar metadatos del cruce</p>
+<p><strong>Interfaz Principal:</strong>
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+class DataJoinManager:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def __init__(self, left_df: pd.DataFrame, right_df: pd.DataFrame):</dt><dd><p>pass</p>
+</dd>
+<dt>def execute_join(self, config: JoinConfig) -&gt; JoinResult:</dt><dd><p>pass</p>
+</dd>
+<dt>def validate_join(self, config: JoinConfig) -&gt; ValidationResult:</dt><dd><p>pass</p>
+</dd>
+<dt>def get_join_preview(self, config: JoinConfig, max_rows: int = 100) -&gt; pd.DataFrame:</dt><dd><p>pass</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>#### 2. JoinDialog
+<strong>Ubicación:</strong> <cite>app/widgets/join/join_dialog.py</cite></p>
+<p>Diálogo modal para configurar operaciones de cruce.</p>
+<p><strong>Características:</strong>
+- Selección de dataset adicional
+- Configuración de columnas para join
+- Selección de tipo de join
+- Configuración de sufijos para columnas duplicadas
+- Preview de resultados antes de ejecutar
+- Validación en tiempo real</p>
+<p>#### 3. JoinedDataView
+<strong>Ubicación:</strong> <cite>app/widgets/join/joined_data_view.py</cite></p>
+<p>Vista especializada para mostrar resultados de cruces.</p>
+<p><strong>Funcionalidades:</strong>
+- Herencia de DataView existente
+- Metadatos del cruce (filas resultantes, tiempo de procesamiento)
+- Información de origen de datos (dataset izquierdo/derecho)
+- Estadísticas del cruce
+- Opciones de filtrado específicas para datos cruzados</p>
+<p>#### 4. JoinHistory
+<strong>Ubicación:</strong> <cite>core/join/join_history.py</cite></p>
+<p>Sistema para mantener historial de operaciones de cruce.</p>
+<p><strong>Características:</strong>
+- Almacenamiento de configuraciones de join
+- Re-ejecución de joins previos
+- Exportación/importación de configuraciones
+- Gestión de memoria para historial</p>
+<p>### Integración con Sistema Existente</p>
+<p>#### Modificaciones a MainWindow
+- Nuevo menú “Datos” &gt; “Cruzar Datos…”
+- Gestión de múltiples datasets (principal + adicional)
+- Integración con sistema de vistas existente</p>
+<p>#### Uso de Componentes Existentes
+- <cite>core/data_handler.py</cite>: Carga de dataset adicional
+- <cite>DataView</cite>: Visualización de resultados
+- Sistema de exportación: Exportación de datos cruzados
+- <cite>PivotTableWidget</cite>: Consistencia en UI de configuración</p>
+<p>## Formatos de Datos</p>
+<p>### JoinConfig
+Configuración completa para una operación de join.</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+&#64;dataclass
+class JoinConfig:</p>
+<blockquote>
+<div><p>“””Configuración para operación de join”””
+left_keys: List[str]  # Columnas del dataset izquierdo
+right_keys: List[str]  # Columnas del dataset derecho
+join_type: JoinType   # INNER, LEFT, RIGHT, CROSS
+suffixes: Tuple[str, str] = (‘_left’, ‘_right’)  # Sufijos para columnas duplicadas
+validate_integrity: bool = True  # Validar integridad referencial
+sort_results: bool = True  # Ordenar resultados
+indicator: bool = False  # Añadir columna _merge
+how: str = ‘left’  # Método de join (pandas)</p>
+</div></blockquote>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>### JoinResult
+Resultado de una operación de join.</p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+&#64;dataclass
+class JoinResult:</p>
+<blockquote>
+<div><p>“””Resultado de operación de join”””
+data: pd.DataFrame  # Datos resultantes
+metadata: JoinMetadata  # Metadatos del cruce
+success: bool = True
+error_message: str = “”
+processing_time: float = 0.0</p>
+</div></blockquote>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p>### JoinMetadata
+Metadatos descriptivos del cruce.</p>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>python
+&#64;dataclass
+class JoinMetadata:</p>
+<blockquote>
+<div><p>“””Metadatos del cruce realizado”””
+left_rows: int  # Filas en dataset izquierdo
+right_rows: int  # Filas en dataset derecho
+result_rows: int  # Filas en resultado
+join_type: JoinType
+join_keys: List[str]
+matched_rows: int  # Filas con coincidencias
+left_only_rows: int  # Filas solo en izquierdo
+right_only_rows: int  # Filas solo en derecho
+memory_usage_mb: float
+processing_time_seconds: float
+timestamp: datetime</p>
+</div></blockquote>
+<p><a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a></p>
+<p>## Sistema de Validación</p>
+<p>### ValidationResult
+Resultado de validación de configuración.</p>
+<p><a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a>python
+&#64;dataclass
+class ValidationResult:</p>
+<blockquote>
+<div><p>“””Resultado de validación”””
+is_valid: bool = True
+errors: List[str] = field(default_factory=list)
+warnings: List[str] = field(default_factory=list)
+suggestions: List[str] = field(default_factory=list)</p>
+</div></blockquote>
+<p><a href="#id37"><span class="problematic" id="id38">``</span></a><a href="#id39"><span class="problematic" id="id40">`</span></a></p>
+<p>### Reglas de Validación</p>
+<p>#### Validación de Columnas
+- Columnas de join existen en ambos datasets
+- Tipos de datos compatibles para join
+- No hay columnas duplicadas sin sufijos apropiados</p>
+<p>#### Validación de Memoria
+- Estimación de memoria requerida para el join
+- Verificación de límites de memoria del sistema
+- Recomendaciones de chunking para datasets grandes</p>
+<p>#### Validación de Rendimiento
+- Estimación de tiempo de procesamiento
+- Recomendaciones de optimización
+- Alertas para joins potencialmente costosos</p>
+<p>## Interfaces y Comunicación</p>
+<p>### Señales y Slots</p>
+<p>#### JoinDialog → MainWindow
+- <cite>join_configured(config: JoinConfig)</cite>: Configuración completada
+- <cite>join_cancelled()</cite>: Operación cancelada</p>
+<p>#### MainWindow → JoinedDataView
+- <cite>set_join_result(result: JoinResult)</cite>: Establecer datos cruzados</p>
+<p>#### DataJoinManager → JoinDialog
+- <cite>validation_result(result: ValidationResult)</cite>: Resultado de validación
+- <cite>preview_available(data: pd.DataFrame)</cite>: Preview disponible</p>
+<p>### Flujo de Datos</p>
+<ol class="arabic simple">
+<li><p><strong>Configuración</strong>: JoinDialog → JoinConfig</p></li>
+<li><p><strong>Validación</strong>: JoinConfig → DataJoinManager → ValidationResult</p></li>
+<li><p><strong>Ejecución</strong>: JoinConfig → DataJoinManager → JoinResult</p></li>
+<li><p><strong>Visualización</strong>: JoinResult → JoinedDataView</p></li>
+<li><p><strong>Historial</strong>: JoinConfig + JoinResult → JoinHistory</p></li>
+</ol>
+<p>## Optimizaciones de Rendimiento</p>
+<p>### Chunking para Datasets Grandes
+- Procesamiento por bloques para joins grandes
+- Gestión automática de memoria
+- Progreso en tiempo real</p>
+<p>### Optimizaciones de Pandas
+- Uso de <cite>merge</cite> con parámetros optimizados
+- Indexación automática en columnas de join
+- Liberación de memoria intermedia</p>
+<p>### Paralelización
+- Procesamiento paralelo para múltiples grupos
+- Optimización para joins cross (producto cartesiano)</p>
+<p>## Manejo de Errores</p>
+<p>### Excepciones Personalizadas
+- <cite>JoinValidationError</cite>: Error en validación de configuración
+- <cite>JoinExecutionError</cite>: Error durante ejecución del join
+- <cite>MemoryLimitExceededError</cite>: Límite de memoria excedido
+- <cite>UnsupportedJoinError</cite>: Tipo de join no soportado</p>
+<p>### Estrategias de Recuperación
+- Fallback a joins más simples
+- Chunking automático
+- Cancelación graceful con cleanup</p>
+<p>## Seguridad y Robustez</p>
+<p>### Validación de Entrada
+- Sanitización de nombres de columnas
+- Validación de tipos de datos
+- Límites en tamaños de datasets</p>
+<p>### Manejo de Memoria
+- Monitoreo continuo de uso de memoria
+- Liberación automática de recursos
+- Límites configurables</p>
+<p>### Logging y Debugging
+- Logs detallados de operaciones
+- Información de rendimiento
+- Tracing de errores</p>
+<p>## Próximos Pasos</p>
+<ol class="arabic simple">
+<li><p>Implementar DataJoinManager con operaciones básicas</p></li>
+<li><p>Crear JoinDialog con UI de configuración</p></li>
+<li><p>Integrar JoinedDataView con DataView existente</p></li>
+<li><p>Implementar sistema de validación</p></li>
+<li><p>Añadir optimizaciones de rendimiento</p></li>
+<li><p>Testing exhaustivo con diferentes tipos de datos</p></li>
+</ol>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

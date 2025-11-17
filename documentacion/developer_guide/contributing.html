@@ -1,0 +1,788 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía para Contribuidores - Exportación Separada &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference - Classes" href="../api/classes.html" />
+    <link rel="prev" title="Sistema de Arquitectura - Flash Sheet" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía para Contribuidores - Exportación Separada</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerrequisitos">Prerrequisitos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requisitos-tecnicos">Requisitos Técnicos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-del-entorno-de-desarrollo">Instalación del Entorno de Desarrollo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#estructura-del-proyecto">Estructura del Proyecto</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#estructura-de-directorios">Estructura de Directorios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#archivos-clave">Archivos Clave</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#convenciones-de-codigo">Convenciones de Código</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#estilo-de-codigo">Estilo de Código</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentacion-de-codigo">Documentación de Código</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-errores">Manejo de Errores</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-guidelines">Testing Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ejecucion-de-tests">Ejecución de Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#estructura-de-tests">Estructura de Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#escribir-nuevos-tests">Escribir Nuevos Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-testing">Performance Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proceso-de-desarrollo">Proceso de Desarrollo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-git">Workflow Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#commits-convencionales">Commits Convencionales</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anadir-nueva-funcionalidad">Añadir Nueva Funcionalidad</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-analisis">Paso 1: Análisis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-implementacion">Paso 2: Implementación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-testing">Paso 3: Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-documentacion">Paso 4: Documentación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-rendimiento">Optimización de Rendimiento</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#principio-de-optimizacion">Principio de Optimización</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tecnicas-de-optimizacion">Técnicas de Optimización</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#profiling-y-medicion">Profiling y Medición</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#herramientas-de-debug">Herramientas de Debug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging-comun">Debugging Común</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#contribucion-de-documentacion">Contribución de Documentación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tipos-de-documentacion">Tipos de Documentación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convenciones-para-documentacion">Convenciones para Documentación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#revision-de-codigo">Revisión de Código</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#checklist-de-revision">Checklist de Revisión</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#proceso-de-merge">Proceso de Merge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#recursos-adicionales">Recursos Adicionales</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#herramientas-recomendadas">Herramientas Recomendadas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enlaces-utiles">Enlaces Útiles</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#contacto">Contacto</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía para Contribuidores - Exportación Separada</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/contributing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-para-contribuidores-exportacion-separada">
+<h1>Guía para Contribuidores - Exportación Separada<a class="headerlink" href="#guia-para-contribuidores-exportacion-separada" title="Link to this heading"></a></h1>
+<p>Esta guía está dirigida a desarrolladores que desean contribuir al proyecto de Exportación de Datos Separados.</p>
+<section id="prerrequisitos">
+<h2>Prerrequisitos<a class="headerlink" href="#prerrequisitos" title="Link to this heading"></a></h2>
+<section id="requisitos-tecnicos">
+<h3>Requisitos Técnicos<a class="headerlink" href="#requisitos-tecnicos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Python</strong>: 3.7 o superior</p></li>
+<li><p><strong>Entorno de desarrollo</strong>: Git, VSCode (recomendado)</p></li>
+<li><p><strong>Dependencias principales</strong>: pandas, openpyxl, PySide6</p></li>
+<li><p><strong>Testing</strong>: unittest, pytest (opcional)</p></li>
+</ul>
+</section>
+<section id="instalacion-del-entorno-de-desarrollo">
+<h3>Instalación del Entorno de Desarrollo<a class="headerlink" href="#instalacion-del-entorno-de-desarrollo" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Clonar el repositorio</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>git clone &lt;repository-url&gt;
+cd flash-sheet</p>
+</div></blockquote>
+</li>
+<li><p><strong>Instalar dependencias de desarrollo</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>pip install -r requirements.txt
+pip install pytest pytest-cov  # Para testing avanzado</p>
+</div></blockquote>
+</li>
+<li><p><strong>Verificar instalación</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>python -c “import pandas, openpyxl, PySide6; print(’✓ All dependencies installed’)”</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+</section>
+<section id="estructura-del-proyecto">
+<h2>Estructura del Proyecto<a class="headerlink" href="#estructura-del-proyecto" title="Link to this heading"></a></h2>
+<section id="estructura-de-directorios">
+<h3>Estructura de Directorios<a class="headerlink" href="#estructura-de-directorios" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>flash-sheet/
+├── app/
+│   └── widgets/
+│       └── export_separated_dialog.py     # UI Principal
+├── core/
+│   ├── data_handler.py                    # Core Logic
+│   ├── performance_optimizer.py           # Performance System
+│   └── loaders/                           # Data Loading
+├── tests/
+│   ├── test_excel_template_splitter.py    # Unit Tests
+│   ├── test_integration_export_separated.py # Integration Tests
+│   └── test_performance_export_separated.py # Performance Tests
+├── docs/                                  # Documentación
+│   ├── user_guide/
+│   ├── developer_guide/
+│   └── api/
+├── separar/                               # Planning Documents
+└── examples/                              # Ejemplos de uso
+</pre></div>
+</div>
+</section>
+<section id="archivos-clave">
+<h3>Archivos Clave<a class="headerlink" href="#archivos-clave" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>core/data_handler.py</strong>: Lógica principal de separación</p></li>
+<li><p><strong>app/widgets/export_separated_dialog.py</strong>: Interfaz de usuario</p></li>
+<li><p><strong>tests/</strong>: Suite completa de testing</p></li>
+<li><p><strong>docs/</strong>: Documentación completa</p></li>
+</ul>
+</section>
+</section>
+<section id="convenciones-de-codigo">
+<h2>Convenciones de Código<a class="headerlink" href="#convenciones-de-codigo" title="Link to this heading"></a></h2>
+<section id="estilo-de-codigo">
+<h3>Estilo de Código<a class="headerlink" href="#estilo-de-codigo" title="Link to this heading"></a></h3>
+<p><strong>Python PEP 8</strong>:
+- Máximo 79 caracteres por línea
+- Nombres de variables: <cite>snake_case</cite>
+- Nombres de clases: <cite>PascalCase</cite>
+- Constantes: <cite>UPPER_CASE</cite></p>
+<p><strong>Ejemplo</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl>
+<dt>class ExcelTemplateSplitter:</dt><dd><p>“””Clase para separación de datos con plantillas Excel.”””</p>
+<dl class="simple">
+<dt>def __init__(self, df: pd.DataFrame, config: ExportSeparatedConfig):</dt><dd><p>self.df = df
+self.config = config</p>
+</dd>
+<dt>def separate_and_export(self) -&gt; Dict[str, Any]:</dt><dd><p>“””Ejecutar separación completa.”””
+return {}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+<section id="documentacion-de-codigo">
+<h3>Documentación de Código<a class="headerlink" href="#documentacion-de-codigo" title="Link to this heading"></a></h3>
+<p><strong>Docstrings</strong>:
+- Usar formato Google/Napoleon
+- Incluir parámetros, retornos y excepciones</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_datos_separados</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">config_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exportar DataFrame a archivos Excel separados usando plantillas.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df: DataFrame a separar</span>
+<span class="sd">        config_dict: Configuración de separación que incluye:</span>
+<span class="sd">            - separator_column: str - Columna para separar</span>
+<span class="sd">            - template_path: str - Ruta a plantilla Excel</span>
+<span class="sd">            - output_folder: str - Carpeta destino</span>
+<span class="sd">            - file_template: str - Plantilla de nombre de archivo</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict con resultado de exportación incluyendo:</span>
+<span class="sd">            - success: bool - Estado de éxito</span>
+<span class="sd">            - files_created: List[str] - Archivos generados</span>
+<span class="sd">            - processing_time: float - Tiempo de procesamiento</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SeparationError: Si hay error en la separación</span>
+<span class="sd">        TemplateError: Si hay problema con la plantilla Excel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="manejo-de-errores">
+<h3>Manejo de Errores<a class="headerlink" href="#manejo-de-errores" title="Link to this heading"></a></h3>
+<p><strong>Jerarquía de Excepciones</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>class SeparationError(Exception):</dt><dd><p>“””Error base para separación de datos.”””
+pass</p>
+</dd>
+<dt>class TemplateError(SeparationError):</dt><dd><p>“””Error específico de plantilla Excel.”””
+pass</p>
+</dd>
+<dt>class ConfigurationError(SeparationError):</dt><dd><p>“””Error de configuración inválida.”””
+pass</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Uso correcto</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>try:</dt><dd><p>result = splitter.separate_and_export()</p>
+</dd>
+<dt>except TemplateError as e:</dt><dd><p>logger.error(f”Template error: {e}”)
+raise</p>
+</dd>
+<dt>except SeparationError as e:</dt><dd><p>logger.warning(f”Separation error: {e}”)
+return {‘success’: False, ‘error’: str(e)}</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</section>
+<section id="testing-guidelines">
+<h2>Testing Guidelines<a class="headerlink" href="#testing-guidelines" title="Link to this heading"></a></h2>
+<section id="ejecucion-de-tests">
+<h3>Ejecución de Tests<a class="headerlink" href="#ejecucion-de-tests" title="Link to this heading"></a></h3>
+<p><strong>Tests completos</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Ejecutar todos los tests
+python -m pytest tests/ -v</p>
+<p># Tests específicos
+python -m pytest tests/test_excel_template_splitter.py -v</p>
+<p># Con cobertura
+python -m pytest tests/ –cov=core.data_handler –cov-report=html</p>
+</div></blockquote>
+<p><strong>Tests manuales</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Test de rendimiento standalone
+python3 tests/test_performance_export_separated.py</p>
+</div></blockquote>
+</section>
+<section id="estructura-de-tests">
+<h3>Estructura de Tests<a class="headerlink" href="#estructura-de-tests" title="Link to this heading"></a></h3>
+<p><strong>Test básico</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>import unittest
+import pandas as pd
+from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig</p>
+<p>class TestExcelTemplateSplitter(unittest.TestCase):</p>
+<blockquote>
+<div><dl>
+<dt>def setUp(self):</dt><dd><p>“””Configurar datos de prueba.”””
+self.df = pd.DataFrame({</p>
+<blockquote>
+<div><p>‘category’: [‘A’, ‘B’, ‘C’] * 10,
+‘value’: range(30)</p>
+</div></blockquote>
+<p>})</p>
+<dl class="simple">
+<dt>self.config = ExportSeparatedConfig(</dt><dd><p>separator_column=’category’,
+template_path=’test_template.xlsx’,
+output_folder=’test_output/’</p>
+</dd>
+</dl>
+<p>)</p>
+</dd>
+<dt>def test_splitter_initialization(self):</dt><dd><p>“””Test de inicialización básica.”””
+splitter = ExcelTemplateSplitter(self.df, self.config)
+self.assertIsNotNone(splitter)</p>
+</dd>
+<dt>def test_configuration_validation(self):</dt><dd><p>“””Test de validación de configuración.”””
+splitter = ExcelTemplateSplitter(self.df, self.config)
+result = splitter.validate_configuration()
+self.assertIsInstance(result, ValidationResult)</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="escribir-nuevos-tests">
+<h3>Escribir Nuevos Tests<a class="headerlink" href="#escribir-nuevos-tests" title="Link to this heading"></a></h3>
+<p><strong>Casos a cubrir</strong>:
+- Tests unitarios para nuevas funciones
+- Tests de integración para flujos completos
+- Tests de rendimiento para optimizaciones
+- Tests de edge cases y manejo de errores</p>
+<p><strong>Ejemplo de test de integración</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl>
+<dt>def test_separation_with_template(self):</dt><dd><p>“””Test de separación completa con plantilla.”””
+with tempfile.TemporaryDirectory() as temp_dir:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>config = ExportSeparatedConfig(</dt><dd><p>separator_column=’category’,
+template_path=self.create_test_template(),
+output_folder=temp_dir,
+file_template=’test_{valor}.xlsx’</p>
+</dd>
+</dl>
+<p>)</p>
+<p>result = exportar_datos_separados(self.df, config.__dict__)</p>
+<p>self.assertTrue(result[‘success’])
+self.assertGreater(len(result[‘files_created’]), 0)</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+<section id="performance-testing">
+<h3>Performance Testing<a class="headerlink" href="#performance-testing" title="Link to this heading"></a></h3>
+<p><strong>Benchmarks</strong>:
+- Usar <cite>test_performance_export_separated.py</cite> como referencia
+- Medir tiempo y memoria con <cite>measure_performance</cite>
+- Establecer objetivos de rendimiento claros</p>
+<p><strong>Ejemplo</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl>
+<dt>def test_performance_large_dataset(self):</dt><dd><p>“””Test de rendimiento para dataset grande.”””
+df_large = self.create_large_test_dataframe(10000, 50)</p>
+<dl class="simple">
+<dt>with measure_performance(“Large Dataset Test”, self.metrics):</dt><dd><p>result = exportar_datos_separados(df_large, self.config)</p>
+</dd>
+</dl>
+<p># Verificar que cumple objetivos de rendimiento
+self.assertLess(self.metrics.last_duration, 60)  # &lt; 1 minuto
+self.assertLess(self.metrics.peak_memory_mb, 500)  # &lt; 500MB</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</section>
+<section id="proceso-de-desarrollo">
+<h2>Proceso de Desarrollo<a class="headerlink" href="#proceso-de-desarrollo" title="Link to this heading"></a></h2>
+<section id="workflow-git">
+<h3>Workflow Git<a class="headerlink" href="#workflow-git" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Crear branch</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>git checkout -b feature/nueva-funcionalidad</p>
+</div></blockquote>
+</li>
+<li><p><strong>Desarrollar y testear</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Hacer cambios
+python -m pytest tests/  # Verificar tests
+python -m pytest –cov=core.data_handler  # Verificar cobertura</p>
+</div></blockquote>
+</li>
+<li><p><strong>Commit con mensaje descriptivo</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>git add .
+git commit -m “feat: agregar nueva validación de plantillas Excel”</p>
+</div></blockquote>
+</li>
+<li><p><strong>Push y crear PR</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>git push origin feature/nueva-funcionalidad</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="commits-convencionales">
+<h3>Commits Convencionales<a class="headerlink" href="#commits-convencionales" title="Link to this heading"></a></h3>
+<p><strong>Formato</strong>: <cite>tipo(scope): descripción</cite></p>
+<p><strong>Tipos</strong>:
+- <cite>feat</cite>: Nueva funcionalidad
+- <cite>fix</cite>: Corrección de bug
+- <cite>docs</cite>: Cambios en documentación
+- <cite>test</cite>: Agregar/modificar tests
+- <cite>refactor</cite>: Refactorización de código
+- <cite>perf</cite>: Mejoras de rendimiento</p>
+<p><strong>Ejemplos</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>feat(ui): agregar preview de archivos en diálogo de configuración
+fix(core): corregir manejo de valores nulos en mapeo de columnas
+test(perf): agregar test de rendimiento para datasets grandes
+docs(api): actualizar documentación de ExcelTemplateSplitter</p>
+</div></blockquote>
+</section>
+</section>
+<section id="anadir-nueva-funcionalidad">
+<h2>Añadir Nueva Funcionalidad<a class="headerlink" href="#anadir-nueva-funcionalidad" title="Link to this heading"></a></h2>
+<section id="paso-1-analisis">
+<h3>Paso 1: Análisis<a class="headerlink" href="#paso-1-analisis" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Definir requerimientos</strong></p></li>
+<li><p><strong>Diseñar interfaz</strong> (si aplica)</p></li>
+<li><p><strong>Planificar tests</strong></p></li>
+<li><p><strong>Considerar rendimiento</strong></p></li>
+</ol>
+</section>
+<section id="paso-2-implementacion">
+<h3>Paso 2: Implementación<a class="headerlink" href="#paso-2-implementacion" title="Link to this heading"></a></h3>
+<p><strong>Estructura recomendada</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Core Logic</strong> (si es nueva funcionalidad):
+.. code-block:: python</p>
+<blockquote>
+<div><p># En core/data_handler.py o nuevo módulo
+class NuevaFuncionalidad:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def __init__(self, data, config):</dt><dd><p>self.data = data
+self.config = config</p>
+</dd>
+<dt>def process(self):</dt><dd><p>“””Lógica principal.”””
+pass</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>UI Components</strong> (si aplica):
+.. code-block:: python</p>
+<blockquote>
+<div><p># En app/widgets/
+class NuevaFuncionalidadDialog(QDialog):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def __init__(self, parent=None):</dt><dd><p>super().__init__(parent)
+self.setup_ui()</p>
+</dd>
+<dt>def setup_ui(self):</dt><dd><p>“””Configurar interfaz.”””
+pass</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>Integración</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p># En main.py o lugar apropiado
+# Agregar al menú principal
+self.separar_menu.addAction(“Nueva Funcionalidad”, self.nueva_funcionalidad)</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="paso-3-testing">
+<h3>Paso 3: Testing<a class="headerlink" href="#paso-3-testing" title="Link to this heading"></a></h3>
+<p><strong>Tests requeridos</strong>:
+- Unit tests para lógica core
+- Integration tests para flujos completos
+- UI tests si aplica
+- Performance tests si hay impacto</p>
+</section>
+<section id="paso-4-documentacion">
+<h3>Paso 4: Documentación<a class="headerlink" href="#paso-4-documentacion" title="Link to this heading"></a></h3>
+<p><strong>Documentación requerida</strong>:
+- Docstrings para todas las funciones públicas
+- Actualizar documentación de API si aplica
+- Ejemplos de uso en documentación
+- Actualizar changelog</p>
+</section>
+</section>
+<section id="optimizacion-de-rendimiento">
+<h2>Optimización de Rendimiento<a class="headerlink" href="#optimizacion-de-rendimiento" title="Link to this heading"></a></h2>
+<section id="principio-de-optimizacion">
+<h3>Principio de Optimización<a class="headerlink" href="#principio-de-optimizacion" title="Link to this heading"></a></h3>
+<p><strong>“Medir antes de optimizar”</strong>:
+1. Identificar bottleneck con profiling
+2. Implementar optimización específica
+3. Verificar mejora con benchmarks
+4. Mantener compatibilidad hacia atrás</p>
+</section>
+<section id="tecnicas-de-optimizacion">
+<h3>Técnicas de Optimización<a class="headerlink" href="#tecnicas-de-optimizacion" title="Link to this heading"></a></h3>
+<p><strong>1. Chunking para datasets grandes</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def process_large_dataset(self, df):</dt><dd><dl class="simple">
+<dt>if len(df) &gt; self.config.chunk_threshold:</dt><dd><p>return self._process_with_chunking(df)</p>
+</dd>
+<dt>else:</dt><dd><p>return self._process_direct(df)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>2. Cache de operaciones costosas</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>&#64;lru_cache(maxsize=128)
+def expensive_operation(self, parameter):</p>
+<blockquote>
+<div><p># Operación costosa cacheada
+pass</p>
+</div></blockquote>
+</div></blockquote>
+<p><strong>3. Lazy loading</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>&#64;property
+def heavy_computation(self):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if not hasattr(self, ‘_cached_result’):</dt><dd><p>self._cached_result = self._compute_expensive_result()</p>
+</dd>
+</dl>
+<p>return self._cached_result</p>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="profiling-y-medicion">
+<h3>Profiling y Medición<a class="headerlink" href="#profiling-y-medicion" title="Link to this heading"></a></h3>
+<p><strong>Usar cProfile</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>import cProfile</p>
+<dl class="simple">
+<dt>def profile_function():</dt><dd><p>cProfile.run(‘result = function_to_profile()’)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Métricas importantes</strong>:
+- Tiempo de ejecución total
+- Uso de memoria pico
+- Throughput (filas/segundo)
+- Número de operaciones I/O</p>
+</section>
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h2>
+<section id="herramientas-de-debug">
+<h3>Herramientas de Debug<a class="headerlink" href="#herramientas-de-debug" title="Link to this heading"></a></h3>
+<p><strong>Python Debugger (pdb)</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>import pdb; pdb.set_trace()  # Breakpoint</p>
+</div></blockquote>
+<p><strong>Logging detallado</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>import logging</p>
+<p>logger = logging.getLogger(__name__)
+logger.debug(f”Processing group: {group_name}”)
+logger.info(f”Files created: {len(files)}”)</p>
+</div></blockquote>
+<p><strong>PyLint para calidad</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>pylint core/data_handler.py</p>
+</div></blockquote>
+</section>
+<section id="debugging-comun">
+<h3>Debugging Común<a class="headerlink" href="#debugging-comun" title="Link to this heading"></a></h3>
+<p><strong>1. ImportError de dependencias</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>try:</dt><dd><p>import openpyxl</p>
+</dd>
+<dt>except ImportError:</dt><dd><p>raise ImportError(“openpyxl es requerido para esta funcionalidad”)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>2. Problemas de memoria</strong>:
+.. code-block:: python</p>
+<blockquote>
+<div><p>import gc</p>
+<p># Forzar garbage collection después de operaciones grandes
+del large_variable
+gc.collect()</p>
+</div></blockquote>
+<p><strong>3. Problemas de rendimiento</strong>:
+- Usar chunking para datasets grandes
+- Evitar loops anidados ineficientes
+- Usar operaciones vectorizadas de pandas</p>
+</section>
+</section>
+<section id="contribucion-de-documentacion">
+<h2>Contribución de Documentación<a class="headerlink" href="#contribucion-de-documentacion" title="Link to this heading"></a></h2>
+<section id="tipos-de-documentacion">
+<h3>Tipos de Documentación<a class="headerlink" href="#tipos-de-documentacion" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>API Documentation</strong>: Docstrings y Sphinx</p></li>
+<li><p><strong>User Guide</strong>: Guía para usuarios finales</p></li>
+<li><p><strong>Developer Guide</strong>: Documentación técnica</p></li>
+<li><p><strong>Architecture Documentation</strong>: Diagramas y diseño</p></li>
+</ol>
+</section>
+<section id="convenciones-para-documentacion">
+<h3>Convenciones para Documentación<a class="headerlink" href="#convenciones-para-documentacion" title="Link to this heading"></a></h3>
+<p><strong>Markdown para User Guide</strong>:
+- Títulos con # ## ###
+- Código con <a href="#id1"><span class="problematic" id="id2">``</span></a>` blocks
+- Listas con - y 1.
+- Enlaces con [texto](url)</p>
+<p><strong>reStructuredText para Sphinx</strong>:
+- Usar .. autoclass:: para APIs
+- Incluir ejemplos de código
+- Referenciar otras secciones con :doc:</p>
+</section>
+</section>
+<section id="revision-de-codigo">
+<h2>Revisión de Código<a class="headerlink" href="#revision-de-codigo" title="Link to this heading"></a></h2>
+<section id="checklist-de-revision">
+<h3>Checklist de Revisión<a class="headerlink" href="#checklist-de-revision" title="Link to this heading"></a></h3>
+<p><strong>Funcionalidad</strong>:
+- [ ] La funcionalidad hace lo que se espera
+- [ ] Maneja casos edge correctamente
+- [ ] No rompe funcionalidades existentes</p>
+<p><strong>Código</strong>:
+- [ ] Sigue convenciones de estilo
+- [ ] Incluye documentación adecuada
+- [ ] Manejo de errores apropiado</p>
+<p><strong>Testing</strong>:
+- [ ] Incluye tests unitarios
+- [ ] Incluye tests de integración si aplica
+- [ ] Tests pasan localmente</p>
+<p><strong>Performance</strong>:
+- [ ] No degrada rendimiento existente
+- [ ] Optimizaciones documentadas si son significativas</p>
+<p><strong>Documentación</strong>:
+- [ ] Actualiza documentación relevante
+- [ ] Ejemplos de uso incluidos</p>
+</section>
+<section id="proceso-de-merge">
+<h3>Proceso de Merge<a class="headerlink" href="#proceso-de-merge" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Code Review</strong>: Al menos 1 aprobador</p></li>
+<li><p><strong>CI/CD Pass</strong>: Todos los tests pasan</p></li>
+<li><p><strong>Performance Check</strong>: Sin regresiones significativas</p></li>
+<li><p><strong>Documentation Review</strong>: Documentación actualizada</p></li>
+<li><p><strong>Merge</strong>: Squash y merge a main branch</p></li>
+</ol>
+</section>
+</section>
+<section id="recursos-adicionales">
+<h2>Recursos Adicionales<a class="headerlink" href="#recursos-adicionales" title="Link to this heading"></a></h2>
+<section id="herramientas-recomendadas">
+<h3>Herramientas Recomendadas<a class="headerlink" href="#herramientas-recomendadas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>IDE</strong>: VSCode con Python extension</p></li>
+<li><p><strong>Linting</strong>: PyLint, Black (formateador)</p></li>
+<li><p><strong>Testing</strong>: pytest, coverage.py</p></li>
+<li><p><strong>Documentation</strong>: Sphinx, MkDocs</p></li>
+<li><p><strong>Profiling</strong>: cProfile, memory_profiler</p></li>
+</ul>
+</section>
+<section id="enlaces-utiles">
+<h3>Enlaces Útiles<a class="headerlink" href="#enlaces-utiles" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>PEP 8</strong>: <a class="reference external" href="https://pep8.org/">https://pep8.org/</a></p></li>
+<li><p><strong>Google Style Guide</strong>: <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">https://google.github.io/styleguide/pyguide.html</a></p></li>
+<li><p><strong>Sphinx Documentation</strong>: <a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p></li>
+<li><p><strong>PyTest Documentation</strong>: <a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a></p></li>
+</ul>
+</section>
+</section>
+<section id="contacto">
+<h2>Contacto<a class="headerlink" href="#contacto" title="Link to this heading"></a></h2>
+<p>Para preguntas sobre contribución:
+- Crear issue en el repositorio
+- Consultar documentación existente
+- Revisar tests para ejemplos de uso</p>
+<p>Gracias por contribuir al proyecto Flash Sheet - Exportación Separada!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Sistema de Arquitectura - Flash Sheet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/classes.html" class="btn btn-neutral float-right" title="API Reference - Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

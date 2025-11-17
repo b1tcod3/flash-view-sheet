@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>} &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">}</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/releases/v-1-1-0/installation_guide.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Guía de Instalación y Actualización
+## Flash Sheet v1.0.0 - Exportación Separada</p>
+<p>### 📋 Contenido
+1. [Requisitos del Sistema](#requisitos-del-sistema)
+2. [Instalación Nueva](#instalación-nueva)
+3. [Actualización desde Versiones Anteriores](#actualización-desde-versiones-anteriores)
+4. [Instalación desde Código Fuente](#instalación-desde-código-fuente)
+5. [Verificación de Instalación](#verificación-de-instalación)
+6. [Solución de Problemas](#solución-de-problemas)
+7. [Configuración Post-Instalación](#configuración-post-instalación)</p>
+<p>—</p>
+<p>## 🖥️ Requisitos del Sistema</p>
+<p>### Requisitos Mínimos</p>
+<p><strong>Sistema Operativo:</strong>
+- Windows 10 o superior (64-bit)
+- macOS 10.14 (Mojave) o superior
+- Ubuntu 18.04 LTS o superior</p>
+<p><strong>Hardware:</strong>
+- <strong>Procesador</strong>: Intel i5 / AMD Ryzen 5 o equivalente
+- <strong>Memoria RAM</strong>: 4 GB mínimo, 8 GB recomendado
+- <strong>Espacio en Disco</strong>: 2 GB para instalación base, 10 GB recomendado
+- <strong>Resolución</strong>: 1024x768 mínimo, 1920x1080 recomendado</p>
+<p><strong>Software:</strong>
+- <strong>Python</strong>: 3.8, 3.9, 3.10, o 3.11
+- <strong>Excel</strong>: 2016 o superior (para funcionalidad completa)
+- <strong>Administrador de paquetes</strong>: pip (incluido con Python)</p>
+<p>### Requisitos para Funcionalidad Completa</p>
+<p><strong>Para ExcelTemplateSplitter (Exportación Separada):</strong>
+- <strong>Memoria RAM</strong>: 8 GB (para datasets &gt; 50K filas)
+- <strong>Espacio en Disco</strong>: 3x tamaño de datos originales
+- <strong>Python Packages</strong>: pandas, openpyxl, PySide6</p>
+<p><strong>Para Datasets Grandes (&gt; 1M filas):</strong>
+- <strong>Memoria RAM</strong>: 16 GB o superior
+- <strong>Procesador</strong>: Intel i7 / AMD Ryzen 7 o superior
+- <strong>Almacenamiento</strong>: SSD recomendado</p>
+<p>—</p>
+<p>## 🚀 Instalación Nueva</p>
+<p>### Método 1: Instalación Rápida (Recomendado)</p>
+<p><strong>Windows:</strong>
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>cmd
+# Verificar Python
+python –version</p>
+<p># Instalar usando pip
+pip install flash-sheet==1.0.0</p>
+<p># O instalar con dependencias opcionales
+pip install flash-sheet[full]==1.0.0
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p><strong>macOS/Linux:</strong>
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>bash
+# Verificar Python 3
+python3 –version</p>
+<p># Instalar usando pip
+pip3 install flash-sheet==1.0.0</p>
+<p># O instalar con dependencias opcionales
+pip3 install flash-sheet[full]==1.0.0
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>### Método 2: Instalación con Entorno Virtual</p>
+<p><strong>Crear entorno virtual:</strong>
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>bash
+# Crear entorno
+python -m venv flash-sheet-env</p>
+<p># Activar entorno
+# Windows:
+flash-sheet-envScriptsactivate</p>
+<p># macOS/Linux:
+source flash-sheet-env/bin/activate</p>
+<p># Instalar Flash Sheet
+pip install flash-sheet==1.0.0
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p>### Método 3: Instalación desde Ejecutable</p>
+<p><strong>Windows:</strong>
+1. Descargar <cite>FlashSheet-1.0.0-Windows-x86_64.exe</cite>
+2. Ejecutar como administrador
+3. Seguir el asistente de instalación
+4. Verificar que se agregó al PATH del sistema</p>
+<p><strong>macOS:</strong>
+1. Descargar <cite>FlashSheet-1.0.0-macOS.dmg</cite>
+2. Abrir archivo .dmg
+3. Arrastrar Flash Sheet a Applications
+4. Verificar en Launchpad</p>
+<p>—</p>
+<p>## 🔄 Actualización desde Versiones Anteriores</p>
+<p>### Backup Recomendado</p>
+<p><strong>Antes de actualizar, crear backup:</strong>
+<a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>bash
+# Windows
+robocopy “%USERPROFILE%.flash-sheet” “%USERPROFILE%.flash-sheet-backup-%date%” /E /R:3 /W:1</p>
+<p># macOS/Linux
+cp -r ~/.flash-sheet ~/flash-sheet-backup-$(date +%Y%m%d)/
+<a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a></p>
+<p>### Actualización Simple</p>
+<p><strong>Verificar versión actual:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">flash-sheet</span> <span class="pre">--version</span>
+<span class="pre">#</span> <span class="pre">O</span> <span class="pre">si</span> <span class="pre">no</span> <span class="pre">está</span> <span class="pre">en</span> <span class="pre">PATH:</span>
+<span class="pre">python</span> <span class="pre">-m</span> <span class="pre">flash_sheet</span> <span class="pre">--version</span>
+<span class="pre">`</span></code></p>
+<p><strong>Actualizar usando pip:</strong>
+<a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a>bash
+# Actualizar a v1.0.0
+pip install –upgrade flash-sheet==1.0.0</p>
+<p># Verificar que se actualizó
+pip show flash-sheet
+<a href="#id37"><span class="problematic" id="id38">``</span></a><a href="#id39"><span class="problematic" id="id40">`</span></a></p>
+<p>### Actualización con Conservación de Configuración</p>
+<p><strong>Pasos recomendados:</strong></p>
+<p>1. <strong>Hacer backup de configuración:</strong>
+<a href="#id41"><span class="problematic" id="id42">``</span></a><a href="#id43"><span class="problematic" id="id44">`</span></a>bash
+# Windows
+copy “%USERPROFILE%.flash-sheetconfig.json” “%USERPROFILE%flash-sheet-config-backup.json”</p>
+<p># macOS/Linux
+cp ~/.flash-sheet/config.json ~/flash-sheet-config-backup.json
+<a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a></p>
+<p>2. <strong>Actualizar aplicación:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">flash-sheet==1.0.0</span>
+<span class="pre">`</span></code></p>
+<p>3. <strong>Verificar que la configuración se preservó:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Verificar</span> <span class="pre">que</span> <span class="pre">la</span> <span class="pre">nueva</span> <span class="pre">funcionalidad</span> <span class="pre">está</span> <span class="pre">disponible</span>
+<span class="pre">flash-sheet</span> <span class="pre">--check-features</span>
+<span class="pre">`</span></code></p>
+<p>4. <strong>Si hay problemas, restaurar configuración:</strong>
+<a href="#id49"><span class="problematic" id="id50">``</span></a><a href="#id51"><span class="problematic" id="id52">`</span></a>bash
+# Windows
+copy “%USERPROFILE%flash-sheet-config-backup.json” “%USERPROFILE%.flash-sheetconfig.json”</p>
+<p># macOS/Linux
+cp ~/flash-sheet-config-backup.json ~/.flash-sheet/config.json
+<a href="#id53"><span class="problematic" id="id54">``</span></a><a href="#id55"><span class="problematic" id="id56">`</span></a></p>
+<p>### Migración desde v0.x a v1.0.0</p>
+<p><strong>Cambios en la configuración:</strong>
+- No requiere migración manual
+- La configuración v0.x se convierte automáticamente
+- Nuevas opciones se inicializan con valores por defecto</p>
+<p><strong>Verificar migración:</strong>
+<a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a>python
+# Script de verificación
+import json
+from pathlib import Path</p>
+<p>config_path = Path.home() / “.flash-sheet” / “config.json”
+if config_path.exists():</p>
+<blockquote>
+<div><dl class="simple">
+<dt>with open(config_path) as f:</dt><dd><p>config = json.load(f)</p>
+</dd>
+</dl>
+<p>print(”✅ Configuración migrada exitosamente”)
+print(f”Versión configurada: {config.get(‘version’, ‘unknown’)}”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>else:</dt><dd><p>print(”❌ Configuración no encontrada”)</p>
+</dd>
+</dl>
+<p><a href="#id61"><span class="problematic" id="id62">``</span></a><a href="#id63"><span class="problematic" id="id64">`</span></a></p>
+<p>—</p>
+<p>## 🛠️ Instalación desde Código Fuente</p>
+<p>### Requisitos para Desarrollo</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Instalar</span> <span class="pre">herramientas</span> <span class="pre">de</span> <span class="pre">desarrollo</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">setuptools</span> <span class="pre">wheel</span> <span class="pre">twine</span>
+<span class="pre">`</span></code></p>
+<p>### Clonar y Compilar</p>
+<p><a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a>bash
+# Clonar repositorio
+git clone <a class="reference external" href="https://github.com/flash-sheet/flash-sheet.git">https://github.com/flash-sheet/flash-sheet.git</a>
+cd flash-sheet</p>
+<p># Crear entorno virtual
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# venvScriptsactivate  # Windows</p>
+<p># Instalar en modo desarrollo
+pip install -e .</p>
+<p># Instalar dependencias adicionales para desarrollo
+pip install -r requirements-dev.txt
+<a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a></p>
+<p>### Compilar Distribución</p>
+<p><a href="#id73"><span class="problematic" id="id74">``</span></a><a href="#id75"><span class="problematic" id="id76">`</span></a>bash
+# Crear distribución
+python setup.py sdist bdist_wheel</p>
+<p># Instalar desde distribución local
+pip install dist/flash_sheet-1.0.0-py3-none-any.whl
+<a href="#id77"><span class="problematic" id="id78">``</span></a><a href="#id79"><span class="problematic" id="id80">`</span></a></p>
+<p>—</p>
+<p>## ✅ Verificación de Instalación</p>
+<p>### Verificación Básica</p>
+<p><strong>Test 1: Ejecutar aplicación</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">flash-sheet</span> <span class="pre">--help</span>
+<span class="pre">`</span></code></p>
+<p><strong>Test 2: Verificar importación de módulos</strong>
+<a href="#id81"><span class="problematic" id="id82">``</span></a><a href="#id83"><span class="problematic" id="id84">`</span></a>python
+# Crear archivo test_installation.py
+import sys
+try:</p>
+<blockquote>
+<div><p>from core.data_handler import ExcelTemplateSplitter
+print(”✅ ExcelTemplateSplitter disponible”)</p>
+<p>from app.widgets.export_separated_dialog import ExportSeparatedDialog
+print(”✅ ExportSeparatedDialog disponible”)</p>
+<p>import openpyxl
+print(”✅ OpenPyXL disponible”)</p>
+<p>import pandas as pd
+print(”✅ Pandas disponible”)</p>
+<p>print(”n🎉 Instalación verificada exitosamente!”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>except ImportError as e:</dt><dd><p>print(f”❌ Error de importación: {e}”)
+sys.exit(1)</p>
+</dd>
+</dl>
+<p><a href="#id85"><span class="problematic" id="id86">``</span></a><a href="#id87"><span class="problematic" id="id88">`</span></a></p>
+<p><strong>Ejecutar test:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">python</span> <span class="pre">test_installation.py</span>
+<span class="pre">`</span></code></p>
+<p>### Verificación de Funcionalidad</p>
+<p><strong>Test 3: Crear DataFrame de prueba</strong>
+<a href="#id89"><span class="problematic" id="id90">``</span></a><a href="#id91"><span class="problematic" id="id92">`</span></a>python
+# test_functionality.py
+import pandas as pd
+from core.data_handler import ExcelTemplateSplitter</p>
+<p># Crear datos de prueba
+data = {</p>
+<blockquote>
+<div><p>‘Región’: [‘Norte’, ‘Sur’, ‘Norte’, ‘Este’, ‘Sur’] * 100,
+‘Producto’: [‘A’, ‘B’, ‘A’, ‘C’, ‘B’] * 100,
+‘Ventas’: list(range(500))</p>
+</div></blockquote>
+<p>}</p>
+<p>df = pd.DataFrame(data)</p>
+<p># Verificar que el separador funciona
+try:</p>
+<blockquote>
+<div><p>splitter = ExcelTemplateSplitter(df, {})
+print(”✅ ExcelTemplateSplitter inicializado correctamente”)</p>
+<p># Verificar análisis de datos
+analysis = splitter.analyze_data()
+print(f”✅ Análisis completado: {analysis.estimated_groups} grupos detectados”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>except Exception as e:</dt><dd><p>print(f”❌ Error en funcionalidad: {e}”)</p>
+</dd>
+</dl>
+<p><a href="#id93"><span class="problematic" id="id94">``</span></a><a href="#id95"><span class="problematic" id="id96">`</span></a></p>
+<p><strong>Ejecutar test:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">python</span> <span class="pre">test_functionality.py</span>
+<span class="pre">`</span></code></p>
+<p>### Verificación de UI</p>
+<p><strong>Test 4: Verificar interfaz gráfica</strong>
+<a href="#id97"><span class="problematic" id="id98">``</span></a><a href="#id99"><span class="problematic" id="id100">`</span></a>python
+# test_ui.py
+import sys
+from PySide6.QtWidgets import QApplication
+from app.widgets.export_separated_dialog import ExportSeparatedDialog
+import pandas as pd</p>
+<dl>
+<dt>try:</dt><dd><p>app = QApplication(sys.argv)
+data = {‘A’: [1, 2, 3], ‘B’: [4, 5, 6]}
+df = pd.DataFrame(data)</p>
+<p>dialog = ExportSeparatedDialog(df)
+print(”✅ ExportSeparatedDialog creado correctamente”)
+print(”✅ Interfaz gráfica disponible”)</p>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”❌ Error en interfaz: {e}”)</p>
+</dd>
+</dl>
+<p><a href="#id101"><span class="problematic" id="id102">``</span></a><a href="#id103"><span class="problematic" id="id104">`</span></a></p>
+<p>—</p>
+<p>## 🔧 Solución de Problemas</p>
+<p>### Problema 1: Error “python no se reconoce”</p>
+<p><strong>Windows:</strong>
+<code class="docutils literal notranslate"><span class="pre">`cmd</span>
+<span class="pre">#</span> <span class="pre">Verificar</span> <span class="pre">instalación</span> <span class="pre">de</span> <span class="pre">Python</span>
+<span class="pre">where</span> <span class="pre">python</span>
+<span class="pre">#</span> <span class="pre">Si</span> <span class="pre">no</span> <span class="pre">se</span> <span class="pre">encuentra,</span> <span class="pre">reinstalar</span> <span class="pre">Python</span> <span class="pre">marcando</span> <span class="pre">&quot;Add</span> <span class="pre">to</span> <span class="pre">PATH&quot;</span>
+<span class="pre">`</span></code></p>
+<p><strong>macOS:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Instalar</span> <span class="pre">Python</span> <span class="pre">desde</span> <span class="pre">python.org</span>
+<span class="pre">#</span> <span class="pre">O</span> <span class="pre">usar</span> <span class="pre">Homebrew:</span>
+<span class="pre">brew</span> <span class="pre">install</span> <span class="pre">python</span>
+<span class="pre">`</span></code></p>
+<p><strong>Linux:</strong>
+<a href="#id105"><span class="problematic" id="id106">``</span></a><a href="#id107"><span class="problematic" id="id108">`</span></a>bash
+# Ubuntu/Debian:
+sudo apt update
+sudo apt install python3 python3-pip</p>
+<p># CentOS/RHEL:
+sudo yum install python3 python3-pip
+<a href="#id109"><span class="problematic" id="id110">``</span></a><a href="#id111"><span class="problematic" id="id112">`</span></a></p>
+<p>### Problema 2: Error “pip no se reconoce”</p>
+<p><strong>Solución:</strong>
+<a href="#id113"><span class="problematic" id="id114">``</span></a><a href="#id115"><span class="problematic" id="id116">`</span></a>cmd
+# Windows - usar python -m pip
+python -m pip install flash-sheet==1.0.0</p>
+<p># macOS/Linux - usar pip3
+pip3 install flash-sheet==1.0.0
+<a href="#id117"><span class="problematic" id="id118">``</span></a><a href="#id119"><span class="problematic" id="id120">`</span></a></p>
+<p>### Problema 3: Error de permisos</p>
+<p><strong>Linux/macOS:</strong>
+<a href="#id121"><span class="problematic" id="id122">``</span></a><a href="#id123"><span class="problematic" id="id124">`</span></a>bash
+# Usar –user para instalación local
+pip install –user flash-sheet==1.0.0</p>
+<p># O usar sudo (no recomendado)
+sudo pip install flash-sheet==1.0.0
+<a href="#id125"><span class="problematic" id="id126">``</span></a><a href="#id127"><span class="problematic" id="id128">`</span></a></p>
+<p><strong>Windows:</strong>
+<code class="docutils literal notranslate"><span class="pre">`cmd</span>
+<span class="pre">#</span> <span class="pre">Ejecutar</span> <span class="pre">como</span> <span class="pre">administrador</span>
+<span class="pre">#</span> <span class="pre">O</span> <span class="pre">usar</span> <span class="pre">--user</span>
+<span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">flash-sheet==1.0.0</span>
+<span class="pre">`</span></code></p>
+<p>### Problema 4: Error “Microsoft Visual C++ 14.0 is required”</p>
+<p><strong>Windows:</strong>
+1. Descargar e instalar “Microsoft C++ Build Tools”
+2. O instalar “Visual Studio Community” (gratuito)
+3. Reiniciar sistema y intentar instalación nuevamente</p>
+<p><strong>Alternativa:</strong>
+<code class="docutils literal notranslate"><span class="pre">`cmd</span>
+<span class="pre">#</span> <span class="pre">Usar</span> <span class="pre">versión</span> <span class="pre">pre-compilada</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--only-binary=all</span> <span class="pre">flash-sheet==1.0.0</span>
+<span class="pre">`</span></code></p>
+<p>### Problema 5: OpenPyXL falla en macOS Big Sur+</p>
+<p><strong>Solución:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Reinstalar</span> <span class="pre">openpyxl</span> <span class="pre">con</span> <span class="pre">dependencias</span> <span class="pre">actualizadas</span>
+<span class="pre">pip</span> <span class="pre">uninstall</span> <span class="pre">openpyxl</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">openpyxl</span>
+<span class="pre">`</span></code></p>
+<p>### Problema 6: Memoria insuficiente con datasets grandes</p>
+<p><strong>Solución - Configuración de memoria:</strong>
+<a href="#id129"><span class="problematic" id="id130">``</span></a><a href="#id131"><span class="problematic" id="id132">`</span></a>python
+# Configurar límites de memoria en ~/.flash-sheet/config.json
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“export_separated”: {</dt><dd><p>“max_memory_mb”: 4096,
+“chunk_size”: 5000,
+“aggressive_chunking”: true</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<section id="id133">
+<h1>}<a class="headerlink" href="#id133" title="Link to this heading"></a></h1>
+<p>### Problema 7: ExportSeparatedDialog no aparece</p>
+<p><strong>Verificar dependencias Qt:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">PySide6</span>
+<span class="pre">`</span></code></p>
+<p><strong>Verificar permisos de archivos:</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">#</span> <span class="pre">Crear</span> <span class="pre">directorio</span> <span class="pre">si</span> <span class="pre">no</span> <span class="pre">existe</span>
+<span class="pre">mkdir</span> <span class="pre">-p</span> <span class="pre">~/.flash-sheet</span>
+<span class="pre">chmod</span> <span class="pre">755</span> <span class="pre">~/.flash-sheet</span>
+<span class="pre">`</span></code></p>
+<p>—</p>
+<p>## ⚙️ Configuración Post-Instalación</p>
+<p>### Configuración Inicial</p>
+<p><strong>1. Crear archivo de configuración:</strong>
+<a href="#id134"><span class="problematic" id="id135">``</span></a><a href="#id136"><span class="problematic" id="id137">`</span></a>bash
+# Windows
+mkdir “%USERPROFILE%.flash-sheet”
+echo {} &gt; “%USERPROFILE%.flash-sheetconfig.json”</p>
+<p># macOS/Linux
+mkdir -p ~/.flash-sheet
+touch ~/.flash-sheet/config.json
+<a href="#id138"><span class="problematic" id="id139">``</span></a><a href="#id140"><span class="problematic" id="id141">`</span></a></p>
+<p><strong>2. Configuración básica recomendada:</strong>
+<a href="#id142"><span class="problematic" id="id143">``</span></a><a href="#id144"><span class="problematic" id="id145">`</span></a>json
+{</p>
+<blockquote>
+<div><p>“version”: “1.0.0”,
+“theme”: “light”,
+“language”: “es”,
+“auto_save”: true,
+“recent_files_limit”: 10,
+“export_separated”: {</p>
+<blockquote>
+<div><p>“default_memory_limit_mb”: 2048,
+“auto_chunking”: true,
+“validation_level”: “strict”,
+“backup_before_export”: true</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id146">
+<h1>}<a class="headerlink" href="#id146" title="Link to this heading"></a></h1>
+<p>### Configuración para Entorno Empresarial</p>
+<p><strong>Optimización para datasets grandes:</strong>
+<a href="#id147"><span class="problematic" id="id148">``</span></a><a href="#id149"><span class="problematic" id="id150">`</span></a>json
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“export_separated”: {</dt><dd><p>“max_memory_mb”: 8192,
+“chunk_size”: 10000,
+“parallel_processing”: true,
+“aggressive_chunking”: true,
+“validation_level”: “permissive”,
+“log_level”: “INFO”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id151">
+<h1>}<a class="headerlink" href="#id151" title="Link to this heading"></a></h1>
+<p><strong>Configuración para IT:</strong>
+<a href="#id152"><span class="problematic" id="id153">``</span></a><a href="#id154"><span class="problematic" id="id155">`</span></a>json
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“enterprise”: {</dt><dd><p>“disable_telemetry”: true,
+“restrict_network”: true,
+“allowed_file_extensions”: [“.xlsx”, “.csv”, “.json”],
+“max_file_size_mb”: 500,
+“audit_log”: true</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id156">
+<h1>}<a class="headerlink" href="#id156" title="Link to this heading"></a></h1>
+<p>### Verificar Configuración</p>
+<p><strong>Script de configuración:</strong>
+<a href="#id157"><span class="problematic" id="id158">``</span></a><a href="#id159"><span class="problematic" id="id160">`</span></a>python
+# verify_config.py
+import json
+from pathlib import Path
+import tempfile</p>
+<dl>
+<dt>def check_configuration():</dt><dd><p>config_path = Path.home() / “.flash-sheet” / “config.json”</p>
+<dl>
+<dt>if not config_path.exists():</dt><dd><p>print(”⚠️  Archivo de configuración no encontrado”)
+return False</p>
+</dd>
+<dt>try:</dt><dd><dl class="simple">
+<dt>with open(config_path) as f:</dt><dd><p>config = json.load(f)</p>
+</dd>
+</dl>
+<p>version = config.get(‘version’, ‘unknown’)
+print(f”✅ Configuración cargada (versión: {version})”)</p>
+<p># Verificar configuraciones críticas
+if ‘export_separated’ in config:</p>
+<blockquote>
+<div><p>print(”✅ Configuración de exportación separada encontrada”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>else:</dt><dd><p>print(”⚠️  Configuración de exportación separada no encontrada”)</p>
+</dd>
+</dl>
+<p>return True</p>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”❌ Error cargando configuración: {e}”)
+return False</p>
+</dd>
+</dl>
+</dd>
+<dt>if __name__ == “__main__”:</dt><dd><p>check_configuration()</p>
+</dd>
+</dl>
+<p><a href="#id161"><span class="problematic" id="id162">``</span></a><a href="#id163"><span class="problematic" id="id164">`</span></a></p>
+<p>—</p>
+<p>## 🆘 Soporte de Instalación</p>
+<p>### Logs de Instalación</p>
+<p><strong>Ubicaciones de logs:</strong>
+- Windows: <cite>%TEMP%flash-sheet-install.log</cite>
+- macOS: <cite>/tmp/flash-sheet-install.log</cite>
+- Linux: <cite>/tmp/flash-sheet-install.log</cite></p>
+<p>### Información del Sistema</p>
+<p><strong>Crear reporte de información del sistema:</strong>
+<a href="#id165"><span class="problematic" id="id166">``</span></a><a href="#id167"><span class="problematic" id="id168">`</span></a>python
+# system_info.py
+import sys
+import platform
+import subprocess
+import pkg_resources</p>
+<dl>
+<dt>def generate_system_report():</dt><dd><p>print(“=== Flash Sheet - Información del Sistema ===”)
+print(f”Python: {sys.version}”)
+print(f”Plataforma: {platform.platform()}”)
+print(f”Arquitectura: {platform.architecture()}”)</p>
+<p># Versiones de paquetes instalados
+packages = [‘pandas’, ‘openpyxl’, ‘PySide6’, ‘numpy’]
+for pkg in packages:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>try:</dt><dd><p>version = pkg_resources.get_distribution(pkg).version
+print(f”{pkg}: {version}”)</p>
+</dd>
+<dt>except:</dt><dd><p>print(f”{pkg}: NO INSTALADO”)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p># Verificar Flash Sheet
+try:</p>
+<blockquote>
+<div><p>import flash_sheet
+print(f”Flash Sheet: {flash_sheet.__version__}”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>except:</dt><dd><p>print(“Flash Sheet: NO INSTALADO”)</p>
+</dd>
+</dl>
+</dd>
+<dt>if __name__ == “__main__”:</dt><dd><p>generate_system_report()</p>
+</dd>
+</dl>
+<p><a href="#id169"><span class="problematic" id="id170">``</span></a><a href="#id171"><span class="problematic" id="id172">`</span></a></p>
+<p>### Contactar Soporte</p>
+<p><strong>Información a incluir en reportes:</strong>
+1. Output del script <cite>system_info.py</cite>
+2. Comando exacto usado para instalación
+3. Error completo (traceback)
+4. Logs de instalación relevantes</p>
+<p><strong>Canales de soporte:</strong>
+- <strong>GitHub Issues</strong>: Para bugs y problemas técnicos
+- <strong>Documentación</strong>: <cite>docs/user_guide/README.md</cite>
+- <strong>Email</strong>: <a class="reference external" href="mailto:support&#37;&#52;&#48;flash-sheet&#46;com">support<span>&#64;</span>flash-sheet<span>&#46;</span>com</a> (para clientes empresariales)</p>
+<p>—</p>
+<p>## 🎉 ¡Instalación Completada!</p>
+<p>Si has llegado hasta aquí, Flash Sheet v1.0.0 debería estar funcionando correctamente con la nueva funcionalidad de <strong>Exportación de Datos Separados con Plantillas Excel</strong>.</p>
+<p><strong>Próximos pasos:</strong>
+1. [Guía de Usuario](README.md) - Aprende a usar las nuevas funcionalidades
+2. [Configuración Avanzada](advanced_configuration.md) - Optimiza para tu entorno
+3. [Ejemplos Prácticos](examples_and_use_cases.md) - Casos de uso reales</p>
+<p><strong>¡Disfruta la nueva funcionalidad!</strong></p>
+<p>—</p>
+<p><em>Guía de Instalación v1.0.0 - Actualizada el 5 de Noviembre, 2025</em></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

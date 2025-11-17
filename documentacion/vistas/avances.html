@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/vistas/avances.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Avances en la Separación de Vistas - Flash View Sheet</p>
+<p>## Resumen de Implementación
+Se ha completado exitosamente la separación de vistas en la aplicación Flash-Sheet según el plan establecido en <cite>plan.md</cite>. A continuación se detallan los avances realizados.</p>
+<p>## Avances Realizados</p>
+<p>### 1. Análisis de Estructura UI
+- [x] Analizada la estructura actual de MainWindow, InfoPanel y VisualizationPanel.
+- [x] Identificadas las funcionalidades a separar: carga de archivos, información detallada y visualizaciones.</p>
+<p>### 2. Diseño de Arquitectura
+- [x] Diseñada arquitectura basada en QStackedWidget para alternar entre vistas.
+- [x] Definidas tres vistas principales: Principal, Información y Gráficos.
+- [x] Creado diagrama Mermaid para visualizar la arquitectura.</p>
+<p>### 3. Implementación de Vistas</p>
+<p>#### Vista Principal (<cite>app/widgets/main_view.py</cite>)
+- [x] Creado widget con botón para cargar archivo.
+- [x] Añadida card con información resumida del archivo.
+- [x] Incluido icono genérico de spreadsheet (📊).
+- [x] Implementada señal para notificar carga de archivo.</p>
+<p>#### Modal de Información (<cite>app/widgets/info_modal.py</cite>)
+- [x] Desarrollado modal que muestra detalles del archivo: nombre, filas, columnas, tipos.
+- [x] Incluidas estadísticas descriptivas y análisis detallado.
+- [x] Movida funcionalidad desde InfoPanel a modal independiente.</p>
+<p>#### Vista de Gráficos (<cite>app/widgets/graphics_view.py</cite>)
+- [x] Creado widget completo para visualizaciones y estadísticas.
+- [x] Integrados selectores de tipo de gráfico y columnas.
+- [x] Añadida tabla de datos filtrados en la misma vista.
+- [x] Basado en VisualizationPanel pero adaptado a vista completa.</p>
+<p>### 4. Integración en MainWindow
+- [x] Actualizada MainWindow para usar QStackedWidget.
+- [x] Añadidos botones en barra de herramientas: “Vista Principal”, “Vista Información”, “Vista Gráficos”.
+- [x] Implementados métodos para cambiar vistas y mostrar modal.
+- [x] Actualizado manejo de datos para sincronizar filtros con vista de gráficos.</p>
+<p>### 5. Actualizaciones de Funcionalidad
+- [x] Modificado <cite>on_datos_cargados</cite> para actualizar todas las vistas.
+- [x] Actualizados métodos de filtrado para aplicar cambios en vista de gráficos.
+- [x] Mantenidas todas las funcionalidades de exportación y filtrado.</p>
+<p>### 6. Funcionalidad de Opciones de Carga
+- [x] Implementado diálogo de opciones que aparece después de cargar archivo.
+- [x] Añadida funcionalidad para saltar filas y usar la siguiente como encabezado.
+- [x] Incluida opción para renombrar columnas desde el diálogo.
+- [x] Implementado recarga automática de datos con las nuevas opciones.
+- [x] Corregido error de percentiles en estadísticas descriptivas.</p>
+<p>### 7. Pruebas y Validación
+- [x] Ejecutada aplicación sin errores.
+- [x] Verificada integración de componentes.
+- [x] Confirmado flujo de datos entre vistas.
+- [x] Probada funcionalidad de opciones de carga y recarga.</p>
+<p>## Estado Actual
+- <strong>Completado</strong>: 100% de las tareas planificadas + funcionalidades adicionales.
+- <strong>Funcionalidades</strong>: Todas las vistas operativas, navegación fluida, datos sincronizados, opciones de carga dinámicas.
+- <strong>Compatibilidad</strong>: Mantenidas todas las características existentes.</p>
+<p>## Próximos Pasos Sugeridos
+1. <strong>Pruebas de Usuario</strong>: Realizar pruebas exhaustivas con usuarios para validar usabilidad de las nuevas opciones de carga.
+2. <strong>Optimizaciones de UI/UX</strong>: Mejorar estilos, animaciones y responsividad de la interfaz.
+3. <strong>Funcionalidades Avanzadas</strong>: Añadir más tipos de gráficos, herramientas de análisis y opciones de limpieza de datos.
+4. <strong>Documentación</strong>: Actualizar manual de usuario con las nuevas vistas y opciones de carga.
+5. <strong>Validación de Datos</strong>: Añadir validación de tipos de datos y detección automática de formatos.</p>
+<p>## Notas Técnicas
+- La implementación utiliza PySide6 y mantiene compatibilidad con el código existente.
+- Los filtros se aplican en tiempo real a la vista de gráficos.
+- El modal de información se activa desde la barra de herramientas.
+- <strong>Nueva funcionalidad</strong>: Diálogo de opciones de carga que aparece después de cargar archivo.
+- <strong>Mejora</strong>: Corrección de error de percentiles en estadísticas (convertir de porcentaje a decimal).
+- <strong>Optimización</strong>: Uso de <cite>header=skip_rows</cite> para usar la primera fila no saltada como encabezado de columnas.</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

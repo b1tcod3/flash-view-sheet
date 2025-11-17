@@ -1,0 +1,845 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>} &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">}</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/examples_and_use_cases.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Ejemplos y Casos de Uso</p>
+<p>## 📋 Índice</p>
+<ol class="arabic simple">
+<li><p>[Introducción](#introducción)</p></li>
+<li><p>[Ejemplos Básicos](#ejemplos-básicos)</p></li>
+<li><p>[Casos de Uso Empresariales](#casos-de-uso-empresariales)</p></li>
+<li><p>[Ejemplos con Datos Reales](#ejemplos-con-datos-reales)</p></li>
+<li><p>[Plantillas de Ejemplo](#plantillas-de-ejemplo)</p></li>
+<li><p>[Casos Especiales](#casos-especiales)</p></li>
+<li><p>[Automatización y Scripts](#automatización-y-scripts)</p></li>
+</ol>
+<p>## Introducción</p>
+<p>Esta sección proporciona <strong>ejemplos prácticos paso a paso</strong> y <strong>casos de uso reales</strong> para ayudarte a implementar la exportación separada en diferentes escenarios. Cada ejemplo incluye:</p>
+<ul class="simple">
+<li><p><strong>Datos de muestra</strong> para practicar</p></li>
+<li><p><strong>Configuración específica</strong> recomendada</p></li>
+<li><p><strong>Plantillas Excel</strong> de ejemplo</p></li>
+<li><p><strong>Resultados esperados</strong> y métricas</p></li>
+<li><p><strong>Consejos prácticos</strong> y mejores prácticas</p></li>
+</ul>
+<p>## Ejemplos Básicos</p>
+<p>### Ejemplo 1: Ventas por Región (Básico)</p>
+<p><strong>📊 Datos de Muestra:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`csv</span>
+<span class="pre">Region,Vendedor,Producto,Precio,Cantidad,Total</span>
+<span class="pre">Norte,Juan</span> <span class="pre">Pérez,Laptop</span> <span class="pre">Pro,1200.00,2,2400.00</span>
+<span class="pre">Norte,Juan</span> <span class="pre">Pérez,Mouse</span> <span class="pre">Wireless,25.00,5,125.00</span>
+<span class="pre">Sur,María</span> <span class="pre">García,Tablet</span> <span class="pre">Plus,450.00,3,1350.00</span>
+<span class="pre">Sur,María</span> <span class="pre">García,Laptop</span> <span class="pre">Pro,1200.00,1,1200.00</span>
+<span class="pre">Este,Carlos</span> <span class="pre">Ruiz,Smartphone,650.00,4,2600.00</span>
+<span class="pre">Oeste,Ana</span> <span class="pre">Torres,Monitor</span> <span class="pre">27&quot;,300.00,2,600.00</span>
+<span class="pre">Norte,Juan</span> <span class="pre">Pérez,Smartphone,650.00,1,650.00</span>
+<span class="pre">Sur,María</span> <span class="pre">García,Monitor</span> <span class="pre">27&quot;,300.00,3,900.00</span>
+<span class="pre">`</span></code></p>
+<p><strong>🎯 Objetivo:</strong> Crear un reporte por región con formato corporativo</p>
+<p><strong>⚙️ Configuración:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Columna de Separación</strong>: <cite>Region</cite></p></li>
+<li><p><strong>Plantilla</strong>: <cite>plantilla_ventas.xlsx</cite> (ver sección de plantillas)</p></li>
+<li><p><strong>Nombre de Archivo</strong>: <cite>Reporte_Ventas_{valor}_{fecha}.xlsx</cite></p></li>
+<li><p><strong>Carpeta Destino</strong>: <cite>Reportes_2025/</cite></p></li>
+<li><p><strong>Mapeo</strong>: Automático (posición 1:1)</p></li>
+</ol>
+<p><strong>📈 Resultado Esperado:</strong></p>
+<ul class="simple">
+<li><p><cite>Reporte_Ventas_Norte_2025-11-05.xlsx</cite> (4 filas)</p></li>
+<li><p><cite>Reporte_Ventas_Sur_2025-11-05.xlsx</cite> (3 filas)</p></li>
+<li><p><cite>Reporte_Ventas_Este_2025-11-05.xlsx</cite> (1 fila)</p></li>
+<li><p><cite>Reporte_Ventas_Oeste_2025-11-05.xlsx</cite> (1 fila)</p></li>
+</ul>
+<p><strong>💡 Consejos:</strong>
+- Cada archivo mantiene formato de plantilla corporativa
+- Suma de totales por región correcta
+- Celdas de totales calculadas automáticamente</p>
+<p>### Ejemplo 2: Reporte Mensual por Departamento</p>
+<p><strong>📊 Datos de Muestra:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`csv</span>
+<span class="pre">Mes,Departamento,Empleado,Categoria,Salario,Dias_Trabajados,Horas_Extras</span>
+<span class="pre">2025-01,RRHH,Ana</span> <span class="pre">López,Gerente,3500,22,5</span>
+<span class="pre">2025-01,Ventas,Carlos</span> <span class="pre">Pérez,Vendedor,2800,22,8</span>
+<span class="pre">2025-01,IT,María</span> <span class="pre">Ruiz,Desarrollador,3200,22,3</span>
+<span class="pre">2025-01,RRHH,Pedro</span> <span class="pre">García,Analista,2500,22,0</span>
+<span class="pre">2025-02,RRHH,Ana</span> <span class="pre">López,Gerente,3500,20,7</span>
+<span class="pre">2025-02,Ventas,Carlos</span> <span class="pre">Pérez,Vendedor,2800,20,12</span>
+<span class="pre">2025-02,IT,María</span> <span class="pre">Ruiz,Desarrollador,3200,20,6</span>
+<span class="pre">2025-02,Ventas,Lucía</span> <span class="pre">Martín,Vendedor,2600,20,4</span>
+<span class="pre">`</span></code></p>
+<p><strong>🎯 Objetivo:</strong> Crear reporte mensual por departamento</p>
+<p><strong>⚙️ Configuración:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Columna de Separación</strong>: <cite>Mes</cite></p></li>
+<li><p><strong>Plantilla</strong>: <cite>plantilla_nomina.xlsx</cite></p></li>
+<li><p><strong>Nombre de Archivo</strong>: <cite>{valor}_{Departamento}_Reporte.xlsx</cite></p></li>
+<li><p><strong>Manejo de Duplicados</strong>: Auto-numeración</p></li>
+<li><p><strong>Celda Inicial</strong>: A2 (para incluir encabezado en plantilla)</p></li>
+</ol>
+<p><strong>📈 Resultado Esperado:</strong></p>
+<ul class="simple">
+<li><p><cite>2025-01_RRHH_Reporte.xlsx</cite> (2 empleados RRHH enero)</p></li>
+<li><p><cite>2025-01_Ventas_Reporte.xlsx</cite> (1 empleado ventas enero)</p></li>
+<li><p><cite>2025-01_IT_Reporte.xlsx</cite> (1 empleado IT enero)</p></li>
+<li><p><cite>2025-02_RRHH_Reporte.xlsx</cite> (1 empleado RRHH febrero)</p></li>
+<li><p><cite>2025-02_Ventas_Reporte.xlsx</cite> (2 empleados ventas febrero)</p></li>
+<li><p><cite>2025-02_IT_Reporte.xlsx</cite> (1 empleado IT febrero)</p></li>
+</ul>
+<p>### Ejemplo 3: Inventario por Categoría</p>
+<p><strong>📊 Datos de Muestra:</strong></p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>csv
+Producto,Categoria,Stock,Precio_Costo,Precio_Venta,Proveedor,Fecha_Actualizacion
+Laptop Dell XPS,Electrónicos,15,800.00,1200.00,TechCorp,2025-11-01
+Mouse Logitech,Electrónicos,50,15.00,35.00,TechCorp,2025-11-01
+Escritorio Jefe,Muebles,3,200.00,350.00,OfficeMax,2025-11-01
+Silla Ergonómica,Muebles,8,120.00,180.00,OfficeMax,2025-11-01
+iPhone 15,Electrónicos,12,700.00,950.00,AppleStore,2025-11-01</p>
+<blockquote>
+<div><p>archivador,Muebles,5,80.00,120.00,OfficeMax,2025-11-01</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p><strong>🎯 Objetivo:</strong> Separate inventario por categoría con alertas de stock</p>
+<p><strong>⚙️ Configuración:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Columna de Separación</strong>: <cite>Categoria</cite></p></li>
+<li><p><strong>Plantilla</strong>: <cite>plantilla_inventario.xlsx</cite></p></li>
+<li><p><strong>Nombre de Archivo</strong>: <cite>Inventario_{valor}_{fecha}.xlsx</cite></p></li>
+<li><p><strong>Mapeo Personalizado</strong>:
+- Producto → A
+- Stock → B (con formato condicional para alertas)
+- Precio_Costo → C
+- Precio_Venta → D</p></li>
+</ol>
+<p><strong>📈 Resultado Esperado:</strong></p>
+<ul class="simple">
+<li><p><cite>Inventario_Electrónicos_2025-11-05.xlsx</cite> (3 productos)</p></li>
+<li><p><cite>Inventario_Muebles_2025-11-05.xlsx</cite> (3 productos)</p></li>
+</ul>
+<p>## Casos de Uso Empresariales</p>
+<p>### Caso 1: Empresa de Retail Multi-Tienda</p>
+<p><strong>🏢 Contexto:</strong> Cadena de tiendas con 25 ubicaciones que necesita reportes mensuales</p>
+<p><strong>📊 Datos Types:</strong>
+- <strong>Ventas diarias</strong> por tienda
+- <strong>Inventario</strong> por categoría y tienda
+- <strong>Personal</strong> por turno y tienda
+- <strong>Clientes</strong> por zona geográfica</p>
+<p><strong>⚙️ Configuración Empresarial:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`yaml</span>
+<span class="pre">Columna_Separación:</span> <span class="pre">&quot;Tienda&quot;</span>
+<span class="pre">Plantilla:</span> <span class="pre">&quot;corporativo_retail.xlsx&quot;</span>
+<span class="pre">Nombre_Archivo:</span> <span class="pre">&quot;{valor}_{mes}_{año}_Reporte.xlsx&quot;</span>
+<span class="pre">Mapeo:</span> <span class="pre">Personalizado</span> <span class="pre">con</span> <span class="pre">fórmulas</span> <span class="pre">de</span> <span class="pre">totales</span>
+<span class="pre">Performance:</span> <span class="pre">Chunking</span> <span class="pre">moderado</span> <span class="pre">(10K</span> <span class="pre">chunks)</span>
+<span class="pre">Recovery:</span> <span class="pre">Habilitado</span> <span class="pre">con</span> <span class="pre">logs</span> <span class="pre">detallados</span>
+<span class="pre">`</span></code></p>
+<p><strong>📈 Beneficios:</strong>
+- 25 reportes automáticos por mes
+- Formato corporativo consistente
+- Alertas automáticas de bajo stock
+- Integración con sistema ERP existente</p>
+<p>### Caso 2: Hospital - Reportes por Departamento</p>
+<p><strong>🏥 Contexto:</strong> Hospital con 12 departamentos médicos</p>
+<p><strong>📊 Datos Types:</strong>
+- <strong>Pacientes</strong> por departamento y médico
+- <strong>Citas médicas</strong> por especialidad
+- <strong>Inventario médico</strong> por categoría
+- <strong>Personal médico</strong> por turno</p>
+<p><strong>⚙️ Configuración Especializada:</strong></p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>yaml
+Columna_Separación: “Departamento”
+Plantilla: “medico_hipaa.xlsx”  # Cumple regulaciones
+Nombre_Archivo: “Dept_{valor}_{fecha}.xlsx”
+Seguridad:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Encriptación archivos temporales</p></li>
+<li><p>Logging de acceso</p></li>
+<li><p>Sin datos sensibles en logs</p></li>
+</ul>
+</div></blockquote>
+<p>Compliance: HIPAA compliant
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p><strong>📋 Consideraciones Especiales:</strong>
+- Cumplimiento HIPAA
+- Encriptación de archivos temporales
+- Control de acceso por usuario
+- Auditoría completa de accesos</p>
+<p>### Caso 3: Universidad - Análisis por Carrera</p>
+<p><strong>🎓 Contexto:</strong> Universidad con 15 carreras universitarias</p>
+<p><strong>📊 Datos Types:</strong>
+- <strong>Estudiantes</strong> por carrera y semestre
+- <strong>Calificaciones</strong> por materia y carrera
+- <strong>Profesores</strong> por departamento
+- <strong>Recursos académicos</strong> por área</p>
+<p><strong>⚙️ Configuración Educativa:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`yaml</span>
+<span class="pre">Columna_Separación:</span> <span class="pre">&quot;Carrera&quot;</span>
+<span class="pre">Plantilla:</span> <span class="pre">&quot;universitario_estandar.xlsx&quot;</span>
+<span class="pre">Nombre_Archivo:</span> <span class="pre">&quot;{valor}_Analisis_{semestre}.xlsx&quot;</span>
+<span class="pre">Mapeo:</span> <span class="pre">Configuración</span> <span class="pre">por</span> <span class="pre">tipo</span> <span class="pre">de</span> <span class="pre">carrera</span>
+<span class="pre">Analytics:</span> <span class="pre">Incluir</span> <span class="pre">métricas</span> <span class="pre">de</span> <span class="pre">rendimiento</span>
+<span class="pre">Exportacion:</span> <span class="pre">CSV</span> <span class="pre">adicional</span> <span class="pre">para</span> <span class="pre">análisis</span> <span class="pre">estadístico</span>
+<span class="pre">`</span></code></p>
+<p>### Caso 4: Empresa de Manufactura - Control de Calidad</p>
+<p><strong>🏭 Contexto:</strong> Planta manufacturera con múltiples líneas de producción</p>
+<p><strong>📊 Datos Types:</strong>
+- <strong>Control de calidad</strong> por línea y turno
+- <strong>Producción</strong> por producto y fecha
+- <strong>Defectos</strong> por tipo y línea
+- <strong>Mantenimiento</strong> por máquina</p>
+<p><strong>⚙️ Configuración Industrial:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`yaml</span>
+<span class="pre">Columna_Separación:</span> <span class="pre">&quot;Linea_Produccion&quot;</span>
+<span class="pre">Plantilla:</span> <span class="pre">&quot;manufactura_calidad.xlsx&quot;</span>
+<span class="pre">Nombre_Archivo:</span> <span class="pre">&quot;Linea_{valor}_{fecha}_{turno}.xlsx&quot;</span>
+<span class="pre">Real_Time:</span> <span class="pre">Integración</span> <span class="pre">con</span> <span class="pre">sistemas</span> <span class="pre">SCADA</span>
+<span class="pre">Alertas:</span> <span class="pre">Notificaciones</span> <span class="pre">automáticas</span> <span class="pre">de</span> <span class="pre">defectos</span>
+<span class="pre">Backup:</span> <span class="pre">Replicación</span> <span class="pre">automática</span> <span class="pre">a</span> <span class="pre">servidor</span> <span class="pre">central</span>
+<span class="pre">`</span></code></p>
+<p>## Ejemplos con Datos Reales</p>
+<p>### Dataset Empresarial Real: Datos de Ventas</p>
+<p><strong>📊 Características del Dataset:</strong>
+- <strong>Tamaño</strong>: 50,000 registros de ventas
+- <strong>Período</strong>: 2 años (2023-2024)
+- <strong>Regiones</strong>: 8 regiones comerciales
+- <strong>Columnas</strong>: 25 columnas incluyendo métricas calculadas</p>
+<p><strong>⚙️ Configuración Optimizada:</strong></p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>python
+# Configuración para dataset grande
+config = {</p>
+<blockquote>
+<div><p>‘separator_column’: ‘region_comercial’,
+‘chunk_size’: 5000,
+‘memory_limit_mb’: 2048,
+‘enable_progress_tracking’: True,
+‘parallel_processing’: False,  # Para estabilidad
+‘template’: ‘ventas_corporativo.xlsx’</p>
+</div></blockquote>
+<p>}</p>
+<p># Nombre de archivo con múltiples variables
+file_template = “Ventas_{region}_{año}_{mes|upper}.xlsx”
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p><strong>📈 Resultados:</strong>
+- <strong>8 archivos</strong> Excel generados
+- <strong>Tiempo de procesamiento</strong>: 8 minutos
+- <strong>Tamaño promedio por archivo</strong>: 2.5MB
+- <strong>Memoria pico utilizada</strong>: 1.2GB</p>
+<p>### Dataset Científico: Resultados de Laboratorio</p>
+<p><strong>🔬 Características del Dataset:</strong>
+- <strong>Tamaño</strong>: 15,000 mediciones experimentales
+- <strong>Experimentos</strong>: 25 experimentos diferentes
+- <strong>Sensores</strong>: 8 tipos de sensores
+- <strong>Período</strong>: 6 meses de recolección</p>
+<p><strong>⚙️ Configuración Científica:</strong></p>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>python
+config = {</p>
+<blockquote>
+<div><p>‘separator_column’: ‘experimento_id’,
+‘chunk_size’: 3000,
+‘preserve_scientific_notation’: True,
+‘decimal_precision’: 6,
+‘include_metadata’: True,
+‘template’: ‘laboratorio_cientifico.xlsx’</p>
+</div></blockquote>
+<section id="id29">
+<h1>}<a class="headerlink" href="#id29" title="Link to this heading"></a></h1>
+<p><strong>📋 Consideraciones Especiales:</strong>
+- Preservación de notación científica
+- Precisión de 6 decimales
+- Metadata experimental incluida
+- Gráficos automáticos por experimento</p>
+<p>## Plantillas de Ejemplo</p>
+<p>### Plantilla 1: Reporte de Ventas Empresarial</p>
+<p><strong>📋 Estructura de la Plantilla:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`excel</span>
+<span class="pre">A1:</span> <span class="pre">&quot;REPORTE</span> <span class="pre">DE</span> <span class="pre">VENTAS&quot;</span>
+<span class="pre">A2:</span> <span class="pre">&quot;Región:&quot;</span>
+<span class="pre">B2:</span> <span class="pre">&quot;{region}&quot;</span>
+<span class="pre">A3:</span> <span class="pre">&quot;Período:&quot;</span>
+<span class="pre">B3:</span> <span class="pre">&quot;{fecha}&quot;</span>
+<span class="pre">A4:</span> <span class="pre">&quot;Generado:&quot;</span>
+<span class="pre">B4:</span> <span class="pre">&quot;{timestamp}&quot;</span>
+<span class="pre">A6:</span> <span class="pre">&quot;Vendedor&quot;</span>
+<span class="pre">B6:</span> <span class="pre">&quot;Producto&quot;</span>
+<span class="pre">C6:</span> <span class="pre">&quot;Cantidad&quot;</span>
+<span class="pre">D6:</span> <span class="pre">&quot;Precio</span> <span class="pre">Unit.&quot;</span>
+<span class="pre">E6:</span> <span class="pre">&quot;Total&quot;</span>
+<span class="pre">A7:</span> <span class="pre">[Datos</span> <span class="pre">comienzan</span> <span class="pre">aquí]</span>
+<span class="pre">`</span></code></p>
+<p><strong>🎨 Formato Aplicado:</strong>
+- <strong>Encabezados</strong> (fila 6): Negrita, fondo azul claro
+- <strong>Celdas de totales</strong> (columna E): Fórmulas automáticas
+- <strong>Bordes</strong>: Línea gruesa alrededor de tabla de datos
+- <strong>Formato moneda</strong>: $#,##0.00 para columnas de precio</p>
+<p>### Plantilla 2: Reporte Financiero</p>
+<p><strong>📋 Estructura de la Plantilla:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`excel</span>
+<span class="pre">A1:</span> <span class="pre">&quot;ANÁLISIS</span> <span class="pre">FINANCIERO&quot;</span>
+<span class="pre">A2:</span> <span class="pre">&quot;Departamento:</span> <span class="pre">{valor}&quot;</span>
+<span class="pre">A3:</span> <span class="pre">&quot;Período:</span> <span class="pre">{fecha_inicio}</span> <span class="pre">-</span> <span class="pre">{fecha_fin}&quot;</span>
+<span class="pre">A5:</span> <span class="pre">&quot;Concepto&quot;</span>
+<span class="pre">B5:</span> <span class="pre">&quot;Enero&quot;</span>
+<span class="pre">C5:</span> <span class="pre">&quot;Febrero&quot;</span>
+<span class="pre">D5:</span> <span class="pre">&quot;Marzo&quot;</span>
+<span class="pre">E5:</span> <span class="pre">&quot;Total</span> <span class="pre">Trimestre&quot;</span>
+<span class="pre">A6:</span> <span class="pre">&quot;Ingresos&quot;</span>
+<span class="pre">B6:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">C6:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">D6:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">E6:</span> <span class="pre">=SUMA(B6:D6)</span>
+<span class="pre">A7:</span> <span class="pre">&quot;Gastos&quot;</span>
+<span class="pre">B7:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">C7:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">D7:</span> <span class="pre">[Fórmulas</span> <span class="pre">de</span> <span class="pre">suma]</span>
+<span class="pre">E7:</span> <span class="pre">=SUMA(B7:D7)</span>
+<span class="pre">A8:</span> <span class="pre">&quot;Utilidad&quot;</span>
+<span class="pre">B8:</span> <span class="pre">=B6-B7</span>
+<span class="pre">C8:</span> <span class="pre">=C6-C7</span>
+<span class="pre">D8:</span> <span class="pre">=D6-D7</span>
+<span class="pre">E8:</span> <span class="pre">=E6-E7</span>
+<span class="pre">`</span></code></p>
+<p><strong>📊 Gráficos Incluidos:</strong>
+- <strong>Gráfico de barras</strong>: Comparativo mes a mes
+- <strong>Gráfico de torta</strong>: Distribución gastos por categoría
+- <strong>Indicadores KPI</strong>: Semáforos para alertas</p>
+<p>### Plantilla 3: Control de Inventario</p>
+<p><strong>📋 Estructura de la Plantilla:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">`excel</span>
+<span class="pre">A1:</span> <span class="pre">&quot;CONTROL</span> <span class="pre">DE</span> <span class="pre">INVENTARIO&quot;</span>
+<span class="pre">A2:</span> <span class="pre">&quot;Categoría:</span> <span class="pre">{valor}&quot;</span>
+<span class="pre">A3:</span> <span class="pre">&quot;Fecha</span> <span class="pre">Actualización:</span> <span class="pre">{fecha}&quot;</span>
+<span class="pre">A5:</span> <span class="pre">&quot;Código&quot;</span>
+<span class="pre">B5:</span> <span class="pre">&quot;Producto&quot;</span>
+<span class="pre">C5:</span> <span class="pre">&quot;Stock</span> <span class="pre">Actual&quot;</span>
+<span class="pre">D5:</span> <span class="pre">&quot;Stock</span> <span class="pre">Mínimo&quot;</span>
+<span class="pre">E5:</span> <span class="pre">&quot;Estado&quot;</span>
+<span class="pre">F5:</span> <span class="pre">&quot;Última</span> <span class="pre">Compra&quot;</span>
+<span class="pre">A6:</span> <span class="pre">[Datos]</span>
+<span class="pre">B6:</span> <span class="pre">[Datos]</span>
+<span class="pre">C6:</span> <span class="pre">[Datos]</span>
+<span class="pre">D6:</span> <span class="pre">[Datos]</span>
+<span class="pre">E6:</span> <span class="pre">=SI(C6&lt;=D6,&quot;CRÍTICO&quot;,&quot;OK&quot;)</span>
+<span class="pre">F6:</span> <span class="pre">[Datos]</span>
+<span class="pre">`</span></code></p>
+<p><strong>⚠️ Alertas Automáticas:</strong>
+- <strong>Formato condicional</strong>: Celdas rojas cuando stock &lt;= mínimo
+- <strong>Validación de datos</strong>: Listas desplegables para estados
+- <strong>Fórmulas</strong>: Cálculos automáticos de reorden</p>
+<p>## Casos Especiales</p>
+<p>### Caso Especial 1: Datos con Caracteres Especiales</p>
+<p><strong>📊 Problema:</strong> Nombres de productos con caracteres especiales</p>
+<p><code class="docutils literal notranslate"><span class="pre">`csv</span>
+<span class="pre">Producto,Categoria,Precio</span>
+<span class="pre">&quot;Café</span> <span class="pre">Espresso</span> <span class="pre">Premium™&quot;,&quot;Bebidas&quot;,3.50</span>
+<span class="pre">&quot;Grano</span> <span class="pre">Orgánico</span> <span class="pre">&amp;</span> <span class="pre">Sostenible&quot;,&quot;Bebidas&quot;,5.20</span>
+<span class="pre">&quot;Kit</span> <span class="pre">\&quot;Café</span> <span class="pre">del</span> <span class="pre">Chef\&quot;&quot;,&quot;Accesorios&quot;,45.00</span>
+<span class="pre">&quot;Molinillo</span> <span class="pre">óntico</span> <span class="pre">¿Nuevo?&quot;,&quot;Accesorios&quot;,75.00</span>
+<span class="pre">`</span></code></p>
+<p><strong>⚙️ Configuración:</strong></p>
+<p><a href="#id30"><span class="problematic" id="id31">``</span></a><a href="#id32"><span class="problematic" id="id33">`</span></a>python
+config = {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘character_handling’: {</dt><dd><p>‘encoding’: ‘utf-8’,
+‘normalize_unicode’: True,
+‘excel_invalid_chars’: ‘replace’,
+‘replacement_char’: ‘_’</p>
+</dd>
+</dl>
+<p>},
+‘filename_sanitization’: {</p>
+<blockquote>
+<div><p>‘remove_quotes’: True,
+‘replace_ampersand’: True,
+‘max_length’: 50</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id34">
+<h1>}<a class="headerlink" href="#id34" title="Link to this heading"></a></h1>
+<p><strong>✅ Resultado:</strong> Caracteres especiales preservados correctamente en Excel, nombres de archivo sanitizados automáticamente.</p>
+<p>### Caso Especial 2: Columna de Separación con Muchos Valores Únicos</p>
+<p><strong>📊 Problema:</strong> 500+ valores únicos en columna de separación</p>
+<p><code class="docutils literal notranslate"><span class="pre">`csv</span>
+<span class="pre">Ciudad,Poblacion,Region</span>
+<span class="pre">&quot;Madrid-España&quot;,3200000,&quot;Europa&quot;</span>
+<span class="pre">&quot;París-Francia&quot;,2100000,&quot;Europa&quot;</span>
+<span class="pre">&quot;Tokio-Japón&quot;,13000000,&quot;Asia&quot;</span>
+<span class="pre">...</span>
+<span class="pre">`</span></code></p>
+<p><strong>⚙️ Configuración Optimizada:</strong></p>
+<p><a href="#id35"><span class="problematic" id="id36">``</span></a><a href="#id37"><span class="problematic" id="id38">`</span></a>python
+config = {</p>
+<blockquote>
+<div><p>‘chunking_strategy’: ‘many_small_groups’,
+‘chunk_size’: 1000,
+‘group_processing’: ‘parallel’,
+‘memory_optimization’: ‘aggressive’,
+‘progress_tracking’: ‘detailed’,
+‘filename_template’: ‘{ciudad|slug}_{timestamp}.xlsx’</p>
+</div></blockquote>
+</section>
+<section id="id39">
+<h1>}<a class="headerlink" href="#id39" title="Link to this heading"></a></h1>
+<p><strong>⚠️ Consideraciones:</strong>
+- Procesamiento en paralelo para velocidad
+- Chunks pequeños para gestión de memoria
+- Tracking detallado de progreso
+- Plantilla de nombres con timestamp para evitar duplicados</p>
+<p>### Caso Especial 3: Plantilla Excel con Múltiples Hojas</p>
+<p><strong>📊 Escenario:</strong> Plantilla con hoja de datos + hoja de gráficos + hoja de resumen</p>
+<p><strong>⚙️ Configuración:</strong></p>
+<p><a href="#id40"><span class="problematic" id="id41">``</span></a><a href="#id42"><span class="problematic" id="id43">`</span></a>python
+config = {</p>
+<blockquote>
+<div><dl>
+<dt>‘excel_template’: {</dt><dd><p>‘target_sheet’: ‘Datos’,
+‘preserve_all_sheets’: True,
+‘sheet_protection’: {</p>
+<blockquote>
+<div><p>‘data_sheet’: False,
+‘charts_sheet’: True,
+‘summary_sheet’: True</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>},
+‘cell_mapping’: {</p>
+<blockquote>
+<div><p>‘data_start’: ‘A6’,
+‘include_headers’: True,
+‘preserve_formulas’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id44">
+<h1>}<a class="headerlink" href="#id44" title="Link to this heading"></a></h1>
+<p><strong>✅ Resultado:</strong> Datos se insertan en hoja especificada, otras hojas preservadas intactas.</p>
+<p>## Automatización y Scripts</p>
+<p>### Script de Automatización Básica</p>
+<p><strong>📜 Script Python para automatización:</strong></p>
+<p><a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a>python
+#!/usr/bin/env python3
+“””
+Script de automatización para exportación separada
+Ejemplo de uso empresarial
+“””</p>
+<p>import pandas as pd
+from core.data_handler import exportar_datos_separados
+from pathlib import Path
+import datetime</p>
+<dl>
+<dt>def automatizar_reportes_mensuales(archivo_datos, carpeta_destino):</dt><dd><p>“””
+Automatiza la generación de reportes mensuales</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>archivo_datos: Ruta al archivo CSV/Excel con datos
+carpeta_destino: Carpeta donde guardar reportes</p>
+</dd>
+</dl>
+<p>“””</p>
+<p># 1. Cargar datos
+df = pd.read_csv(archivo_datos)</p>
+<p># 2. Filtrar solo datos del mes actual
+df[‘fecha’] = pd.to_datetime(df[‘fecha’])
+mes_actual = datetime.datetime.now().replace(day=1)
+df_mes = df[df[‘fecha’].dt.month == mes_actual.month]</p>
+<dl class="simple">
+<dt>if df_mes.empty:</dt><dd><p>print(“No hay datos para el mes actual”)
+return</p>
+</dd>
+</dl>
+<p># 3. Configuración para exportación
+config = {</p>
+<blockquote>
+<div><p>‘separator_column’: ‘departamento’,
+‘template_path’: ‘templates/plantilla_corporativa.xlsx’,
+‘output_folder’: carpeta_destino,
+‘file_template’: ‘Reporte_{valor}_{mes_actual:%Y_%m}.xlsx’,
+‘column_mapping’: {</p>
+<blockquote>
+<div><p>‘empleado’: ‘A’,
+‘ventas’: ‘B’,
+‘objetivo’: ‘C’,
+‘cumplimiento’: ‘D’</p>
+</div></blockquote>
+<p>},
+‘enable_chunking’: True,
+‘chunk_size’: 5000</p>
+</div></blockquote>
+<p>}</p>
+<p># 4. Ejecutar exportación
+resultado = exportar_datos_separados(df_mes, config)</p>
+<p># 5. Generar resumen
+if resultado[‘success’]:</p>
+<blockquote>
+<div><p>print(f”✅ Exportación completada:”)
+print(f”   📊 {resultado[‘groups_processed’]} departamentos procesados”)
+print(f”   📁 {len(resultado[‘files_created’])} archivos generados”)
+print(f”   ⏱️  Tiempo: {resultado[‘processing_time’]:.2f} segundos”)</p>
+<p># Enviar resumen por email (opcional)
+enviar_resumen_email(resultado)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>else:</dt><dd><p>print(f”❌ Error en exportación: {resultado[‘errors’]}”)</p>
+</dd>
+</dl>
+</dd>
+<dt>def enviar_resumen_email(resultado):</dt><dd><p>“””
+Envía resumen de exportación por email
+(Requiere configuración SMTP)
+“””
+# Implementación opcional
+pass</p>
+</dd>
+</dl>
+<p># Uso del script
+if __name__ == “__main__”:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>automatizar_reportes_mensuales(</dt><dd><p>archivo_datos=”datos/ventas_noviembre.csv”,
+carpeta_destino=”reportes/2025-11/”</p>
+</dd>
+</dl>
+<p>)</p>
+</div></blockquote>
+<p><a href="#id49"><span class="problematic" id="id50">``</span></a><a href="#id51"><span class="problematic" id="id52">`</span></a></p>
+<p>### Script de Monitoreo y Alertas</p>
+<p><strong>📜 Script de monitoreo continuo:</strong></p>
+<p><a href="#id53"><span class="problematic" id="id54">``</span></a><a href="#id55"><span class="problematic" id="id56">`</span></a>python
+#!/usr/bin/env python3
+“””
+Monitor de procesos de exportación separada
+Envía alertas si hay problemas
+“””</p>
+<p>import time
+import psutil
+import smtplib
+from email.mime.text import MimeText
+from datetime import datetime, timedelta</p>
+<dl>
+<dt>class ExportMonitor:</dt><dd><dl>
+<dt>def __init__(self, alert_email=None, smtp_config=None):</dt><dd><p>self.alert_email = alert_email
+self.smtp_config = smtp_config
+self.last_check = datetime.now()</p>
+</dd>
+<dt>def check_system_resources(self):</dt><dd><p>“””Verifica recursos del sistema”””
+cpu_percent = psutil.cpu_percent(interval=1)
+memory = psutil.virtual_memory()
+disk = psutil.disk_usage(‘/’)</p>
+<p>alerts = []</p>
+<dl class="simple">
+<dt>if cpu_percent &gt; 80:</dt><dd><p>alerts.append(f”CPU alta: {cpu_percent:.1f}%”)</p>
+</dd>
+<dt>if memory.percent &gt; 85:</dt><dd><p>alerts.append(f”Memoria alta: {memory.percent:.1f}%”)</p>
+</dd>
+<dt>if disk.percent &gt; 90:</dt><dd><p>alerts.append(f”Disco lleno: {disk.percent:.1f}%”)</p>
+</dd>
+</dl>
+<p>return alerts</p>
+</dd>
+<dt>def check_export_processes(self):</dt><dd><p>“””Verifica procesos de exportación activos”””
+# Buscar procesos de Python con keywords relacionados
+python_processes = []
+for proc in psutil.process_iter([‘pid’, ‘name’, ‘cmdline’]):</p>
+<blockquote>
+<div><dl>
+<dt>try:</dt><dd><p>cmdline = ‘ ‘.join(proc.info[‘cmdline’] or [])
+if ‘python’ in cmdline and ‘exportar_datos_separados’ in cmdline:</p>
+<blockquote>
+<div><p>python_processes.append(proc)</p>
+</div></blockquote>
+</dd>
+<dt>except (psutil.NoSuchProcess, psutil.AccessDenied):</dt><dd><p>continue</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>return python_processes</p>
+</dd>
+<dt>def send_alert(self, message):</dt><dd><p>“””Envía alerta por email”””
+if not self.alert_email or not self.smtp_config:</p>
+<blockquote>
+<div><p>print(f”ALERTA: {message}”)
+return</p>
+</div></blockquote>
+<p>msg = MimeText(f”Alerta de Exportación Separadann{message}nnTimestamp: {datetime.now()}”)
+msg[‘Subject’] = “Alerta - Exportación Separada”
+msg[‘From’] = self.smtp_config[‘from’]
+msg[‘To’] = self.alert_email</p>
+<dl class="simple">
+<dt>try:</dt><dd><p>server = smtplib.SMTP(self.smtp_config[‘server’], self.smtp_config[‘port’])
+server.starttls()
+server.login(self.smtp_config[‘username’], self.smtp_config[‘password’])
+server.send_message(msg)
+server.quit()
+print(f”Alerta enviada: {message}”)</p>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”Error enviando alerta: {e}”)</p>
+</dd>
+</dl>
+</dd>
+<dt>def run_continuous_monitoring(self, interval_minutes=5):</dt><dd><p>“””Ejecuta monitoreo continuo”””
+while True:</p>
+<blockquote>
+<div><dl>
+<dt>try:</dt><dd><p># Verificar recursos
+alerts = self.check_system_resources()</p>
+<p># Verificar procesos
+export_processes = self.check_export_processes()</p>
+<dl class="simple">
+<dt>if export_processes:</dt><dd><p>print(f”Monitoreando {len(export_processes)} procesos de exportación”)</p>
+</dd>
+<dt>if alerts:</dt><dd><dl class="simple">
+<dt>for alert in alerts:</dt><dd><p>self.send_alert(alert)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>time.sleep(interval_minutes * 60)</p>
+</dd>
+<dt>except KeyboardInterrupt:</dt><dd><p>print(“Monitoreo detenido”)
+break</p>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”Error en monitoreo: {e}”)
+time.sleep(60)</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+<p># Uso del monitor
+if __name__ == “__main__”:</p>
+<blockquote>
+<div><dl>
+<dt>monitor = ExportMonitor(</dt><dd><p>alert_email=”<a class="reference external" href="mailto:admin&#37;&#52;&#48;empresa&#46;com">admin<span>&#64;</span>empresa<span>&#46;</span>com</a>”,
+smtp_config={</p>
+<blockquote>
+<div><p>‘server’: ‘smtp.gmail.com’,
+‘port’: 587,
+‘username’: <a class="reference external" href="mailto:'notificaciones&#37;&#52;&#48;empresa&#46;com">‘notificaciones<span>&#64;</span>empresa<span>&#46;</span>com</a>’,
+‘password’: ‘app_password’</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>)</p>
+<p>monitor.run_continuous_monitoring(interval_minutes=5)</p>
+</div></blockquote>
+<p><a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a></p>
+<p>### Configuración de Tareas Programadas</p>
+<p><strong>📜 Cron Job para Linux/macOS:</strong></p>
+<p><a href="#id61"><span class="problematic" id="id62">``</span></a><a href="#id63"><span class="problematic" id="id64">`</span></a>bash
+#!/bin/bash
+# Script para crontab - ejecutar diariamente a las 6 AM</p>
+<p># Variables
+SCRIPT_PATH=”/path/to/flash_sheet/scripts/automatizar_reportes.py”
+LOG_PATH=”/var/log/exportacion_separada.log”
+DATA_PATH=”/path/to/data/daily_sales.csv”
+OUTPUT_PATH=”/path/to/output/daily_reports/”</p>
+<p># Crear directorio de salida si no existe
+mkdir -p “$OUTPUT_PATH”</p>
+<p># Ejecutar script de Python
+cd “$(dirname “$SCRIPT_PATH”)”
+python3 “$SCRIPT_PATH” </p>
+<blockquote>
+<div><p>–data-file “$DATA_PATH” –output-folder “$OUTPUT_PATH” –template “/path/to/templates/daily_template.xlsx” &gt;&gt; “$LOG_PATH” 2&gt;&amp;1</p>
+</div></blockquote>
+<p># Rotar logs (mantener últimos 30 días)
+find “$LOG_PATH” -mtime +30 -delete
+<a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a></p>
+<p><strong>⏰ Crontab Entry:</strong></p>
+<p><a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a>bash
+# Ejecutar diariamente a las 6:00 AM
+0 6 * * * /path/to/flash_sheet/scripts/run_daily_export.sh</p>
+<p># Ejecutar cada 15 minutos para monitoreo
+<a href="#id73"><span class="problematic" id="id74">*</span></a>/15 * * * * python3 /path/to/monitor_export.py
+<a href="#id75"><span class="problematic" id="id76">``</span></a><a href="#id77"><span class="problematic" id="id78">`</span></a></p>
+<p><strong>🪟 Windows Task Scheduler:</strong></p>
+<p><a href="#id79"><span class="problematic" id="id80">``</span></a><a href="#id81"><span class="problematic" id="id82">`</span></a>xml
+&lt;?xml version=”1.0” encoding=”UTF-16”?&gt;
+&lt;Task version=”1.2” xmlns=”<a class="reference external" href="http://schemas.microsoft.com/windows/2004/02/mit/task">http://schemas.microsoft.com/windows/2004/02/mit/task</a>”&gt;</p>
+<blockquote>
+<div><dl class="simple">
+<dt>&lt;RegistrationInfo&gt;</dt><dd><p>&lt;Description&gt;Exportación Separada Diaria&lt;/Description&gt;</p>
+</dd>
+</dl>
+<p>&lt;/RegistrationInfo&gt;
+&lt;Triggers&gt;</p>
+<blockquote>
+<div><dl>
+<dt>&lt;CalendarTrigger&gt;</dt><dd><p>&lt;StartBoundary&gt;2025-01-01T06:00:00&lt;/StartBoundary&gt;
+&lt;Enabled&gt;true&lt;/Enabled&gt;
+&lt;ScheduleByDay&gt;</p>
+<blockquote>
+<div><p>&lt;DaysInterval&gt;1&lt;/DaysInterval&gt;</p>
+</div></blockquote>
+<p>&lt;/ScheduleByDay&gt;</p>
+</dd>
+</dl>
+<p>&lt;/CalendarTrigger&gt;</p>
+</div></blockquote>
+<p>&lt;/Triggers&gt;
+&lt;Actions&gt;</p>
+<blockquote>
+<div><dl class="simple">
+<dt>&lt;Exec&gt;</dt><dd><p>&lt;Command&gt;python&lt;/Command&gt;
+&lt;Arguments&gt;”C:pathtoflash_sheetscriptsautomatizar_reportes.py”&lt;/Arguments&gt;
+&lt;WorkingDirectory&gt;C:pathtoflash_sheet&lt;/WorkingDirectory&gt;</p>
+</dd>
+</dl>
+<p>&lt;/Exec&gt;</p>
+</div></blockquote>
+<p>&lt;/Actions&gt;</p>
+</div></blockquote>
+<p>&lt;/Task&gt;
+<a href="#id83"><span class="problematic" id="id84">``</span></a><a href="#id85"><span class="problematic" id="id86">`</span></a></p>
+<p>—</p>
+<p>## Resumen de Mejores Prácticas</p>
+<p>### ✅ Recomendaciones Generales</p>
+<ol class="arabic simple">
+<li><p><strong>Configuración Inicial</strong>:
+- Comienza con configuración por defecto
+- Usa ejemplos básicos para aprender
+- Prueba con datasets pequeños primero</p></li>
+<li><p><strong>Optimización de Rendimiento</strong>:
+- Activa chunking para datasets &gt; 10K filas
+- Monitorea uso de memoria durante ejecución
+- Usa plantillas simples para mejor rendimiento</p></li>
+<li><p><strong>Seguridad y Backup</strong>:
+- Siempre haz backup de plantillas originales
+- Verifica permisos de carpeta destino
+- Usa recuperación automática en entornos críticos</p></li>
+<li><p><strong>Automatización</strong>:
+- Implementa scripts para tareas repetitivas
+- Configura monitoreo para procesos largos
+- Establece alertas para problemas</p></li>
+</ol>
+<p>### 🚫 Errores Comunes a Evitar</p>
+<ol class="arabic simple">
+<li><p><strong>Plantillas demasiado complejas</strong> ralentizan el proceso</p></li>
+<li><p><strong>No verificar permisos</strong> causa fallos en ejecución</p></li>
+<li><p><strong>Charset incorrectos</strong> pueden corromper caracteres especiales</p></li>
+<li><p><strong>Nombres de archivo muy largos</strong> fallan en algunos sistemas operativos</p></li>
+<li><p><strong>No monitorear memoria</strong> en datasets grandes puede causar crashes</p></li>
+</ol>
+<p>### 📊 Métricas de Éxito Esperadas</p>
+<div class="line-block">
+<div class="line">Métrica | Objetivo | Tiempo/Recurso |</div>
+</div>
+<p><a href="#id87"><span class="problematic" id="id88">|---------|</span></a>———-<a href="#id89"><span class="problematic" id="id90">|----------------|</span></a>
+| <strong>Tiempo de Configuración</strong> | &lt; 5 minutos | Casos simples |
+| <strong>Procesamiento</strong> | &lt; 3x exportación normal | Según tamaño dataset |
+| <strong>Uso de Memoria</strong> | &lt; 2GB para 1M filas | Datasets grandes |
+| <strong>Tasa de Éxito</strong> | &gt; 95% sin intervención | Operación normal |
+| <strong>Preservación Formato</strong> | 100% | Plantillas Excel |</p>
+<p><strong>¡Gracias por revisar estos ejemplos y casos de uso!</strong></p>
+<p>Para soporte adicional o casos específicos no cubiertos aquí, consulta la documentación técnica o contacta al equipo de desarrollo.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

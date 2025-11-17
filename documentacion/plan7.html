@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plan7.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan de Desarrollo Detallado: Fase 7 - Operaciones de Transformación de Datos</p>
+<p>## Proyecto: flash-view-sheet
+<strong>Descripción:</strong> Implementación de operaciones avanzadas de transformación de datos para el visor de datos tabulares</p>
+<p>—</p>
+<p>## 1. Análisis de Estado Actual</p>
+<p>### Operaciones de Transformación Ya Implementadas:
+- ✅ <strong>Limpieza de datos</strong> (<cite>limpiar_datos</cite>): eliminación de duplicados, nulos, columnas, conversión de tipos
+- ✅ <strong>Agregación</strong> (<cite>agregar_datos</cite>): groupby con funciones de agregación
+- ✅ <strong>Pivoteo</strong> (<cite>pivotar_datos</cite>): tablas pivote con pandas.pivot_table</p>
+<p>### Operaciones Faltantes Identificadas:
+- ❌ Transformaciones de columnas (renombrar, crear nuevas, aplicar funciones)
+- ❌ Unión/fusión de datasets
+- ❌ Reordenamiento y sorting avanzado
+- ❌ Normalización y escalado de datos numéricos
+- ❌ Codificación de variables categóricas
+- ❌ Manejo de fechas y tiempo (parsing, extracción de componentes)
+- ❌ Operaciones de texto avanzadas (regex, limpieza)
+- ❌ Discretización/binning de variables continuas
+- ❌ Transformaciones matemáticas (log, sqrt, etc.)
+- ❌ One-hot encoding para machine learning</p>
+<p>—</p>
+<p>## 2. Arquitectura Propuesta para Transformaciones Avanzadas</p>
+<p>### Patrón de Diseño:
+- <strong>Command Pattern</strong>: Cada transformación como un comando ejecutable
+- <strong>Pipeline Pattern</strong>: Cadena de transformaciones aplicables secuencialmente
+- <strong>Factory Pattern</strong>: Creación de transformaciones por tipo</p>
+<p>### Estructura de Código:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">core/transformations/</span>
+<span class="pre">├──</span> <span class="pre">base_transformation.py</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Clase</span> <span class="pre">base</span> <span class="pre">para</span> <span class="pre">transformaciones</span>
+<span class="pre">├──</span> <span class="pre">column_transformations.py</span>&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Renombrar,</span> <span class="pre">crear,</span> <span class="pre">aplicar</span> <span class="pre">funciones</span>
+<span class="pre">├──</span> <span class="pre">data_cleaning.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Limpieza</span> <span class="pre">avanzada</span> <span class="pre">(ya</span> <span class="pre">existe</span> <span class="pre">parcialmente)</span>
+<span class="pre">├──</span> <span class="pre">aggregation.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Agregaciones</span> <span class="pre">(ya</span> <span class="pre">existe)</span>
+<span class="pre">├──</span> <span class="pre">pivoting.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Pivoteo</span> <span class="pre">(ya</span> <span class="pre">existe)</span>
+<span class="pre">├──</span> <span class="pre">mathematical.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Transformaciones</span> <span class="pre">matemáticas</span>
+<span class="pre">├──</span> <span class="pre">text_processing.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Procesamiento</span> <span class="pre">de</span> <span class="pre">texto</span>
+<span class="pre">├──</span> <span class="pre">date_time.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Manejo</span> <span class="pre">de</span> <span class="pre">fechas</span>
+<span class="pre">├──</span> <span class="pre">encoding.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Codificación</span> <span class="pre">categórica</span>
+<span class="pre">├──</span> <span class="pre">normalization.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Normalización</span> <span class="pre">y</span> <span class="pre">escalado</span>
+<span class="pre">├──</span> <span class="pre">pipeline.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Pipeline</span> <span class="pre">de</span> <span class="pre">transformaciones</span>
+<span class="pre">└──</span> <span class="pre">transformation_manager.py</span>&#160;&#160; <span class="pre">#</span> <span class="pre">Gestor</span> <span class="pre">principal</span>
+<span class="pre">`</span></code></p>
+<p>### Integración con UI:
+- Nuevo widget de “Vista de Transformaciones”
+- Panel lateral con lista de transformaciones disponibles
+- Interfaz drag-and-drop para crear pipelines
+- Preview de resultados antes de aplicar
+- Historial de transformaciones aplicadas</p>
+<p>—</p>
+<p>## 3. Plan Detallado por Fases</p>
+<p>### Fase 7.1: Arquitectura Base y Transformaciones Básicas (Semana 1-2)</p>
+<p>#### 3.1.1 Crear estructura de transformaciones
+- Implementar <cite>base_transformation.py</cite> con interfaz común
+- Crear <cite>transformation_manager.py</cite> para gestión centralizada
+- Tests unitarios para la arquitectura base</p>
+<p>#### 3.1.2 Transformaciones de Columnas
+- Renombrar columnas
+- Crear columnas calculadas (fórmulas)
+- Aplicar funciones a columnas existentes
+- Eliminar columnas específicas</p>
+<p>#### 3.1.3 Transformaciones Matemáticas
+- Logaritmo, raíz cuadrada, exponencial
+- Escalado (min-max, z-score)
+- Normalización
+- Transformaciones personalizadas</p>
+<p>### Fase 7.2: Procesamiento de Texto y Fechas (Semana 3-4)</p>
+<p>#### 3.2.1 Procesamiento de Texto Avanzado
+- Limpieza de texto (remover caracteres especiales, normalizar)
+- Extracción con regex
+- Conversión de case (upper, lower, title)
+- Padding y trimming</p>
+<p>#### 3.2.2 Manejo de Fechas y Tiempo
+- Parsing de fechas con múltiples formatos
+- Extracción de componentes (año, mes, día, hora)
+- Cálculos de diferencia de fechas
+- Conversión de zonas horarias</p>
+<p>### Fase 7.3: Codificación y Agregaciones Avanzadas (Semana 5-6)</p>
+<p>#### 3.3.1 Codificación Categórica
+- Label encoding
+- One-hot encoding
+- Ordinal encoding
+- Target encoding (básico)</p>
+<p>#### 3.3.2 Agregaciones y Pivoteo Avanzado
+- Múltiples funciones de agregación
+- Pivoteo con múltiples índices/columnas
+- Rolling windows y expanding windows
+- Groupby con transformaciones</p>
+<p>### Fase 7.4: Pipeline y UI de Transformaciones (Semana 7-8)</p>
+<p>#### 3.4.1 Sistema de Pipeline
+- Cadena de transformaciones secuenciales
+- Validación de compatibilidad entre pasos
+- Undo/redo de transformaciones
+- Guardado/carga de pipelines</p>
+<p>#### 3.4.2 Interfaz de Usuario
+- Nueva vista “Transformaciones” en el stacked widget
+- Panel de herramientas de transformación
+- Preview en tiempo real de resultados
+- Historial de operaciones aplicadas</p>
+<p>### Fase 7.5: Optimización y Testing (Semana 9-10)</p>
+<p>#### 3.5.1 Optimizaciones de Rendimiento
+- Procesamiento en chunks para datasets grandes
+- Paralelización de transformaciones independientes
+- Cache inteligente de resultados intermedios
+- Memory management para transformaciones complejas</p>
+<p>#### 3.5.2 Testing y Documentación
+- Suite completa de tests unitarios
+- Tests de integración con UI
+- Documentación de API de transformaciones
+- Ejemplos de uso y casos de estudio</p>
+<p>—</p>
+<p>## 4. Consideraciones Técnicas</p>
+<p>### Rendimiento:
+- Procesamiento lazy para datasets grandes
+- Validación de tipos de datos antes de transformaciones
+- Manejo de memoria con garbage collection
+- Progress indicators para operaciones largas</p>
+<p>### Compatibilidad:
+- Mantener API existente de <cite>data_handler.py</cite>
+- Transformaciones reversibles cuando sea posible
+- Validación de parámetros de entrada
+- Mensajes de error descriptivos</p>
+<p>### Extensibilidad:
+- Plugin system para transformaciones personalizadas
+- Configuración JSON para pipelines
+- API REST para integraciones futuras</p>
+<p>—</p>
+<p>## 5. Métricas de Éxito
+- ✅ Al menos 15 tipos diferentes de transformaciones implementadas
+- ✅ Pipeline funcional con 5+ transformaciones en cadena
+- ✅ UI intuitiva con preview en tiempo real
+- ✅ Cobertura de tests &gt; 85%
+- ✅ Documentación completa con ejemplos
+- ✅ Rendimiento aceptable para datasets de 1M+ filas</p>
+<p>—</p>
+<p>## 6. Riesgos y Mitigaciones
+- <strong>Complejidad</strong>: Implementar por fases, empezando con lo básico
+- <strong>Rendimiento</strong>: Profiling continuo y optimizaciones incrementales
+- <strong>UI Complexity</strong>: Diseño iterativo con feedback de usabilidad
+- <strong>Mantenibilidad</strong>: Código modular y bien documentado</p>
+<p>—</p>
+<p>## 7. Cronograma Estimado
+- <strong>Fase 7.1</strong>: Semana 1-2 (Arquitectura base)
+- <strong>Fase 7.2</strong>: Semana 3-4 (Texto y fechas)
+- <strong>Fase 7.3</strong>: Semana 5-6 (Codificación y agregaciones)
+- <strong>Fase 7.4</strong>: Semana 7-8 (Pipeline y UI)
+- <strong>Fase 7.5</strong>: Semana 9-10 (Optimización y testing)</p>
+<p><strong>Total estimado:</strong> 10 semanas de desarrollo</p>
+<p>—</p>
+<p>## 8. Próximos Pasos
+1. <strong>Revisión de arquitectura</strong>: Validar el diseño con el equipo
+2. <strong>Inicio Fase 7.1</strong>: Implementar estructura base de transformaciones
+3. <strong>Testing inicial</strong>: Verificar compatibilidad con código existente
+4. <strong>Documentación</strong>: Actualizar <cite>docs/avances.md</cite> con progreso de Fase 7</p>
+<p>—</p>
+<p><em>Este documento se actualizará a medida que avance la implementación de la Fase 7</em></p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

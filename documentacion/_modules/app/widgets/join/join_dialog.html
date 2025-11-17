@@ -1,0 +1,988 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.widgets.join.join_dialog &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.widgets.join.join_dialog</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.widgets.join.join_dialog</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">JoinDialog: Diálogo para configurar operaciones de cruce de datos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span>
+                                  <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QFormLayout</span><span class="p">,</span>
+                                  <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QTextEdit</span><span class="p">,</span>
+                                  <span class="n">QRadioButton</span><span class="p">,</span> <span class="n">QButtonGroup</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span>
+                                  <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QProgressBar</span><span class="p">,</span> <span class="n">QTableWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span>
+                                  <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QProgressDialog</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QListWidget</span><span class="p">,</span>
+                                  <span class="n">QListWidgetItem</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">Signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFont</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">cargar_datos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.join.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">JoinType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.join.data_join_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataJoinManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.join.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinValidationError</span><span class="p">,</span> <span class="n">JoinExecutionError</span>
+
+
+<div class="viewcode-block" id="JoinDialog">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JoinDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Diálogo modal para configurar operaciones de cruce de datos</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Señales</span>
+    <span class="n">join_completed</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c1"># JoinResult, right_file_path</span>
+    <span class="n">join_cancelled</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span> <span class="o">=</span> <span class="n">left_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_file_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_manager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_connections</span><span class="p">()</span>
+
+<div class="viewcode-block" id="JoinDialog.setup_ui">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar la interfaz del diálogo&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Configurar Cruce de Datos&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">main_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Título</span>
+        <span class="n">title_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Configurar Cruce de Datos&quot;</span><span class="p">)</span>
+        <span class="n">title_label</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">QFont</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="n">QFont</span><span class="o">.</span><span class="n">Bold</span><span class="p">))</span>
+        <span class="n">title_label</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="n">title_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QLabel {</span>
+<span class="s2">                background-color: #27ae60;</span>
+<span class="s2">                color: white;</span>
+<span class="s2">                padding: 15px;</span>
+<span class="s2">                border-radius: 8px;</span>
+<span class="s2">                margin-bottom: 10px;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_label</span><span class="p">)</span>
+
+        <span class="c1"># Crear widget de pestañas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">()</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="p">)</span>
+
+        <span class="c1"># Pestaña de configuración</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_configuration_tab</span><span class="p">()</span>
+
+        <span class="c1"># Pestaña de vista previa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_preview_tab</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_configuration_tab">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_configuration_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_configuration_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear pestaña de configuración&quot;&quot;&quot;</span>
+        <span class="n">config_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">config_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">config_widget</span><span class="p">)</span>
+
+        <span class="c1"># Dataset izquierdo (pre-cargado)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_left_dataset_group</span><span class="p">(</span><span class="n">config_layout</span><span class="p">)</span>
+
+        <span class="c1"># Dataset derecho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_right_dataset_group</span><span class="p">(</span><span class="n">config_layout</span><span class="p">)</span>
+
+        <span class="c1"># Configuración del join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_join_config_group</span><span class="p">(</span><span class="n">config_layout</span><span class="p">)</span>
+
+        <span class="c1"># Opciones avanzadas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_advanced_options_group</span><span class="p">(</span><span class="n">config_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">config_widget</span><span class="p">,</span> <span class="s2">&quot;⚙️ Configuración&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_preview_tab">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_preview_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_preview_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear pestaña de vista previa&quot;&quot;&quot;</span>
+        <span class="n">preview_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">preview_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">preview_widget</span><span class="p">)</span>
+
+        <span class="c1"># Selección de columnas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_column_selection_group</span><span class="p">(</span><span class="n">preview_layout</span><span class="p">)</span>
+
+        <span class="c1"># Preview</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_preview_group</span><span class="p">(</span><span class="n">preview_layout</span><span class="p">)</span>
+
+        <span class="c1"># Botones de acción</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_button_panel</span><span class="p">(</span><span class="n">preview_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">preview_widget</span><span class="p">,</span> <span class="s2">&quot;👁️ Vista Previa&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_left_dataset_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_left_dataset_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_left_dataset_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo para dataset izquierdo&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Dataset Izquierdo&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;📄 Datos principales</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> filas × </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> columnas&quot;</span>
+        <span class="n">info_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">info_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;font-weight: bold; color: #2c3e50;&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">info_label</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_right_dataset_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_right_dataset_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_right_dataset_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo para dataset derecho&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Dataset Derecho&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Botón para cargar</span>
+        <span class="n">load_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;📁 Cargar Dataset Derecho&quot;</span><span class="p">)</span>
+        <span class="n">load_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_right_dataset</span><span class="p">)</span>
+        <span class="n">load_btn</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QPushButton {</span>
+<span class="s2">                background-color: #3498db;</span>
+<span class="s2">                color: white;</span>
+<span class="s2">                border: none;</span>
+<span class="s2">                padding: 10px;</span>
+<span class="s2">                border-radius: 6px;</span>
+<span class="s2">                font-weight: bold;</span>
+<span class="s2">            }</span>
+<span class="s2">            QPushButton:hover {</span>
+<span class="s2">                background-color: #2980b9;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">load_btn</span><span class="p">)</span>
+
+        <span class="c1"># Información del dataset derecho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_info_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;No se ha cargado dataset derecho&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_info_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: #7f8c8d;&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_info_label</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_join_config_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_join_config_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_join_config_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo de configuración del join&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Configuración del Join&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Tipo de join</span>
+        <span class="n">type_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">type_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tipo de Join:&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_type_group</span> <span class="o">=</span> <span class="n">QButtonGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">join_types</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;Inner Join&quot;</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Left Join&quot;</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Right Join&quot;</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Cross Join&quot;</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">join_type</span> <span class="ow">in</span> <span class="n">join_types</span><span class="p">:</span>
+            <span class="n">radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">radio</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s2">&quot;join_type&quot;</span><span class="p">,</span> <span class="n">join_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>  <span class="c1"># Default</span>
+                <span class="n">radio</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">join_type_group</span><span class="o">.</span><span class="n">addButton</span><span class="p">(</span><span class="n">radio</span><span class="p">)</span>
+            <span class="n">type_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">radio</span><span class="p">)</span>
+
+        <span class="n">type_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">type_layout</span><span class="p">)</span>
+
+        <span class="c1"># Columnas para join</span>
+        <span class="n">columns_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Columnas para Join&quot;</span><span class="p">)</span>
+        <span class="n">columns_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">columns_group</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">columns_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Izquierdo:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">columns_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Derecho:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="p">)</span>
+
+        <span class="c1"># Botón añadir columna</span>
+        <span class="n">add_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;+ Añadir columna&quot;</span><span class="p">)</span>
+        <span class="n">add_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_join_column</span><span class="p">)</span>
+        <span class="n">columns_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">add_btn</span><span class="p">)</span>
+
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">columns_group</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_advanced_options_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_advanced_options_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_advanced_options_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo de opciones avanzadas&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Opciones Avanzadas&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Sufijos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_suffix_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;_left&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_suffix_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="s2">&quot;_right&quot;</span><span class="p">)</span>
+        <span class="n">suffix_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">suffix_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Izquierdo:&quot;</span><span class="p">))</span>
+        <span class="n">suffix_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_suffix_edit</span><span class="p">)</span>
+        <span class="n">suffix_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Derecho:&quot;</span><span class="p">))</span>
+        <span class="n">suffix_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_suffix_edit</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Sufijos:&quot;</span><span class="p">,</span> <span class="n">suffix_layout</span><span class="p">)</span>
+
+        <span class="c1"># Checkboxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Validar integridad referencial&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_check</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_check</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator_check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Añadir columna indicador (_merge)&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_check</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Ordenar resultados&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_check</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_check</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_column_selection_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_column_selection_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_column_selection_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo de selección de columnas&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Selección de Columnas (Opcional)&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Checkbox para habilitar selección de columnas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Seleccionar columnas específicas para el resultado&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_column_selection_changed</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="p">)</span>
+
+        <span class="c1"># Splitter para listas de columnas disponibles y seleccionadas</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">()</span>
+
+        <span class="c1"># Lista de columnas disponibles</span>
+        <span class="n">available_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Columnas Disponibles&quot;</span><span class="p">)</span>
+        <span class="n">available_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">available_group</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">QListWidget</span><span class="o">.</span><span class="n">MultiSelection</span><span class="p">)</span>
+        <span class="n">available_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">available_group</span><span class="p">)</span>
+
+        <span class="c1"># Botones de control</span>
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;➡️ Añadir&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_selected_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;⬅️ Quitar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_selected_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_all_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Seleccionar Todas&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_all_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_all_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_all_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_all_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_selection_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Limpiar Selección&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_selection_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear_column_selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_selection_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear_selection_btn</span><span class="p">)</span>
+
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">buttons_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">buttons_widget</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons_widget</span><span class="p">)</span>
+
+        <span class="c1"># Lista de columnas seleccionadas</span>
+        <span class="n">selected_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Columnas Seleccionadas&quot;</span><span class="p">)</span>
+        <span class="n">selected_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">selected_group</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">QListWidget</span><span class="o">.</span><span class="n">MultiSelection</span><span class="p">)</span>
+        <span class="n">selected_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">selected_group</span><span class="p">)</span>
+
+        <span class="c1"># Configurar splitter</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">splitter</span><span class="p">)</span>
+
+        <span class="c1"># Inicialmente deshabilitado</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_preview_group">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_preview_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_preview_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear grupo de preview&quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Preview de Resultados&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Estadísticas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_stats_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Cargue un dataset derecho para ver preview&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_stats_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: #7f8c8d; font-weight: bold;&quot;</span><span class="p">)</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_stats_label</span><span class="p">)</span>
+
+        <span class="c1"># Tabla preview - sin límite de altura para ocupar espacio disponible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="c1"># self.preview_table.setMaximumHeight(200)  # Removido para ocupar espacio completo</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="p">)</span>
+
+        <span class="c1"># Botón actualizar preview</span>
+        <span class="n">update_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;🔄 Actualizar Preview&quot;</span><span class="p">)</span>
+        <span class="n">update_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">)</span>
+        <span class="n">update_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview_btn</span> <span class="o">=</span> <span class="n">update_btn</span>
+        <span class="n">group_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">update_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.create_button_panel">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.create_button_panel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_button_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear panel de botones&quot;&quot;&quot;</span>
+        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;⚠️ Validar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="p">)</span>
+
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;🚀 Ejecutar Join&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">execute_join</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;❌ Cancelar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">button_layout</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.setup_connections">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.setup_connections">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar conexiones de señales&quot;&quot;&quot;</span>
+        <span class="c1"># Actualizar UI cuando cambie el tipo de join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_type_group</span><span class="o">.</span><span class="n">buttonClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_join_type_changed</span><span class="p">)</span>
+
+        <span class="c1"># Actualizar preview cuando cambien configuraciones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">)</span>
+
+        <span class="c1"># Actualizar columnas disponibles cuando se cambie a la pestaña de preview</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_tab_changed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.load_right_dataset">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.load_right_dataset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_right_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cargar dataset derecho&quot;&quot;&quot;</span>
+        <span class="n">file_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Seleccionar Dataset Derecho&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Archivos de datos (*.csv *.xlsx *.xls *.json *.parquet *.feather *.hdf5 *.sqlite3);;Todos los archivos (*)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="o">=</span> <span class="n">cargar_datos</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;📄 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> filas × </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> columnas&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_info_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: #2c3e50; font-weight: bold;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Habilitar configuración</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enable_join_config</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_column_combos</span><span class="p">()</span>
+
+                <span class="c1"># Actualizar columnas disponibles si la selección está habilitada</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_available_columns</span><span class="p">()</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error cargando archivo: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.enable_join_config">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.enable_join_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_join_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Habilitar/deshabilitar configuración del join&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.update_column_combos">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.update_column_combos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_column_combos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar combos de columnas y sugerir matches automáticos&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Columnas del izquierdo</span>
+            <span class="n">left_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">left_columns</span><span class="p">)</span>
+
+            <span class="c1"># Columnas del derecho</span>
+            <span class="n">right_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">right_columns</span><span class="p">)</span>
+
+            <span class="c1"># Buscar columnas con nombres similares para sugerir automáticamente</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_suggest_matching_columns</span><span class="p">(</span><span class="n">left_columns</span><span class="p">,</span> <span class="n">right_columns</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_suggest_matching_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_columns</span><span class="p">,</span> <span class="n">right_columns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sugerir automáticamente columnas que podrían hacer match&quot;&quot;&quot;</span>
+        <span class="c1"># Buscar columnas con el mismo nombre (case insensitive)</span>
+        <span class="n">suggested_left</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">suggested_right</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">left_col</span> <span class="ow">in</span> <span class="n">left_columns</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">right_col</span> <span class="ow">in</span> <span class="n">right_columns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">left_col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">right_col</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">suggested_left</span> <span class="o">=</span> <span class="n">left_col</span>
+                    <span class="n">suggested_right</span> <span class="o">=</span> <span class="n">right_col</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">suggested_left</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="c1"># Si no hay match exacto, buscar columnas con &quot;id&quot; o &quot;key&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">suggested_left</span><span class="p">:</span>
+            <span class="n">id_columns_left</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">left_columns</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;key&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="n">id_columns_right</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">right_columns</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;key&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+            <span class="k">if</span> <span class="n">id_columns_left</span> <span class="ow">and</span> <span class="n">id_columns_right</span><span class="p">:</span>
+                <span class="n">suggested_left</span> <span class="o">=</span> <span class="n">id_columns_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">suggested_right</span> <span class="o">=</span> <span class="n">id_columns_right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Seleccionar las columnas sugeridas</span>
+        <span class="k">if</span> <span class="n">suggested_left</span> <span class="ow">and</span> <span class="n">suggested_right</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">suggested_left</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">suggested_right</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JoinDialog.on_join_type_changed">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.on_join_type_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_join_type_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de tipo de join&quot;&quot;&quot;</span>
+        <span class="n">join_type</span> <span class="o">=</span> <span class="n">button</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;join_type&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Para cross join, deshabilitar selección de columnas</span>
+        <span class="k">if</span> <span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.on_column_selection_changed">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.on_column_selection_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_column_selection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio en selección de columnas&quot;&quot;&quot;</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># Qt.CheckState.Checked</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_all_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_selection_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">enabled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_available_columns</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.on_tab_changed">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.on_tab_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_tab_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de pestaña&quot;&quot;&quot;</span>
+        <span class="c1"># Si se cambia a la pestaña de preview (índice 1) y hay dataset derecho cargado</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_available_columns</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.update_available_columns">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.update_available_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_available_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar lista de columnas disponibles&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Obtener configuración actual para determinar columnas disponibles</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Crear manager temporal para obtener columnas del resultado</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Obtener preview para ver qué columnas estarán disponibles</span>
+            <span class="n">preview_df</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_join_preview</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">available_columns</span> <span class="o">=</span> <span class="n">preview_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># Si no se puede obtener preview, usar todas las columnas de ambos datasets</span>
+            <span class="n">available_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># Limpiar y llenar lista</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">available_columns</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QListWidgetItem</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.add_selected_columns">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.add_selected_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_selected_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añadir columnas seleccionadas a la lista de seleccionadas&quot;&quot;&quot;</span>
+        <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">selected_items</span><span class="p">:</span>
+            <span class="c1"># Verificar si ya está en la lista seleccionada</span>
+            <span class="n">existing_items</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">count</span><span class="p">())]</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_items</span><span class="p">:</span>
+                <span class="n">new_item</span> <span class="o">=</span> <span class="n">QListWidgetItem</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">new_item</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.remove_selected_columns">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.remove_selected_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_selected_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Quitar columnas seleccionadas de la lista de seleccionadas&quot;&quot;&quot;</span>
+        <span class="n">selected_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">selected_items</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">takeItem</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.select_all_columns">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.select_all_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_all_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Seleccionar todas las columnas disponibles&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_columns_list</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">new_item</span> <span class="o">=</span> <span class="n">QListWidgetItem</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">new_item</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.clear_column_selection">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.clear_column_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_column_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limpiar selección de columnas&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_preview</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.add_join_column">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.add_join_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_join_column</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añadir columna adicional para join múltiple&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Implementar joins múltiples</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Información&quot;</span><span class="p">,</span> <span class="s2">&quot;Joins múltiples no implementados aún&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.update_preview">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.update_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar preview de resultados&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Crear manager temporal para preview</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+            <span class="n">preview_df</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_join_preview</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+            <span class="c1"># Actualizar estadísticas</span>
+            <span class="n">estimated_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preview_df</span><span class="p">)</span>
+            <span class="n">estimated_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preview_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_stats_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Estimación: </span><span class="si">{</span><span class="n">estimated_rows</span><span class="si">}</span><span class="s2"> filas × </span><span class="si">{</span><span class="n">estimated_cols</span><span class="si">}</span><span class="s2"> columnas&quot;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Actualizar tabla</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_preview_table</span><span class="p">(</span><span class="n">preview_df</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_stats_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error en preview: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.update_preview_table">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.update_preview_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_preview_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar tabla de preview&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">10</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">])</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">resizeColumnsToContents</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.get_config">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.get_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JoinConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener configuración actual&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Tipo de join</span>
+        <span class="n">selected_button</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_type_group</span><span class="o">.</span><span class="n">checkedButton</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected_button</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">join_type</span> <span class="o">=</span> <span class="n">selected_button</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;join_type&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Columnas de join</span>
+        <span class="n">left_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_key_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">right_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_key_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="c1"># Para cross join, no se necesitan keys</span>
+        <span class="k">if</span> <span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="n">left_keys</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">right_keys</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Columnas a incluir</span>
+        <span class="n">include_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_columns_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="n">include_columns</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+                             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_columns_list</span><span class="o">.</span><span class="n">count</span><span class="p">())]</span>
+
+        <span class="k">return</span> <span class="n">JoinConfig</span><span class="p">(</span>
+            <span class="n">left_keys</span><span class="o">=</span><span class="n">left_keys</span><span class="p">,</span>
+            <span class="n">right_keys</span><span class="o">=</span><span class="n">right_keys</span><span class="p">,</span>
+            <span class="n">join_type</span><span class="o">=</span><span class="n">join_type</span><span class="p">,</span>
+            <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_suffix_edit</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_suffix_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()),</span>
+            <span class="n">validate_integrity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+            <span class="n">sort_results</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+            <span class="n">indicator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+            <span class="n">include_columns</span><span class="o">=</span><span class="n">include_columns</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.validate_config">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.validate_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validar configuración&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Debe cargar un dataset derecho primero&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Configuración incompleta&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+            <span class="n">validation</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">validate_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">validation</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Validación Exitosa&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;La configuración es válida&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">errors_text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+                <span class="n">warnings_text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span> <span class="k">if</span> <span class="n">validation</span><span class="o">.</span><span class="n">warnings</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+                <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Errores:</span><span class="se">\n</span><span class="si">{</span><span class="n">errors_text</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">warnings_text</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Advertencias:</span><span class="se">\n</span><span class="si">{</span><span class="n">warnings_text</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Errores de Validación&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">JoinValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error de Validación&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error inesperado: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinDialog.execute_join">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.execute_join">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ejecutar el join&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Debe cargar un dataset derecho primero&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Configuración incompleta&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Estimar si la operación será larga</span>
+        <span class="n">estimated_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_operation_time</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">show_progress</span> <span class="o">=</span> <span class="n">estimated_time</span> <span class="o">&gt;</span> <span class="mf">2.0</span>  <span class="c1"># Mostrar progreso si &gt; 2 segundos</span>
+
+        <span class="n">progress_dialog</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">progress_dialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span>
+                <span class="s2">&quot;Ejecutando operación de cruce...&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Cancelar&quot;</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="bp">self</span>
+            <span class="p">)</span>
+            <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># ApplicationModal</span>
+            <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setAutoClose</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setAutoReset</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Iniciar con 10%</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Deshabilitar botón</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Procesando...&quot;</span><span class="p">)</span>
+
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setLabelText</span><span class="p">(</span><span class="s2">&quot;Validando configuración...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Verificar validación antes de ejecutar</span>
+            <span class="n">validation</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">validate_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">validation</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+                <span class="n">warning_msg</span> <span class="o">=</span> <span class="s2">&quot;Advertencias detectadas:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+                <span class="n">warning_msg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">¿Desea continuar de todos modos?&quot;</span>
+                <span class="n">reply</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Advertencias de Configuración&quot;</span><span class="p">,</span>
+                                           <span class="n">warning_msg</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">reply</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;🚀 Ejecutar Join&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                        <span class="n">progress_dialog</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                    <span class="k">return</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setLabelText</span><span class="p">(</span><span class="s2">&quot;Finalizando...&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                    <span class="n">progress_dialog</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">join_completed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_file_path</span><span class="p">)</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Éxito&quot;</span><span class="p">,</span>
+                                      <span class="sa">f</span><span class="s2">&quot;Join completado exitosamente</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                      <span class="sa">f</span><span class="s2">&quot;Resultado: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">result_rows</span><span class="si">}</span><span class="s2"> filas × </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columnas</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                      <span class="sa">f</span><span class="s2">&quot;Tiempo: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">processing_time_seconds</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> segundos&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                    <span class="n">progress_dialog</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">JoinExecutionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error de Ejecución&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error inesperado: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;🚀 Ejecutar Join&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">progress_dialog</span><span class="p">:</span>
+                <span class="n">progress_dialog</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_estimate_operation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimar tiempo de ejecución de la operación</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tiempo estimado en segundos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+        <span class="n">left_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span>
+        <span class="n">right_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+
+        <span class="c1"># Factores base por tipo de join</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="c1"># Cross join: tiempo proporcional al producto</span>
+            <span class="n">base_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_rows</span> <span class="o">*</span> <span class="n">right_rows</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000000</span>  <span class="c1"># ~1 segundo por millón de operaciones</span>
+        <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">:</span>
+            <span class="c1"># Inner join: más rápido, depende del tamaño del resultado</span>
+            <span class="n">base_time</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">left_rows</span><span class="p">,</span> <span class="n">right_rows</span><span class="p">)</span> <span class="o">/</span> <span class="mi">50000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Left/Right join: tiempo moderado</span>
+            <span class="n">base_time</span> <span class="o">=</span> <span class="n">left_rows</span> <span class="o">/</span> <span class="mi">30000</span>
+
+        <span class="c1"># Factor adicional por validación de integridad</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">validate_integrity</span><span class="p">:</span>
+            <span class="n">base_time</span> <span class="o">*=</span> <span class="mf">1.2</span>
+
+        <span class="c1"># Factor adicional por ordenamiento</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">sort_results</span><span class="p">:</span>
+            <span class="n">base_time</span> <span class="o">*=</span> <span class="mf">1.1</span>
+
+        <span class="c1"># Mínimo 0.5 segundos, máximo 30 segundos para estimación</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">base_time</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="JoinDialog.reject">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.join_dialog.JoinDialog.reject">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancelar operación&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_cancelled</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reject</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

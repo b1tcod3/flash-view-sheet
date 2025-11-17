@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cruces/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Funcionalidad de Cruce de Datos (Join)</p>
+<p>## Resumen</p>
+<p>La funcionalidad de cruce de datos permite combinar dos datasets mediante operaciones de join (inner, left, right, cross) directamente desde la interfaz de Flash View Sheet.</p>
+<p>## Características</p>
+<p>### Tipos de Join Soportados</p>
+<ul class="simple">
+<li><p><strong>Inner Join</strong>: Solo filas con coincidencias en ambas tablas</p></li>
+<li><p><strong>Left Join</strong>: Todas las filas del dataset izquierdo + coincidencias del derecho</p></li>
+<li><p><strong>Right Join</strong>: Todas las filas del dataset derecho + coincidencias del izquierdo</p></li>
+<li><p><strong>Cross Join</strong>: Producto cartesiano de ambas tablas</p></li>
+</ul>
+<p>### Funcionalidades</p>
+<ul class="simple">
+<li><p>Configuración intuitiva mediante diálogo modal</p></li>
+<li><p>Preview de resultados antes de ejecutar</p></li>
+<li><p>Validación en tiempo real</p></li>
+<li><p>Gestión automática de memoria</p></li>
+<li><p>Historial de operaciones</p></li>
+<li><p>Exportación de resultados</p></li>
+<li><p>Metadatos detallados del cruce</p></li>
+</ul>
+<p>## Uso</p>
+<p>### Acceso a la Funcionalidad</p>
+<ol class="arabic simple">
+<li><p>Cargar un dataset principal en Flash View Sheet</p></li>
+<li><p>Ir al menú <strong>Datos &gt; Cruzar Datos…</strong></p></li>
+<li><p>Seleccionar el dataset derecho para el cruce</p></li>
+<li><p>Configurar el tipo de join y columnas</p></li>
+<li><p>Ejecutar el cruce</p></li>
+</ol>
+<p>### Configuración del Join</p>
+<ul class="simple">
+<li><p><strong>Tipo de Join</strong>: Seleccionar entre inner, left, right o cross</p></li>
+<li><p><strong>Columnas de Join</strong>: Especificar las columnas que sirven como clave</p></li>
+<li><p><strong>Sufijos</strong>: Personalizar sufijos para columnas duplicadas</p></li>
+<li><p><strong>Opciones Avanzadas</strong>:
+- Validación de integridad referencial
+- Columna indicador (_merge)
+- Ordenamiento de resultados</p></li>
+</ul>
+<p>## Arquitectura</p>
+<p>### Componentes Principales</p>
+<ul class="simple">
+<li><p><cite>DataJoinManager</cite>: Motor de procesamiento de joins</p></li>
+<li><p><cite>JoinDialog</cite>: Interfaz de configuración</p></li>
+<li><p><cite>JoinedDataView</cite>: Vista especializada para resultados</p></li>
+<li><p><cite>JoinHistory</cite>: Sistema de historial</p></li>
+</ul>
+<p>### Modelos de Datos</p>
+<ul class="simple">
+<li><p><cite>JoinConfig</cite>: Configuración de la operación</p></li>
+<li><p><cite>JoinResult</cite>: Resultado con metadatos</p></li>
+<li><p><cite>ValidationResult</cite>: Resultado de validaciones</p></li>
+</ul>
+<p>## API</p>
+<p>### DataJoinManager</p>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">manager</span> <span class="pre">=</span> <span class="pre">DataJoinManager(left_df,</span> <span class="pre">right_df)</span>
+<span class="pre">result</span> <span class="pre">=</span> <span class="pre">manager.execute_join(config)</span>
+<span class="pre">preview</span> <span class="pre">=</span> <span class="pre">manager.get_join_preview(config,</span> <span class="pre">max_rows=100)</span>
+<span class="pre">validation</span> <span class="pre">=</span> <span class="pre">manager.validate_join(config)</span>
+<span class="pre">`</span></code></p>
+<p>### JoinHistory</p>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">history</span> <span class="pre">=</span> <span class="pre">JoinHistory()</span>
+<span class="pre">history.add_entry(left_name,</span> <span class="pre">right_name,</span> <span class="pre">config,</span> <span class="pre">result)</span>
+<span class="pre">entries</span> <span class="pre">=</span> <span class="pre">history.get_entries(limit=20)</span>
+<span class="pre">history.export_history(filepath)</span>
+<span class="pre">`</span></code></p>
+<p>## Limitaciones</p>
+<ul class="simple">
+<li><p>Solo soporta cruce entre 2 datasets</p></li>
+<li><p>Columnas de join deben tener tipos de datos compatibles</p></li>
+<li><p>Cross joins pueden generar datasets muy grandes</p></li>
+<li><p>Requiere pandas &gt;= 2.0.0</p></li>
+</ul>
+<p>## Testing</p>
+<p>Los tests se ejecutan con:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">tests/test_join.py</span> <span class="pre">-v</span>
+<span class="pre">`</span></code></p>
+<p>## Próximos Pasos</p>
+<ul class="simple">
+<li><p>Soporte para joins múltiples (&gt; 2 datasets)</p></li>
+<li><p>Joins complejos con condiciones</p></li>
+<li><p>Optimizaciones para datasets muy grandes</p></li>
+<li><p>Interfaz de configuración avanzada</p></li>
+</ul>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

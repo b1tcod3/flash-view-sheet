@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc837d61"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plan.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan de Desarrollo Detallado: Flash View Sheet</p>
+<p>## Proyecto: flash-view-sheet
+<strong>Descripción:</strong> Aplicación de escritorio para visualización y análisis de datos tabulares (Excel, CSV)</p>
+<p>—</p>
+<p>## 1. Visión General y Objetivos</p>
+<p>### 1.1 Objetivo Principal
+Crear un visor de datos ligero y eficiente que permita:
+- Abrir archivos .xlsx, .xls, y .csv
+- Ver resumen inmediato de la estructura de datos
+- Obtener estadísticas descriptivas básicas
+- Visualizar datos en tabla interactiva
+- Realizar operaciones simples (filtrado y búsqueda)
+- Exportar vista actual a formatos comunes (PDF, Imagen, SQL)</p>
+<p>### 1.2 Características Clave
+- Interfaz gráfica moderna con PySide6
+- Carga rápida de archivos tabulares
+- Análisis estadístico automático
+- Interfaz intuitiva y responsive</p>
+<p>—</p>
+<p>## 2. Stack Tecnológico</p>
+<p>### 2.1 Lenguajes y Frameworks
+- <strong>Lenguaje:</strong> Python 3.10+
+- <strong>GUI:</strong> PySide6 (binding oficial de Qt para Python)
+- <strong>Análisis de Datos:</strong> Pandas
+- <strong>Lectura Excel:</strong> openpyxl
+- <strong>Exportación SQL:</strong> SQLAlchemy
+- <strong>Exportación PDF:</strong> reportlab</p>
+<p>—</p>
+<p>## 3. Arquitectura del Sistema</p>
+<p>### 3.1 Patrón MVC (Modelo-Vista-Controlador)</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>mermaid
+graph TB</p>
+<blockquote>
+<div><p>A[MainWindow - Vista] –&gt; B[PandasTableModel - Modelo]
+A –&gt; C[DataHandler - Controlador]
+B –&gt; D[DataFrame Pandas]
+C –&gt; D
+A –&gt; E[QDockWidget - Panel Info]
+A –&gt; F[QTableView - Tabla Principal]</p>
+<p>B –&gt; G[QAbstractTableModel]
+D –&gt; H[Archivos Excel/CSV]</p>
+<p>C –&gt; I[Exportación PDF]
+C –&gt; J[Exportación Imagen]
+C –&gt; K[Exportación SQL]</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>### 3.2 Estructura de Directorios
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">/flash-view-sheet/</span>
+<span class="pre">├──</span> <span class="pre">main.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Punto</span> <span class="pre">de</span> <span class="pre">entrada</span> <span class="pre">principal</span>
+<span class="pre">├──</span> <span class="pre">app/</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">__init__.py</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">main_window.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Ventana</span> <span class="pre">principal</span> <span class="pre">y</span> <span class="pre">controladores</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">ui_main_window.ui</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Archivo</span> <span class="pre">de</span> <span class="pre">Qt</span> <span class="pre">Designer</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">widgets/</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">__init__.py</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">│</span>&#160;&#160;&#160; <span class="pre">└──</span> <span class="pre">info_panel.py</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Panel</span> <span class="pre">de</span> <span class="pre">información</span> <span class="pre">y</span> <span class="pre">estadísticas</span>
+<span class="pre">│</span>&#160;&#160;&#160; <span class="pre">└──</span> <span class="pre">models/</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">├──</span> <span class="pre">__init__.py</span>
+<span class="pre">│</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">└──</span> <span class="pre">pandas_model.py</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Modelo</span> <span class="pre">para</span> <span class="pre">conectar</span> <span class="pre">Pandas</span> <span class="pre">con</span> <span class="pre">QTableView</span>
+<span class="pre">├──</span> <span class="pre">core/</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">__init__.py</span>
+<span class="pre">│</span>&#160;&#160;&#160; <span class="pre">└──</span> <span class="pre">data_handler.py</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Lógica</span> <span class="pre">de</span> <span class="pre">manejo</span> <span class="pre">de</span> <span class="pre">datos</span>
+<span class="pre">├──</span> <span class="pre">docs/</span>
+<span class="pre">│</span>&#160;&#160; <span class="pre">├──</span> <span class="pre">plan.md</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Este</span> <span class="pre">documento</span>
+<span class="pre">│</span>&#160;&#160;&#160; <span class="pre">└──</span> <span class="pre">avances.md</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Registro</span> <span class="pre">de</span> <span class="pre">progreso</span>
+<span class="pre">└──</span> <span class="pre">requirements.txt</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">Dependencias</span> <span class="pre">del</span> <span class="pre">proyecto</span>
+<span class="pre">`</span></code></p>
+<p>—</p>
+<p>## 4. Fases de Desarrollo Detalladas</p>
+<p>### Fase 0: Configuración del Entorno de Desarrollo</p>
+<p>#### Subfase 0.1: Estructura Inicial del Proyecto
+- [ ] Crear directorio raíz <cite>/flash-view-sheet</cite>
+- [ ] Crear estructura de subdirectorios
+- [ ] Inicializar archivos <cite>__init__.py</cite>
+- [ ] Crear <cite>requirements.txt</cite> con dependencias
+- [ ] Configurar entorno virtual Python
+- [ ] Verificar instalación de PySide6</p>
+<p>#### Subfase 0.2: Dependencias y Configuración
+- [ ] Instalar PySide6: <cite>pip install pyside6</cite>
+- [ ] Instalar Pandas: <cite>pip install pandas</cite>
+- [ ] Instalar openpyxl: <cite>pip install openpyxl</cite>
+- [ ] Instalar SQLAlchemy: <cite>pip install sqlalchemy</cite>
+- [ ] Instalar reportlab: <cite>pip install reportlab</cite>
+- [ ] Crear archivo <cite>main.py</cite> básico
+- [ ] Verificar que la aplicación se ejecuta sin errores</p>
+<p>### Fase 1: Carga de Archivos y Visualización Básica</p>
+<p>#### Subfase 1.1: Interfaz de Usuario Principal
+- [ ] Diseñar MainWindow con Qt Designer
+- [ ] Implementar QMenuBar con menú “Archivo”
+- [ ] Crear acción “Abrir…” en el menú
+- [ ] Añadir QTableView central
+- [ ] Configurar layout principal</p>
+<p>#### Subfase 1.2: Lógica de Carga de Datos
+- [ ] Implementar función <cite>cargar_datos(filepath)</cite> en <cite>data_handler.py</cite>
+- [ ] Manejar diferentes formatos (.xlsx, .xls, .csv)
+- [ ] Implementar manejo de errores con try…except
+- [ ] Mostrar mensajes de error con QMessageBox</p>
+<p>#### Subfase 1.3: Modelo de Datos
+- [ ] Crear clase <cite>PandasTableModel(QAbstractTableModel)</cite>
+- [ ] Implementar método <cite>rowCount()</cite>
+- [ ] Implementar método <cite>columnCount()</cite>
+- [ ] Implementar método <cite>data(index, role)</cite>
+- [ ] Implementar método <cite>headerData(section, orientation, role)</cite></p>
+<p>### Fase 2: Panel de Información y Estadísticas</p>
+<p>#### Subfase 2.1: Widget de Información
+- [ ] Crear clase <cite>InfoPanel</cite> en <cite>info_panel.py</cite>
+- [ ] Diseñar interfaz para mostrar metadata
+- [ ] Mostrar número de filas y columnas
+- [ ] Mostrar nombres y tipos de columnas</p>
+<p>#### Subfase 2.2: Análisis Estadístico
+- [ ] Implementar extracción de estadísticas con <cite>df.describe()</cite>
+- [ ] Formatear estadísticas para visualización
+- [ ] Conectar actualización de estadísticas con carga de datos</p>
+<p>### Fase 3: Operaciones de Filtrado y Búsqueda</p>
+<p>#### Subfase 3.1: Interfaz de Filtrado
+- [ ] Añadir QComboBox para selección de columnas
+- [ ] Implementar QLineEdit para término de búsqueda
+- [ ] Crear botones “Aplicar Filtro” y “Limpiar Filtro`
+- [ ] Poblar ComboBox con nombres de columnas</p>
+<p>#### Subfase 3.2: Lógica de Filtrado
+- [ ] Implementar método <cite>aplicar_filtro()</cite>
+- [ ] Implementar método <cite>limpiar_filtro()</cite>
+- [ ] Manejar filtrado por texto con <cite>str.contains()</cite></p>
+<p>### Fase 4: Sistema de Exportación</p>
+<p>#### Subfase 4.1: Exportación a PDF
+- [ ] Implementar <cite>exportar_a_pdf()</cite> usando reportlab
+- [ ] Crear SimpleDocTemplate
+- [ ] Convertir DataFrame a formato tabla
+- [ ] Aplicar estilos y formato al PDF</p>
+<p>#### Subfase 4.2: Exportación a Imagen
+- [ ] Implementar <cite>exportar_a_imagen()</cite> usando QPixmap.grab()</p>
+<p>#### Subfase 4.3: Exportación a SQL
+- [ ] Implementar <cite>exportar_a_sql()</cite>
+- [ ] Usar SQLAlchemy para crear engine
+- [ ] Implementar <cite>to_sql()</cite> de Pandas</p>
+<p>### Fase 5: Optimización y Mejoras - COMPLETADA</p>
+<p>#### Subfase 5.1: Manejo de Archivos Grandes
+- [x] Implementar paginación virtual para datasets &gt; 5000 filas
+- [x] Optimizar rendimiento para datasets extensos con cache inteligente
+- [x] Carga por chunks para archivos CSV/Excel grandes (&gt;100MB)
+- [x] Configuración adaptativa de parámetros de optimización</p>
+<p>#### Subfase 5.2: Optimización de Estadísticas
+- [x] Implementar lazy loading de estadísticas con sampling
+- [x] Estadísticas aproximadas para datasets &gt; 100k filas
+- [x] Cálculo eficiente de métricas de rendimiento y memoria</p>
+<p>#### Subfase 5.3: Optimización de Filtrado
+- [x] Filtrado indexado para datasets &gt; 50k filas
+- [x] Soporte para expresiones regulares y wildcards
+- [x] Búsqueda case-insensitive optimizada</p>
+<p>#### Subfase 5.4: Sistema de Configuración y Testing
+- [x] Archivo de configuración con parámetros de optimización
+- [x] Configuración por variables de entorno
+- [x] Suite completa de pruebas unitarias
+- [x] Cobertura de tests para funciones críticas</p>
+<p>### Fase 6: Visualizaciones y Funcionalidades Avanzadas (Planificada)</p>
+<p>#### Subfase 6.1: Gráficos y Visualizaciones
+- [ ] Implementar gráficos básicos (histogramas, scatter plots)
+- [ ] Visualización de estadísticas descriptivas
+- [ ] Gráficos de distribución y correlación</p>
+<p>#### Subfase 6.2: Transformaciones de Datos
+- [ ] Operaciones de limpieza de datos
+- [ ] Transformaciones básicas (agregación, pivoteo)
+- [ ] Manejo de tipos de datos y formatos</p>
+<p>#### Subfase 6.3: Formatos de Archivo Adicionales
+- [ ] Soporte para archivos JSON
+- [ ] Lectura de archivos XML
+- [ ] Conectores para bases de datos</p>
+<p>—</p>
+<p>## 5. Cronograma Actualizado</p>
+<p>### Fase 0: 1-2 días ✅ Completada
+### Fase 1: 3-5 días ✅ Completada
+### Fase 2: 2-3 días ✅ Completada
+### Fase 3: 2-4 días ✅ Completada
+### Fase 4: 3-5 días ✅ Completada
+### Fase 5: 2-3 días ✅ Completada</p>
+<p><strong>Total completado:</strong> 13-20 días de desarrollo
+<strong>Próxima fase (Fase 6):</strong> 5-7 días estimados (Visualizaciones)</p>
+<p>—</p>
+<p>## 6. Criterios de Aceptación</p>
+<p>### Funcionalidades Mínimas Viables (MVP)
+- [ ] Cargar archivos Excel y CSV
+- [ ] Mostrar datos en tabla
+- [ ] Panel básico de información
+- [ ] Filtrado simple por texto
+- [ ] Exportación básica a PDF e imagen</p>
+<p>### Funcionalidades Avanzadas - COMPLETADAS
+- [x] Exportación a SQL
+- [x] Manejo optimizado de archivos grandes con paginación virtual
+- [x] Interfaz completamente funcional con optimizaciones
+- [x] Paginación virtual para datasets &gt; 5000 filas
+- [x] Carga por chunks para archivos &gt; 100MB
+- [x] Estadísticas con sampling para datasets grandes
+- [x] Filtrado indexado optimizado
+- [x] Sistema de configuración y pruebas unitarias</p>
+<p>### Funcionalidades Futuras (Fase 6)
+- [ ] Gráficos y visualizaciones de datos
+- [ ] Transformaciones y limpieza de datos
+- [ ] Soporte para más formatos de archivo
+- [ ] Conectores a bases de datos</p>
+<p>—</p>
+<p>## 7. Consideraciones Técnicas</p>
+<p>### 7.1 Rendimiento - IMPLEMENTADO
+- ✅ <strong>Paginación Virtual</strong>: Implementada para datasets &gt; 5000 filas con cache inteligente
+- ✅ <strong>Carga por Chunks</strong>: Archivos grandes se cargan en fragmentos optimizando memoria
+- ✅ <strong>Estadísticas con Sampling</strong>: Cálculo eficiente usando muestras para datasets &gt; 100k filas
+- ✅ <strong>Filtrado Indexado</strong>: Búsqueda optimizada para datasets &gt; 50k filas
+- ✅ <strong>Hilos Asíncronos</strong>: Operaciones de carga en background para mantener UI responsiva</p>
+<p>### 7.2 Manejo de Errores - IMPLEMENTADO
+- ✅ try…except para operaciones de archivo con mensajes específicos
+- ✅ Validación de tipos de datos y formatos de archivo
+- ✅ Manejo de archivos corruptos con recuperación graceful
+- ✅ Validación de parámetros en funciones de exportación</p>
+<p>### 7.3 Usabilidad - IMPLEMENTADO
+- ✅ Interfaz intuitiva con optimizaciones visuales
+- ✅ Mensajes de error claros y feedback informativo
+- ✅ Indicadores de progreso para operaciones largas
+- ✅ Configuración automática de optimizaciones con mensajes al usuario
+- ✅ Suite completa de pruebas unitarias para estabilidad</p>
+<p>### 7.4 Configuración de Optimización
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>python
+# Configuración automática basada en tamaño del dataset
+VIRTUALIZATION_THRESHOLD = 5000    # Paginación virtual
+CHUNK_LOADING_THRESHOLD = 100MB    # Carga por chunks
+STATS_SAMPLE_THRESHOLD = 100000    # Estadísticas con sampling
+FILTER_OPTIMIZATION_THRESHOLD = 50000  # Filtrado indexado</p>
+<p># Configuración de cache y memoria
+DEFAULT_CHUNK_SIZE = 1000          # Filas por chunk
+MAX_CACHE_CHUNKS = 10              # Chunks en cache
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>—</p>
+<p>## 8. Próximos Pasos</p>
+<p>### Estado Actual: FASES 0-5 COMPLETADAS ✅
+1. <strong>Revisión de optimizaciones</strong> - Validar rendimiento con datasets grandes
+2. <strong>Inicio Fase 6</strong> - Visualizaciones y funcionalidades avanzadas
+3. <strong>Pruebas de integración</strong> - Verificar estabilidad del sistema completo
+4. <strong>Documentación final</strong> - Completar guías de usuario y API
+5. <strong>Release 1.0</strong> - Preparar versión de producción</p>
+<p>### Fase 6 Planificada: Visualizaciones y Análisis Avanzado
+1. <strong>Implementar gráficos básicos</strong> - Histogramas, scatter plots, box plots
+2. <strong>Visualización de estadísticas</strong> - Gráficos de distribución y correlación
+3. <strong>Transformaciones de datos</strong> - Operaciones de limpieza y agregación
+4. <strong>Nuevos formatos</strong> - Soporte para JSON, XML y conectores DB
+5. <strong>Interfaz avanzada</strong> - Configuración y personalización de visualizaciones</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

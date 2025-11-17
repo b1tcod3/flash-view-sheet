@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cruces/plan.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan de Implementación: Funcionalidad de Cruce de Datos</p>
+<p>## Resumen Ejecutivo</p>
+<p>Se implementará una nueva funcionalidad en Flash View Sheet que permita cargar múltiples datasets y combinarlos mediante operaciones de cruce (join) utilizando diferentes tipos de join: left join, right join, inner join y cross join. La funcionalidad incluirá opciones para visualizar los datos cruzados y exportarlos en múltiples formatos.</p>
+<p>## Objetivos</p>
+<ul class="simple">
+<li><p>Permitir la carga de un dataset adicional para cruce con datos principales</p></li>
+<li><p>Implementar operaciones de cruce de datos entre dos datasets con diferentes tipos de join</p></li>
+<li><p>Proporcionar interfaz intuitiva para configurar cruces</p></li>
+<li><p>Mostrar resultados de cruces con opciones de visualización y exportación</p></li>
+<li><p>Mantener compatibilidad con el sistema existente de carga y exportación</p></li>
+</ul>
+<p>## Arquitectura General</p>
+<p>### Componentes Principales</p>
+<ol class="arabic simple">
+<li><p><strong>DataJoinManager</strong>: Clase principal para manejar operaciones de cruce</p></li>
+<li><p><strong>JoinDialog</strong>: Diálogo para configurar operaciones de cruce</p></li>
+<li><p><strong>JoinedDataView</strong>: Vista especializada para mostrar datos cruzados</p></li>
+<li><p><strong>JoinHistory</strong>: Sistema para mantener historial de operaciones de cruce</p></li>
+</ol>
+<p>### Integración con Sistema Existente</p>
+<ul class="simple">
+<li><p>Utilizar <cite>core/data_handler.py</cite> para carga de datasets adicionales</p></li>
+<li><p>Integrar con <cite>DataView</cite> para visualización de resultados</p></li>
+<li><p>Reutilizar sistema de exportación existente</p></li>
+<li><p>Mantener consistencia con UI de pivot tables y exportación separada</p></li>
+</ul>
+<p>## Funcionalidades Detalladas</p>
+<p>### 1. Carga de Dataset Adicional</p>
+<p><strong>Requisitos:</strong>
+- Permitir carga de un dataset adicional para cruce con datos principales
+- Soporte para todos los formatos existentes (CSV, Excel, JSON, etc.)
+- Validación de compatibilidad entre los dos datasets
+- Gestión de memoria para datasets grandes</p>
+<p><strong>Interfaz:</strong>
+- Opción “Cargar Dataset para Cruce” en menú principal
+- Diálogo de selección de archivo único
+- Indicadores de progreso durante carga</p>
+<p>### 2. Configuración de Operaciones de Cruce</p>
+<p><strong>Tipos de Join Soportados:</strong>
+- <strong>Inner Join</strong>: Solo filas con coincidencias en ambas tablas
+- <strong>Left Join</strong>: Todas las filas de la tabla izquierda + coincidencias de la derecha
+- <strong>Right Join</strong>: Todas las filas de la tabla derecha + coincidencias de la izquierda
+- <strong>Cross Join</strong>: Producto cartesiano de ambas tablas</p>
+<p><strong>Configuración:</strong>
+- Selección de columnas para join del dataset principal y adicional (una o múltiples)
+- Selección de tipo de join (inner, left, right, cross)
+- Selección de columnas a incluir en el resultado final (de ambos datasets)
+- Opciones de manejo de duplicados
+- Configuración de sufijos para columnas con nombres duplicados</p>
+<p>### 3. Visualización de Datos Cruzados</p>
+<p><strong>Características:</strong>
+- Vista tabular con paginación (reutilizar DataView)
+- Información de metadatos del cruce (filas resultantes, tiempo de procesamiento)
+- Resaltado de filas/filas que provienen de diferentes datasets
+- Estadísticas del cruce (coincidencias, pérdidas, etc.)</p>
+<p>### 4. Exportación de Datos Cruzados</p>
+<p><strong>Opciones de Exportación:</strong>
+- Todos los formatos existentes (PDF, Excel, CSV, SQL, Imagen)
+- Exportación con metadatos del cruce
+- Opciones de filtrado antes de exportar
+- Historial de exportaciones</p>
+<p>## Plan de Implementación</p>
+<p>### Fase 1: Diseño y Planificación (Semana 1)</p>
+<ol class="arabic simple">
+<li><p><strong>Análisis de Requisitos Detallados</strong>
+- Definir casos de uso específicos
+- Especificar límites y restricciones
+- Diseñar UX/UI para configuración de cruces</p></li>
+<li><p><strong>Diseño Arquitectónico</strong>
+- Definir interfaces entre componentes
+- Especificar formato de datos para configuración de cruces
+- Diseñar sistema de validación</p></li>
+<li><p><strong>Prototipo de UI</strong>
+- Crear mockups del diálogo de configuración
+- Diseñar vista de resultados
+- Planificar integración con UI existente</p></li>
+</ol>
+<p>### Fase 2: Desarrollo Core (Semanas 2-3)</p>
+<ol class="arabic simple">
+<li><p><strong>Implementar DataJoinManager</strong>
+- Clase principal para operaciones de cruce
+- Soporte para todos los tipos de join
+- Optimizaciones para datasets grandes
+- Manejo de errores y validaciones</p></li>
+<li><p><strong>Crear JoinDialog</strong>
+- Interfaz para configurar cruces
+- Validación en tiempo real
+- Preview de resultados antes de ejecutar</p></li>
+<li><p><strong>Integrar con Sistema de Carga</strong>
+- Modificar MainWindow para manejar múltiples datasets
+- Actualizar DataView para mostrar datasets múltiples
+- Implementar gestión de memoria</p></li>
+</ol>
+<p>### Fase 3: UI y Visualización (Semanas 4-5)</p>
+<ol class="arabic simple">
+<li><p><strong>Implementar JoinedDataView</strong>
+- Vista especializada para resultados de cruces
+- Metadatos e información del cruce
+- Opciones de filtrado y búsqueda</p></li>
+<li><p><strong>Integrar con Menú Principal</strong>
+- Añadir opción “Cruzar Datos” al menú
+- Actualizar toolbar con acceso rápido
+- Implementar atajos de teclado</p></li>
+<li><p><strong>Sistema de Historial</strong>
+- Guardar configuración de cruces realizados
+- Permitir re-ejecución de cruces previos
+- Exportar/importar configuraciones</p></li>
+</ol>
+<p>### Fase 4: Exportación y Optimizaciones (Semanas 6-7)</p>
+<ol class="arabic simple">
+<li><p><strong>Implementar Exportación</strong>
+- Integrar con sistema de exportación existente
+- Añadir metadatos del cruce a exportaciones
+- Optimizar exportación de datasets grandes</p></li>
+<li><p><strong>Optimizaciones de Rendimiento</strong>
+- Implementar chunking para cruces grandes
+- Optimizaciones de memoria
+- Paralelización donde sea posible</p></li>
+<li><p><strong>Testing y Validación</strong>
+- Pruebas unitarias para DataJoinManager
+- Pruebas de integración con UI
+- Testing con datasets reales de diferentes tamaños</p></li>
+</ol>
+<p>### Fase 5: Documentación y Finalización (Semana 8)</p>
+<ol class="arabic simple">
+<li><p><strong>Documentación</strong>
+- Guía de usuario para funcionalidad de cruces
+- Documentación técnica de la API
+- Ejemplos de uso</p></li>
+<li><p><strong>Testing Final</strong>
+- Pruebas de aceptación por usuario
+- Validación de rendimiento
+- Testing de casos edge</p></li>
+<li><p><strong>Despliegue</strong>
+- Merge a rama principal
+- Actualización de versión
+- Comunicación a usuarios</p></li>
+</ol>
+<p>## Requisitos Técnicos</p>
+<p>### Dependencias
+- pandas &gt;= 1.3.0 (para operaciones de merge/join)
+- PySide6 (UI existente)
+- openpyxl (para exportación Excel)</p>
+<p>### Limitaciones
+- Solo cruce entre 2 datasets (principal + uno adicional)
+- Join keys deben ser de tipos compatibles
+- Datasets muy grandes pueden requerir chunking</p>
+<p>### Compatibilidad
+- Mantener compatibilidad con versiones anteriores
+- No afectar rendimiento de funcionalidades existentes
+- Seguir patrones de código existentes</p>
+<p>## Riesgos y Mitigación</p>
+<p>### Riesgos Técnicos
+1. <strong>Rendimiento con Datasets Grandes</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Mitigación: Implementar chunking y optimizaciones de memoria</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><strong>Complejidad de Joins Múltiples</strong>
+- Mitigación: Limitar a 2 datasets inicialmente, expandir después</p></li>
+<li><p><strong>Gestión de Memoria</strong>
+- Mitigación: Monitoreo continuo y límites de memoria</p></li>
+</ol>
+<p>### Riesgos de Proyecto
+1. <strong>Alcance Creciendo</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Mitigación: Fases bien definidas con entregables claros</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><strong>Integración con Código Existente</strong>
+- Mitigación: Revisión de código y pruebas de integración continuas</p></li>
+</ol>
+<p>## Métricas de Éxito</p>
+<ul class="simple">
+<li><p>Funcionalidad completa y probada para todos los tipos de join</p></li>
+<li><p>Rendimiento aceptable con datasets de hasta 1M filas</p></li>
+<li><p>UI intuitiva con tiempo de aprendizaje mínimo</p></li>
+<li><p>Cobertura de pruebas &gt; 80%</p></li>
+<li><p>Documentación completa y actualizada</p></li>
+</ul>
+<p>## Próximos Pasos</p>
+<ol class="arabic simple">
+<li><p>Revisar y aprobar este plan</p></li>
+<li><p>Crear issues/tareas específicas en el sistema de gestión</p></li>
+<li><p>Comenzar implementación de DataJoinManager</p></li>
+<li><p>Desarrollar prototipo de UI para feedback temprano</p></li>
+</ol>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

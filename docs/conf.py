@@ -23,6 +23,9 @@ author = 'Flash Sheet Development Team'
 # The full version, including alpha/beta/rc tags
 release = '1.1.0'
 
+# The master toctree document.
+root_doc = 'index'
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -125,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'FlashSheetExportacionSeparada.tex', 'Flash Sheet - Exportación Separada Documentation',
+    (root_doc, 'FlashSheetExportacionSeparada.tex', 'Flash Sheet - Exportación Separada Documentation',
      'Flash Sheet Development Team', 'manual'),
 ]
 
@@ -135,7 +138,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'flashsheetexportacionseparada', 'Flash Sheet - Exportación Separada Documentation',
+    (root_doc, 'flashsheetexportacionseparada', 'Flash Sheet - Exportación Separada Documentation',
      [author], 1)
 ]
 
@@ -145,7 +148,7 @@ man_pages = [
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/3/': None}
+intersphinx_mapping = {'python': ('https://docs.python.org/3/', None)}
 
 # -- Options for todo extension ----------------------------------------------
 

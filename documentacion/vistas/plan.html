@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/vistas/plan.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Plan para Separar Vistas en la Aplicación Flash-Sheet</p>
+<p>## Introducción
+El objetivo es refactorizar la interfaz de usuario de la aplicación para separar las vistas en tres componentes principales, invocados desde la barra de herramientas. Esto mejorará la organización y usabilidad.</p>
+<p>## Estado Actual
+- La aplicación usa PySide6 con una ventana principal que incluye:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Una tabla central para datos.</p></li>
+<li><p>Panel de información (dock widget) con detalles del archivo y estadísticas.</p></li>
+<li><p>Panel de visualizaciones (dock widget) para gráficos.</p></li>
+<li><p>Barra de herramientas con filtros.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Los datos se cargan y filtran, actualizando la tabla y paneles.</p></li>
+</ul>
+<p>## Arquitectura Propuesta
+- Usar un <cite>QStackedWidget</cite> en la ventana principal para alternar entre vistas.
+- Vistas:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><strong>Vista Principal</strong>: Botón para cargar archivo, card con resumen, icono de spreadsheet genérico.</p></li>
+<li><p><strong>Vista de Información</strong>: Modal o vista dedicada para detalles del archivo (nombre, filas, columnas, tipos).</p></li>
+<li><p><strong>Vista de Gráficos</strong>: Panel para visualizaciones y estadísticas, basado en datos filtrados.</p></li>
+</ol>
+</div></blockquote>
+<ul class="simple">
+<li><p>Botones en la barra de herramientas para cambiar vistas.</p></li>
+<li><p>Mantener filtros en la barra, aplicables a la vista de gráficos.</p></li>
+</ul>
+<p>## Diagrama de Arquitectura
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>mermaid
+graph TD</p>
+<blockquote>
+<div><p>A[MainWindow] –&gt; B[QStackedWidget]
+B –&gt; C[Vista Principal]
+B –&gt; D[Vista de Información]
+B –&gt; E[Vista de Gráficos]
+F[Barra de Herramientas] –&gt; G[Botón Vista Principal]
+F –&gt; H[Botón Vista Información]
+F –&gt; I[Botón Vista Gráficos]
+F –&gt; J[Filtros]
+J –&gt; E
+C –&gt; K[Botón Cargar Archivo]
+C –&gt; L[Card Resumen]
+C –&gt; M[Icono Spreadsheet]
+D –&gt; N[Detalles Archivo]
+E –&gt; O[Gráficos y Estadísticas]</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>## Lista de Tareas
+- [ ] Analizar estructura UI actual y componentes
+- [ ] Diseñar arquitectura de vistas con stacked widgets
+- [ ] Crear widget de vista principal con botón de carga, card e icono
+- [ ] Crear modal de información para detalles del archivo
+- [ ] Crear widget de vista de gráficos para charts y stats
+- [ ] Actualizar barra de herramientas con botones para cambiar vistas
+- [ ] Integrar vistas en MainWindow y manejar cambios
+- [ ] Actualizar manejo de datos para aplicar filtros a vista de gráficos
+- [ ] Probar el sistema de vistas y refinar</p>
+<p>## Consideraciones
+- Asegurar que los filtros se apliquen correctamente a la vista de gráficos.
+- Mantener compatibilidad con funcionalidades existentes como exportación.
+- Usar hilos para operaciones pesadas en gráficos.</p>
+<p>¿Estás de acuerdo con este plan? ¿Hay cambios que quieras hacer?</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
