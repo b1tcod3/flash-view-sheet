@@ -1,11 +1,11 @@
-Flash Sheet - Data Analysis and Export Tool
+Flash Sheet - Herramienta de Análisis y Exportación de Datos
 =============================================
 
-Flash Sheet is a comprehensive application for data analysis, visualization, and export with advanced features for data manipulation and reporting.
+Flash Sheet es una aplicación completa para análisis de datos, visualización y exportación con características avanzadas para manipulación de datos e informes.
 
 .. toctree::
     :maxdepth: 2
-    :caption: User Guide:
+    :caption: Guía del Usuario:
 
     user_guide/getting_started
     user_guide/basic_usage
@@ -17,7 +17,7 @@ Flash Sheet is a comprehensive application for data analysis, visualization, and
 
 .. toctree::
     :maxdepth: 2
-    :caption: Developer Guide:
+    :caption: Guía del Desarrollador:
 
     developer_guide/architecture
     developer_guide/code_walkthrough/main_window
@@ -29,17 +29,15 @@ Flash Sheet is a comprehensive application for data analysis, visualization, and
 
 .. toctree::
     :maxdepth: 2
-    :caption: Releases:
+    :caption: Versiones:
 
     releases/installation_guide
     releases/v1.0.0/release_notes
     releases/v1.0.0/installation_guide
-    releases/v1.0.0/upgrade_guide
     releases/v1.1.0/release_notes
     releases/v1.1.0/installation_guide
-    releases/v1.1.0/upgrade_guide
 
-Overview
+Resumen
 ========
 
 Flash Sheet es un sistema avanzado de análisis y exportación de datos que incluye una funcionalidad de **Exportación de Datos Separados con Plantillas Excel**. Esta funcionalidad permite:
@@ -50,8 +48,8 @@ Flash Sheet es un sistema avanzado de análisis y exportación de datos que incl
 - Optimización automática para datasets grandes
 - Interfaz gráfica intuitiva para configuración
 
-Key Features
-============
+Características Principales
+===========================
 
 - **Plantillas Excel**: Preservación completa del formato original
 - **Mapeo Inteligente**: Conversión automática y manual de columnas
@@ -59,33 +57,33 @@ Key Features
 - **Interfaz Gráfica**: Configuración visual con validación en tiempo real
 - **Robustez**: Manejo de casos especiales y recovery automático
 
-Quick Start
-===========
+Inicio Rápido
+=============
 
-1. **Import your data** into Flash Sheet
-2. **Navigate** to Menu → "Separar" → "Exportar Datos Separados"
-3. **Configure** column separation, Excel template, and output settings
-4. **Preview** the files that will be created
-5. **Export** your separated data files
+1. **Importa tus datos** en Flash Sheet
+2. **Navega** al Menú → "Separar" → "Exportar Datos Separados"
+3. **Configura** la separación de columnas, plantilla Excel y ajustes de salida
+4. **Previsualiza** los archivos que se crearán
+5. **Exporta** tus archivos de datos separados
 
-For detailed instructions, see the :doc:`user_guide/tutorial/basic_usage`.
+Para instrucciones detalladas, consulta :doc:`user_guide/basic_usage`.
 
-Indices and tables
-==================
+Índices y tablas
+================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
-Version Information
-===================
+Información de Versión
+======================
 
-- **Current Version**: 1.0.0
-- **Release Date**: 2025-11-05
-- **Python Support**: 3.7+
-- **Dependencies**: pandas, openpyxl, PySide6
+- **Versión Actual**: 1.0.0
+- **Fecha de Lanzamiento**: 2025-11-05
+- **Soporte de Python**: 3.7+
+- **Dependencias**: pandas, openpyxl, PySide6
 
-License
+Licencia
 =======
 
-This project is licensed under the MIT License.
+Este proyecto está licenciado bajo la Licencia MIT.

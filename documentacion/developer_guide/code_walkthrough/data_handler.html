@@ -1,0 +1,874 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Data Handler - Recorrido Detallado del Código &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Arquitectura del Sistema de Vistas" href="views_system.html" />
+    <link rel="prev" title="Sistema de Arquitectura de Main Window - Recorrido Detallado del Código" href="main_window.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sistema de Data Handler - Recorrido Detallado del Código</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resumen-de-arquitectura">Resumen de Arquitectura</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-clave">Componentes Clave</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#responsabilidades-core">Responsabilidades Core</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#analisis-detallado-del-codigo">Análisis Detallado del Código</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#integracion-y-comunicacion-de-modulos">Integración y Comunicación de Módulos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-de-carga-de-datos">Pipeline de Carga de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deteccion-de-formato-de-archivo">Detección de Formato de Archivo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seleccion-y-ejecucion-de-parser">Selección y Ejecución de Parser</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#formatos-soportados-implementacion">Formatos Soportados Implementación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-formato-csv">Manejo de Formato CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-formato-excel">Manejo de Formato Excel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#json-y-datos-estructurados">JSON y Datos Estructurados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conectividad-de-base-de-datos">Conectividad de Base de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#validacion-y-limpieza-de-datos">Validación y Limpieza de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#motor-de-inferencia-de-tipos">Motor de Inferencia de Tipos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validacion-de-calidad-de-datos">Validación de Calidad de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-memoria">Optimización de Memoria</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-datasets-grandes">Manejo de Datasets Grandes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procesamiento-por-chunks">Procesamiento por Chunks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sistema-de-exportacion">Sistema de Exportación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interfaz-unificada-de-exportacion">Interfaz Unificada de Exportación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clases-de-exportador-especificas-de-formato">Clases de Exportador Específicas de Formato</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cache-y-performance">Cache y Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#estrategia-de-cache-de-datos">Estrategia de Cache de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manejo-de-errores-y-recuperacion">Manejo de Errores y Recuperación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-comprehensiva-de-errores">Gestión Comprehensiva de Errores</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#integracion-con-aplicacion">Integración con Aplicación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#comunicacion-basada-en-senales">Comunicación Basada en Señales</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hilos-y-concurrencia">Hilos y Concurrencia</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-y-calidad-assurance">Testing y Calidad Assurance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#framework-de-testing-unitario">Framework de Testing Unitario</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#benchmarking-de-performance">Benchmarking de Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mejoras-futuras">Mejoras Futuras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mejoras-planificadas">Mejoras Planificadas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sistema de Data Handler - Recorrido Detallado del Código</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guide/code_walkthrough/data_handler.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sistema-de-data-handler-recorrido-detallado-del-codigo">
+<h1>Sistema de Data Handler - Recorrido Detallado del Código<a class="headerlink" href="#sistema-de-data-handler-recorrido-detallado-del-codigo" title="Link to this heading"></a></h1>
+<p>La clase DataHandler es el componente central responsable de carga de datos, procesamiento, validación y gestión en Flash Sheet. Este recorrido proporciona análisis detallado de secciones críticas de código y decisiones de diseño.</p>
+<section id="resumen-de-arquitectura">
+<h2>Resumen de Arquitectura<a class="headerlink" href="#resumen-de-arquitectura" title="Link to this heading"></a></h2>
+<p>DataHandler sirve como hub central de gestión de datos, implementando patrón facade sobre varias fuentes y formatos de datos.</p>
+<section id="componentes-clave">
+<h3>Componentes Clave<a class="headerlink" href="#componentes-clave" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Detectores de Formato</strong>: Reconocimiento automático de formato</p></li>
+<li><p><strong>Parsers</strong>: Parsing específico de formato de datos</p></li>
+<li><p><strong>Validadores</strong>: Verificación de integridad y tipo de datos</p></li>
+<li><p><strong>Transformadores</strong>: Manipulación y limpieza de datos</p></li>
+<li><p><strong>Exportadores</strong>: Exportación multi-formato de datos</p></li>
+<li><p><strong>Administrador de Cache</strong>: Optimización de performance a través de cache</p></li>
+</ul>
+</section>
+<section id="responsabilidades-core">
+<h3>Responsabilidades Core<a class="headerlink" href="#responsabilidades-core" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Carga de Datos</strong>: Soporte para múltiples formatos y fuentes de archivos</p></li>
+<li><p><strong>Inferencia de Tipos</strong>: Detección automática de tipos de datos</p></li>
+<li><p><strong>Validación de Datos</strong>: Verificación de integridad y manejo de errores</p></li>
+<li><p><strong>Gestión de Memoria</strong>: Manejo eficiente de datasets grandes</p></li>
+<li><p><strong>Conversión de Formato</strong>: Transformación de datos entre formatos</p></li>
+<li><p><strong>Coordinación de Exportación</strong>: Interfaz unificada de exportación</p></li>
+</ul>
+</section>
+</section>
+<section id="analisis-detallado-del-codigo">
+<h2>Análisis Detallado del Código<a class="headerlink" href="#analisis-detallado-del-codigo" title="Link to this heading"></a></h2>
+<p><strong>Función Principal de Carga</strong> (core/data_handler.py líneas 16-55):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">cargar_datos</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Cargar datos desde un archivo usando el nuevo sistema de loaders</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">core.loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_file_loader</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="c1"># Usar el factory pattern para cargar el archivo</span>
+<span class="linenos"> 8</span>    <span class="n">loader</span> <span class="o">=</span> <span class="n">get_file_loader</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="c1"># Aplicar optimización para archivos grandes</span>
+<span class="linenos">11</span>    <span class="k">if</span> <span class="n">chunk_size</span> <span class="ow">or</span> <span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">can_load_chunks</span><span class="p">()</span> <span class="ow">and</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_memory_usage_info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_size_mb&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">):</span>
+<span class="linenos">12</span>        <span class="k">if</span> <span class="n">chunk_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">13</span>            <span class="c1"># Usar configuración de optimización</span>
+<span class="linenos">14</span>            <span class="n">file_info</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_memory_usage_info</span><span class="p">()</span>
+<span class="linenos">15</span>            <span class="n">estimated_rows</span> <span class="o">=</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;estimated_data_rows&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="linenos">16</span>            <span class="k">if</span> <span class="n">estimated_rows</span> <span class="o">&gt;</span> <span class="n">optimization_config</span><span class="o">.</span><span class="n">VIRTUALIZATION_THRESHOLD</span><span class="p">:</span>
+<span class="linenos">17</span>                <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="linenos">18</span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">19</span>                <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">22</span>            <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_in_chunks</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+<span class="linenos">23</span>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">24</span>            <span class="c1"># Si falla el chunk loading, usar carga normal</span>
+<span class="linenos">25</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chunk loading falló, usando carga normal: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">26</span>            <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>    <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Análisis crítico línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 22</strong>: Import función factory para creación de loader - <strong>decisión de diseño</strong>: Sistema extensible de loader</p></li>
+<li><p><strong>Línea 25</strong>: Patrón factory usado - permite nuevos formatos sin cambiar código core</p></li>
+<li><p><strong>Línea 28</strong>: Decisión inteligente de chunking basada en tamaño de archivo</p></li>
+<li><p><strong>Líneas 29-37</strong>: Cálculo dinámico de tamaño de chunk usando configuración de optimización</p></li>
+<li><p><strong>Líneas 39-43</strong>: Mecanismo de fallback - <strong>robustez de diseño</strong>: Si chunking falla, usar carga normal</p></li>
+<li><p><strong>Línea 45</strong>: Carga estándar para archivos más pequeños</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Mejora progresiva - intentar carga optimizada primero, fallback graceful.</p>
+<p><strong>Carga Avanzada con Opciones</strong> (core/data_handler.py líneas 58-97):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">cargar_datos_con_opciones</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">skip_rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">column_names</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Cargar datos desde un archivo con opciones adicionales</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">core.loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_file_loader</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="c1"># Usar el factory pattern para cargar el archivo</span>
+<span class="linenos"> 8</span>    <span class="n">loader</span> <span class="o">=</span> <span class="n">get_file_loader</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="c1"># Aplicar optimización para archivos grandes</span>
+<span class="linenos">11</span>    <span class="k">if</span> <span class="n">chunk_size</span> <span class="ow">or</span> <span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">can_load_chunks</span><span class="p">()</span> <span class="ow">and</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_memory_usage_info</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_size_mb&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">):</span>
+<span class="linenos">12</span>        <span class="c1"># ... lógica de chunking (similar a arriba)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">15</span>            <span class="n">df</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_in_chunks</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+<span class="linenos">16</span>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">17</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chunk loading falló, usando carga normal: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">18</span>            <span class="n">df</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">skip_rows</span><span class="p">,</span> <span class="n">column_names</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">20</span>        <span class="c1"># Carga normal con opciones</span>
+<span class="linenos">21</span>        <span class="n">df</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">skip_rows</span><span class="p">,</span> <span class="n">column_names</span><span class="p">)</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+<p><strong>Mejora clave sobre carga básica:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 64</strong>: Parámetro <code class="docutils literal notranslate"><span class="pre">skip_rows</span></code> para saltar encabezados</p></li>
+<li><p><strong>Línea 65</strong>: Dict <code class="docutils literal notranslate"><span class="pre">column_names</span></code> para renombrar columnas</p></li>
+<li><p><strong>Líneas 94-95</strong>: Pasar opciones a loader para parsing flexible</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Opciones pasadas a través para mantener abstracción de loader.</p>
+<p><strong>Implementación de Filtrado</strong> (core/data_handler.py líneas 224-247):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">aplicar_filtro</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">termino</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Aplicar filtro a los datos con optimización para datasets grandes</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="k">if</span> <span class="n">columna</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columna no encontrada: </span><span class="si">{</span><span class="n">columna</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos"> 9</span>        <span class="k">return</span> <span class="n">df</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="c1"># Para datasets muy grandes, usar optimizaciones</span>
+<span class="linenos">12</span>    <span class="k">if</span> <span class="n">optimization_config</span><span class="o">.</span><span class="n">should_optimize_filtering</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span> <span class="ow">and</span> <span class="n">use_index</span><span class="p">:</span>
+<span class="linenos">13</span>        <span class="k">return</span> <span class="n">_aplicar_filtro_indexado</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columna</span><span class="p">,</span> <span class="n">termino</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">15</span>        <span class="k">return</span> <span class="n">_aplicar_filtro_simple</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columna</span><span class="p">,</span> <span class="n">termino</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Detalles críticos de implementación:</strong></p>
+<ul class="simple">
+<li><p><strong>Líneas 227-228</strong>: Validación temprana previene errores de runtime</p></li>
+<li><p><strong>Líneas 230-231</strong>: Manejar caso edge de dataframes vacíos</p></li>
+<li><p><strong>Líneas 234-238</strong>: Decisión inteligente de optimización basada en tamaño de dataset</p></li>
+<li><p><strong>Línea 235</strong>: Umbral configurable de optimización</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Performance adaptativa - filtrado simple para datasets pequeños, optimizado para grandes.</p>
+<p><strong>Algoritmo de Filtrado Optimizado</strong> (core/data_handler.py líneas 267-304):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">_aplicar_filtro_indexado</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">termino</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Aplicar filtro optimizado usando indexación para datasets grandes</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="c1"># Convertir columna a string para búsqueda de texto</span>
+<span class="linenos"> 7</span>        <span class="n">columna_str</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columna</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>        <span class="c1"># Crear una serie booleana para el filtro</span>
+<span class="linenos">10</span>        <span class="k">if</span> <span class="n">termino</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">termino</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">):</span>
+<span class="linenos">11</span>            <span class="c1"># Búsqueda exacta (regex)</span>
+<span class="linenos">12</span>            <span class="n">pattern</span> <span class="o">=</span> <span class="n">termino</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos">13</span>            <span class="n">mask</span> <span class="o">=</span> <span class="n">columna_str</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">14</span>        <span class="k">elif</span> <span class="n">termino</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">termino</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+<span class="linenos">15</span>            <span class="c1"># Búsqueda con wildcards</span>
+<span class="linenos">16</span>            <span class="n">pattern</span> <span class="o">=</span> <span class="n">termino</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;.*&#39;</span><span class="p">)</span>
+<span class="linenos">17</span>            <span class="n">mask</span> <span class="o">=</span> <span class="n">columna_str</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">18</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">19</span>            <span class="c1"># Búsqueda normal</span>
+<span class="linenos">20</span>            <span class="n">mask</span> <span class="o">=</span> <span class="n">columna_str</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">termino</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>        <span class="c1"># Aplicar filtro</span>
+<span class="linenos">23</span>        <span class="n">df_filtrado</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtro aplicado: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_filtrado</span><span class="p">)</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas encontradas&quot;</span><span class="p">)</span>
+<span class="linenos">26</span>        <span class="k">return</span> <span class="n">df_filtrado</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">29</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error en filtrado indexado, usando método simple: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">30</span>        <span class="k">return</span> <span class="n">_aplicar_filtro_simple</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columna</span><span class="p">,</span> <span class="n">termino</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Lógica avanzada de filtrado:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 272</strong>: Conversión a string para operaciones de texto</p></li>
+<li><p><strong>Líneas 275-281</strong>: Detección de patrón regex y manejo</p></li>
+<li><p><strong>Líneas 282-286</strong>: Conversión de patrón wildcard a regex</p></li>
+<li><p><strong>Líneas 287-289</strong>: Búsqueda case-insensitive estándar</p></li>
+<li><p><strong>Línea 295</strong>: Logging para monitoreo de performance</p></li>
+<li><p><strong>Líneas 297-299</strong>: Fallback graceful en errores</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Múltiples estrategias de búsqueda con fallback automático para robustez.</p>
+<p><strong>Optimización de Memoria</strong> (core/data_handler.py líneas 243-256):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">optimize_memory</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Optimize memory usage of DataFrame</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="c1"># Downcast numeric types</span>
+<span class="linenos"> 6</span>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;int64&#39;</span><span class="p">]):</span>
+<span class="linenos"> 7</span>        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">downcast</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">]):</span>
+<span class="linenos">10</span>        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">downcast</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="c1"># Convert object columns to category if appropriate</span>
+<span class="linenos">13</span>    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]):</span>
+<span class="linenos">14</span>        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Less than 50% unique</span>
+<span class="linenos">15</span>        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+<p><strong>Estrategias de optimización de memoria:</strong></p>
+<ul class="simple">
+<li><p><strong>Líneas 247-249</strong>: Downcast enteros a tipo más pequeño posible</p></li>
+<li><p><strong>Líneas 251-253</strong>: Downcast floats para eficiencia de memoria</p></li>
+<li><p><strong>Líneas 256-258</strong>: Convertir strings repetitivos a categorías</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Optimización automática sin pérdida de datos, ahorros significativos de memoria para datasets grandes.</p>
+<p><strong>Diseño de Sistema de Exportación</strong> (core/data_handler.py líneas 307-346):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">exportar_a_pdf</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span><span class="sd">    Exportar DataFrame a archivo PDF</span>
+<span class="linenos"> 4</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.pagesizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">letter</span>
+<span class="linenos"> 7</span>        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.platypus</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleDocTemplate</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">TableStyle</span>
+<span class="linenos"> 8</span>        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>        <span class="c1"># Crear documento</span>
+<span class="linenos">11</span>        <span class="n">doc</span> <span class="o">=</span> <span class="n">SimpleDocTemplate</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="n">letter</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>        <span class="c1"># Convertir DataFrame a lista de listas</span>
+<span class="linenos">14</span>        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span> <span class="o">+</span> <span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>        <span class="c1"># Crear tabla</span>
+<span class="linenos">17</span>        <span class="n">tabla</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="linenos">18</span>        <span class="n">estilo</span> <span class="o">=</span> <span class="n">TableStyle</span><span class="p">([</span>
+<span class="linenos">19</span>            <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+<span class="linenos">20</span>            <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">whitesmoke</span><span class="p">),</span>
+<span class="linenos">21</span>            <span class="p">(</span><span class="s1">&#39;ALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;LEFT&#39;</span><span class="p">),</span>
+<span class="linenos">22</span>            <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+<span class="linenos">23</span>            <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">12</span><span class="p">),</span>
+<span class="linenos">24</span>            <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">beige</span><span class="p">),</span>
+<span class="linenos">25</span>            <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+<span class="linenos">26</span>        <span class="p">])</span>
+<span class="linenos">27</span>        <span class="n">tabla</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">estilo</span><span class="p">)</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>        <span class="c1"># Construir documento</span>
+<span class="linenos">30</span>        <span class="n">doc</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="n">tabla</span><span class="p">])</span>
+<span class="linenos">31</span>        <span class="k">return</span> <span class="kc">True</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">34</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error al exportar a PDF: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">35</span>        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p><strong>Implementación de exportación PDF:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 312</strong>: Import ReportLab para generación PDF</p></li>
+<li><p><strong>Línea 317</strong>: Crear documento PDF con tamaño carta</p></li>
+<li><p><strong>Línea 320</strong>: Convertir DataFrame a formato tabla (encabezados + datos)</p></li>
+<li><p><strong>Líneas 323-335</strong>: Definir estilo de tabla (encabezados, grid, colores)</p></li>
+<li><p><strong>Línea 340</strong>: Construir y guardar documento PDF</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Output PDF profesional con formato claro y grid layout.</p>
+<section id="integracion-y-comunicacion-de-modulos">
+<h3>Integración y Comunicación de Módulos<a class="headerlink" href="#integracion-y-comunicacion-de-modulos" title="Link to this heading"></a></h3>
+<p><strong>Comunicación Basada en Señales</strong>:</p>
+<p>El DataHandler se integra con aplicación a través de señales Qt:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># En MainWindow</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_data_loaded</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">progress_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_progress</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Hilos para Performance</strong>:</p>
+<p>Procesamiento en segundo plano previene bloqueo UI:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_file_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">thread_pool</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_file_background</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Patrones de Recuperación de Errores</strong>:</p>
+<p>Múltiples estrategias de fallback aseguran robustez:</p>
+<ol class="arabic simple">
+<li><p><strong>Fallback de Detección de Formato</strong>: Probar múltiples encodings</p></li>
+<li><p><strong>Fallback de Método de Carga</strong>: Chunked → Carga normal</p></li>
+<li><p><strong>Fallback de Filtrado</strong>: Optimizado → Simple</p></li>
+<li><p><strong>Fallback de Exportación</strong>: Probar métodos alternativos de exportación</p></li>
+</ol>
+<p><strong>Monitoreo de Performance</strong>:</p>
+<p>Tracking de performance integrado:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtro aplicado: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_filtrado</span><span class="p">)</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas encontradas&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Diseño de Extensibilidad</strong>:</p>
+<ul class="simple">
+<li><p><strong>Factory de Loader</strong>: Adición fácil de nuevos formatos de archivo</p></li>
+<li><p><strong>Interfaz de Exportador</strong>: API consistente de exportación</p></li>
+<li><p><strong>Config de Optimización</strong>: Parámetros de performance tuneables</p></li>
+<li><p><strong>Arquitectura de Plugin</strong>: Soporte para extensiones de terceros</p></li>
+</ul>
+</section>
+</section>
+<section id="pipeline-de-carga-de-datos">
+<h2>Pipeline de Carga de Datos<a class="headerlink" href="#pipeline-de-carga-de-datos" title="Link to this heading"></a></h2>
+<section id="deteccion-de-formato-de-archivo">
+<h3>Detección de Formato de Archivo<a class="headerlink" href="#deteccion-de-formato-de-archivo" title="Link to this heading"></a></h3>
+<p>Detección automática de formato basada en extensiones de archivo y análisis de contenido:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">detect_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="n">extension</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">format_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;.csv&#39;</span><span class="p">:</span> <span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.xlsx&#39;</span><span class="p">:</span> <span class="s1">&#39;.xls&#39;</span><span class="p">:</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.json&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.parquet&#39;</span><span class="p">:</span> <span class="s1">&#39;parquet&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.h5&#39;</span><span class="p">:</span> <span class="s1">&#39;.hdf5&#39;</span><span class="p">:</span> <span class="s1">&#39;hdf5&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;.sql&#39;</span><span class="p">:</span> <span class="s1">&#39;sql&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">format_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">extension</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="seleccion-y-ejecucion-de-parser">
+<h3>Selección y Ejecución de Parser<a class="headerlink" href="#seleccion-y-ejecucion-de-parser" title="Link to this heading"></a></h3>
+<p>Selección dinámica de parser basada en formato detectado:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="n">format_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_format</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parser</span><span class="p">(</span><span class="n">format_type</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parser</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">UnsupportedFormatError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported format: </span><span class="si">{</span><span class="n">format_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">validated_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize_data</span><span class="p">(</span><span class="n">validated_data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="formatos-soportados-implementacion">
+<h2>Formatos Soportados Implementación<a class="headerlink" href="#formatos-soportados-implementacion" title="Link to this heading"></a></h2>
+<section id="manejo-de-formato-csv">
+<h3>Manejo de Formato CSV<a class="headerlink" href="#manejo-de-formato-csv" title="Link to this heading"></a></h3>
+<p>Parsing comprehensivo CSV con detección de encoding:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CSVParser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">encodings_to_try</span> <span class="o">=</span> <span class="p">[</span><span class="n">encoding</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="s1">&#39;iso-8859-1&#39;</span><span class="p">,</span> <span class="s1">&#39;cp1252&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">enc</span> <span class="ow">in</span> <span class="n">encodings_to_try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">enc</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">sample</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+                    <span class="n">detected_delim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_delimiter</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                        <span class="n">file_path</span><span class="p">,</span>
+                        <span class="n">encoding</span><span class="o">=</span><span class="n">enc</span><span class="p">,</span>
+                        <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span> <span class="ow">or</span> <span class="n">detected_delim</span><span class="p">,</span>
+                        <span class="n">na_values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;null&#39;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">df</span>
+            <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="k">raise</span> <span class="n">EncodingError</span><span class="p">(</span><span class="s2">&quot;Could not determine file encoding&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="manejo-de-formato-excel">
+<h3>Manejo de Formato Excel<a class="headerlink" href="#manejo-de-formato-excel" title="Link to this heading"></a></h3>
+<p>Soporte de archivos Excel multi-hoja con selección de hoja:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExcelParser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header_row</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">xl</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sheet_name</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">xl</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header_row</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Usar primera hoja o prompt usuario</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">xl</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xl</span><span class="o">.</span><span class="n">sheet_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">header</span><span class="o">=</span><span class="n">header_row</span><span class="p">)</span>
+
+        <span class="c1"># Limpiar nombres de columna</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</section>
+<section id="json-y-datos-estructurados">
+<h3>JSON y Datos Estructurados<a class="headerlink" href="#json-y-datos-estructurados" title="Link to this heading"></a></h3>
+<p>Parsing flexible JSON con múltiples estructuras:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JSONParser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">orient</span> <span class="o">==</span> <span class="s1">&#39;records&#39;</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">orient</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Intentar inferir estructura</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported JSON structure&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</section>
+<section id="conectividad-de-base-de-datos">
+<h3>Conectividad de Base de Datos<a class="headerlink" href="#conectividad-de-base-de-datos" title="Link to this heading"></a></h3>
+<p>Integración de base de datos SQL con pooling de conexiones:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SQLParser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_string</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="validacion-y-limpieza-de-datos">
+<h2>Validación y Limpieza de Datos<a class="headerlink" href="#validacion-y-limpieza-de-datos" title="Link to this heading"></a></h2>
+<section id="motor-de-inferencia-de-tipos">
+<h3>Motor de Inferencia de Tipos<a class="headerlink" href="#motor-de-inferencia-de-tipos" title="Link to this heading"></a></h3>
+<p>Detección automática de tipos de datos y conversión:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">infer_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># Intentar convertir a numérico</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Intentar convertir a datetime</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+            <span class="k">continue</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Default a string</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</section>
+<section id="validacion-de-calidad-de-datos">
+<h3>Validación de Calidad de Datos<a class="headerlink" href="#validacion-de-calidad-de-datos" title="Link to this heading"></a></h3>
+<p>Chequeos comprehensivos de calidad de datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="n">validation_results</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;total_rows&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span>
+        <span class="s1">&#39;total_columns&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+        <span class="s1">&#39;null_counts&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+        <span class="s1">&#39;duplicate_rows&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+        <span class="s1">&#39;data_types&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Chequear issues críticos</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Dataset is empty&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Duplicate column names found&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">validation_results</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optimizacion-de-memoria">
+<h2>Optimización de Memoria<a class="headerlink" href="#optimizacion-de-memoria" title="Link to this heading"></a></h2>
+<section id="manejo-de-datasets-grandes">
+<h3>Manejo de Datasets Grandes<a class="headerlink" href="#manejo-de-datasets-grandes" title="Link to this heading"></a></h3>
+<p>Procesamiento eficiente de memoria para big data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">optimize_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="c1"># Downcast tipos numéricos</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;int64&#39;</span><span class="p">]):</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">downcast</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">]):</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">downcast</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convertir columnas object a category si apropiado</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Menos de 50% único</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</section>
+<section id="procesamiento-por-chunks">
+<h3>Procesamiento por Chunks<a class="headerlink" href="#procesamiento-por-chunks" title="Link to this heading"></a></h3>
+<p>Procesar archivos grandes en chunks para gestionar memoria:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_large_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">):</span>
+        <span class="n">processed_chunk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_chunk</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">processed_chunk</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">chunks</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sistema-de-exportacion">
+<h2>Sistema de Exportación<a class="headerlink" href="#sistema-de-exportacion" title="Link to this heading"></a></h2>
+<section id="interfaz-unificada-de-exportacion">
+<h3>Interfaz Unificada de Exportación<a class="headerlink" href="#interfaz-unificada-de-exportacion" title="Link to this heading"></a></h3>
+<p>API consistente de exportación a través de todos los formatos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">format_type</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="n">exporter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_exporter</span><span class="p">(</span><span class="n">format_type</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="clases-de-exportador-especificas-de-formato">
+<h3>Clases de Exportador Específicas de Formato<a class="headerlink" href="#clases-de-exportador-especificas-de-formato" title="Link to this heading"></a></h3>
+<p>Clases especializadas de exportador para cada formato:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CSVExporter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+            <span class="n">destination</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">),</span>
+            <span class="n">sep</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;delimiter&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExcelExporter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;openpyxl&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sheet_name&#39;</span><span class="p">,</span> <span class="s1">&#39;Sheet1&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cache-y-performance">
+<h2>Cache y Performance<a class="headerlink" href="#cache-y-performance" title="Link to this heading"></a></h2>
+<section id="estrategia-de-cache-de-datos">
+<h3>Estrategia de Cache de Datos<a class="headerlink" href="#estrategia-de-cache-de-datos" title="Link to this heading"></a></h3>
+<p>Cache inteligente para performance mejorada:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataCache</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="n">max_size</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">:</span>
+            <span class="c1"># Remover least recently used</span>
+            <span class="n">lru_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">lru_key</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="manejo-de-errores-y-recuperacion">
+<h2>Manejo de Errores y Recuperación<a class="headerlink" href="#manejo-de-errores-y-recuperacion" title="Link to this heading"></a></h2>
+<section id="gestion-comprehensiva-de-errores">
+<h3>Gestión Comprehensiva de Errores<a class="headerlink" href="#gestion-comprehensiva-de-errores" title="Link to this heading"></a></h3>
+<p>Manejo robusto de errores con opciones de recuperación:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataHandlerError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedFormatError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidationError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataHandler error in </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Intentar estrategias de recuperación</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="ne">MemoryError</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">free_memory</span><span class="p">()</span>
+        <span class="c1"># Reintentar con chunk size más pequeño</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">):</span>
+        <span class="c1"># Intentar limpieza automática de datos</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integracion-con-aplicacion">
+<h2>Integración con Aplicación<a class="headerlink" href="#integracion-con-aplicacion" title="Link to this heading"></a></h2>
+<section id="comunicacion-basada-en-senales">
+<h3>Comunicación Basada en Señales<a class="headerlink" href="#comunicacion-basada-en-senales" title="Link to this heading"></a></h3>
+<p>Integración con aplicación principal a través de señales:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Señales emitidas por DataHandler</span>
+<span class="n">data_loaded</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">DataFrame</span><span class="p">)</span>  <span class="c1"># Emitido cuando datos son cargados exitosamente</span>
+<span class="n">progress_updated</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>   <span class="c1"># Porcentaje de progreso para operaciones largas</span>
+<span class="n">error_occurred</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>     <span class="c1"># Mensajes de error con contexto</span>
+</pre></div>
+</div>
+</section>
+<section id="hilos-y-concurrencia">
+<h3>Hilos y Concurrencia<a class="headerlink" href="#hilos-y-concurrencia" title="Link to this heading"></a></h3>
+<p>Procesamiento en segundo plano para operaciones no bloqueantes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_file_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">thread_pool</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_file_background</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_file_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_occurred</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-y-calidad-assurance">
+<h2>Testing y Calidad Assurance<a class="headerlink" href="#testing-y-calidad-assurance" title="Link to this heading"></a></h2>
+<section id="framework-de-testing-unitario">
+<h3>Framework de Testing Unitario<a class="headerlink" href="#framework-de-testing-unitario" title="Link to this heading"></a></h3>
+<p>Cobertura comprehensiva de testing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_csv_parsing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Test varios formatos CSV</span>
+    <span class="n">test_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;simple.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;quoted.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;multiline.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;encoding_test.csv&#39;</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">test_file</span> <span class="ow">in</span> <span class="n">test_files</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;test_data/</span><span class="si">{</span><span class="n">test_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="benchmarking-de-performance">
+<h3>Benchmarking de Performance<a class="headerlink" href="#benchmarking-de-performance" title="Link to this heading"></a></h3>
+<p>Testing y optimización de performance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">benchmark_loading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+
+    <span class="n">avg_time</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tiempo promedio de carga para </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">avg_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">avg_time</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="mejoras-futuras">
+<h2>Mejoras Futuras<a class="headerlink" href="#mejoras-futuras" title="Link to this heading"></a></h2>
+<section id="mejoras-planificadas">
+<h3>Mejoras Planificadas<a class="headerlink" href="#mejoras-planificadas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Procesamiento Streaming</strong>: Procesamiento de datos en tiempo real</p></li>
+<li><p><strong>Integración Cloud</strong>: Carga directa desde almacenamiento cloud</p></li>
+<li><p><strong>Parsing Avanzado</strong>: Soporte para formatos de archivo complejos</p></li>
+<li><p><strong>Machine Learning</strong>: Mejora automática de calidad de datos</p></li>
+<li><p><strong>Arquitectura Plugin</strong>: Extensiones de parser de terceros</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="main_window.html" class="btn btn-neutral float-left" title="Sistema de Arquitectura de Main Window - Recorrido Detallado del Código" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="views_system.html" class="btn btn-neutral float-right" title="Arquitectura del Sistema de Vistas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

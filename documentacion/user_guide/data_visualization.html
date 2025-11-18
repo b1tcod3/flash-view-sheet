@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Visualización de Datos &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Gráficos y Visualizaciones" href="graphics.html" />
+    <link rel="prev" title="Guía de Uso Básico" href="basic_usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Visualización de Datos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#caracteristicas-de-vista-de-tabla">Características de Vista de Tabla</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paginacion">Paginación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#operaciones-de-columnas">Operaciones de Columnas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#filtrado-de-datos">Filtrado de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#busqueda-global">Búsqueda Global</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtros-especificos-de-columna">Filtros Específicos de Columna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtrado-avanzado">Filtrado Avanzado</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exploracion-de-datos">Exploración de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#entendiendo-tu-conjunto-de-datos">Entendiendo Tu Conjunto de Datos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#resumen-del-conjunto-de-datos">Resumen del Conjunto de Datos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#estadisticas-de-columnas">Estadísticas de Columnas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#verificacion-de-calidad-de-datos">Verificación de Calidad de Datos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#personalizacion-de-vista">Personalización de Vista</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apariencia-de-tabla">Apariencia de Tabla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-de-vistas">Exportación de Vistas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-rendimiento">Optimización de Rendimiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#atajos-de-teclado">Atajos de Teclado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Visualización de Datos</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/data_visualization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-visualizacion-de-datos">
+<h1>Guía de Visualización de Datos<a class="headerlink" href="#guia-de-visualizacion-de-datos" title="Link to this heading"></a></h1>
+<p>Esta guía cubre las características de visualización de datos en Flash Sheet, incluyendo vistas de tabla, filtrado, ordenamiento y herramientas de exploración de datos.</p>
+<section id="caracteristicas-de-vista-de-tabla">
+<h2>Características de Vista de Tabla<a class="headerlink" href="#caracteristicas-de-vista-de-tabla" title="Link to this heading"></a></h2>
+<p>La tabla de datos principal proporciona capacidades comprehensivas de visualización y manipulación.</p>
+<section id="paginacion">
+<h3>Paginación<a class="headerlink" href="#paginacion" title="Link to this heading"></a></h3>
+<p>Para datasets grandes, Flash Sheet automáticamente pagina los datos:</p>
+<ul class="simple">
+<li><p><strong>Opciones de Tamaño de Página</strong>: Elige entre 10, 25, 50, 100, o 500 filas por página</p></li>
+<li><p><strong>Controles de Navegación</strong>: Botones Primera, Anterior, Siguiente, Última página</p></li>
+<li><p><strong>Salto de Página</strong>: Ingresa números de página específicos directamente</p></li>
+<li><p><strong>Visualización de Conteo de Filas</strong>: Muestra rango actual y filas totales</p></li>
+</ul>
+</section>
+<section id="operaciones-de-columnas">
+<h3>Operaciones de Columnas<a class="headerlink" href="#operaciones-de-columnas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Ordenamiento</strong>: Haz clic en encabezados de columna para ordenar ascendente/descendente</p></li>
+<li><p><strong>Ordenamiento Multi-columna</strong>: Mantén Shift mientras haces clic para ordenamientos secundarios</p></li>
+<li><p><strong>Redimensionamiento de Columnas</strong>: Arrastra bordes de columna para ajustar anchos</p></li>
+<li><p><strong>Reordenamiento de Columnas</strong>: Arrastra encabezados de columna para reordenar</p></li>
+<li><p><strong>Visibilidad de Columnas</strong>: Muestra/oculta columnas según sea necesario</p></li>
+</ul>
+</section>
+</section>
+<section id="filtrado-de-datos">
+<h2>Filtrado de Datos<a class="headerlink" href="#filtrado-de-datos" title="Link to this heading"></a></h2>
+<p>Flash Sheet proporciona capacidades poderosas de filtrado para enfocarte en datos relevantes.</p>
+<section id="busqueda-global">
+<h3>Búsqueda Global<a class="headerlink" href="#busqueda-global" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Caja de Búsqueda</strong>: Ingresa texto para buscar a través de todas las columnas visibles</p></li>
+<li><p><strong>Filtrado en Tiempo Real</strong>: Los resultados se actualizan a medida que escribes</p></li>
+<li><p><strong>Sensibilidad a Mayúsculas</strong>: Alterna búsqueda sensible a mayúsculas</p></li>
+<li><p><strong>Resaltado</strong>: El texto coincidente se resalta en los resultados</p></li>
+</ul>
+</section>
+<section id="filtros-especificos-de-columna">
+<h3>Filtros Específicos de Columna<a class="headerlink" href="#filtros-especificos-de-columna" title="Link to this heading"></a></h3>
+<p>Aplica filtros a columnas individuales:</p>
+<ul class="simple">
+<li><p><strong>Filtros de Texto</strong>: Contiene, comienza con, termina con, coincidencia exacta</p></li>
+<li><p><strong>Filtros Numéricos</strong>: Mayor que, menor que, entre, igual</p></li>
+<li><p><strong>Filtros de Fecha</strong>: Antes, después, entre fechas</p></li>
+<li><p><strong>Filtros de Valores Nulos</strong>: Mostrar/ocultar valores nulos o vacíos</p></li>
+</ul>
+</section>
+<section id="filtrado-avanzado">
+<h3>Filtrado Avanzado<a class="headerlink" href="#filtrado-avanzado" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Combinaciones de Filtros</strong>: Lógica AND/OR entre múltiples filtros</p></li>
+<li><p><strong>Grupos de Filtros</strong>: Crea jerarquías complejas de filtros</p></li>
+<li><p><strong>Filtros Guardados</strong>: Guarda y reutiliza configuraciones de filtro</p></li>
+<li><p><strong>Historial de Filtros</strong>: Accede a filtros usados recientemente</p></li>
+</ul>
+</section>
+</section>
+<section id="exploracion-de-datos">
+<h2>Exploración de Datos<a class="headerlink" href="#exploracion-de-datos" title="Link to this heading"></a></h2>
+<section id="entendiendo-tu-conjunto-de-datos">
+<h3>Entendiendo Tu Conjunto de Datos<a class="headerlink" href="#entendiendo-tu-conjunto-de-datos" title="Link to this heading"></a></h3>
+<p>Flash Sheet proporciona herramientas para analizar la estructura de tus datos:</p>
+<section id="resumen-del-conjunto-de-datos">
+<h4>Resumen del Conjunto de Datos<a class="headerlink" href="#resumen-del-conjunto-de-datos" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Conteo de Filas</strong>: Número total de registros</p></li>
+<li><p><strong>Conteo de Columnas</strong>: Número de columnas</p></li>
+<li><p><strong>Tipos de Datos</strong>: Detección automática de tipos de columna</p></li>
+<li><p><strong>Uso de Memoria</strong>: Tamaño del conjunto de datos y consumo de memoria</p></li>
+<li><p><strong>Análisis de Nulos</strong>: Conteo de valores faltantes por columna</p></li>
+</ul>
+</section>
+<section id="estadisticas-de-columnas">
+<h4>Estadísticas de Columnas<a class="headerlink" href="#estadisticas-de-columnas" title="Link to this heading"></a></h4>
+<p>Para columnas numéricas:</p>
+<ul class="simple">
+<li><p><strong>Valores Mín/Máx</strong>: Rango de valores</p></li>
+<li><p><strong>Media/Promedio</strong>: Tendencia central</p></li>
+<li><p><strong>Desviación Estándar</strong>: Dispersión de datos</p></li>
+<li><p><strong>Cuartiles</strong>: Análisis de distribución</p></li>
+</ul>
+<p>Para columnas de texto:</p>
+<ul class="simple">
+<li><p><strong>Valores Únicos</strong>: Conteo de valores distintos</p></li>
+<li><p><strong>Más Frecuente</strong>: Valores que ocurren más</p></li>
+<li><p><strong>Estadísticas de Longitud</strong>: Análisis de longitud de texto</p></li>
+</ul>
+</section>
+<section id="verificacion-de-calidad-de-datos">
+<h4>Verificación de Calidad de Datos<a class="headerlink" href="#verificacion-de-calidad-de-datos" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Detección de Duplicados</strong>: Identifica filas duplicadas</p></li>
+<li><p><strong>Verificaciones de Consistencia</strong>: Valida patrones de datos</p></li>
+<li><p><strong>Validación de Tipos</strong>: Asegura consistencia de tipos de datos</p></li>
+<li><p><strong>Validación de Rangos</strong>: Verifica valores atípicos</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="personalizacion-de-vista">
+<h2>Personalización de Vista<a class="headerlink" href="#personalizacion-de-vista" title="Link to this heading"></a></h2>
+<section id="apariencia-de-tabla">
+<h3>Apariencia de Tabla<a class="headerlink" href="#apariencia-de-tabla" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Temas</strong>: Opciones de tema claro y oscuro</p></li>
+<li><p><strong>Tamaño de Fuente</strong>: Tamaño de texto ajustable</p></li>
+<li><p><strong>Altura de Fila</strong>: Personaliza espaciado de filas</p></li>
+<li><p><strong>Líneas de Cuadrícula</strong>: Mostrar/ocultar cuadrícula de tabla</p></li>
+</ul>
+</section>
+<section id="exportacion-de-vistas">
+<h3>Exportación de Vistas<a class="headerlink" href="#exportacion-de-vistas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Exportación de Vista Actual</strong>: Exporta solo datos visibles/filtrados</p></li>
+<li><p><strong>Conjunto de Datos Completo</strong>: Exporta todo el conjunto de datos independientemente de filtros</p></li>
+<li><p><strong>Rangos Personalizados</strong>: Exporta rangos específicos de filas</p></li>
+<li><p><strong>Opciones de Formato</strong>: Elige formato de exportación y opciones</p></li>
+</ul>
+</section>
+</section>
+<section id="optimizacion-de-rendimiento">
+<h2>Optimización de Rendimiento<a class="headerlink" href="#optimizacion-de-rendimiento" title="Link to this heading"></a></h2>
+<p>Para datasets grandes, Flash Sheet incluye características de rendimiento:</p>
+<ul class="simple">
+<li><p><strong>Carga Perezosa</strong>: Carga datos bajo demanda</p></li>
+<li><p><strong>Indexación</strong>: Indexación automática para búsquedas rápidas</p></li>
+<li><p><strong>Almacenamiento en Caché</strong>: Almacena en caché resultados filtrados</p></li>
+<li><p><strong>Gestión de Memoria</strong>: Uso eficiente de memoria</p></li>
+</ul>
+</section>
+<section id="atajos-de-teclado">
+<h2>Atajos de Teclado<a class="headerlink" href="#atajos-de-teclado" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Ctrl+F</strong>: Enfocar caja de búsqueda</p></li>
+<li><p><strong>Ctrl+Shift+F</strong>: Limpiar todos los filtros</p></li>
+<li><p><strong>Ctrl+G</strong>: Ir a fila específica</p></li>
+<li><p><strong>Ctrl+Home</strong>: Primera página</p></li>
+<li><p><strong>Ctrl+End</strong>: Última página</p></li>
+<li><p><strong>F3</strong>: Repetir última búsqueda</p></li>
+</ul>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="graphics.html"><span class="doc">Guía de Gráficos y Visualizaciones</span></a> - Crear gráficos visuales y gráficos</p></li>
+<li><p><a class="reference internal" href="basic_export.html"><span class="doc">Guía de Exportación Básica</span></a> - Exportar tus datos visualizados</p></li>
+<li><p><a class="reference internal" href="advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Técnicas avanzadas de visualización</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic_usage.html" class="btn btn-neutral float-left" title="Guía de Uso Básico" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphics.html" class="btn btn-neutral float-right" title="Guía de Gráficos y Visualizaciones" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

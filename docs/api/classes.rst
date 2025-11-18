@@ -238,7 +238,7 @@ Main Export Function
 .. autofunction:: core.data_handler.exportar_datos_separados
 
 Helper Functions
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 .. autofunction:: core.data_handler.cargar_datos
 
@@ -247,16 +247,15 @@ Helper Functions
 .. autofunction:: core.data_handler.limpiar_datos
 
 DataFrame Processing
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+
 
 .. autofunction:: core.data_handler.aplicar_filtro
-
-.. autofunction:: core.data_handler.aplicar_transformacion
 
 .. autofunction:: core.data_handler.obtener_estadisticas
 
 Export Functions
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. autofunction:: core.data_handler.exportar_a_pdf
 
@@ -291,7 +290,7 @@ Basic Usage
    print(f"Files created: {result['files_created']}")
 
 Advanced Configuration
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 

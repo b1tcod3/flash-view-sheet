@@ -18,9 +18,7 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API Reference - Classes" href="../api/classes.html" />
-    <link rel="prev" title="Sistema de Arquitectura - Flash Sheet" href="architecture.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,78 +40,38 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía para Contribuidores - Exportación Separada</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prerrequisitos">Prerrequisitos</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#requisitos-tecnicos">Requisitos Técnicos</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#instalacion-del-entorno-de-desarrollo">Instalación del Entorno de Desarrollo</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#estructura-del-proyecto">Estructura del Proyecto</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#estructura-de-directorios">Estructura de Directorios</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#archivos-clave">Archivos Clave</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#convenciones-de-codigo">Convenciones de Código</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#estilo-de-codigo">Estilo de Código</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#documentacion-de-codigo">Documentación de Código</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#manejo-de-errores">Manejo de Errores</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#testing-guidelines">Testing Guidelines</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ejecucion-de-tests">Ejecución de Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#estructura-de-tests">Estructura de Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#escribir-nuevos-tests">Escribir Nuevos Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#performance-testing">Performance Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#proceso-de-desarrollo">Proceso de Desarrollo</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#workflow-git">Workflow Git</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#commits-convencionales">Commits Convencionales</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#anadir-nueva-funcionalidad">Añadir Nueva Funcionalidad</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#paso-1-analisis">Paso 1: Análisis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#paso-2-implementacion">Paso 2: Implementación</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#paso-3-testing">Paso 3: Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#paso-4-documentacion">Paso 4: Documentación</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-rendimiento">Optimización de Rendimiento</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#principio-de-optimizacion">Principio de Optimización</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tecnicas-de-optimizacion">Técnicas de Optimización</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#profiling-y-medicion">Profiling y Medición</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#herramientas-de-debug">Herramientas de Debug</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#debugging-comun">Debugging Común</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#contribucion-de-documentacion">Contribución de Documentación</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tipos-de-documentacion">Tipos de Documentación</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#convenciones-para-documentacion">Convenciones para Documentación</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#revision-de-codigo">Revisión de Código</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#checklist-de-revision">Checklist de Revisión</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#proceso-de-merge">Proceso de Merge</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#recursos-adicionales">Recursos Adicionales</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#herramientas-recomendadas">Herramientas Recomendadas</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#enlaces-utiles">Enlaces Útiles</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#contacto">Contacto</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/classes.html">API Reference - Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
 </ul>
 
         </div>
@@ -757,10 +715,7 @@ gc.collect()</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="architecture.html" class="btn btn-neutral float-left" title="Sistema de Arquitectura - Flash Sheet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/classes.html" class="btn btn-neutral float-right" title="API Reference - Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

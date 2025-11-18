@@ -1,0 +1,1588 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>) &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/getting_started.html">Flash Sheet Quick Start Guide (10-Minute Tutorial)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_usage.html">Basic Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/data_visualization.html">Data Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/graphics.html">Graphics and Charts Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_export.html">Basic Export Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html">Advanced Features Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html#detailed-examples-and-business-use-cases">Detailed Examples and Business Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/troubleshooting.html">Troubleshooting Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/code_walkthrough/main_window.html">Main Window Architecture - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/code_walkthrough/data_handler.html">Data Handler System - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/code_walkthrough/views_system.html">Views System Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/development_guide.html">Development Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation_guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/releases/v1.1.0/distribution_preparation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Preparación para Distribución
+## Flash Sheet v1.0.0 - Exportación Separada</p>
+<p>### 📋 Contenido
+1. [Configuración de Build](#configuración-de-build)
+2. [Scripts de Distribución](#scripts-de-distribución)
+3. [CI/CD Pipeline](#cicd-pipeline)
+4. [Package Management](#package-management)
+5. [Versionado y Releases](#versionado-y-releases)
+6. [Distribución Multiplataforma](#distribución-multiplataforma)
+7. [Validación de Distribución](#validación-de-distribución)</p>
+<p>—</p>
+<p>## 🏗️ Configuración de Build</p>
+<p>### setup.py Principal</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+# setup.py
+from setuptools import setup, find_packages
+import os</p>
+<p># Leer README para long_description
+def read_readme():</p>
+<blockquote>
+<div><dl class="simple">
+<dt>try:</dt><dd><dl class="simple">
+<dt>with open(“README.md”, “r”, encoding=”utf-8”) as fh:</dt><dd><p>return fh.read()</p>
+</dd>
+</dl>
+</dd>
+<dt>except:</dt><dd><p>return “Flash Sheet - Herramienta de análisis de datos con exportación separada”</p>
+</dd>
+</dl>
+</div></blockquote>
+<p># Leer requirements
+def read_requirements():</p>
+<blockquote>
+<div><dl class="simple">
+<dt>with open(“requirements.txt”, “r”, encoding=”utf-8”) as f:</dt><dd><p>return [line.strip() for line in f if line.strip() and not line.startswith(“#”)]</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>setup(</dt><dd><p>name=”flash-sheet”,
+version=”1.0.0”,
+author=”Flash Sheet Team”,
+author_email=”<a class="reference external" href="mailto:team&#37;&#52;&#48;flash-sheet&#46;com">team<span>&#64;</span>flash-sheet<span>&#46;</span>com</a>”,
+description=”Herramienta avanzada de análisis de datos con exportación separada por plantillas Excel”,
+long_description=read_readme(),
+long_description_content_type=”text/markdown”,
+url=”<a class="reference external" href="https://github.com/flash-sheet/flash-sheet">https://github.com/flash-sheet/flash-sheet</a>”,
+project_urls={</p>
+<blockquote>
+<div><p>“Bug Reports”: “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet/issues">https://github.com/flash-sheet/flash-sheet/issues</a>”,
+“Source”: “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet">https://github.com/flash-sheet/flash-sheet</a>”,
+“Documentation”: “<a class="reference external" href="https://flash-sheet.github.io/docs/">https://flash-sheet.github.io/docs/</a>”,</p>
+</div></blockquote>
+<p>},
+packages=find_packages(),
+classifiers=[</p>
+<blockquote>
+<div><p>“Development Status :: 5 - Production/Stable”,
+“Intended Audience :: End Users/Desktop”,
+“Intended Audience :: Science/Research”,
+“Topic :: Office/Business :: Financial”,
+“Topic :: Scientific/Engineering”,
+“License :: OSI Approved :: MIT License”,
+“Programming Language :: Python :: 3”,
+“Programming Language :: Python :: 3.8”,
+“Programming Language :: Python :: 3.9”,
+“Programming Language :: Python :: 3.10”,
+“Programming Language :: Python :: 3.11”,
+“Operating System :: OS Independent”,
+“Environment :: X11 Applications :: Qt”,
+“Environment :: Console”,</p>
+</div></blockquote>
+<p>],
+python_requires=”&gt;=3.8”,
+install_requires=read_requirements(),
+extras_require={</p>
+<blockquote>
+<div><p>“full”: [“numpy&gt;=1.20.0”, “psutil&gt;=5.8.0”, “tqdm&gt;=4.60.0”],
+“dev”: [“pytest&gt;=6.0”, “pytest-cov&gt;=2.0”, “black&gt;=21.0”, “flake8&gt;=3.8”],
+“docs”: [“sphinx&gt;=4.0”, “sphinx-rtd-theme&gt;=1.0”, “myst-parser&gt;=0.15.0”],</p>
+</div></blockquote>
+<p>},
+entry_points={</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“console_scripts”: [</dt><dd><p>“flash-sheet=main:main”,
+“flash-sheet-check=scripts.check_installation:main”,</p>
+</dd>
+</dl>
+<p>],</p>
+</div></blockquote>
+<p>},
+include_package_data=True,
+package_data={</p>
+<blockquote>
+<div><p>“”: [”<em>.json”, “</em>.yaml”, “<em>.yml”, “</em>.txt”, “<em>.md”],
+“assets”: [”</em>”],</p>
+</div></blockquote>
+<p>},
+zip_safe=False,</p>
+</dd>
+</dl>
+<section id="id5">
+<h1>)<a class="headerlink" href="#id5" title="Link to this heading"></a></h1>
+<p>### pyproject.toml (PEP 518)</p>
+<p><a href="#id6"><span class="problematic" id="id7">``</span></a><a href="#id8"><span class="problematic" id="id9">`</span></a>toml
+# pyproject.toml
+[build-system]
+requires = [“setuptools&gt;=45”, “wheel”, “setuptools_scm[toml]&gt;=6.2”]
+build-backend = “setuptools.build_meta”</p>
+<p>[project]
+name = “flash-sheet”
+version = “1.0.0”
+description = “Herramienta avanzada de análisis de datos con exportación separada por plantillas Excel”
+readme = “README.md”
+license = {text = “MIT”}
+authors = [</p>
+<blockquote>
+<div><p>{name = “Flash Sheet Team”, email = “<a class="reference external" href="mailto:team&#37;&#52;&#48;flash-sheet&#46;com">team<span>&#64;</span>flash-sheet<span>&#46;</span>com</a>”}</p>
+</div></blockquote>
+<p>]
+maintainers = [</p>
+<blockquote>
+<div><p>{name = “Flash Sheet Team”, email = “<a class="reference external" href="mailto:team&#37;&#52;&#48;flash-sheet&#46;com">team<span>&#64;</span>flash-sheet<span>&#46;</span>com</a>”}</p>
+</div></blockquote>
+<p>]
+keywords = [“data”, “analysis”, “excel”, “export”, “separation”, “pandas”, “dataframe”]
+classifiers = [</p>
+<blockquote>
+<div><p>“Development Status :: 5 - Production/Stable”,
+“Intended Audience :: End Users/Desktop”,
+“Intended Audience :: Science/Research”,
+“Topic :: Office/Business :: Financial”,
+“Topic :: Scientific/Engineering”,
+“License :: OSI Approved :: MIT License”,
+“Programming Language :: Python :: 3”,
+“Programming Language :: Python :: 3.8”,
+“Programming Language :: Python :: 3.9”,
+“Programming Language :: Python :: 3.10”,
+“Programming Language :: Python :: 3.11”,
+“Operating System :: OS Independent”,
+“Environment :: X11 Applications :: Qt”,
+“Environment :: Console”,</p>
+</div></blockquote>
+<p>]
+requires-python = “&gt;=3.8”
+dependencies = [</p>
+<blockquote>
+<div><p>“pandas&gt;=1.5.0”,
+“openpyxl&gt;=3.1.0”,
+“PySide6&gt;=6.0.0”,
+“pathlib”,</p>
+</div></blockquote>
+<p>]</p>
+<p>[project.optional-dependencies]
+full = [</p>
+<blockquote>
+<div><p>“numpy&gt;=1.20.0”,
+“psutil&gt;=5.8.0”,
+“tqdm&gt;=4.60.0”,</p>
+</div></blockquote>
+<p>]
+dev = [</p>
+<blockquote>
+<div><p>“pytest&gt;=6.0”,
+“pytest-cov&gt;=2.0”,
+“black&gt;=21.0”,
+“flake8&gt;=3.8”,
+“mypy&gt;=0.910”,</p>
+</div></blockquote>
+<p>]
+docs = [</p>
+<blockquote>
+<div><p>“sphinx&gt;=4.0”,
+“sphinx-rtd-theme&gt;=1.0”,
+“myst-parser&gt;=0.15.0”,</p>
+</div></blockquote>
+<p>]
+enterprise = [</p>
+<blockquote>
+<div><p>“cryptography&gt;=3.4.8”,
+“pywin32&gt;=227; sys_platform==’win32’”,
+“pyobjc-core&gt;=8.0; sys_platform==’darwin’”,</p>
+</div></blockquote>
+<p>]</p>
+<p>[project.urls]
+Homepage = “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet">https://github.com/flash-sheet/flash-sheet</a>”
+Documentation = “<a class="reference external" href="https://flash-sheet.github.io/docs/">https://flash-sheet.github.io/docs/</a>”
+Repository = “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet.git">https://github.com/flash-sheet/flash-sheet.git</a>”
+“Bug Tracker” = “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet/issues">https://github.com/flash-sheet/flash-sheet/issues</a>”
+“Funding” = “<a class="reference external" href="https://github.com/sponsors/flash-sheet">https://github.com/sponsors/flash-sheet</a>”
+“Changelog” = “<a class="reference external" href="https://github.com/flash-sheet/flash-sheet/blob/main/CHANGELOG.md">https://github.com/flash-sheet/flash-sheet/blob/main/CHANGELOG.md</a>”</p>
+<p>[project.scripts]
+flash-sheet = “main:main”
+flash-sheet-check = “scripts.check_installation:main”
+flash-sheet-template = “scripts.template_generator:main”</p>
+<p>[tool.setuptools]
+packages = [“core”, “app”, “app.widgets”, “core.loaders”, “core.transformations”]</p>
+<p>[tool.setuptools.package-data]
+“*” = [”<em>.json”, “</em>.yaml”, “<em>.yml”, “</em>.txt”, “<em>.md”]
+“assets” = [”</em>”]</p>
+<p>[tool.black]
+line-length = 88
+target-version = [‘py38’]
+include = ‘.pyi?$’
+extend-exclude = ‘’’
+/(</p>
+<blockquote>
+<div><p># directories
+.eggs
+| .git
+| .hg
+| .mypy_cache
+| .tox
+| .venv
+| build
+| dist</p>
+</div></blockquote>
+<section id="id10">
+<h2>)/<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<p>[tool.pytest.ini_options]
+minversion = “6.0”
+addopts = “-ra -q –strict-markers –cov=core –cov=app –cov-report=term-missing”
+testpaths = [</p>
+<blockquote>
+<div><p>“tests”,</p>
+</div></blockquote>
+<p>]
+markers = [</p>
+<blockquote>
+<div><p>“slow: marks tests as slow (deselect with ‘-m &quot;not slow&quot;’)”,
+“integration: marks tests as integration tests”,
+“performance: marks tests as performance tests”,
+“excel: marks tests that require Excel files”,</p>
+</div></blockquote>
+<p>]
+python_files = [“test_*.py”, “<em>_test.py”]
+python_classes = [“Test</em>”]
+python_functions = [“test_*”]</p>
+<p>[tool.coverage.run]
+source = [“core”, “app”]
+omit = [</p>
+<blockquote>
+<div><p>“<em>/tests/</em>”,
+“<em>/test_</em>”,
+“setup.py”,</p>
+</div></blockquote>
+<p>]</p>
+<p>[tool.coverage.report]
+exclude_lines = [</p>
+<blockquote>
+<div><p>“pragma: no cover”,
+“def __repr__”,
+“raise AssertionError”,
+“raise NotImplementedError”,
+“if __name__ == .__main__.:”,
+“if TYPE_CHECKING:”,</p>
+</div></blockquote>
+</section>
+</section>
+<section id="id11">
+<h1>]<a class="headerlink" href="#id11" title="Link to this heading"></a></h1>
+<p>—</p>
+<p>## 🚀 Scripts de Distribución</p>
+<p>### build.sh - Script Principal de Build</p>
+<p><a href="#id12"><span class="problematic" id="id13">``</span></a><a href="#id14"><span class="problematic" id="id15">`</span></a>bash
+#!/bin/bash
+# build.sh - Script principal de build y distribución</p>
+<p>set -e  # Exit on any error</p>
+<p># Colores para output
+RED=’033[0;31m’
+GREEN=’033[0;32m’
+YELLOW=’033[1;33m’
+BLUE=’033[0;34m’
+NC=’033[0m’ # No Color</p>
+<p># Configuración
+VERSION=”1.0.0”
+BUILD_DIR=”build”
+DIST_DIR=”dist”
+SOURCE_DIR=”.”</p>
+<p>echo -e “${BLUE}=== Flash Sheet v${VERSION} - Build Script ===${NC}”
+echo “Fecha: $(date)”
+echo “Python: $(python –version 2&gt;&amp;1)”
+echo “Directorio: $(pwd)”
+echo</p>
+<p># Función para logging
+log() {</p>
+<blockquote>
+<div><p>echo -e “${GREEN}[$(date +’%Y-%m-%d %H:%M:%S’)] $1${NC}”</p>
+</div></blockquote>
+<p>}</p>
+<dl class="simple">
+<dt>error() {</dt><dd><p>echo -e “${RED}[ERROR] $1${NC}” &gt;&amp;2</p>
+</dd>
+</dl>
+<p>}</p>
+<dl class="simple">
+<dt>warning() {</dt><dd><p>echo -e “${YELLOW}[WARNING] $1${NC}”</p>
+</dd>
+</dl>
+<p>}</p>
+<p># Verificar dependencias
+check_dependencies() {</p>
+<blockquote>
+<div><p>log “Verificando dependencias de build…”</p>
+<p># Verificar Python
+if ! python –version &amp;&gt;/dev/null; then</p>
+<blockquote>
+<div><p>error “Python no está instalado o no está en PATH”
+exit 1</p>
+</div></blockquote>
+<p>fi</p>
+<p># Verificar herramientas de build
+tools=(“pip” “setuptools” “wheel” “twine”)
+for tool in “${tools[&#64;]}”; do</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if ! python -c “import ${tool}” &amp;&gt;/dev/null; then</dt><dd><p>error “${tool} no está instalado”
+exit 1</p>
+</dd>
+</dl>
+<p>fi</p>
+</div></blockquote>
+<p>done</p>
+<p>log “✅ Dependencias verificadas”</p>
+</div></blockquote>
+<p>}</p>
+<p># Limpiar build anterior
+clean_build() {</p>
+<blockquote>
+<div><p>log “Limpiando directorios de build anteriores…”</p>
+<dl class="simple">
+<dt>if [ -d “$BUILD_DIR” ]; then</dt><dd><p>rm -rf “$BUILD_DIR”</p>
+</dd>
+</dl>
+<p>fi</p>
+<dl class="simple">
+<dt>if [ -d “$DIST_DIR” ]; then</dt><dd><p>rm -rf “$DIST_DIR”</p>
+</dd>
+</dl>
+<p>fi</p>
+<dl class="simple">
+<dt>if [ -d “<a href="#id16"><span class="problematic" id="id17">*</span></a>.egg-info” ]; then</dt><dd><p>rm -rf <a href="#id18"><span class="problematic" id="id19">*</span></a>.egg-info</p>
+</dd>
+</dl>
+<p>fi</p>
+<p>log “✅ Directorios limpiados”</p>
+</div></blockquote>
+<p>}</p>
+<p># Ejecutar tests
+run_tests() {</p>
+<blockquote>
+<div><p>log “Ejecutando suite de tests…”</p>
+<dl class="simple">
+<dt>if ! python -m pytest tests/ -v; then</dt><dd><p>error “Tests fallaron”
+exit 1</p>
+</dd>
+</dl>
+<p>fi</p>
+<p>log “✅ Tests pasados exitosamente”</p>
+</div></blockquote>
+<p>}</p>
+<p># Ejecutar linting
+run_linting() {</p>
+<blockquote>
+<div><p>log “Ejecutando linting…”</p>
+<p># Black formatter
+if ! python -m black –check .; then</p>
+<blockquote>
+<div><p>warning “Código necesita formateo con black”</p>
+</div></blockquote>
+<p>fi</p>
+<p># Flake8 linter
+if ! python -m flake8 . –max-line-length=88 –ignore=E203,W503; then</p>
+<blockquote>
+<div><p>warning “Problemas de linting detectados”</p>
+</div></blockquote>
+<p>fi</p>
+<p>log “✅ Linting completado”</p>
+</div></blockquote>
+<p>}</p>
+<p># Build documentación
+build_docs() {</p>
+<blockquote>
+<div><p>log “Construyendo documentación…”</p>
+<dl>
+<dt>if [ -d “docs” ]; then</dt><dd><p>cd docs
+if command -v sphinx-build &amp;&gt; /dev/null; then</p>
+<blockquote>
+<div><p>sphinx-build -b html . _build/html
+cd ..
+log “✅ Documentación construida”</p>
+</div></blockquote>
+<dl class="simple">
+<dt>else</dt><dd><p>warning “Sphinx no disponible, saltando documentación”</p>
+</dd>
+</dl>
+<p>fi</p>
+</dd>
+<dt>else</dt><dd><p>warning “Directorio docs no encontrado”</p>
+</dd>
+</dl>
+<p>fi</p>
+</div></blockquote>
+<p>}</p>
+<p># Build paquetes
+build_packages() {</p>
+<blockquote>
+<div><p>log “Construyendo paquetes…”</p>
+<p># Python wheel
+python setup.py bdist_wheel</p>
+<p># Source distribution
+python setup.py sdist</p>
+<p>log “✅ Paquetes construidos en $DIST_DIR”</p>
+</div></blockquote>
+<p>}</p>
+<p># Verificar paquetes
+verify_packages() {</p>
+<blockquote>
+<div><p>log “Verificando paquetes…”</p>
+<p># Verificar con twine
+python -m twine check dist/*</p>
+<p>log “✅ Paquetes verificados”</p>
+</div></blockquote>
+<p>}</p>
+<p># Función principal
+main() {</p>
+<blockquote>
+<div><p>echo -e “${BLUE}Iniciando build para v${VERSION}${NC}”</p>
+<p>check_dependencies
+clean_build
+run_tests
+run_linting
+build_docs
+build_packages
+verify_packages</p>
+<p>echo
+echo -e “${GREEN}=== BUILD COMPLETADO EXITOSAMENTE ===${NC}”
+echo “Versión: $VERSION”
+echo “Paquetes en: $DIST_DIR”
+echo</p>
+<p># Mostrar archivos generados
+if [ -d “$DIST_DIR” ]; then</p>
+<blockquote>
+<div><p>echo “Archivos generados:”
+ls -la “$DIST_DIR”</p>
+</div></blockquote>
+<p>fi</p>
+</div></blockquote>
+<p>}</p>
+<p># Parsear argumentos
+case “${1:-build}” in</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“clean”)</dt><dd><p>clean_build
+;;</p>
+</dd>
+<dt>“test”)</dt><dd><p>check_dependencies
+run_tests
+;;</p>
+</dd>
+<dt>“lint”)</dt><dd><p>check_dependencies
+run_linting
+;;</p>
+</dd>
+<dt>“docs”)</dt><dd><p>check_dependencies
+build_docs
+;;</p>
+</dd>
+<dt>“packages”)</dt><dd><p>check_dependencies
+build_packages
+;;</p>
+</dd>
+<dt>“verify”)</dt><dd><p>verify_packages
+;;</p>
+</dd>
+<dt>“full”)</dt><dd><p>main
+;;</p>
+</dd>
+<dt>“help”|”-h”|”–help”)</dt><dd><p>echo “Uso: $0 [clean|test|lint|docs|packages|verify|full|help]”
+echo “  clean    - Limpiar directorios de build”
+echo “  test     - Ejecutar tests”
+echo “  lint     - Ejecutar linting”
+echo “  docs     - Construir documentación”
+echo “  packages - Construir paquetes”
+echo “  verify   - Verificar paquetes”
+echo “  full     - Build completo (default)”
+echo “  help     - Mostrar esta ayuda”
+;;</p>
+</dd>
+<dt><a href="#id20"><span class="problematic" id="id21">*</span></a>)</dt><dd><p>main
+;;</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>esac
+<a href="#id22"><span class="problematic" id="id23">``</span></a><a href="#id24"><span class="problematic" id="id25">`</span></a></p>
+<p>### build-exe.bat - Build para Windows</p>
+<p><a href="#id26"><span class="problematic" id="id27">``</span></a><a href="#id28"><span class="problematic" id="id29">`</span></a>batch
+&#64;echo off
+REM build-exe.bat - Script de build para Windows
+setlocal enabledelayedexpansion</p>
+<p>set VERSION=1.0.0
+set PYTHON=python
+set BUILD_DIR=build
+set DIST_DIR=dist</p>
+<p>echo === Flash Sheet v%VERSION% - Build Script (Windows) ===
+echo Fecha: %date% %time%
+%PYTHON% –version
+echo.</p>
+<p>REM Verificar dependencias
+echo [INFO] Verificando dependencias…
+%PYTHON% -c “import setuptools, wheel, twine” 2&gt;nul || (</p>
+<blockquote>
+<div><p>echo [ERROR] Faltan herramientas de build
+exit /b 1</p>
+</div></blockquote>
+<p>)</p>
+<p>REM Limpiar
+echo [INFO] Limpiando builds anteriores…
+if exist “%BUILD_DIR%” rmdir /s /q “%BUILD_DIR%”
+if exist “%DIST_DIR%” rmdir /s /q “%DIST_DIR%”
+if exist “<em>.egg-info” rmdir /s /q “</em>.egg-info”</p>
+<p>REM Ejecutar tests
+echo [INFO] Ejecutando tests…
+%PYTHON% -m pytest tests/ -v || (</p>
+<blockquote>
+<div><p>echo [ERROR] Tests fallaron
+exit /b 1</p>
+</div></blockquote>
+<p>)</p>
+<p>REM Build
+echo [INFO] Construyendo paquetes…
+%PYTHON% setup.py bdist_wheel
+%PYTHON% setup.py sdist</p>
+<p>REM Verificar
+echo [INFO] Verificando paquetes…
+%PYTHON% -m twine check dist/*</p>
+<p>echo.
+echo === BUILD COMPLETADO ===
+echo Archivos generados:
+dir “%DIST_DIR%”</p>
+<p>pause
+<a href="#id30"><span class="problematic" id="id31">``</span></a><a href="#id32"><span class="problematic" id="id33">`</span></a></p>
+<p>### makefile - Build para Linux/macOS</p>
+<p><a href="#id34"><span class="problematic" id="id35">``</span></a><a href="#id36"><span class="problematic" id="id37">`</span></a>makefile
+# makefile - Build automation para Linux/macOS</p>
+<p>.PHONY: all clean test lint docs packages verify install help</p>
+<p># Variables
+VERSION = 1.0.0
+PYTHON = python3
+PIP = pip3
+BUILD_DIR = build
+DIST_DIR = dist</p>
+<p># Target por defecto
+all: clean test lint docs packages verify</p>
+<blockquote>
+<div><p>&#64;echo “Build completo completado para v$(VERSION)”</p>
+</div></blockquote>
+<p># Limpiar
+clean:</p>
+<blockquote>
+<div><p>&#64;echo “Limpiando directorios…”
+rm -rf $(BUILD_DIR) $(DIST_DIR) <em>.egg-info
+find . -type d -name __pycache__ -exec rm -rf {} + 2&gt;/dev/null || true
+find . -type f -name “</em>.pyc” -delete 2&gt;/dev/null || true</p>
+</div></blockquote>
+<p># Tests
+test:</p>
+<blockquote>
+<div><p>&#64;echo “Ejecutando tests…”
+$(PYTHON) -m pytest tests/ -v</p>
+</div></blockquote>
+<p># Linting
+lint:</p>
+<blockquote>
+<div><p>&#64;echo “Ejecutando linting…”
+$(PYTHON) -m black –check .
+$(PYTHON) -m flake8 . –max-line-length=88</p>
+</div></blockquote>
+<p># Documentación
+docs:</p>
+<blockquote>
+<div><p>&#64;echo “Construyendo documentación…”
+cd docs &amp;&amp; $(PYTHON) -m sphinx -b html . _build/html</p>
+</div></blockquote>
+<p># Paquetes
+packages:</p>
+<blockquote>
+<div><p>&#64;echo “Construyendo paquetes…”
+$(PYTHON) setup.py bdist_wheel
+$(PYTHON) setup.py sdist</p>
+</div></blockquote>
+<p># Verificar paquetes
+verify:</p>
+<blockquote>
+<div><p>&#64;echo “Verificando paquetes…”
+$(PYTHON) -m twine check $(DIST_DIR)/*</p>
+</div></blockquote>
+<p># Instalar en desarrollo
+install:</p>
+<blockquote>
+<div><p>&#64;echo “Instalando en modo desarrollo…”
+$(PIP) install -e .</p>
+</div></blockquote>
+<p># Instalar dependencias de desarrollo
+install-dev:</p>
+<blockquote>
+<div><p>&#64;echo “Instalando dependencias de desarrollo…”
+$(PIP) install -e “.[dev]”</p>
+</div></blockquote>
+<p># Upload a PyPI (requiere configuración)
+upload: verify</p>
+<blockquote>
+<div><p>&#64;echo “Subiendo a PyPI…”
+$(PYTHON) -m twine upload $(DIST_DIR)/*</p>
+</div></blockquote>
+<p># Help
+help:</p>
+<blockquote>
+<div><p>&#64;echo “Targets disponibles:”
+&#64;echo “  all        - Build completo (default)”
+&#64;echo “  clean      - Limpiar archivos temporales”
+&#64;echo “  test       - Ejecutar tests”
+&#64;echo “  lint       - Ejecutar linting”
+&#64;echo “  docs       - Construir documentación”
+&#64;echo “  packages   - Construir paquetes”
+&#64;echo “  verify     - Verificar paquetes”
+&#64;echo “  install    - Instalar en desarrollo”
+&#64;echo “  install-dev - Instalar dependencias dev”
+&#64;echo “  upload     - Subir a PyPI”
+&#64;echo “  help       - Mostrar esta ayuda”</p>
+</div></blockquote>
+<p><a href="#id38"><span class="problematic" id="id39">``</span></a><a href="#id40"><span class="problematic" id="id41">`</span></a></p>
+<p>—</p>
+<p>## 🔄 CI/CD Pipeline</p>
+<p>### GitHub Actions - .github/workflows/ci.yml</p>
+<p><a href="#id42"><span class="problematic" id="id43">``</span></a><a href="#id44"><span class="problematic" id="id45">`</span></a>yaml
+name: CI/CD Pipeline</p>
+<dl>
+<dt>on:</dt><dd><dl class="simple">
+<dt>push:</dt><dd><p>branches: [ main, develop ]
+tags: [ ‘v*’ ]</p>
+</dd>
+<dt>pull_request:</dt><dd><p>branches: [ main ]</p>
+</dd>
+</dl>
+</dd>
+<dt>jobs:</dt><dd><dl>
+<dt>test:</dt><dd><p>runs-on: ${{ matrix.os }}
+strategy:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>matrix:</dt><dd><p>os: [ubuntu-latest, windows-latest, macos-latest]
+python-version: [‘3.8’, ‘3.9’, ‘3.10’, ‘3.11’]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>steps:
+- uses: <a class="reference external" href="mailto:actions/checkout&#37;&#52;&#48;v3">actions/checkout<span>&#64;</span>v3</a></p>
+<ul>
+<li><p>name: Set up Python ${{ matrix.python-version }}
+uses: <a class="reference external" href="mailto:actions/setup-python&#37;&#52;&#48;v4">actions/setup-python<span>&#64;</span>v4</a>
+with:</p>
+<blockquote>
+<div><p>python-version: ${{ matrix.python-version }}</p>
+</div></blockquote>
+</li>
+<li><p>name: Install dependencies
+run: |</p>
+<blockquote>
+<div><p>python -m pip install –upgrade pip
+pip install -e “.[dev]”</p>
+</div></blockquote>
+</li>
+<li><p>name: Run tests
+run: |</p>
+<blockquote>
+<div><p>python -m pytest tests/ -v –cov=core –cov=app –cov-report=xml</p>
+</div></blockquote>
+</li>
+<li><p>name: Upload coverage to Codecov
+if: matrix.os == ‘ubuntu-latest’ &amp;&amp; matrix.python-version == ‘3.10’
+uses: <a class="reference external" href="mailto:codecov/codecov-action&#37;&#52;&#48;v3">codecov/codecov-action<span>&#64;</span>v3</a>
+with:</p>
+<blockquote>
+<div><p>file: ./coverage.xml</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+<dt>build:</dt><dd><p>runs-on: ubuntu-latest
+needs: test</p>
+<p>steps:
+- uses: <a class="reference external" href="mailto:actions/checkout&#37;&#52;&#48;v3">actions/checkout<span>&#64;</span>v3</a></p>
+<ul>
+<li><p>name: Set up Python
+uses: <a class="reference external" href="mailto:actions/setup-python&#37;&#52;&#48;v4">actions/setup-python<span>&#64;</span>v4</a>
+with:</p>
+<blockquote>
+<div><p>python-version: ‘3.10’</p>
+</div></blockquote>
+</li>
+<li><p>name: Install build dependencies
+run: |</p>
+<blockquote>
+<div><p>python -m pip install –upgrade pip
+pip install build twine</p>
+</div></blockquote>
+</li>
+<li><p>name: Build packages
+run: |</p>
+<blockquote>
+<div><p>python -m build</p>
+</div></blockquote>
+</li>
+<li><p>name: Check packages
+run: |</p>
+<blockquote>
+<div><p>python -m twine check dist/*</p>
+</div></blockquote>
+</li>
+<li><p>name: Upload build artifacts
+uses: <a class="reference external" href="mailto:actions/upload-artifact&#37;&#52;&#48;v3">actions/upload-artifact<span>&#64;</span>v3</a>
+with:</p>
+<blockquote>
+<div><p>name: dist
+path: dist/</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+<dt>release:</dt><dd><p>runs-on: ubuntu-latest
+needs: build
+if: startsWith(github.ref, ‘refs/tags/v’)</p>
+<p>steps:
+- uses: <a class="reference external" href="mailto:actions/checkout&#37;&#52;&#48;v3">actions/checkout<span>&#64;</span>v3</a></p>
+<ul>
+<li><p>name: Download build artifacts
+uses: <a class="reference external" href="mailto:actions/download-artifact&#37;&#52;&#48;v3">actions/download-artifact<span>&#64;</span>v3</a>
+with:</p>
+<blockquote>
+<div><p>name: dist
+path: dist/</p>
+</div></blockquote>
+</li>
+<li><p>name: Create release
+uses: <a class="reference external" href="mailto:softprops/action-gh-release&#37;&#52;&#48;v1">softprops/action-gh-release<span>&#64;</span>v1</a>
+with:</p>
+<blockquote>
+<div><p>files: dist/*
+draft: false
+prerelease: false</p>
+</div></blockquote>
+<dl class="simple">
+<dt>env:</dt><dd><p>GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</p>
+</dd>
+</dl>
+</li>
+<li><p>name: Upload to PyPI
+run: |</p>
+<blockquote>
+<div><p>pip install twine
+twine upload dist/* –username __token__ –password ${{ secrets.PYPI_API_TOKEN }}</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id46"><span class="problematic" id="id47">``</span></a><a href="#id48"><span class="problematic" id="id49">`</span></a></p>
+<p>### GitHub Actions - .github/workflows/docs.yml</p>
+<p><a href="#id50"><span class="problematic" id="id51">``</span></a><a href="#id52"><span class="problematic" id="id53">`</span></a>yaml
+name: Documentation</p>
+<dl>
+<dt>on:</dt><dd><dl class="simple">
+<dt>push:</dt><dd><p>branches: [ main ]
+paths: [ ‘docs/<strong>’, ‘</strong>/<a href="#id54"><span class="problematic" id="id55">*</span></a>.md’ ]</p>
+</dd>
+</dl>
+</dd>
+<dt>jobs:</dt><dd><dl>
+<dt>build-docs:</dt><dd><p>runs-on: ubuntu-latest</p>
+<p>steps:
+- uses: <a class="reference external" href="mailto:actions/checkout&#37;&#52;&#48;v3">actions/checkout<span>&#64;</span>v3</a></p>
+<ul>
+<li><p>name: Set up Python
+uses: <a class="reference external" href="mailto:actions/setup-python&#37;&#52;&#48;v4">actions/setup-python<span>&#64;</span>v4</a>
+with:</p>
+<blockquote>
+<div><p>python-version: ‘3.10’</p>
+</div></blockquote>
+</li>
+<li><p>name: Install documentation dependencies
+run: |</p>
+<blockquote>
+<div><p>pip install -e “.[docs]”</p>
+</div></blockquote>
+</li>
+<li><p>name: Build documentation
+run: |</p>
+<blockquote>
+<div><p>cd docs
+sphinx-build -b html . _build/html</p>
+</div></blockquote>
+</li>
+<li><p>name: Deploy to GitHub Pages
+uses: <a class="reference external" href="mailto:peaceiris/actions-gh-pages&#37;&#52;&#48;v3">peaceiris/actions-gh-pages<span>&#64;</span>v3</a>
+with:</p>
+<blockquote>
+<div><p>github_token: ${{ secrets.GITHUB_TOKEN }}
+publish_dir: ./docs/_build/html</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id56"><span class="problematic" id="id57">``</span></a><a href="#id58"><span class="problematic" id="id59">`</span></a></p>
+<p>—</p>
+<p>## 📦 Package Management</p>
+<p>### PyPI Configuration</p>
+<p><a href="#id60"><span class="problematic" id="id61">``</span></a><a href="#id62"><span class="problematic" id="id63">`</span></a>python
+# .pypirc
+[distutils]
+index-servers =</p>
+<blockquote>
+<div><p>pypi
+testpypi</p>
+</div></blockquote>
+<p>[pypi]
+repository = <a class="reference external" href="https://upload.pypi.org/legacy/">https://upload.pypi.org/legacy/</a>
+username = __token__
+password = pypi-AgEIcHlwaS5vcmcCJDY2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2</p>
+<p>[testpypi]
+repository = <a class="reference external" href="https://test.pypi.org/legacy/">https://test.pypi.org/legacy/</a>
+username = __token__
+password = pypi-AgEIcHlwaS5vcmcCJDY2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2Y2
+<a href="#id64"><span class="problematic" id="id65">``</span></a><a href="#id66"><span class="problematic" id="id67">`</span></a></p>
+<p>### .pypirc (Template)</p>
+<p><a href="#id68"><span class="problematic" id="id69">``</span></a><a href="#id70"><span class="problematic" id="id71">`</span></a>ini
+[distutils]
+index-servers =</p>
+<blockquote>
+<div><p>pypi
+testpypi</p>
+</div></blockquote>
+<p>[pypi]
+repository = <a class="reference external" href="https://upload.pypi.org/legacy/">https://upload.pypi.org/legacy/</a>
+username = __token__
+password = # Obtener token de PyPI</p>
+<p>[testpypi]
+repository = <a class="reference external" href="https://test.pypi.org/legacy/">https://test.pypi.org/legacy/</a>
+username = __token__
+password = # Token para TestPyPI
+<a href="#id72"><span class="problematic" id="id73">``</span></a><a href="#id74"><span class="problematic" id="id75">`</span></a></p>
+<p>### Scripts de Deploy</p>
+<p><a href="#id76"><span class="problematic" id="id77">``</span></a><a href="#id78"><span class="problematic" id="id79">`</span></a>bash
+#!/bin/bash
+# deploy.sh - Script de deploy a PyPI</p>
+<p>set -e</p>
+<p>VERSION=$(python setup.py –version)
+echo “Deploying version: $VERSION”</p>
+<p># Verificar que estamos en una tag
+if ! git describe –tags –exact-match HEAD &gt; /dev/null 2&gt;&amp;1; then</p>
+<blockquote>
+<div><p>echo “Error: Deploy solo permitido en tags”
+exit 1</p>
+</div></blockquote>
+<p>fi</p>
+<p># Verificar que la versión coincide
+TAG=$(git describe –tags –exact-match HEAD | sed ‘s/^v//’)
+if [ “$TAG” != “$VERSION” ]; then</p>
+<blockquote>
+<div><p>echo “Error: Versión ($VERSION) no coincide con tag ($TAG)”
+exit 1</p>
+</div></blockquote>
+<p>fi</p>
+<p>echo “Desplegando versión $VERSION…”</p>
+<p># Deploy a PyPI
+python -m twine upload dist/*</p>
+<p>echo “✅ Deploy completado”
+<a href="#id80"><span class="problematic" id="id81">``</span></a><a href="#id82"><span class="problematic" id="id83">`</span></a></p>
+<p>—</p>
+<p>## 🏷️ Versionado y Releases</p>
+<p>### CHANGELOG.md</p>
+<p><a href="#id84"><span class="problematic" id="id85">``</span></a><a href="#id86"><span class="problematic" id="id87">`</span></a>markdown
+# Changelog</p>
+<p>Todos los cambios notables de este proyecto serán documentados en este archivo.</p>
+<p>El formato está basado en [Keep a Changelog](<a class="reference external" href="https://keepachangelog.com/es-ES/1.0.0/">https://keepachangelog.com/es-ES/1.0.0/</a>),
+y este proyecto adhiere a [Semantic Versioning](<a class="reference external" href="https://semver.org/spec/v2.0.0.html">https://semver.org/spec/v2.0.0.html</a>).</p>
+<p>## [1.0.0] - 2025-11-05</p>
+<p>### Agregado
+- Nueva funcionalidad de exportación de datos separados con plantillas Excel
+- ExcelTemplateSplitter para lógica de separación
+- ExportSeparatedDialog para interfaz de usuario
+- ColumnMappingManager para gestión flexible de mapeos
+- FileNamingManager con 6 tipos de placeholders
+- ExcelTemplateManager con preservación completa de formato
+- Sistema de chunking inteligente para datasets grandes
+- Manejo robusto de casos especiales (nulos, duplicados, errores)
+- Suite completa de testing con &gt;95% cobertura
+- Documentación Sphinx completa
+- Guía de usuario exhaustiva</p>
+<p>### Características Técnicas
+- Preservación 100% de formato Excel
+- Optimización de memoria para datasets &gt; 1M filas
+- Validación en tiempo real
+- Recovery automático de errores
+- Soporte multiplataforma (Windows, macOS, Linux)
+- Integración seamless con sistema existente</p>
+<p>### Performance
+- &lt; 30s para datasets pequeños (&lt; 10K filas)
+- &lt; 3min para datasets medianos (10K-100K filas)
+- &lt; 15min para datasets grandes (100K-1M filas)
+- &gt; 95% éxito sin intervención manual</p>
+<p>### Testing
+- 15+ tests unitarios
+- 10+ tests de integración
+- 5+ benchmarks de performance
+- 3+ tests de UI
+- Tests de stress para condiciones extremas</p>
+<p>## [Unreleased]</p>
+<p>### Planeado para v1.1.0
+- Paralelización para datasets masivos
+- Soporte para plantillas Word/PowerPoint
+- Dashboard de analytics
+- Exportación directa a cloud</p>
+<p>### Mejoras a Largo Plazo
+- Machine learning para optimización automática
+- Colaboración multi-usuario
+- Integración con APIs externas
+<a href="#id88"><span class="problematic" id="id89">``</span></a><a href="#id90"><span class="problematic" id="id91">`</span></a></p>
+<p>### Version Management Script</p>
+<p><a href="#id92"><span class="problematic" id="id93">``</span></a><a href="#id94"><span class="problematic" id="id95">`</span></a>python
+# scripts/version_manager.py
+import re
+import subprocess
+import sys
+from pathlib import Path
+import json</p>
+<dl>
+<dt>class VersionManager:</dt><dd><dl>
+<dt>def __init__(self):</dt><dd><p>self.setup_py = Path(“setup.py”)
+self.pyproject_toml = Path(“pyproject.toml”)
+self.package_init = Path(“flash_sheet/__init__.py”)
+self.version_file = Path(“flash_sheet/version.py”)</p>
+</dd>
+<dt>def get_current_version(self):</dt><dd><p>“””Obtener versión actual del proyecto”””
+# Intentar desde __init__.py
+if self.package_init.exists():</p>
+<blockquote>
+<div><p>content = self.package_init.read_text()
+match = re.search(r’__version__s*=s*[”']([^”']+)[”']’, content)
+if match:</p>
+<blockquote>
+<div><p>return match.group(1)</p>
+</div></blockquote>
+</div></blockquote>
+<p># Fallback a setup.py
+content = self.setup_py.read_text()
+match = re.search(r’versions*=s*[”']([^”']+)[”']’, content)
+if match:</p>
+<blockquote>
+<div><p>return match.group(1)</p>
+</div></blockquote>
+<p>return “0.0.0”</p>
+</dd>
+<dt>def bump_version(self, bump_type=”patch”):</dt><dd><p>“””Bump version (major, minor, patch)”””
+current = self.get_current_version()
+major, minor, patch = map(int, current.split(‘.’))</p>
+<dl class="simple">
+<dt>if bump_type == “major”:</dt><dd><p>major += 1
+minor = 0
+patch = 0</p>
+</dd>
+<dt>elif bump_type == “minor”:</dt><dd><p>minor += 1
+patch = 0</p>
+</dd>
+<dt>else:  # patch</dt><dd><p>patch += 1</p>
+</dd>
+</dl>
+<p>new_version = f”{major}.{minor}.{patch}”</p>
+<p># Actualizar archivos
+self.update_version_files(new_version)</p>
+<p>print(f”Version bumped from {current} to {new_version}”)
+return new_version</p>
+</dd>
+<dt>def update_version_files(self, version):</dt><dd><p>“””Actualizar versión en todos los archivos relevantes”””
+# __init__.py
+if self.package_init.exists():</p>
+<blockquote>
+<div><p>content = self.package_init.read_text()
+content = re.sub(</p>
+<blockquote>
+<div><p>r’__version__s*=s*[”'][^”']+[”']’,
+f’__version__ = “{version}”’,
+content</p>
+</div></blockquote>
+<p>)
+self.package_init.write_text(content)</p>
+</div></blockquote>
+<p># setup.py
+if self.setup_py.exists():</p>
+<blockquote>
+<div><p>content = self.setup_py.read_text()
+content = re.sub(</p>
+<blockquote>
+<div><p>r’versions*=s*[”'][^”']+[”']’,
+f’version=”{version}”’,
+content</p>
+</div></blockquote>
+<p>)
+self.setup_py.write_text(content)</p>
+</div></blockquote>
+<p># pyproject.toml
+if self.pyproject_toml.exists():</p>
+<blockquote>
+<div><p>content = self.pyproject_toml.read_text()
+content = re.sub(</p>
+<blockquote>
+<div><p>r’versions*=s*[”'][^”']+[”']’,
+f’version = “{version}”’,
+content</p>
+</div></blockquote>
+<p>)
+self.pyproject_toml.write_text(content)</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>def main():</dt><dd><p>import argparse</p>
+<p>parser = argparse.ArgumentParser(description=”Version manager for Flash Sheet”)
+parser.add_argument(“action”, choices=[“get”, “bump”], help=”Action to perform”)
+parser.add_argument(”–type”, choices=[“major”, “minor”, “patch”],</p>
+<blockquote>
+<div><p>default=”patch”, help=”Version bump type”)</p>
+</div></blockquote>
+<p>args = parser.parse_args()</p>
+<p>vm = VersionManager()</p>
+<dl class="simple">
+<dt>if args.action == “get”:</dt><dd><p>print(vm.get_current_version())</p>
+</dd>
+<dt>elif args.action == “bump”:</dt><dd><p>vm.bump_version(args.type)</p>
+</dd>
+</dl>
+</dd>
+<dt>if __name__ == “__main__”:</dt><dd><p>main()</p>
+</dd>
+</dl>
+<p><a href="#id96"><span class="problematic" id="id97">``</span></a><a href="#id98"><span class="problematic" id="id99">`</span></a></p>
+<p>—</p>
+<p>## 🌍 Distribución Multiplataforma</p>
+<p>### Ejecutables Windows (PyInstaller)</p>
+<p><a href="#id100"><span class="problematic" id="id101">``</span></a><a href="#id102"><span class="problematic" id="id103">`</span></a>python
+# build_exe.py - Script para crear ejecutables
+import os
+import sys
+from PyInstaller.__main__ import run</p>
+<dl>
+<dt>def build_executable():</dt><dd><p>“””Build ejecutable para Windows”””</p>
+<p># Limpiar builds anteriores
+if os.path.exists(“build”):</p>
+<blockquote>
+<div><p>import shutil
+shutil.rmtree(“build”)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>if os.path.exists(“dist”):</dt><dd><p>import shutil
+shutil.rmtree(“dist”)</p>
+</dd>
+</dl>
+<p># Configuración PyInstaller
+args = [</p>
+<blockquote>
+<div><p>‘main.py’,
+‘–onefile’,
+‘–windowed’,
+‘–name=FlashSheet’,
+‘–icon=assets/logo.ico’,
+‘–add-data=assets;assets’,
+‘–add-data=core;core’,
+‘–add-data=app;app’,
+‘–hidden-import=PySide6.QtCore’,
+‘–hidden-import=PySide6.QtWidgets’,
+‘–hidden-import=pandas’,
+‘–hidden-import=openpyxl’,
+‘–distpath=dist/windows’,
+‘–workpath=build/windows’,</p>
+</div></blockquote>
+<p>]</p>
+<p>run(args)</p>
+</dd>
+<dt>if __name__ == “__main__”:</dt><dd><p>build_executable()</p>
+</dd>
+</dl>
+<p><a href="#id104"><span class="problematic" id="id105">``</span></a><a href="#id106"><span class="problematic" id="id107">`</span></a></p>
+<p>### App Bundle macOS (cx_Freeze)</p>
+<p><a href="#id108"><span class="problematic" id="id109">``</span></a><a href="#id110"><span class="problematic" id="id111">`</span></a>python
+# build_mac.py - Script para crear app bundle macOS
+from cx_Freeze import setup, Executable
+import sys</p>
+<p># Configuración
+APP_NAME = “Flash Sheet”
+APP_VERSION = “1.0.0”</p>
+<p># Archivos a incluir
+includefiles = [</p>
+<blockquote>
+<div><p>“assets/”,
+“docs/”,
+“requirements.txt”</p>
+</div></blockquote>
+<p>]</p>
+<p># Paquetes a incluir
+packages = [</p>
+<blockquote>
+<div><p>“PySide6”,
+“pandas”,
+“openpyxl”,
+“numpy”</p>
+</div></blockquote>
+<p>]</p>
+<p># Exclusiones
+excludes = [</p>
+<blockquote>
+<div><p>“tkinter”,
+“matplotlib”,
+“IPython”,
+“jupyter”</p>
+</div></blockquote>
+<p>]</p>
+<p># Setup
+setup(</p>
+<blockquote>
+<div><p>name=APP_NAME,
+version=APP_VERSION,
+description=”Herramienta de análisis de datos con exportación separada”,
+options={</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“build_exe”: {</dt><dd><p>“packages”: packages,
+“excludes”: excludes,
+“include_files”: includefiles,
+“icon”: “assets/logo.icns”</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>},
+executables=[</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Executable(</dt><dd><p>“main.py”,
+base=”MacOS”,
+icon=”assets/logo.icns”,
+bundle_identifier=”com.flash-sheet.app”</p>
+</dd>
+</dl>
+<p>)</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+</section>
+<section id="id112">
+<h1>)<a class="headerlink" href="#id112" title="Link to this heading"></a></h1>
+<p>### AppImage Linux</p>
+<p><a href="#id113"><span class="problematic" id="id114">``</span></a><a href="#id115"><span class="problematic" id="id116">`</span></a>yaml
+# appimage-build.yml - GitHub Actions para AppImage
+name: Build AppImage</p>
+<dl>
+<dt>on:</dt><dd><dl class="simple">
+<dt>push:</dt><dd><p>tags: [ ‘v*’ ]</p>
+</dd>
+</dl>
+</dd>
+<dt>jobs:</dt><dd><dl>
+<dt>appimage:</dt><dd><p>runs-on: ubuntu-latest</p>
+<p>steps:
+- uses: <a class="reference external" href="mailto:actions/checkout&#37;&#52;&#48;v3">actions/checkout<span>&#64;</span>v3</a></p>
+<ul>
+<li><p>name: Set up Python
+uses: <a class="reference external" href="mailto:actions/setup-python&#37;&#52;&#48;v4">actions/setup-python<span>&#64;</span>v4</a>
+with:</p>
+<blockquote>
+<div><p>python-version: ‘3.10’</p>
+</div></blockquote>
+</li>
+<li><p>name: Install AppImageTool
+run: |</p>
+<blockquote>
+<div><p>wget <a class="reference external" href="https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage">https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage</a>
+chmod +x appimagetool-x86_64.AppImage</p>
+</div></blockquote>
+</li>
+<li><p>name: Install dependencies
+run: |</p>
+<blockquote>
+<div><p>pip install -e “.[full]”</p>
+</div></blockquote>
+</li>
+<li><p>name: Create AppDir
+run: |</p>
+<blockquote>
+<div><p>mkdir -p FlashSheet.AppDir/usr/bin
+mkdir -p FlashSheet.AppDir/usr/share/applications
+mkdir -p FlashSheet.AppDir/usr/share/icons</p>
+<p># Copiar ejecutable
+cp main.py FlashSheet.AppDir/usr/bin/flash-sheet</p>
+<p># Crear desktop entry
+cat &gt; FlashSheet.AppDir/flash-sheet.desktop &lt;&lt; EOF
+[Desktop Entry]
+Name=Flash Sheet
+Comment=Herramienta de análisis de datos
+Exec=flash-sheet
+Icon=flash-sheet
+Type=Application
+Categories=Office;Science;
+EOF</p>
+<p># Copiar icono
+cp assets/logo.png FlashSheet.AppDir/flash-sheet.png</p>
+</div></blockquote>
+</li>
+<li><p>name: Build AppImage
+run: |</p>
+<blockquote>
+<div><p>./appimagetool-x86_64.AppImage FlashSheet.AppDir dist/FlashSheet-$(git describe –tags).AppImage</p>
+</div></blockquote>
+</li>
+<li><p>name: Upload artifact
+uses: <a class="reference external" href="mailto:actions/upload-artifact&#37;&#52;&#48;v3">actions/upload-artifact<span>&#64;</span>v3</a>
+with:</p>
+<blockquote>
+<div><p>name: flash-sheet-appimage
+path: dist/<a href="#id117"><span class="problematic" id="id118">*</span></a>.AppImage</p>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id119"><span class="problematic" id="id120">``</span></a><a href="#id121"><span class="problematic" id="id122">`</span></a></p>
+<p>—</p>
+<p>## ✅ Validación de Distribución</p>
+<p>### Script de Validación</p>
+<p><a href="#id123"><span class="problematic" id="id124">``</span></a><a href="#id125"><span class="problematic" id="id126">`</span></a>python
+# scripts/validate_distribution.py
+import os
+import sys
+import subprocess
+import zipfile
+import tempfile
+from pathlib import Path</p>
+<dl>
+<dt>def validate_package_files():</dt><dd><p>“””Validar que todos los archivos necesarios están en el paquete”””
+required_files = [</p>
+<blockquote>
+<div><p>“core/data_handler.py”,
+“app/widgets/export_separated_dialog.py”,
+“assets/logo.png”,
+“README.md”,
+“requirements.txt”</p>
+</div></blockquote>
+<p>]</p>
+<p># Verificar que los archivos existen
+for file_path in required_files:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if not Path(file_path).exists():</dt><dd><p>print(f”❌ Archivo faltante: {file_path}”)
+return False</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>print(”✅ Todos los archivos requeridos presentes”)
+return True</p>
+</dd>
+<dt>def validate_wheel(wheel_path):</dt><dd><p>“””Validar wheel package”””
+print(f”Validando wheel: {wheel_path}”)</p>
+<dl>
+<dt>try:</dt><dd><p># Verificar que el wheel se puede instalar
+result = subprocess.run([</p>
+<blockquote>
+<div><p>sys.executable, “-m”, “pip”, “install”,
+“–dry-run”, str(wheel_path)</p>
+</div></blockquote>
+<p>], capture_output=True, text=True)</p>
+<dl class="simple">
+<dt>if result.returncode == 0:</dt><dd><p>print(”✅ Wheel válido”)
+return True</p>
+</dd>
+<dt>else:</dt><dd><p>print(f”❌ Error en wheel: {result.stderr}”)
+return False</p>
+</dd>
+</dl>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”❌ Error validando wheel: {e}”)
+return False</p>
+</dd>
+</dl>
+</dd>
+<dt>def validate_sdist(sdist_path):</dt><dd><p>“””Validar source distribution”””
+print(f”Validando sdist: {sdist_path}”)</p>
+<dl>
+<dt>try:</dt><dd><p># Extraer y verificar contenido
+with tempfile.TemporaryDirectory() as temp_dir:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>with zipfile.ZipFile(sdist_path, ‘r’) as zip_ref:</dt><dd><p>zip_ref.extractall(temp_dir)</p>
+</dd>
+</dl>
+<p># Verificar archivos críticos
+critical_files = [</p>
+<blockquote>
+<div><p>“setup.py”,
+“README.md”,
+“core/__init__.py”,
+“app/__init__.py”</p>
+</div></blockquote>
+<p>]</p>
+<dl>
+<dt>for file_name in critical_files:</dt><dd><p>file_path = Path(temp_dir) / “flash-sheet-1.0.0” / file_name
+if not file_path.exists():</p>
+<blockquote>
+<div><p>print(f”❌ Archivo faltante en sdist: {file_name}”)
+return False</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>print(”✅ Sdist válido”)
+return True</p>
+</div></blockquote>
+</dd>
+<dt>except Exception as e:</dt><dd><p>print(f”❌ Error validando sdist: {e}”)
+return False</p>
+</dd>
+</dl>
+</dd>
+<dt>def main():</dt><dd><p>“””Función principal de validación”””
+print(“=== Validación de Distribución ===n”)</p>
+<p># Validar archivos locales
+if not validate_package_files():</p>
+<blockquote>
+<div><p>sys.exit(1)</p>
+</div></blockquote>
+<p># Validar paquetes en dist/
+dist_dir = Path(“dist”)
+if not dist_dir.exists():</p>
+<blockquote>
+<div><p>print(”❌ Directorio dist/ no existe”)
+sys.exit(1)</p>
+</div></blockquote>
+<p>wheels = list(dist_dir.glob(”<em>.whl”))
+sdists = list(dist_dir.glob(”</em>.tar.gz”))</p>
+<p>all_valid = True</p>
+<p># Validar wheels
+for wheel in wheels:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if not validate_wheel(wheel):</dt><dd><p>all_valid = False</p>
+</dd>
+</dl>
+</div></blockquote>
+<p># Validar sdists
+for sdist in sdists:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if not validate_sdist(sdist):</dt><dd><p>all_valid = False</p>
+</dd>
+</dl>
+</div></blockquote>
+<p># Resumen
+print(f”n=== Resumen de Validación ===”)
+print(f”Wheels encontrados: {len(wheels)}”)
+print(f”Sdist encontrados: {len(sdists)}”)</p>
+<dl class="simple">
+<dt>if all_valid:</dt><dd><p>print(”✅ Todos los paquetes son válidos”)</p>
+</dd>
+<dt>else:</dt><dd><p>print(”❌ Algunos paquetes tienen problemas”)
+sys.exit(1)</p>
+</dd>
+</dl>
+</dd>
+<dt>if __name__ == “__main__”:</dt><dd><p>main()</p>
+</dd>
+</dl>
+<p><a href="#id127"><span class="problematic" id="id128">``</span></a><a href="#id129"><span class="problematic" id="id130">`</span></a></p>
+<p>### Checklist de Distribución</p>
+<p><a href="#id131"><span class="problematic" id="id132">``</span></a><a href="#id133"><span class="problematic" id="id134">`</span></a>markdown
+# Checklist de Distribución v1.0.0</p>
+<p>## Pre-Build
+- [ ] Versión actualizada en todos los archivos
+- [ ] Tests pasando completamente
+- [ ] Documentación actualizada
+- [ ] CHANGELOG.md actualizado
+- [ ] Requisitos revisados</p>
+<p>## Build Process
+- [ ] Dependencias instaladas
+- [ ] Limpieza de builds anteriores
+- [ ] Tests unitarios ejecutados
+- [ ] Linting aprobado
+- [ ] Documentación construida</p>
+<p>## Paquetes Python
+- [ ] Wheel (.whl) generado
+- [ ] Source distribution (.tar.gz) generado
+- [ ] Paquetes verificados con twine
+- [ ] Metadatos correctos en setup.py
+- [ ] Dependencies list actualizada</p>
+<p>## Distribuciones Específicas
+- [ ] Ejecutable Windows (.exe)
+- [ ] App Bundle macOS (.app)
+- [ ] AppImage Linux (.AppImage)
+- [ ] Cada distribución probada</p>
+<p>## Testing
+- [ ] Instalación desde pip verificada
+- [ ] Instalación desde wheel verificada
+- [ ] Funcionalidad core verificada
+- [ ] ExportSeparatedDialog funcional
+- [ ] ExcelTemplateSplitter funcional</p>
+<p>## Release
+- [ ] Release notes completas
+- [ ] Git tag creada
+- [ ] GitHub release creada
+- [ ] PyPI release (si aplicable)
+- [ ] Distribución a usuarios beta</p>
+<p>## Post-Release
+- [ ] Monitoreo de errores activado
+- [ ] Feedback channels configurados
+- [ ] Plan de actualizaciones activado
+<a href="#id135"><span class="problematic" id="id136">``</span></a><a href="#id137"><span class="problematic" id="id138">`</span></a></p>
+<p>—</p>
+<p>## 🎉 Resumen de Distribución</p>
+<p>Esta documentación de distribución proporciona:</p>
+<ol class="arabic simple">
+<li><p><strong>Scripts de Build Automatizados</strong> para Windows, Linux y macOS</p></li>
+<li><p><strong>CI/CD Pipeline</strong> con GitHub Actions para integración continua</p></li>
+<li><p><strong>Package Management</strong> completo para PyPI y distribución</p></li>
+<li><p><strong>Versionado Automatizado</strong> con bump scripts</p></li>
+<li><p><strong>Distribución Multiplataforma</strong> con ejecutables nativos</p></li>
+<li><p><strong>Validación Completa</strong> de todos los paquetes</p></li>
+</ol>
+<p>### Archivos Generados:
+- <cite>setup.py</cite> y <cite>pyproject.toml</cite> para configuración
+- <cite>build.sh</cite> y <cite>build-exe.bat</cite> para builds automatizados
+- <cite>makefile</cite> para Linux/macOS
+- GitHub Actions workflows para CI/CD
+- Scripts de deploy y validación
+- Checklist completo de distribución</p>
+<p>### Próximos Pasos:
+1. Configurar PyPI y tokens de acceso
+2. Configurar GitHub secrets para CI/CD
+3. Ejecutar builds de prueba
+4. Publicar release v1.0.0
+5. Distribuir a usuarios finales</p>
+<p>—</p>
+<p><em>Preparación para Distribución v1.0.0 - Completada el 5 de Noviembre, 2025</em></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,991 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Referencia de API &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Desarrollo" href="development_guide.html" />
+    <link rel="prev" title="Advanced Features Implementation" href="code_walkthrough/advanced_features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Referencia de API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clases-core">Clases Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datahandler">DataHandler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#load_file"><code class="docutils literal notranslate"><span class="pre">load_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#load_folder"><code class="docutils literal notranslate"><span class="pre">load_folder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export_data"><code class="docutils literal notranslate"><span class="pre">export_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mainwindow">MainWindow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#switch_to_view"><code class="docutils literal notranslate"><span class="pre">switch_to_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">load_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">export_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clases-de-vista">Clases de Vista</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#baseview">BaseView</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#setup_ui"><code class="docutils literal notranslate"><span class="pre">setup_ui()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update_display"><code class="docutils literal notranslate"><span class="pre">update_display()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#set_data"><code class="docutils literal notranslate"><span class="pre">set_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dataview">DataView</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apply_filter"><code class="docutils literal notranslate"><span class="pre">apply_filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sort_by_column"><code class="docutils literal notranslate"><span class="pre">sort_by_column()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#set_pagination_enabled"><code class="docutils literal notranslate"><span class="pre">set_pagination_enabled()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#graphicsview">GraphicsView</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create_chart"><code class="docutils literal notranslate"><span class="pre">create_chart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export_chart"><code class="docutils literal notranslate"><span class="pre">export_chart()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clases-de-caracteristicas-avanzadas">Clases de Características Avanzadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datajoinmanager">DataJoinManager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#perform_join"><code class="docutils literal notranslate"><span class="pre">perform_join()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exceltemplatesplitter">ExcelTemplateSplitter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#split_by_template"><code class="docutils literal notranslate"><span class="pre">split_by_template()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pivottablemanager">PivotTableManager</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create_pivot"><code class="docutils literal notranslate"><span class="pre">create_pivot()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clases-utilitarias">Clases Utilitarias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datavalidator">DataValidator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fileformatdetector">FileFormatDetector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typeinferer">TypeInferer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#excepciones">Excepciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datahandlererror">DataHandlerError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fileoperationerror">FileOperationError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unsupportedformaterror">UnsupportedFormatError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validationerror">ValidationError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#joinerror">JoinError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exporterror">ExportError</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuracion">Configuración</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-aplicacion">Configuración de Aplicación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#senales-y-eventos">Señales y Eventos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#referencia-de-senales-qt">Referencia de Señales Qt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ejemplos-de-manejo-de-eventos">Ejemplos de Manejo de Eventos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#constantes-y-enums">Constantes y Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tipos-de-datos">Tipos de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tipos-de-union">Tipos de Unión</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-de-exportacion">Formatos de Exportación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tipos-de-grafico">Tipos de Gráfico</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#metricas-de-performance">Métricas de Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#seguimiento-de-uso-de-memoria">Seguimiento de Uso de Memoria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#temporizacion-de-operaciones">Temporización de Operaciones</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#puntos-de-extension">Puntos de Extensión</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-plugin">Arquitectura de Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuentes-de-datos-personalizadas">Fuentes de Datos Personalizadas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-de-exportacion-personalizados">Formatos de Exportación Personalizados</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#guia-de-migracion">Guía de Migración</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compatibilidad-de-versiones">Compatibilidad de Versiones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#avisos-de-deprecacion">Avisos de Deprecación</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Referencia de API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/api_reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="referencia-de-api">
+<h1>Referencia de API<a class="headerlink" href="#referencia-de-api" title="Link to this heading"></a></h1>
+<p>Esta sección proporciona documentación comprehensiva de las APIs públicas de Flash Sheet, clases, métodos e interfaces.</p>
+<section id="clases-core">
+<h2>Clases Core<a class="headerlink" href="#clases-core" title="Link to this heading"></a></h2>
+<section id="datahandler">
+<h3>DataHandler<a class="headerlink" href="#datahandler" title="Link to this heading"></a></h3>
+<p>El componente central de gestión de datos.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataHandler</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="c1"># Señales</span>
+    <span class="n">data_loaded</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">DataFrame</span><span class="p">)</span>
+    <span class="n">progress_updated</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">error_occurred</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="load_file">
+<span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#load_file" title="Link to this definition"></a></dt>
+<dd><p>Cargar datos desde un archivo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> – Ruta al archivo de datos</p></li>
+<li><p><strong>options</strong> – Opciones de carga (encoding, delimiter, etc.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame cargado</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FileNotFoundError, UnsupportedFormatError</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="load_folder">
+<span class="sig-name descname"><span class="pre">load_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#load_folder" title="Link to this definition"></a></dt>
+<dd><p>Cargar y consolidar múltiples archivos desde una carpeta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder_path</strong> – Ruta a carpeta conteniendo archivos de datos</p></li>
+<li><p><strong>options</strong> – Opciones de consolidación</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame consolidado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="export_data">
+<span class="sig-name descname"><span class="pre">export_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#export_data" title="Link to this definition"></a></dt>
+<dd><p>Exportar datos a formato especificado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – DataFrame a exportar</p></li>
+<li><p><strong>format</strong> – Formato de exportación (‘csv’, ‘excel’, ‘json’, etc.)</p></li>
+<li><p><strong>destination</strong> – Ruta de archivo de salida</p></li>
+<li><p><strong>options</strong> – Opciones específicas de formato</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="mainwindow">
+<h3>MainWindow<a class="headerlink" href="#mainwindow" title="Link to this heading"></a></h3>
+<p>Ventana principal de aplicación y coordinador.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="switch_to_view">
+<span class="sig-name descname"><span class="pre">switch_to_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#switch_to_view" title="Link to this definition"></a></dt>
+<dd><p>Cambiar a vista especificada de aplicación.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>view_name</strong> – Nombre de vista a activar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Abrir diálogo de archivo y cargar archivo de datos.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">export_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Exportar datos actuales en formato especificado.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="clases-de-vista">
+<h2>Clases de Vista<a class="headerlink" href="#clases-de-vista" title="Link to this heading"></a></h2>
+<section id="baseview">
+<h3>BaseView<a class="headerlink" href="#baseview" title="Link to this heading"></a></h3>
+<p>Clase abstracta base para todas las vistas de aplicación.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BaseView</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="c1"># Señales</span>
+    <span class="n">data_changed</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">export_requested</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Abstractos:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="setup_ui">
+<span class="sig-name descname"><span class="pre">setup_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#setup_ui" title="Link to this definition"></a></dt>
+<dd><p>Inicializar interfaz de usuario de la vista.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="update_display">
+<span class="sig-name descname"><span class="pre">update_display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#update_display" title="Link to this definition"></a></dt>
+<dd><p>Refrescar visualización con datos actuales.</p>
+</dd></dl>
+
+<p><strong>Métodos Concretos:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="set_data">
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#set_data" title="Link to this definition"></a></dt>
+<dd><p>Cargar datos en la vista.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – DataFrame a mostrar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#get_data" title="Link to this definition"></a></dt>
+<dd><p>Recuperar datos actuales de la vista.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame actual</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="dataview">
+<h3>DataView<a class="headerlink" href="#dataview" title="Link to this heading"></a></h3>
+<p>Vista de tabla de datos principal.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataView</span><span class="p">(</span><span class="n">BaseView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apply_filter">
+<span class="sig-name descname"><span class="pre">apply_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#apply_filter" title="Link to this definition"></a></dt>
+<dd><p>Aplicar filtrado a los datos mostrados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_config</strong> – Diccionario de configuración de filtro</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sort_by_column">
+<span class="sig-name descname"><span class="pre">sort_by_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qt.SortOrder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sort_by_column" title="Link to this definition"></a></dt>
+<dd><p>Ordenar datos por columna especificada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> – Índice de columna a ordenar</p></li>
+<li><p><strong>order</strong> – Orden de clasificación (Ascending/Descending)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="set_pagination_enabled">
+<span class="sig-name descname"><span class="pre">set_pagination_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#set_pagination_enabled" title="Link to this definition"></a></dt>
+<dd><p>Habilitar o deshabilitar paginación de datos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enabled</strong> – Si habilitar paginación</p></li>
+<li><p><strong>page_size</strong> – Número de filas por página</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="graphicsview">
+<h3>GraphicsView<a class="headerlink" href="#graphicsview" title="Link to this heading"></a></h3>
+<p>Vista de creación de gráficos y visualización.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GraphicsView</span><span class="p">(</span><span class="n">BaseView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="create_chart">
+<span class="sig-name descname"><span class="pre">create_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chart_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QChart</span></span></span><a class="headerlink" href="#create_chart" title="Link to this definition"></a></dt>
+<dd><p>Crear un gráfico de tipo especificado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chart_type</strong> – Tipo de gráfico (‘bar’, ‘line’, ‘pie’, etc.)</p></li>
+<li><p><strong>config</strong> – Diccionario de configuración de gráfico</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Objeto QChart creado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="export_chart">
+<span class="sig-name descname"><span class="pre">export_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#export_chart" title="Link to this definition"></a></dt>
+<dd><p>Exportar gráfico actual a archivo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> – Formato de exportación (‘png’, ‘svg’, ‘pdf’)</p></li>
+<li><p><strong>destination</strong> – Ruta de archivo de salida</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="clases-de-caracteristicas-avanzadas">
+<h2>Clases de Características Avanzadas<a class="headerlink" href="#clases-de-caracteristicas-avanzadas" title="Link to this heading"></a></h2>
+<section id="datajoinmanager">
+<h3>DataJoinManager<a class="headerlink" href="#datajoinmanager" title="Link to this heading"></a></h3>
+<p>Gestiona operaciones de unión de datos entre datasets.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataJoinManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="perform_join">
+<span class="sig-name descname"><span class="pre">perform_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#perform_join" title="Link to this definition"></a></dt>
+<dd><p>Realizar operación de unión entre dos DataFrames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left_df</strong> – DataFrame izquierdo</p></li>
+<li><p><strong>right_df</strong> – DataFrame derecho</p></li>
+<li><p><strong>config</strong> – Configuración de unión</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame unificado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Configuración de Unión:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">join_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;inner&#39;</span><span class="p">,</span>  <span class="c1"># &#39;inner&#39;, &#39;left&#39;, &#39;right&#39;, &#39;cross&#39;</span>
+    <span class="s1">&#39;left_keys&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>  <span class="c1"># Nombres de columna para DataFrame izquierdo</span>
+    <span class="s1">&#39;right_keys&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">],</span>  <span class="c1"># Nombres de columna para DataFrame derecho</span>
+    <span class="s1">&#39;suffixes&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;_left&#39;</span><span class="p">,</span> <span class="s1">&#39;_right&#39;</span><span class="p">),</span>  <span class="c1"># Sufijos para columnas duplicadas</span>
+    <span class="s1">&#39;indicator&#39;</span><span class="p">:</span> <span class="kc">False</span>  <span class="c1"># Agregar columna indicador de merge</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="exceltemplatesplitter">
+<h3>ExcelTemplateSplitter<a class="headerlink" href="#exceltemplatesplitter" title="Link to this heading"></a></h3>
+<p>Maneja exportaciones separadas basadas en plantillas.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExcelTemplateSplitter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="split_by_template">
+<span class="sig-name descname"><span class="pre">split_by_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separation_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#split_by_template" title="Link to this definition"></a></dt>
+<dd><p>Dividir DataFrame y exportar usando plantilla Excel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – DataFrame de entrada</p></li>
+<li><p><strong>separation_column</strong> – Columna para dividir por</p></li>
+<li><p><strong>template_path</strong> – Ruta a plantilla Excel</p></li>
+<li><p><strong>output_dir</strong> – Directorio de salida</p></li>
+<li><p><strong>options</strong> – Opciones de exportación</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista de resultados de exportación</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Opciones de Exportación:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">export_options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;filename_template&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{value}</span><span class="s1">_</span><span class="si">{date}</span><span class="s1">.xlsx&#39;</span><span class="p">,</span>  <span class="c1"># Patrón de nombre de archivo de salida</span>
+    <span class="s1">&#39;sheet_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Data&#39;</span><span class="p">,</span>  <span class="c1"># Hoja en plantilla para inserción de datos</span>
+    <span class="s1">&#39;start_row&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Fila inicial para inserción de datos</span>
+    <span class="s1">&#39;start_col&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Columna inicial para inserción de datos</span>
+    <span class="s1">&#39;preserve_formatting&#39;</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># Mantener formato de plantilla</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="pivottablemanager">
+<h3>PivotTableManager<a class="headerlink" href="#pivottablemanager" title="Link to this heading"></a></h3>
+<p>Gestiona creación y operaciones de tablas pivote.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PivotTableManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Métodos Clave:</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="create_pivot">
+<span class="sig-name descname"><span class="pre">create_pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#create_pivot" title="Link to this definition"></a></dt>
+<dd><p>Crear tabla pivote desde DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – DataFrame de entrada</p></li>
+<li><p><strong>config</strong> – Configuración de pivote</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame de tabla pivote</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Configuración de Pivote:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pivot_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;sales&#39;</span><span class="p">,</span> <span class="s1">&#39;quantity&#39;</span><span class="p">],</span>  <span class="c1"># Columnas de valor a agregar</span>
+    <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;region&#39;</span><span class="p">,</span> <span class="s1">&#39;product&#39;</span><span class="p">],</span>  <span class="c1"># Columnas de agrupamiento de fila</span>
+    <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span>  <span class="c1"># Columnas de agrupamiento de columna</span>
+    <span class="s1">&#39;aggfunc&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>  <span class="c1"># Función de agregación</span>
+    <span class="s1">&#39;fill_value&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># Llenar valores faltantes</span>
+    <span class="s1">&#39;margins&#39;</span><span class="p">:</span> <span class="kc">True</span>  <span class="c1"># Agregar totales</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="clases-utilitarias">
+<h2>Clases Utilitarias<a class="headerlink" href="#clases-utilitarias" title="Link to this heading"></a></h2>
+<section id="datavalidator">
+<h3>DataValidator<a class="headerlink" href="#datavalidator" title="Link to this heading"></a></h3>
+<p>Utilidades de validación y control de calidad de datos.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataValidator</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span>
+</pre></div>
+</div>
+<p><strong>Resultados de Validación:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">validation_result</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;is_valid&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;warnings&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;statistics&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;total_rows&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="s1">&#39;total_columns&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s1">&#39;null_counts&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+        <span class="s1">&#39;data_types&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="fileformatdetector">
+<h3>FileFormatDetector<a class="headerlink" href="#fileformatdetector" title="Link to this heading"></a></h3>
+<p>Detección automática de formato de archivo.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FileFormatDetector</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_format</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</pre></div>
+</div>
+<p><strong>Formatos Soportados:</strong></p>
+<ul class="simple">
+<li><p>‘csv’: Valores separados por coma</p></li>
+<li><p>‘excel’: Microsoft Excel (.xlsx, .xls)</p></li>
+<li><p>‘json’: Notación de Objetos JavaScript</p></li>
+<li><p>‘parquet’: Apache Parquet</p></li>
+<li><p>‘hdf5’: Formato de Datos Jerárquicos</p></li>
+<li><p>‘sql’: Conexión de base de datos SQL</p></li>
+</ul>
+</section>
+<section id="typeinferer">
+<h3>TypeInferer<a class="headerlink" href="#typeinferer" title="Link to this heading"></a></h3>
+<p>Inferencia automática de tipos de datos y conversión.</p>
+<p><strong>Firma de Clase:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TypeInferer</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infer_types</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span>
+</pre></div>
+</div>
+<p><strong>Reglas de Inferencia de Tipos:</strong></p>
+<ul class="simple">
+<li><p>Strings numéricas → int64/float64</p></li>
+<li><p>Strings de fecha → datetime64</p></li>
+<li><p>Categorías consistentes → category</p></li>
+<li><p>Tipos mixtos → object</p></li>
+</ul>
+</section>
+</section>
+<section id="excepciones">
+<h2>Excepciones<a class="headerlink" href="#excepciones" title="Link to this heading"></a></h2>
+<p>Clases de excepción personalizadas para manejo de errores.</p>
+<section id="datahandlererror">
+<h3>DataHandlerError<a class="headerlink" href="#datahandlererror" title="Link to this heading"></a></h3>
+<p>Excepción base para operaciones de manejo de datos.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataHandlerError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="fileoperationerror">
+<h3>FileOperationError<a class="headerlink" href="#fileoperationerror" title="Link to this heading"></a></h3>
+<p>Errores de operaciones de archivo.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FileOperationError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operation</span> <span class="o">=</span> <span class="n">operation</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="unsupportedformaterror">
+<h3>UnsupportedFormatError<a class="headerlink" href="#unsupportedformaterror" title="Link to this heading"></a></h3>
+<p>Errores de formato de archivo no soportado.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedFormatError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format_type</span> <span class="o">=</span> <span class="n">format_type</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formato no soportado: </span><span class="si">{</span><span class="n">format_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validationerror">
+<h3>ValidationError<a class="headerlink" href="#validationerror" title="Link to this heading"></a></h3>
+<p>Fallos de validación de datos.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ValidationError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">issues</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">issues</span> <span class="o">=</span> <span class="n">issues</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validación fallida: </span><span class="si">{</span><span class="n">issues</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="joinerror">
+<h3>JoinError<a class="headerlink" href="#joinerror" title="Link to this heading"></a></h3>
+<p>Errores de operación de unión.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JoinError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">left_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_keys</span> <span class="o">=</span> <span class="n">left_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_keys</span> <span class="o">=</span> <span class="n">right_keys</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exporterror">
+<h3>ExportError<a class="headerlink" href="#exporterror" title="Link to this heading"></a></h3>
+<p>Errores de operación de exportación.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExportError</span><span class="p">(</span><span class="n">DataHandlerError</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_type</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format_type</span> <span class="o">=</span> <span class="n">format_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">=</span> <span class="n">destination</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuracion">
+<h2>Configuración<a class="headerlink" href="#configuracion" title="Link to this heading"></a></h2>
+<section id="configuracion-de-aplicacion">
+<h3>Configuración de Aplicación<a class="headerlink" href="#configuracion-de-aplicacion" title="Link to this heading"></a></h3>
+<p>Gestión de configuración para configuraciones de aplicación.</p>
+<p><strong>Estructura de Archivo de Configuración:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">application</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;light&#39;</span><span class="w">  </span><span class="c1"># &#39;light&#39; o &#39;dark&#39;</span>
+<span class="w">  </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;en&#39;</span><span class="w">  </span><span class="c1"># Código de idioma</span>
+<span class="w">  </span><span class="nt">max_memory</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2GB&#39;</span><span class="w">  </span><span class="c1"># Límite de memoria</span>
+
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">default_encoding</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;utf-8&#39;</span>
+<span class="w">  </span><span class="nt">chunk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">  </span><span class="nt">cache_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">export</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">default_format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;csv&#39;</span>
+<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">template_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./templates&#39;</span>
+</pre></div>
+</div>
+<p><strong>Acceso a Configuración:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_config</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+<span class="n">theme</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;application.theme&#39;</span><span class="p">,</span> <span class="s1">&#39;light&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="senales-y-eventos">
+<h2>Señales y Eventos<a class="headerlink" href="#senales-y-eventos" title="Link to this heading"></a></h2>
+<section id="referencia-de-senales-qt">
+<h3>Referencia de Señales Qt<a class="headerlink" href="#referencia-de-senales-qt" title="Link to this heading"></a></h3>
+<p><strong>Señales de DataHandler:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_loaded(DataFrame)</span></code>: Emitido cuando datos son cargados exitosamente</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">progress_updated(int)</span></code>: Porcentaje de progreso para operaciones largas (0-100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_occurred(str)</span></code>: Mensajes de error con contexto</p></li>
+</ul>
+<p><strong>Señales de Vista:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_changed()</span></code>: Emitido cuando datos de vista son modificados</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_requested(str)</span></code>: Solicitud para exportar datos en formato especificado</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">view_closed()</span></code>: Emitido cuando vista es cerrada</p></li>
+</ul>
+<p><strong>Señales de MainWindow:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">view_switched(str)</span></code>: Emitido cuando vista activa cambia</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operation_started(str)</span></code>: Operación larga iniciada</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operation_completed(str)</span></code>: Operación larga completada</p></li>
+</ul>
+</section>
+<section id="ejemplos-de-manejo-de-eventos">
+<h3>Ejemplos de Manejo de Eventos<a class="headerlink" href="#ejemplos-de-manejo-de-eventos" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Conectando a señales de DataHandler</span>
+<span class="n">data_handler</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_data_loaded</span><span class="p">)</span>
+<span class="n">data_handler</span><span class="o">.</span><span class="n">progress_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_progress_bar</span><span class="p">)</span>
+<span class="n">data_handler</span><span class="o">.</span><span class="n">error_occurred</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_error_message</span><span class="p">)</span>
+
+<span class="c1"># Manejo de señales de vista</span>
+<span class="n">current_view</span><span class="o">.</span><span class="n">data_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_window_title</span><span class="p">)</span>
+<span class="n">current_view</span><span class="o">.</span><span class="n">export_requested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_export_request</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="constantes-y-enums">
+<h2>Constantes y Enums<a class="headerlink" href="#constantes-y-enums" title="Link to this heading"></a></h2>
+<section id="tipos-de-datos">
+<h3>Tipos de Datos<a class="headerlink" href="#tipos-de-datos" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataType</span><span class="p">:</span>
+    <span class="n">STRING</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+    <span class="n">INTEGER</span> <span class="o">=</span> <span class="s1">&#39;int64&#39;</span>
+    <span class="n">FLOAT</span> <span class="o">=</span> <span class="s1">&#39;float64&#39;</span>
+    <span class="n">DATETIME</span> <span class="o">=</span> <span class="s1">&#39;datetime64&#39;</span>
+    <span class="n">BOOLEAN</span> <span class="o">=</span> <span class="s1">&#39;bool&#39;</span>
+    <span class="n">CATEGORY</span> <span class="o">=</span> <span class="s1">&#39;category&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="tipos-de-union">
+<h3>Tipos de Unión<a class="headerlink" href="#tipos-de-union" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JoinType</span><span class="p">:</span>
+    <span class="n">INNER</span> <span class="o">=</span> <span class="s1">&#39;inner&#39;</span>
+    <span class="n">LEFT</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
+    <span class="n">RIGHT</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+    <span class="n">OUTER</span> <span class="o">=</span> <span class="s1">&#39;outer&#39;</span>
+    <span class="n">CROSS</span> <span class="o">=</span> <span class="s1">&#39;cross&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="formatos-de-exportacion">
+<h3>Formatos de Exportación<a class="headerlink" href="#formatos-de-exportacion" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExportFormat</span><span class="p">:</span>
+    <span class="n">CSV</span> <span class="o">=</span> <span class="s1">&#39;csv&#39;</span>
+    <span class="n">EXCEL</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span>
+    <span class="n">JSON</span> <span class="o">=</span> <span class="s1">&#39;json&#39;</span>
+    <span class="n">PARQUET</span> <span class="o">=</span> <span class="s1">&#39;parquet&#39;</span>
+    <span class="n">HDF5</span> <span class="o">=</span> <span class="s1">&#39;hdf5&#39;</span>
+    <span class="n">SQL</span> <span class="o">=</span> <span class="s1">&#39;sql&#39;</span>
+    <span class="n">PDF</span> <span class="o">=</span> <span class="s1">&#39;pdf&#39;</span>
+    <span class="n">PNG</span> <span class="o">=</span> <span class="s1">&#39;png&#39;</span>
+    <span class="n">SVG</span> <span class="o">=</span> <span class="s1">&#39;svg&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="tipos-de-grafico">
+<h3>Tipos de Gráfico<a class="headerlink" href="#tipos-de-grafico" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ChartType</span><span class="p">:</span>
+    <span class="n">BAR</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+    <span class="n">LINE</span> <span class="o">=</span> <span class="s1">&#39;line&#39;</span>
+    <span class="n">PIE</span> <span class="o">=</span> <span class="s1">&#39;pie&#39;</span>
+    <span class="n">SCATTER</span> <span class="o">=</span> <span class="s1">&#39;scatter&#39;</span>
+    <span class="n">HISTOGRAM</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span>
+    <span class="n">BOX</span> <span class="o">=</span> <span class="s1">&#39;box&#39;</span>
+    <span class="n">AREA</span> <span class="o">=</span> <span class="s1">&#39;area&#39;</span>
+    <span class="n">HEATMAP</span> <span class="o">=</span> <span class="s1">&#39;heatmap&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="metricas-de-performance">
+<h2>Métricas de Performance<a class="headerlink" href="#metricas-de-performance" title="Link to this heading"></a></h2>
+<section id="seguimiento-de-uso-de-memoria">
+<h3>Seguimiento de Uso de Memoria<a class="headerlink" href="#seguimiento-de-uso-de-memoria" title="Link to this heading"></a></h3>
+<p>Monitorear consumo de memoria de aplicación:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MemoryMonitor</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_memory_usage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener estadísticas de uso de memoria actual.&quot;&quot;&quot;</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+        <span class="n">memory_info</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;rss&#39;</span><span class="p">:</span> <span class="n">memory_info</span><span class="o">.</span><span class="n">rss</span><span class="p">,</span>  <span class="c1"># Resident Set Size</span>
+            <span class="s1">&#39;vms&#39;</span><span class="p">:</span> <span class="n">memory_info</span><span class="o">.</span><span class="n">vms</span><span class="p">,</span>  <span class="c1"># Virtual Memory Size</span>
+            <span class="s1">&#39;percent&#39;</span><span class="p">:</span> <span class="n">process</span><span class="o">.</span><span class="n">memory_percent</span><span class="p">()</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="temporizacion-de-operaciones">
+<h3>Temporización de Operaciones<a class="headerlink" href="#temporizacion-de-operaciones" title="Link to this heading"></a></h3>
+<p>Temporización de performance para operaciones:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PerformanceTimer</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operation_name</span> <span class="o">=</span> <span class="n">operation_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> completado en </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">duration</span>
+</pre></div>
+</div>
+<p><strong>Uso de Context Manager:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">PerformanceTimer</span><span class="p">(</span><span class="s2">&quot;carga_datos&quot;</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data_handler</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="puntos-de-extension">
+<h2>Puntos de Extensión<a class="headerlink" href="#puntos-de-extension" title="Link to this heading"></a></h2>
+<section id="arquitectura-de-plugin">
+<h3>Arquitectura de Plugin<a class="headerlink" href="#arquitectura-de-plugin" title="Link to this heading"></a></h3>
+<p>Sistema extensible de plugin para funcionalidad personalizada:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PluginInterface</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inicializar plugin con referencia de ventana principal.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_menu_items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retornar items de menú a agregar al menú de aplicación.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="fuentes-de-datos-personalizadas">
+<h3>Fuentes de Datos Personalizadas<a class="headerlink" href="#fuentes-de-datos-personalizadas" title="Link to this heading"></a></h3>
+<p>Agregar soporte para fuentes de datos nuevas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomDataSource</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_spec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verificar si esta fuente puede manejar la especificación.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_spec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cargar datos desde la fuente personalizada.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Registro:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Registrar fuente de datos personalizada</span>
+<span class="n">data_handler</span><span class="o">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="n">CustomDataSource</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="formatos-de-exportacion-personalizados">
+<h3>Formatos de Exportación Personalizados<a class="headerlink" href="#formatos-de-exportacion-personalizados" title="Link to this heading"></a></h3>
+<p>Agregar soporte de formato de exportación nuevo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomExporter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_format_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retornar nombre de formato.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exportar datos a formato personalizado.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Registro:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Registrar exportador personalizado</span>
+<span class="n">data_handler</span><span class="o">.</span><span class="n">register_exporter</span><span class="p">(</span><span class="n">CustomExporter</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="guia-de-migracion">
+<h2>Guía de Migración<a class="headerlink" href="#guia-de-migracion" title="Link to this heading"></a></h2>
+<section id="compatibilidad-de-versiones">
+<h3>Compatibilidad de Versiones<a class="headerlink" href="#compatibilidad-de-versiones" title="Link to this heading"></a></h3>
+<p><strong>Cambios de API por Versión:</strong></p>
+<ul class="simple">
+<li><p><strong>v1.0.0</strong>: Release inicial de API</p></li>
+<li><p><strong>v1.1.0</strong>: Agregadas operaciones async, manejo de errores mejorado</p></li>
+</ul>
+<p><strong>Compatibilidad hacia Atrás:</strong></p>
+<ul class="simple">
+<li><p>Todas las APIs públicas mantienen compatibilidad hacia atrás</p></li>
+<li><p>Métodos obsoletos emiten warnings antes de eliminación</p></li>
+<li><p>Guías de migración provistas para versiones principales</p></li>
+</ul>
+</section>
+<section id="avisos-de-deprecacion">
+<h3>Avisos de Deprecación<a class="headerlink" href="#avisos-de-deprecacion" title="Link to this heading"></a></h3>
+<p><strong>Métodos Obsoletos:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obsoleto en v1.1.0</span>
+<span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;Usar load_file() en su lugar&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">loadDataFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Ruta de Migración:</strong></p>
+<ol class="arabic simple">
+<li><p>Actualizar llamadas a métodos a nuevas firmas</p></li>
+<li><p>Reemplazar clases obsoletas con implementaciones actuales</p></li>
+<li><p>Actualizar archivos de configuración a nuevo formato</p></li>
+<li><p>Probar con nueva versión antes de producción</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="code_walkthrough/advanced_features.html" class="btn btn-neutral float-left" title="Advanced Features Implementation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development_guide.html" class="btn btn-neutral float-right" title="Guía de Desarrollo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

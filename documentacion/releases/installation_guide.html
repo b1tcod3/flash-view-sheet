@@ -1,0 +1,647 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Instalación &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="v1.0.0/release_notes.html" />
+    <link rel="prev" title="Guía de Desarrollo" href="../developer_guide/development_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Instalación</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#metodo-1-instalacion-desde-pypi">Método 1: Instalación desde PyPI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-simple">Instalación Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#metodo-2-instalacion-desde-codigo-fuente">Método 2: Instalación desde Código Fuente</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-de-desarrollo">Instalación de Desarrollo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#metodo-3-instalacion-con-conda">Método 3: Instalación con Conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-con-conda">Instalación con Conda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#instrucciones-especificas-de-plataforma">Instrucciones Específicas de Plataforma</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-en-windows">Instalación en Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-en-macos">Instalación en macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-en-linux">Instalación en Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#post-instalacion">Post-Instalación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-inicial">Configuración Inicial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizacion-de-performance">Optimización de Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directorio-de-datos-predeterminado">Directorio de Datos Predeterminado</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#solucion-de-problemas-de-instalacion">Solución de Problemas de Instalación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-instalacion-comunes">Problemas de Instalación Comunes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verificacion-y-testing">Verificación y Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#desinstalacion">Desinstalación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#eliminacion-completa">Eliminación Completa</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#actualizacion-de-flash-sheet">Actualización de Flash Sheet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#actualizaciones-automaticas">Actualizaciones Automáticas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#actualizaciones-manuales">Actualizaciones Manuales</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backup-antes-de-actualizar">Backup Antes de Actualizar</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#uso-desde-linea-de-comandos">Uso desde Línea de Comandos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#opciones-avanzadas-de-instalacion">Opciones Avanzadas de Instalación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variables-de-entorno">Variables de Entorno</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#instalacion-en-red">Instalación en Red</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-empresarial">Deployment Empresarial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instalacion-offline">Instalación Offline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ayuda-de-instalacion">Ayuda de Instalación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#soporte-de-instalacion">Soporte de Instalación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compatibilidad-del-sistema">Compatibilidad del Sistema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Instalación</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/releases/installation_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-instalacion">
+<h1>Guía de Instalación<a class="headerlink" href="#guia-de-instalacion" title="Link to this heading"></a></h1>
+<p>Esta guía proporciona instrucciones detalladas para instalar Flash Sheet en diferentes plataformas y entornos.</p>
+<section id="metodo-1-instalacion-desde-pypi">
+<h2>Método 1: Instalación desde PyPI<a class="headerlink" href="#metodo-1-instalacion-desde-pypi" title="Link to this heading"></a></h2>
+<section id="instalacion-simple">
+<h3>Instalación Simple<a class="headerlink" href="#instalacion-simple" title="Link to this heading"></a></h3>
+<p><strong>Para usuarios finales:</strong></p>
+<ol class="arabic">
+<li><p>Asegurar que Python 3.7+ esté instalado</p></li>
+<li><p>Instalar Flash Sheet desde PyPI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+</li>
+<li><p>Lanzar la aplicación:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flash-sheet
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="metodo-2-instalacion-desde-codigo-fuente">
+<h2>Método 2: Instalación desde Código Fuente<a class="headerlink" href="#metodo-2-instalacion-desde-codigo-fuente" title="Link to this heading"></a></h2>
+<section id="instalacion-de-desarrollo">
+<h3>Instalación de Desarrollo<a class="headerlink" href="#instalacion-de-desarrollo" title="Link to this heading"></a></h3>
+<p><strong>Para desarrolladores y usuarios avanzados:</strong></p>
+<ol class="arabic">
+<li><p>Clonar el repositorio:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/your-org/flash-sheet.git
+<span class="nb">cd</span><span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+</li>
+<li><p>Crear entorno virtual:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># En Windows: venv\Scripts\activate</span>
+</pre></div>
+</div>
+</li>
+<li><p>Instalar dependencias:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p>Ejecutar la aplicación:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>main.py
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="metodo-3-instalacion-con-conda">
+<h2>Método 3: Instalación con Conda<a class="headerlink" href="#metodo-3-instalacion-con-conda" title="Link to this heading"></a></h2>
+<section id="instalacion-con-conda">
+<h3>Instalación con Conda<a class="headerlink" href="#instalacion-con-conda" title="Link to this heading"></a></h3>
+<p><strong>Usando conda:</strong></p>
+<ol class="arabic">
+<li><p>Instalar Miniconda o Anaconda</p></li>
+<li><p>Crear un nuevo entorno:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>flash-sheet<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.8
+conda<span class="w"> </span>activate<span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+</li>
+<li><p>Instalar Flash Sheet:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>your-channel<span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+</li>
+<li><p>Lanzar la aplicación:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flash-sheet
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="instrucciones-especificas-de-plataforma">
+<h2>Instrucciones Específicas de Plataforma<a class="headerlink" href="#instrucciones-especificas-de-plataforma" title="Link to this heading"></a></h2>
+<section id="instalacion-en-windows">
+<h3>Instalación en Windows<a class="headerlink" href="#instalacion-en-windows" title="Link to this heading"></a></h3>
+<p><strong>Prerrequisitos:</strong></p>
+<ul class="simple">
+<li><p>Windows 10 o posterior</p></li>
+<li><p>Privilegios de administrador para instalación</p></li>
+</ul>
+<p><strong>Pasos de Instalación:</strong></p>
+<ol class="arabic simple">
+<li><p>Descargar el instalador desde la página de releases</p></li>
+<li><p>Hacer clic derecho en el instalador y seleccionar “Ejecutar como administrador”</p></li>
+<li><p>Seguir el asistente de instalación:</p>
+<ul class="simple">
+<li><p>Elegir directorio de instalación (predeterminado: C:Program FilesFlash Sheet)</p></li>
+<li><p>Seleccionar componentes a instalar</p></li>
+<li><p>Crear acceso directo en escritorio (recomendado)</p></li>
+</ul>
+</li>
+<li><p>El instalador agregará Flash Sheet a tu PATH</p></li>
+</ol>
+<p><strong>Desinstalación:</strong></p>
+<ul class="simple">
+<li><p>Usar Configuración de Windows → Aplicaciones → Flash Sheet → Desinstalar</p></li>
+<li><p>O ejecutar el desinstalador desde el directorio de instalación</p></li>
+</ul>
+</section>
+<section id="instalacion-en-macos">
+<h3>Instalación en macOS<a class="headerlink" href="#instalacion-en-macos" title="Link to this heading"></a></h3>
+<p><strong>Prerrequisitos:</strong></p>
+<ul class="simple">
+<li><p>macOS 10.15 o posterior</p></li>
+<li><p>Gatekeeper puede necesitar configuración para aplicaciones sin firmar</p></li>
+</ul>
+<p><strong>Pasos de Instalación:</strong></p>
+<ol class="arabic simple">
+<li><p>Descargar el archivo .dmg desde la página de releases</p></li>
+<li><p>Hacer doble clic en el archivo .dmg para montarlo</p></li>
+<li><p>Arrastrar Flash Sheet a la carpeta Aplicaciones</p></li>
+<li><p>Expulsar la imagen de disco</p></li>
+</ol>
+<p><strong>Primer Lanzamiento:</strong></p>
+<p>macOS puede mostrar una advertencia de seguridad. Para permitir que Flash Sheet se ejecute:</p>
+<ol class="arabic simple">
+<li><p>Ir a Preferencias del Sistema → Seguridad y Privacidad</p></li>
+<li><p>Hacer clic en el botón “Permitir” junto a Flash Sheet</p></li>
+<li><p>Lanzar Flash Sheet desde Aplicaciones</p></li>
+</ol>
+<p><strong>Desinstalación:</strong></p>
+<ul class="simple">
+<li><p>Arrastrar Flash Sheet desde Aplicaciones a la Papelera</p></li>
+<li><p>Vaciar la Papelera</p></li>
+</ul>
+</section>
+<section id="instalacion-en-linux">
+<h3>Instalación en Linux<a class="headerlink" href="#instalacion-en-linux" title="Link to this heading"></a></h3>
+<p><strong>Ubuntu/Debian:</strong></p>
+<ol class="arabic">
+<li><p>Descargar el paquete .deb desde la página de releases</p></li>
+<li><p>Instalar usando dpkg:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>flash-sheet.deb
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-f<span class="w">  </span><span class="c1"># Corregir cualquier dependencia</span>
+</pre></div>
+</div>
+</li>
+<li><p>Lanzar desde menú de aplicaciones o línea de comandos:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flash-sheet
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Fedora/CentOS:</strong></p>
+<ol class="arabic">
+<li><p>Descargar el paquete .rpm desde la página de releases</p></li>
+<li><p>Instalar usando rpm:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>rpm<span class="w"> </span>-i<span class="w"> </span>flash-sheet.rpm
+</pre></div>
+</div>
+</li>
+<li><p>Lanzar la aplicación</p></li>
+</ol>
+<p><strong>AppImage (Universal):</strong></p>
+<ol class="arabic">
+<li><p>Descargar el archivo AppImage</p></li>
+<li><p>Hacerlo ejecutable y ejecutar:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>flash-sheet.AppImage
+./flash-sheet.AppImage
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Desinstalación:</strong></p>
+<ul class="simple">
+<li><p>Para instalaciones empaquetadas: Usar el administrador de paquetes</p></li>
+<li><p>Para AppImage: Simplemente eliminar el archivo</p></li>
+</ul>
+</section>
+</section>
+<section id="post-instalacion">
+<h2>Post-Instalación<a class="headerlink" href="#post-instalacion" title="Link to this heading"></a></h2>
+<section id="configuracion-inicial">
+<h3>Configuración Inicial<a class="headerlink" href="#configuracion-inicial" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Selección de Idioma</strong>: Elegir idioma preferido</p></li>
+<li><p><strong>Selección de Tema</strong>: Elegir tema claro u oscuro</p></li>
+<li><p><strong>Configuraciones Predeterminadas</strong>: Configurar opciones de carga de datos predeterminadas</p></li>
+<li><p><strong>Asociaciones de Archivo</strong>: Asociar tipos de archivo con Flash Sheet (opcional)</p></li>
+</ol>
+</section>
+<section id="optimizacion-de-performance">
+<h3>Optimización de Performance<a class="headerlink" href="#optimizacion-de-performance" title="Link to this heading"></a></h3>
+<p><strong>Configuraciones de Memoria:</strong></p>
+<ul class="simple">
+<li><p>Asignación de memoria predeterminada es automática</p></li>
+<li><p>Para datasets grandes, aumentar memoria disponible en configuraciones</p></li>
+<li><p>Cerrar otras aplicaciones al trabajar con datos grandes</p></li>
+</ul>
+<p><strong>Configuraciones de Pantalla:</strong></p>
+<ul class="simple">
+<li><p>Usar escalado de DPI alto para pantallas de alta resolución</p></li>
+<li><p>Ajustar tamaños de fuente para legibilidad</p></li>
+<li><p>Habilitar aceleración de hardware si disponible</p></li>
+</ul>
+</section>
+<section id="directorio-de-datos-predeterminado">
+<h3>Directorio de Datos Predeterminado<a class="headerlink" href="#directorio-de-datos-predeterminado" title="Link to this heading"></a></h3>
+<p><strong>Ubicaciones Predeterminadas de Datos:</strong></p>
+<ul class="simple">
+<li><p><strong>Windows</strong>: <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Flash</span> <span class="pre">Sheet</span></code></p></li>
+<li><p><strong>macOS</strong>: <code class="docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/Flash</span> <span class="pre">Sheet</span></code></p></li>
+<li><p><strong>Linux</strong>: <code class="docutils literal notranslate"><span class="pre">~/.config/flash-sheet</span></code></p></li>
+</ul>
+<p><strong>Directorio de Datos Personalizado:</strong></p>
+<ol class="arabic simple">
+<li><p>Crear una carpeta dedicada para tus datos</p></li>
+<li><p>En configuraciones de Flash Sheet, establecer el directorio de datos predeterminado</p></li>
+<li><p>Colocar plantillas y archivos de configuración allí</p></li>
+</ol>
+</section>
+</section>
+<section id="solucion-de-problemas-de-instalacion">
+<h2>Solución de Problemas de Instalación<a class="headerlink" href="#solucion-de-problemas-de-instalacion" title="Link to this heading"></a></h2>
+<section id="problemas-de-instalacion-comunes">
+<h3>Problemas de Instalación Comunes<a class="headerlink" href="#problemas-de-instalacion-comunes" title="Link to this heading"></a></h3>
+<p><strong>Error “Python no encontrado”:</strong></p>
+<ul class="simple">
+<li><p>Instalar Python 3.7+ desde python.org</p></li>
+<li><p>Agregar Python al PATH del sistema</p></li>
+<li><p>Reiniciar línea de comandos/terminal</p></li>
+</ul>
+<p><strong>Permiso Denegado:</strong></p>
+<ul class="simple">
+<li><p>Ejecutar instalador como administrador (Windows)</p></li>
+<li><p>Usar sudo para instalación a nivel de sistema (Linux/macOS)</p></li>
+<li><p>Verificar permisos de carpeta</p></li>
+</ul>
+<p><strong>Dependencias Faltantes:</strong></p>
+<ul class="simple">
+<li><p>Instalar paquetes de sistema requeridos</p></li>
+<li><p>Actualizar pip: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">pip</span></code></p></li>
+<li><p>Usar entorno virtual para evitar conflictos</p></li>
+</ul>
+<p><strong>Problemas de Qt/PySide6:</strong></p>
+<ul class="simple">
+<li><p>Instalar bibliotecas de desarrollo de Qt</p></li>
+<li><p>Actualizar controladores de gráficos</p></li>
+<li><p>Verificar configuración de servidor de pantalla (Linux)</p></li>
+</ul>
+<p><strong>Antivirus Bloqueando:</strong></p>
+<ul class="simple">
+<li><p>Agregar Flash Sheet a exclusiones de antivirus</p></li>
+<li><p>Deshabilitar escaneo en tiempo real durante instalación</p></li>
+<li><p>Descargar desde fuentes oficiales únicamente</p></li>
+</ul>
+</section>
+<section id="verificacion-y-testing">
+<h3>Verificación y Testing<a class="headerlink" href="#verificacion-y-testing" title="Link to this heading"></a></h3>
+<p><strong>Verificación de Instalación:</strong></p>
+<ol class="arabic simple">
+<li><p>Lanzar Flash Sheet</p></li>
+<li><p>Verificar versión en Ayuda → Acerca de</p></li>
+<li><p>Cargar un archivo CSV de muestra</p></li>
+<li><p>Probar funcionalidad básica de exportación</p></li>
+</ol>
+<p><strong>Testing de Performance:</strong></p>
+<ol class="arabic simple">
+<li><p>Cargar un dataset de muestra</p></li>
+<li><p>Probar diferentes modos de vista</p></li>
+<li><p>Intentar operaciones de exportación</p></li>
+<li><p>Monitorear uso de memoria</p></li>
+</ol>
+</section>
+</section>
+<section id="desinstalacion">
+<h2>Desinstalación<a class="headerlink" href="#desinstalacion" title="Link to this heading"></a></h2>
+<section id="eliminacion-completa">
+<h3>Eliminación Completa<a class="headerlink" href="#eliminacion-completa" title="Link to this heading"></a></h3>
+<p><strong>Windows:</strong></p>
+<ol class="arabic">
+<li><p>Ir a Configuración → Aplicaciones → Flash Sheet</p></li>
+<li><p>Hacer clic en “Desinstalar”</p></li>
+<li><p>Eliminar datos de usuario si se desea:</p>
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span><span class="k">rmdir</span> /s <span class="s2">&quot;</span><span class="nv">%APPDATA%</span><span class="s2">\Flash Sheet&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>macOS:</strong></p>
+<ol class="arabic">
+<li><p>Arrastrar Flash Sheet desde Aplicaciones a la Papelera</p></li>
+<li><p>Eliminar datos de usuario:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>-rf<span class="w"> </span>~/Library/Application<span class="se">\ </span>Support/Flash<span class="se">\ </span>Sheet
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Linux:</strong></p>
+<ol class="arabic">
+<li><p>Usar administrador de paquetes para desinstalar</p></li>
+<li><p>Eliminar datos de usuario:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>-rf<span class="w"> </span>~/.config/flash-sheet
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="actualizacion-de-flash-sheet">
+<h2>Actualización de Flash Sheet<a class="headerlink" href="#actualizacion-de-flash-sheet" title="Link to this heading"></a></h2>
+<section id="actualizaciones-automaticas">
+<h3>Actualizaciones Automáticas<a class="headerlink" href="#actualizaciones-automaticas" title="Link to this heading"></a></h3>
+<p>Flash Sheet puede verificar actualizaciones automáticamente:</p>
+<ol class="arabic simple">
+<li><p>Ir a Ayuda → Verificar Actualizaciones</p></li>
+<li><p>Descargar e instalar actualizaciones disponibles</p></li>
+<li><p>Reiniciar la aplicación</p></li>
+</ol>
+</section>
+<section id="actualizaciones-manuales">
+<h3>Actualizaciones Manuales<a class="headerlink" href="#actualizaciones-manuales" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Descargar nueva versión desde página de releases</p></li>
+<li><p>Cerrar Flash Sheet</p></li>
+<li><p>Ejecutar instalador para nueva versión</p></li>
+<li><p>El instalador actualizará tu instalación existente</p></li>
+</ol>
+<p><strong>Desde Código Fuente:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>flash-sheet
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+python<span class="w"> </span>main.py
+</pre></div>
+</div>
+</section>
+<section id="backup-antes-de-actualizar">
+<h3>Backup Antes de Actualizar<a class="headerlink" href="#backup-antes-de-actualizar" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Exportar datos importantes</p></li>
+<li><p>Hacer backup de archivos de configuración</p></li>
+<li><p>Notar configuraciones personalizadas</p></li>
+<li><p>Guardar archivos de proyecto</p></li>
+</ul>
+</section>
+</section>
+<section id="uso-desde-linea-de-comandos">
+<h2>Uso desde Línea de Comandos<a class="headerlink" href="#uso-desde-linea-de-comandos" title="Link to this heading"></a></h2>
+<section id="opciones-avanzadas-de-instalacion">
+<h3>Opciones Avanzadas de Instalación<a class="headerlink" href="#opciones-avanzadas-de-instalacion" title="Link to this heading"></a></h3>
+<p><strong>Instalación Silenciosa (Windows):</strong></p>
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>flash-sheet-setup.exe /S /D=C:\Program Files\Flash Sheet
+</pre></div>
+</div>
+<p><strong>Directorio de Instalación Personalizado:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linux/macOS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">FLASH_SHEET_HOME</span><span class="o">=</span>/opt/flash-sheet
+pip<span class="w"> </span>install<span class="w"> </span>--target<span class="o">=</span><span class="nv">$FLASH_SHEET_HOME</span><span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+<p><strong>Instalación de Desarrollo:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">  </span><span class="c1"># Instalación editable para desarrollo</span>
+</pre></div>
+</div>
+</section>
+<section id="variables-de-entorno">
+<h3>Variables de Entorno<a class="headerlink" href="#variables-de-entorno" title="Link to this heading"></a></h3>
+<p><strong>Configuración vía Entorno:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">FLASH_SHEET_CONFIG_DIR</span><span class="o">=</span>~/.flash-sheet
+<span class="nb">export</span><span class="w"> </span><span class="nv">FLASH_SHEET_LOG_LEVEL</span><span class="o">=</span>DEBUG
+<span class="nb">export</span><span class="w"> </span><span class="nv">FLASH_SHEET_MAX_MEMORY</span><span class="o">=</span>4GB
+</pre></div>
+</div>
+<p><strong>Configuración de Ruta de Python:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$PYTHONPATH</span>:/path/to/flash-sheet
+</pre></div>
+</div>
+</section>
+</section>
+<section id="instalacion-en-red">
+<h2>Instalación en Red<a class="headerlink" href="#instalacion-en-red" title="Link to this heading"></a></h2>
+<section id="deployment-empresarial">
+<h3>Deployment Empresarial<a class="headerlink" href="#deployment-empresarial" title="Link to this heading"></a></h3>
+<p><strong>Política de Grupo de Windows:</strong></p>
+<ol class="arabic simple">
+<li><p>Crear punto de distribución de software</p></li>
+<li><p>Usar instalador MSI para deployment de política de grupo</p></li>
+<li><p>Configurar configuraciones de instalación vía GPO</p></li>
+</ol>
+<p><strong>Gestión de Paquetes Linux:</strong></p>
+<ol class="arabic simple">
+<li><p>Crear repositorio de paquetes interno</p></li>
+<li><p>Distribuir paquetes .deb/.rpm</p></li>
+<li><p>Usar herramientas de gestión de configuración (Ansible, Puppet)</p></li>
+</ol>
+<p><strong>MDM de macOS:</strong></p>
+<ol class="arabic simple">
+<li><p>Usar soluciones de dispositivo móvil management</p></li>
+<li><p>Deploy vía perfil MDM</p></li>
+<li><p>Configurar políticas de seguridad</p></li>
+</ol>
+</section>
+<section id="instalacion-offline">
+<h3>Instalación Offline<a class="headerlink" href="#instalacion-offline" title="Link to this heading"></a></h3>
+<p><strong>Sistemas Air-Gapped:</strong></p>
+<ol class="arabic">
+<li><p>Descargar todas las dependencias en sistema conectado</p></li>
+<li><p>Transferir archivos a sistema offline</p></li>
+<li><p>Instalar usando caché de paquete local:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--no-index<span class="w"> </span>--find-links<span class="o">=</span>/path/to/packages<span class="w"> </span>flash-sheet
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="ayuda-de-instalacion">
+<h2>Ayuda de Instalación<a class="headerlink" href="#ayuda-de-instalacion" title="Link to this heading"></a></h2>
+<section id="soporte-de-instalacion">
+<h3>Soporte de Instalación<a class="headerlink" href="#soporte-de-instalacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Documentación</strong>: Verificar sección de solución de problemas</p></li>
+<li><p><strong>Rastreador de Problemas</strong>: Reportar problemas de instalación</p></li>
+<li><p><strong>Foro Comunitario</strong>: Hacer preguntas de instalación</p></li>
+<li><p><strong>Soporte por Email</strong>: <a class="reference external" href="mailto:contact&#37;&#52;&#48;flash-sheet&#46;org">contact<span>&#64;</span>flash-sheet<span>&#46;</span>org</a></p></li>
+</ul>
+</section>
+<section id="compatibilidad-del-sistema">
+<h3>Compatibilidad del Sistema<a class="headerlink" href="#compatibilidad-del-sistema" title="Link to this heading"></a></h3>
+<p><strong>Plataformas Probadas:</strong></p>
+<ul class="simple">
+<li><p>Windows 10, 11</p></li>
+<li><p>macOS 10.15 - 12.x</p></li>
+<li><p>Ubuntu 18.04 - 22.04</p></li>
+<li><p>CentOS 7, 8</p></li>
+<li><p>Fedora 34+</p></li>
+</ul>
+<p><strong>Limitaciones Conocidas:</strong></p>
+<ul class="simple">
+<li><p>Procesadores ARM: Soporte limitado</p></li>
+<li><p>Wayland (Linux): Puede requerir fallback a X11</p></li>
+<li><p>Controladores de gráficos antiguos: Pueden necesitar actualizaciones</p></li>
+</ul>
+</section>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<p>Después de instalación exitosa:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="../user_guide/getting_started.html"><span class="doc">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</span></a> - Aprender lo básico</p></li>
+<li><p><a class="reference internal" href="../user_guide/basic_usage.html"><span class="doc">Guía de Uso Básico</span></a> - Comenzar a usar Flash Sheet</p></li>
+<li><p><a class="reference internal" href="../user_guide/advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Explorar características avanzadas</p></li>
+<li><p><a class="reference internal" href="../developer_guide/development_guide.html"><span class="doc">Guía de Desarrollo</span></a> - Para desarrolladores</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../developer_guide/development_guide.html" class="btn btn-neutral float-left" title="Guía de Desarrollo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="v1.0.0/release_notes.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

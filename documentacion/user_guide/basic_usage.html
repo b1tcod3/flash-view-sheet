@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Uso Básico &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Visualización de Datos" href="data_visualization.html" />
+    <link rel="prev" title="Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Uso Básico</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#carga-de-archivos-de-datos">Carga de Archivos de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-soportados">Formatos Soportados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#carga-de-un-archivo-unico">Carga de un Archivo Único</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opciones-de-carga-de-archivos">Opciones de Carga de Archivos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#navegacion-de-la-interfaz">Navegación de la Interfaz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-de-interfaz-principal">Componentes de Interfaz Principal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#navegacion-de-vistas">Navegación de Vistas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#operaciones-de-tabla-de-datos">Operaciones de Tabla de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visualizacion-de-datos">Visualización de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtrado-y-busqueda">Filtrado y Búsqueda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#informacion-del-conjunto-de-datos">Información del Conjunto de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exportacion-basica-de-datos">Exportación Básica de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-a-csv">Exportación a CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-a-excel">Exportación a Excel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#otras-opciones-de-exportacion">Otras Opciones de Exportación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#atajos-de-teclado">Atajos de Teclado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Uso Básico</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/basic_usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-uso-basico">
+<h1>Guía de Uso Básico<a class="headerlink" href="#guia-de-uso-basico" title="Link to this heading"></a></h1>
+<p>Esta guía cubre las operaciones fundamentales en Flash Sheet, incluyendo carga de archivos de datos, navegación de la interfaz y realización de operaciones básicas de datos.</p>
+<section id="carga-de-archivos-de-datos">
+<h2>Carga de Archivos de Datos<a class="headerlink" href="#carga-de-archivos-de-datos" title="Link to this heading"></a></h2>
+<p>Flash Sheet soporta múltiples formatos de datos para carga:</p>
+<section id="formatos-soportados">
+<h3>Formatos Soportados<a class="headerlink" href="#formatos-soportados" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>CSV</strong>: Valores separados por coma (.csv)</p></li>
+<li><p><strong>Excel</strong>: Archivos Microsoft Excel (.xlsx, .xls)</p></li>
+<li><p><strong>JSON</strong>: Notación de Objetos JavaScript (.json)</p></li>
+<li><p><strong>Parquet</strong>: Formato columnar de almacenamiento (.parquet)</p></li>
+<li><p><strong>HDF5</strong>: Formato de Datos Jerárquicos (.h5)</p></li>
+<li><p><strong>Bases de Datos SQL</strong>: Conexión directa a bases de datos</p></li>
+</ul>
+</section>
+<section id="carga-de-un-archivo-unico">
+<h3>Carga de un Archivo Único<a class="headerlink" href="#carga-de-un-archivo-unico" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Archivo”</strong> → <strong>“Cargar Archivo”</strong> en el menú principal</p></li>
+<li><p>Navega a tu archivo de datos</p></li>
+<li><p>Selecciona el archivo y haz clic en <strong>“Abrir”</strong></p></li>
+<li><p>Los datos serán cargados y mostrados en la vista de tabla principal</p></li>
+</ol>
+</section>
+<section id="opciones-de-carga-de-archivos">
+<h3>Opciones de Carga de Archivos<a class="headerlink" href="#opciones-de-carga-de-archivos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Selección de Codificación</strong>: Elige la codificación de texto apropiada (UTF-8, ISO-8859-1, etc.)</p></li>
+<li><p><strong>Detección de Delimitadores</strong>: Detección automática de delimitadores CSV</p></li>
+<li><p><strong>Fila de Encabezado</strong>: Especifica qué fila contiene nombres de columna</p></li>
+<li><p><strong>Tipos de Datos</strong>: Detección automática de tipos de columna</p></li>
+</ul>
+</section>
+</section>
+<section id="navegacion-de-la-interfaz">
+<h2>Navegación de la Interfaz<a class="headerlink" href="#navegacion-de-la-interfaz" title="Link to this heading"></a></h2>
+<section id="componentes-de-interfaz-principal">
+<h3>Componentes de Interfaz Principal<a class="headerlink" href="#componentes-de-interfaz-principal" title="Link to this heading"></a></h3>
+<p>La interfaz de Flash Sheet consiste en varias áreas clave:</p>
+<ul class="simple">
+<li><p><strong>Barra de Menú</strong>: Acceso a todas las funciones de la aplicación</p></li>
+<li><p><strong>Barra de Herramientas</strong>: Acceso rápido a operaciones comunes</p></li>
+<li><p><strong>Vista de Datos</strong>: Tabla principal mostrando datos cargados</p></li>
+<li><p><strong>Barra de Estado</strong>: Información sobre el conjunto de datos actual y operaciones</p></li>
+</ul>
+</section>
+<section id="navegacion-de-vistas">
+<h3>Navegación de Vistas<a class="headerlink" href="#navegacion-de-vistas" title="Link to this heading"></a></h3>
+<p>Flash Sheet proporciona múltiples vistas para diferentes propósitos:</p>
+<ul class="simple">
+<li><p><strong>Vista de Datos</strong>: Vista de tabla principal con herramientas de manipulación de datos</p></li>
+<li><p><strong>Vista de Gráficos</strong>: Herramientas de gráficos y visualización</p></li>
+<li><p><strong>Vista de Datos Unidos</strong>: Resultados de operaciones de unión de datos</p></li>
+</ul>
+<p>Cambiando entre vistas usando el sistema de pestañas o opciones de menú.</p>
+</section>
+</section>
+<section id="operaciones-de-tabla-de-datos">
+<h2>Operaciones de Tabla de Datos<a class="headerlink" href="#operaciones-de-tabla-de-datos" title="Link to this heading"></a></h2>
+<section id="visualizacion-de-datos">
+<h3>Visualización de Datos<a class="headerlink" href="#visualizacion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Paginación</strong>: Navega a través de datasets grandes usando controles de página</p></li>
+<li><p><strong>Ordenamiento de Columnas</strong>: Haz clic en encabezados de columna para ordenar datos</p></li>
+<li><p><strong>Redimensionamiento de Columnas</strong>: Arrastra bordes de columna para ajustar anchos</p></li>
+<li><p><strong>Selección de Filas</strong>: Haz clic en filas para seleccionarlas para operaciones</p></li>
+</ul>
+</section>
+<section id="filtrado-y-busqueda">
+<h3>Filtrado y Búsqueda<a class="headerlink" href="#filtrado-y-busqueda" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Búsqueda Global</strong>: Usa la caja de búsqueda para encontrar valores específicos</p></li>
+<li><p><strong>Filtros de Columnas</strong>: Aplica filtros a columnas individuales</p></li>
+<li><p><strong>Filtros Avanzados</strong>: Combina múltiples condiciones de filtro</p></li>
+<li><p><strong>Persistencia de Filtros</strong>: Guarda y reutiliza configuraciones de filtro</p></li>
+</ul>
+</section>
+<section id="informacion-del-conjunto-de-datos">
+<h3>Información del Conjunto de Datos<a class="headerlink" href="#informacion-del-conjunto-de-datos" title="Link to this heading"></a></h3>
+<p>Ve información comprehensiva sobre tus datos cargados:</p>
+<ul class="simple">
+<li><p><strong>Conteo de Filas</strong>: Número total de registros</p></li>
+<li><p><strong>Conteo de Columnas</strong>: Número de columnas</p></li>
+<li><p><strong>Tipos de Datos</strong>: Información de tipo para cada columna</p></li>
+<li><p><strong>Uso de Memoria</strong>: Información de tamaño del conjunto de datos</p></li>
+<li><p><strong>Valores Nulos</strong>: Conteo de valores faltantes por columna</p></li>
+</ul>
+</section>
+</section>
+<section id="exportacion-basica-de-datos">
+<h2>Exportación Básica de Datos<a class="headerlink" href="#exportacion-basica-de-datos" title="Link to this heading"></a></h2>
+<p>Flash Sheet soporta múltiples formatos de exportación:</p>
+<section id="exportacion-a-csv">
+<h3>Exportación a CSV<a class="headerlink" href="#exportacion-a-csv" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar CSV”</strong></p></li>
+<li><p>Elige la carpeta de destino</p></li>
+<li><p>Configura opciones de exportación (delimitador, codificación, etc.)</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong></p></li>
+</ol>
+</section>
+<section id="exportacion-a-excel">
+<h3>Exportación a Excel<a class="headerlink" href="#exportacion-a-excel" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar Excel”</strong></p></li>
+<li><p>Selecciona destino y nombre de archivo</p></li>
+<li><p>Elige si incluir formato</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong></p></li>
+</ol>
+</section>
+<section id="otras-opciones-de-exportacion">
+<h3>Otras Opciones de Exportación<a class="headerlink" href="#otras-opciones-de-exportacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Exportación PDF</strong>: Genera reportes PDF formateados</p></li>
+<li><p><strong>Exportación SQL</strong>: Crea declaraciones INSERT de SQL</p></li>
+<li><p><strong>Exportación de Imagen</strong>: Guarda gráficos y visualizaciones como imágenes</p></li>
+</ul>
+</section>
+</section>
+<section id="atajos-de-teclado">
+<h2>Atajos de Teclado<a class="headerlink" href="#atajos-de-teclado" title="Link to this heading"></a></h2>
+<p>Atajos de teclado comunes para operación eficiente:</p>
+<ul class="simple">
+<li><p><strong>Ctrl+O</strong>: Abrir archivo</p></li>
+<li><p><strong>Ctrl+S</strong>: Guardar/exportar vista actual</p></li>
+<li><p><strong>Ctrl+F</strong>: Enfocar caja de búsqueda</p></li>
+<li><p><strong>Ctrl+R</strong>: Refrescar vista de datos</p></li>
+<li><p><strong>Ctrl+5</strong>: Recargar conjunto de datos</p></li>
+<li><p><strong>Esc</strong>: Cancelar operación actual</p></li>
+</ul>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<p>Una vez cómodo con operaciones básicas, explora:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="data_visualization.html"><span class="doc">Guía de Visualización de Datos</span></a> - Técnicas avanzadas de visualización de datos</p></li>
+<li><p><a class="reference internal" href="graphics.html"><span class="doc">Guía de Gráficos y Visualizaciones</span></a> - Creación de gráficos y visualizaciones</p></li>
+<li><p><a class="reference internal" href="basic_export.html"><span class="doc">Guía de Exportación Básica</span></a> - Opciones completas de exportación</p></li>
+<li><p><a class="reference internal" href="advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Manipulación avanzada de datos</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_visualization.html" class="btn btn-neutral float-right" title="Guía de Visualización de Datos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

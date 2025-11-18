@@ -1,0 +1,837 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Arquitectura de Main Window - Recorrido Detallado del Código &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sistema de Data Handler - Recorrido Detallado del Código" href="data_handler.html" />
+    <link rel="prev" title="Sistema de Arquitectura de Flash Sheet" href="../architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resumen-de-arquitectura">Resumen de Arquitectura</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#responsabilidades-clave">Responsabilidades Clave</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#analisis-detallado-del-codigo">Análisis Detallado del Código</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inicializacion-y-configuracion">Inicialización y Configuración</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-menu-implementacion">Sistema de Menú Implementación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-de-carga-de-datos">Pipeline de Carga de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-gestion-de-vistas">Sistema de Gestión de Vistas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caracteristicas-avanzadas-de-integracion">Características Avanzadas de Integración</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-errores-y-recuperacion">Manejo de Errores y Recuperación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integracion-entre-modulos">Integración Entre Módulos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#inicializacion-del-proceso">Inicialización del Proceso</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-ventana">Configuración de Ventana</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-de-ui">Componentes de UI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sistema-de-vistas-arquitectura">Sistema de Vistas Arquitectura</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-widget-apilado">Gestión de Widget Apilado</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logica-de-cambio-de-vistas">Lógica de Cambio de Vistas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Sistema de Menú Implementación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#menu-archivo">Menú Archivo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#menu-datos">Menú Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#menu-ver">Menú Ver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#flujo-de-datos-coordinacion">Flujo de Datos Coordinación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Pipeline de Carga de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinacion-de-exportacion">Coordinación de Exportación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#senales-y-eventos">Señales y Eventos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-eventos">Manejo de Eventos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-conexion">Configuración de Conexión</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#barra-de-estado-actualizaciones">Barra de Estado Actualizaciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dialogos-de-progreso">Diálogos de Progreso</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manejo-de-errores">Manejo de Errores</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-excepciones">Gestión de Excepciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mecanismos-de-recuperacion">Mecanismos de Recuperación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#puntos-de-integracion">Puntos de Integración</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#integracion-de-manejador-de-datos">Integración de Manejador de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integracion-de-vista">Integración de Vista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-plugin">Arquitectura de Plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#consideraciones-de-performance">Consideraciones de Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-memoria">Gestión de Memoria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#capacidad-de-respuesta-de-ui">Capacidad de Respuesta de UI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-y-debugging">Testing y Debugging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unit-testing">Unit Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caracteristicas-de-debug">Características de Debug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mejoras-futuras">Mejoras Futuras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mejoras-planificadas">Mejoras Planificadas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extensibilidad">Extensibilidad</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guide/code_walkthrough/main_window.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sistema-de-arquitectura-de-main-window-recorrido-detallado-del-codigo">
+<h1>Sistema de Arquitectura de Main Window - Recorrido Detallado del Código<a class="headerlink" href="#sistema-de-arquitectura-de-main-window-recorrido-detallado-del-codigo" title="Link to this heading"></a></h1>
+<p>La clase MainWindow sirve como coordinador central para la aplicación Flash Sheet, gestionando el layout general de UI, cambio de vistas y estado de aplicación. Este recorrido proporciona análisis detallado línea por línea de secciones críticas de código.</p>
+<section id="resumen-de-arquitectura">
+<h2>Resumen de Arquitectura<a class="headerlink" href="#resumen-de-arquitectura" title="Link to this heading"></a></h2>
+<p>MainWindow hereda de QMainWindow de PySide6 e implementa la ventana principal de aplicación con sistema de menú, barra de herramientas y widget apilado para gestión de vistas.</p>
+<section id="responsabilidades-clave">
+<h3>Responsabilidades Clave<a class="headerlink" href="#responsabilidades-clave" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Inicialización de UI</strong>: Configurar menús, barras de herramientas y widget central</p></li>
+<li><p><strong>Gestión de Vistas</strong>: Manejar cambio entre diferentes vistas de aplicación</p></li>
+<li><p><strong>Coordinación de Datos</strong>: Gestionar flujo de datos entre componentes</p></li>
+<li><p><strong>Acciones de Menú</strong>: Implementar operaciones de archivo, manipulación de datos y exportación</p></li>
+<li><p><strong>Actualizaciones de Estado</strong>: Mostrar estado de aplicación e información de progreso</p></li>
+</ul>
+</section>
+</section>
+<section id="analisis-detallado-del-codigo">
+<h2>Análisis Detallado del Código<a class="headerlink" href="#analisis-detallado-del-codigo" title="Link to this heading"></a></h2>
+<section id="inicializacion-y-configuracion">
+<h3>Inicialización y Configuración<a class="headerlink" href="#inicializacion-y-configuracion" title="Link to this heading"></a></h3>
+<p><strong>Análisis de Constructor</strong> (main.py líneas 47-92):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Ventana principal de la aplicación&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 5</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="linenos"> 6</span>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Flash View Sheet - Visor de Datos Tabulares&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span>        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>        <span class="c1"># Inicializar componentes</span>
+<span class="linenos">10</span>        <span class="bp">self</span><span class="o">.</span><span class="n">df_original</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">11</span>        <span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">12</span>        <span class="bp">self</span><span class="o">.</span><span class="n">pandas_model</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">13</span>        <span class="bp">self</span><span class="o">.</span><span class="n">loading_thread</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Explicación línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 47</strong>: Definición de clase heredando de QMainWindow (clase de ventana principal de PySide6)</p></li>
+<li><p><strong>Línea 50</strong>: Llamar constructor padre para inicializar framework Qt</p></li>
+<li><p><strong>Línea 51</strong>: Establecer título de ventana en español - decisión de diseño para audiencia objetivo</p></li>
+<li><p><strong>Línea 52</strong>: Establecer geometría inicial de ventana (posición 100,100, tamaño 1200x800) - balanceado para la mayoría de pantallas</p></li>
+<li><p><strong>Líneas 55-59</strong>: Inicializar atributos de datos clave:
+- <code class="docutils literal notranslate"><span class="pre">df_original</span></code>: Almacena el dataset cargado original (preserva integridad de datos)
+- <code class="docutils literal notranslate"><span class="pre">df_vista_actual</span></code>: Datos de vista actual (pueden estar filtrados/transformados)
+- <code class="docutils literal notranslate"><span class="pre">pandas_model</span></code>: Modelo Qt para visualización de tabla
+- <code class="docutils literal notranslate"><span class="pre">loading_thread</span></code>: Hilo de carga en segundo plano para capacidad de respuesta</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Separar datos originales y vista actual permite filtrado/transformaciones sin perder datos originales.</p>
+<p><strong>Análisis de Configuración de UI</strong> (main.py líneas 93-102):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configurar la interfaz de usuario&quot;&quot;&quot;</span>
+<span class="linenos">3</span>    <span class="c1"># Aquí se cargará la interfaz desde el archivo .ui</span>
+<span class="linenos">4</span>    <span class="c1"># Por ahora, creamos una interfaz básica</span>
+<span class="linenos">5</span>    <span class="bp">self</span><span class="o">.</span><span class="n">create_menu_bar</span><span class="p">()</span>
+<span class="linenos">6</span>    <span class="bp">self</span><span class="o">.</span><span class="n">create_tool_bar</span><span class="p">()</span>
+<span class="linenos">7</span>    <span class="bp">self</span><span class="o">.</span><span class="n">create_central_widget</span><span class="p">()</span>
+<span class="linenos">8</span>    <span class="bp">self</span><span class="o">.</span><span class="n">create_status_bar</span><span class="p">()</span>
+<span class="linenos">9</span>    <span class="bp">self</span><span class="o">.</span><span class="n">create_views</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Explicación línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 94</strong>: Método para configurar componentes de interfaz de usuario</p></li>
+<li><p><strong>Líneas 96-97</strong>: Comentarios indicando futura carga de archivo .ui (integración Qt Designer)</p></li>
+<li><p><strong>Línea 98</strong>: Crear barra de menú con todos los menús de aplicación</p></li>
+<li><p><strong>Línea 99</strong>: Crear barra de herramientas con botones de acceso rápido</p></li>
+<li><p><strong>Línea 100</strong>: Crear widget central (contenedor de vistas apiladas)</p></li>
+<li><p><strong>Línea 101</strong>: Crear barra de estado para mensajes y progreso</p></li>
+<li><p><strong>Línea 102</strong>: Inicializar todos los componentes de vista</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Métodos de configuración modulares permiten mantenimiento fácil y testing.</p>
+</section>
+<section id="sistema-de-menu-implementacion">
+<h3>Sistema de Menú Implementación<a class="headerlink" href="#sistema-de-menu-implementacion" title="Link to this heading"></a></h3>
+<p><strong>Creación de Menú Análisis</strong> (main.py líneas 116-225):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">create_menu_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Crear la barra de menú&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="n">menu_bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>    <span class="c1"># Menú Archivo</span>
+<span class="linenos"> 6</span>    <span class="n">archivo_menu</span> <span class="o">=</span> <span class="n">menu_bar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;Archivo&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>    <span class="c1"># Acción Abrir</span>
+<span class="linenos"> 9</span>    <span class="n">abrir_action</span> <span class="o">=</span> <span class="n">archivo_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;Abrir...&quot;</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="n">abrir_action</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+O&quot;</span><span class="p">)</span>
+<span class="linenos">11</span>    <span class="n">abrir_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abrir_archivo</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Detalles críticos de implementación:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 117</strong>: Obtener barra de menú de QMainWindow</p></li>
+<li><p><strong>Línea 121</strong>: Crear menú “Archivo” con ampersand para navegación por teclado</p></li>
+<li><p><strong>Línea 124</strong>: Crear acción “Abrir” con puntos suspensivos indicando diálogo</p></li>
+<li><p><strong>Línea 125</strong>: Atajo estándar Ctrl+O para apertura de archivos</p></li>
+<li><p><strong>Línea 126</strong>: Conectar acción a método slot</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Nombres de menú en español para consistencia con idioma de aplicación.</p>
+<p><strong>Integración de Menú Avanzado</strong> (main.py líneas 166-225):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Nuevo Menú Separar</span>
+<span class="linenos">2</span><span class="n">separar_menu</span> <span class="o">=</span> <span class="n">menu_bar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;&amp;Separar&quot;</span><span class="p">)</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="c1"># Acción Exportar Datos Separados</span>
+<span class="linenos">5</span><span class="n">exportar_separado_action</span> <span class="o">=</span> <span class="n">separar_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;&amp;Exportar Datos Separados...&quot;</span><span class="p">)</span>
+<span class="linenos">6</span><span class="n">exportar_separado_action</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+Shift+S&quot;</span><span class="p">)</span>
+<span class="linenos">7</span><span class="n">exportar_separado_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportar_datos_separados</span><span class="p">)</span>
+<span class="linenos">8</span><span class="n">exportar_separado_action</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Se habilita solo con datos cargados</span>
+</pre></div>
+</div>
+<p><strong>Explicación línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 167</strong>: Crear menú “Separar” para funcionalidad avanzada de exportación</p></li>
+<li><p><strong>Línea 170</strong>: Acción para exportación basada en plantillas con nombre descriptivo</p></li>
+<li><p><strong>Línea 171</strong>: Atajo único (Ctrl+Shift+S) para evitar conflictos</p></li>
+<li><p><strong>Línea 172</strong>: Conectar a método de exportación</p></li>
+<li><p><strong>Línea 173</strong>: Inicialmente deshabilitado - <strong>decisión de diseño</strong>: Solo habilitar cuando datos están cargados para prevenir errores</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Los items de menú se habilitan/deshabilizan basados en estado de aplicación, proporcionando retroalimentación clara de usuario.</p>
+</section>
+<section id="pipeline-de-carga-de-datos">
+<h3>Pipeline de Carga de Datos<a class="headerlink" href="#pipeline-de-carga-de-datos" title="Link to this heading"></a></h3>
+<p><strong>Análisis de Carga de Archivos</strong> (main.py líneas 351-400):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">abrir_archivo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Slot para abrir un archivo&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">core.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_supported_file_formats</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>    <span class="c1"># Obtener formatos soportados dinámicamente</span>
+<span class="linenos"> 6</span>    <span class="n">supported_formats</span> <span class="o">=</span> <span class="n">get_supported_file_formats</span><span class="p">()</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>    <span class="c1"># Crear filtro de archivos dinámico</span>
+<span class="linenos"> 9</span>    <span class="n">format_filters</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">10</span>    <span class="n">format_descriptions</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">11</span>        <span class="s1">&#39;.xlsx&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos de Excel&#39;</span><span class="p">,</span>
+<span class="linenos">12</span>        <span class="s1">&#39;.xls&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos de Excel Legacy&#39;</span><span class="p">,</span>
+<span class="linenos">13</span>        <span class="s1">&#39;.csv&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos CSV&#39;</span><span class="p">,</span>
+<span class="linenos">14</span>        <span class="s1">&#39;.tsv&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos TSV&#39;</span><span class="p">,</span>
+<span class="linenos">15</span>        <span class="s1">&#39;.json&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos JSON&#39;</span><span class="p">,</span>
+<span class="linenos">16</span>        <span class="s1">&#39;.xml&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos XML&#39;</span><span class="p">,</span>
+<span class="linenos">17</span>        <span class="s1">&#39;.parquet&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos Parquet&#39;</span><span class="p">,</span>
+<span class="linenos">18</span>        <span class="s1">&#39;.feather&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos Feather&#39;</span><span class="p">,</span>
+<span class="linenos">19</span>        <span class="s1">&#39;.hdf5&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos HDF5&#39;</span><span class="p">,</span>
+<span class="linenos">20</span>        <span class="s1">&#39;.h5&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos HDF5&#39;</span><span class="p">,</span>
+<span class="linenos">21</span>        <span class="s1">&#39;.pkl&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos Pickle&#39;</span><span class="p">,</span>
+<span class="linenos">22</span>        <span class="s1">&#39;.pickle&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos Pickle&#39;</span><span class="p">,</span>
+<span class="linenos">23</span>        <span class="s1">&#39;.db&#39;</span><span class="p">:</span> <span class="s1">&#39;Bases de Datos SQLite&#39;</span><span class="p">,</span>
+<span class="linenos">24</span>        <span class="s1">&#39;.sqlite&#39;</span><span class="p">:</span> <span class="s1">&#39;Bases de Datos SQLite&#39;</span><span class="p">,</span>
+<span class="linenos">25</span>        <span class="s1">&#39;.sqlite3&#39;</span><span class="p">:</span> <span class="s1">&#39;Bases de Datos SQLite&#39;</span><span class="p">,</span>
+<span class="linenos">26</span>        <span class="s1">&#39;.yaml&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos YAML&#39;</span><span class="p">,</span>
+<span class="linenos">27</span>        <span class="s1">&#39;.yml&#39;</span><span class="p">:</span> <span class="s1">&#39;Archivos YAML&#39;</span><span class="p">,</span>
+<span class="linenos">28</span>    <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Detalles críticos de implementación:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 352</strong>: Importar función de detección de formato desde módulo core</p></li>
+<li><p><strong>Línea 355</strong>: Lista de formatos dinámica permite extensión fácil</p></li>
+<li><p><strong>Líneas 359-378</strong>: Mapeo comprehensivo de formatos con descripciones amigables en español</p></li>
+<li><p><strong>Decisión de Diseño</strong>: Sistema extensible de formatos - nuevos formatos pueden agregarse sin cambiar código UI</p></li>
+</ul>
+<p><strong>Implementación de Carga con Hilos</strong> (main.py líneas 401-415):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_loading_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">skip_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Mostrar indicador de carga mientras se procesa el archivo&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span>    <span class="c1"># Crear y configurar el diálogo de progreso</span>
+<span class="linenos"> 5</span>    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span><span class="s2">&quot;Cargando archivo...&quot;</span><span class="p">,</span> <span class="s2">&quot;Cancelar&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="linenos"> 6</span>    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Cargando datos&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span>    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModal</span><span class="p">)</span>
+<span class="linenos"> 8</span>    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="c1"># Crear y ejecutar el hilo de carga</span>
+<span class="linenos">11</span>    <span class="bp">self</span><span class="o">.</span><span class="n">loading_thread</span> <span class="o">=</span> <span class="n">DataLoaderThread</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">skip_rows</span><span class="p">,</span> <span class="n">column_names</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="bp">self</span><span class="o">.</span><span class="n">loading_thread</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_datos_cargados</span><span class="p">)</span>
+<span class="linenos">13</span>    <span class="bp">self</span><span class="o">.</span><span class="n">loading_thread</span><span class="o">.</span><span class="n">error_occurred</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_error_carga</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="bp">self</span><span class="o">.</span><span class="n">loading_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Explicación línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 404</strong>: Crear diálogo modal de progreso para bloquear UI durante carga</p></li>
+<li><p><strong>Línea 411</strong>: Instanciar hilo de carga en segundo plano</p></li>
+<li><p><strong>Líneas 412-413</strong>: Conectar señales de hilo a slots de ventana principal</p></li>
+<li><p><strong>Línea 414</strong>: Iniciar procesamiento en segundo plano</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Carga con hilos previene congelamiento de UI, crítico para datasets grandes.</p>
+</section>
+<section id="sistema-de-gestion-de-vistas">
+<h3>Sistema de Gestión de Vistas<a class="headerlink" href="#sistema-de-gestion-de-vistas" title="Link to this heading"></a></h3>
+<p><strong>Configuración de Widget Apilado</strong> (main.py líneas 297-335):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">create_central_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Crear el widget central con stacked views&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="c1"># Crear stacked widget para las vistas</span>
+<span class="linenos"> 4</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span> <span class="o">=</span> <span class="n">QStackedWidget</span><span class="p">()</span>
+<span class="linenos"> 5</span>    <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="p">)</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">def</span><span class="w"> </span><span class="nf">create_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 8</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Crear las vistas y añadirlas al stacked widget&quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>    <span class="c1"># Vista Principal (índice 0)</span>
+<span class="linenos">10</span>    <span class="bp">self</span><span class="o">.</span><span class="n">main_view</span> <span class="o">=</span> <span class="n">MainView</span><span class="p">()</span>
+<span class="linenos">11</span>    <span class="bp">self</span><span class="o">.</span><span class="n">main_view</span><span class="o">.</span><span class="n">file_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_file_loaded_from_main_view</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_view</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="c1"># Vista de Tabla (índice 1) - DataView con paginación</span>
+<span class="linenos">15</span>    <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="n">DataView</span><span class="p">()</span>
+<span class="linenos">16</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_view</span><span class="p">)</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>    <span class="c1"># Vista de Información (índice 2) - modal</span>
+<span class="linenos">19</span>    <span class="c1"># Se muestra mediante show_info_modal()</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span>    <span class="c1"># Vista de Gráficos (índice 3)</span>
+<span class="linenos">22</span>    <span class="bp">self</span><span class="o">.</span><span class="n">graphics_view</span> <span class="o">=</span> <span class="n">GraphicsView</span><span class="p">()</span>
+<span class="linenos">23</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics_view</span><span class="p">)</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>    <span class="c1"># Vista de Datos Cruzados (índice 4)</span>
+<span class="linenos">26</span>    <span class="bp">self</span><span class="o">.</span><span class="n">joined_data_view</span> <span class="o">=</span> <span class="n">JoinedDataView</span><span class="p">()</span>
+<span class="linenos">27</span>    <span class="bp">self</span><span class="o">.</span><span class="n">joined_data_view</span><span class="o">.</span><span class="n">new_join_requested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abrir_cruzar_datos</span><span class="p">)</span>
+<span class="linenos">28</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joined_data_view</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Detalles críticos de implementación:</strong></p>
+<ul class="simple">
+<li><p><strong>Línea 300</strong>: QStackedWidget gestiona múltiples vistas en mismo espacio</p></li>
+<li><p><strong>Línea 311</strong>: MainView maneja carga inicial de archivos</p></li>
+<li><p><strong>Línea 312</strong>: Conectar señal de carga de archivos a ventana principal</p></li>
+<li><p><strong>Línea 316</strong>: DataView con paginación para datasets grandes</p></li>
+<li><p><strong>Línea 329</strong>: JoinedDataView para resultados de operaciones de join</p></li>
+<li><p><strong>Línea 330</strong>: Conectar señal de solicitud de join</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Widget apilado permite cambio de vista seamless mientras mantiene estado.</p>
+<p><strong>Lógica de Cambio de Vistas</strong> (main.py líneas 336-339):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">switch_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="linenos">2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Cambiar a la vista especificada&quot;&quot;&quot;</span>
+<span class="linenos">3</span>    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Simple pero crítico</strong>: Coordinación centralizada de cambio de vistas asegura gestión consistente de estado.</p>
+</section>
+<section id="caracteristicas-avanzadas-de-integracion">
+<h3>Características Avanzadas de Integración<a class="headerlink" href="#caracteristicas-avanzadas-de-integracion" title="Link to this heading"></a></h3>
+<p><strong>Integración de Sistema Join</strong> (main.py líneas 605-626):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">abrir_cruzar_datos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Abrir diálogo para cruzar datos&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+<span class="linenos"> 4</span>        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Advertencia&quot;</span><span class="p">,</span> <span class="s2">&quot;No hay datos cargados para cruzar.&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span>        <span class="k">return</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 8</span>        <span class="c1"># Importar diálogo de join</span>
+<span class="linenos"> 9</span>        <span class="kn">from</span><span class="w"> </span><span class="nn">app.widgets.join.join_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinDialog</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>        <span class="c1"># Crear diálogo</span>
+<span class="linenos">12</span>        <span class="n">dialog</span> <span class="o">=</span> <span class="n">JoinDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+<span class="linenos">13</span>        <span class="n">dialog</span><span class="o">.</span><span class="n">join_completed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_join_completed</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+<span class="linenos">16</span>            <span class="c1"># El diálogo ya maneja la configuración, pero si se acepta sin configurar,</span>
+<span class="linenos">17</span>            <span class="c1"># no debería pasar nada</span>
+<span class="linenos">18</span>            <span class="k">pass</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">21</span>        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error abriendo diálogo de cruce de datos: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Explicación línea por línea:</strong></p>
+<ul class="simple">
+<li><p><strong>Líneas 606-609</strong>: Validar disponibilidad de datos antes de abrir diálogo</p></li>
+<li><p><strong>Línea 613</strong>: Import dinámico de diálogo de join (carga lazy)</p></li>
+<li><p><strong>Línea 616</strong>: Crear diálogo con datos actuales</p></li>
+<li><p><strong>Línea 617</strong>: Conectar señal de completación a manejador de resultados</p></li>
+<li><p><strong>Líneas 619-622</strong>: Manejar aceptación de diálogo (diálogo gestiona su propia lógica)</p></li>
+</ul>
+<p><strong>Decisión de Diseño</strong>: Imports lazy reducen tiempo de inicio, validación previene errores.</p>
+<p><strong>Integración de Tabla Pivote</strong> (main.py líneas 651-672):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">abrir_pivot_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Abrir diálogo de tabla pivote simple&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+<span class="linenos"> 4</span>        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Advertencia&quot;</span><span class="p">,</span> <span class="s2">&quot;No hay datos cargados para crear tabla pivote.&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span>        <span class="k">return</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 8</span>        <span class="c1"># Importar diálogo de pivote simple</span>
+<span class="linenos"> 9</span>        <span class="kn">from</span><span class="w"> </span><span class="nn">app.widgets.simple_pivot_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimplePivotDialog</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>        <span class="c1"># Crear diálogo simplificado</span>
+<span class="linenos">12</span>        <span class="n">dialog</span> <span class="o">=</span> <span class="n">SimplePivotDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+<span class="linenos">13</span>        <span class="n">dialog</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_vista_actual</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+<span class="linenos">16</span>            <span class="n">pivot_config</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="linenos">17</span>            <span class="k">if</span> <span class="n">pivot_config</span><span class="p">:</span>
+<span class="linenos">18</span>                <span class="bp">self</span><span class="o">.</span><span class="n">procesar_pivot_simple</span><span class="p">(</span><span class="n">pivot_config</span><span class="p">)</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">21</span>        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error abriendo diálogo de pivote simple: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Patrón similar</strong>: Validación, import lazy, creación de diálogo, procesamiento de resultados.</p>
+</section>
+<section id="manejo-de-errores-y-recuperacion">
+<h3>Manejo de Errores y Recuperación<a class="headerlink" href="#manejo-de-errores-y-recuperacion" title="Link to this heading"></a></h3>
+<p><strong>Gestión Centralizada de Errores</strong> (main.py líneas 464-470):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">on_error_carga</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">):</span>
+<span class="linenos">2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Slot para manejar errores de carga&quot;&quot;&quot;</span>
+<span class="linenos">3</span>    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;progress_dialog&#39;</span><span class="p">):</span>
+<span class="linenos">4</span>        <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span>    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;No se pudo cargar el archivo: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Decisión de Diseño</strong>: Manejo consistente de errores en todas las operaciones, mensajes amigables para usuario.</p>
+</section>
+<section id="integracion-entre-modulos">
+<h3>Integración Entre Módulos<a class="headerlink" href="#integracion-entre-modulos" title="Link to this heading"></a></h3>
+<p><strong>Coordinación de Flujo de Datos</strong> (main.py líneas 416-463):</p>
+<p>El MainWindow coordina flujo de datos entre componentes:</p>
+<ol class="arabic simple">
+<li><p><strong>Hilo de Carga</strong> → <strong>MainWindow</strong> → <strong>Actualizaciones DataView/GraphicsView</strong></p></li>
+<li><p><strong>Acciones de Usuario</strong> → <strong>MainWindow</strong> → <strong>Procesamiento Core</strong> → <strong>Actualizaciones de Vista</strong></p></li>
+<li><p><strong>Características Avanzadas</strong> → <strong>Diálogos Especializados</strong> → <strong>MainWindow</strong> → <strong>Vistas de Resultados</strong></p></li>
+</ol>
+<p><strong>Puntos Críticos de Integración:</strong></p>
+<ul class="simple">
+<li><p>Conexiones signal/slot para acoplamiento loose</p></li>
+<li><p>Gestión centralizada de estado</p></li>
+<li><p>Manejo consistente de errores</p></li>
+<li><p>Retroalimentación de progreso para operaciones largas</p></li>
+</ul>
+<p><strong>Optimizaciones de Performance:</strong></p>
+<ul class="simple">
+<li><p>Carga con hilos para archivos grandes</p></li>
+<li><p>Imports lazy para diálogos</p></li>
+<li><p>Cambio eficiente de vistas</p></li>
+<li><p>Manejo de datos consciente de memoria</p></li>
+</ul>
+<p><strong>Diseño de Extensibilidad:</strong></p>
+<ul class="simple">
+<li><p>Arquitectura de plugin para nuevas vistas</p></li>
+<li><p>Sistema de diálogo modular</p></li>
+<li><p>Sistema de menú configurable</p></li>
+<li><p>Comunicación basada en señales</p></li>
+</ul>
+</section>
+</section>
+<section id="inicializacion-del-proceso">
+<h2>Inicialización del Proceso<a class="headerlink" href="#inicializacion-del-proceso" title="Link to this heading"></a></h2>
+<section id="configuracion-de-ventana">
+<h3>Configuración de Ventana<a class="headerlink" href="#configuracion-de-ventana" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Flash Sheet - Data Analysis Tool&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setup_connections</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="componentes-de-ui">
+<h3>Componentes de UI<a class="headerlink" href="#componentes-de-ui" title="Link to this heading"></a></h3>
+<p>El método setup_ui() crea los componentes principales de interfaz:</p>
+<ul class="simple">
+<li><p><strong>Barra de Menú</strong>: Menús Archivo, Editar, Ver, Datos, Ayuda</p></li>
+<li><p><strong>Barra de Herramientas</strong>: Botones de acceso rápido para operaciones comunes</p></li>
+<li><p><strong>Barra de Estado</strong>: Indicadores de progreso y mensajes de estado</p></li>
+<li><p><strong>Widget Central</strong>: QStackedWidget conteniendo diferentes vistas</p></li>
+</ul>
+</section>
+</section>
+<section id="sistema-de-vistas-arquitectura">
+<h2>Sistema de Vistas Arquitectura<a class="headerlink" href="#sistema-de-vistas-arquitectura" title="Link to this heading"></a></h2>
+<section id="gestion-de-widget-apilado">
+<h3>Gestión de Widget Apilado<a class="headerlink" href="#gestion-de-widget-apilado" title="Link to this heading"></a></h3>
+<p>La aplicación usa QStackedWidget para gestionar múltiples vistas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span> <span class="o">=</span> <span class="n">QStackedWidget</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="p">)</span>
+
+<span class="c1"># Agregar vistas</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">main_view</span> <span class="o">=</span> <span class="n">MainView</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="n">DataView</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">graphics_view</span> <span class="o">=</span> <span class="n">GraphicsView</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">joined_data_view</span> <span class="o">=</span> <span class="n">JoinedDataView</span><span class="p">()</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_view</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span>
+<span class="c1"># ... agregar otras vistas</span>
+</pre></div>
+</div>
+</section>
+<section id="logica-de-cambio-de-vistas">
+<h3>Lógica de Cambio de Vistas<a class="headerlink" href="#logica-de-cambio-de-vistas" title="Link to this heading"></a></h3>
+<p>Cambio de vistas se maneja a través de acciones de menú y botones de barra de herramientas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">switch_to_data_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">setCurrentWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_view</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">update_menu_state</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id1">
+<h2>Sistema de Menú Implementación<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="menu-archivo">
+<h3>Menú Archivo<a class="headerlink" href="#menu-archivo" title="Link to this heading"></a></h3>
+<p>Maneja carga de datos y ciclo de vida de aplicación:</p>
+<ul class="simple">
+<li><p><strong>Cargar Archivo</strong>: Abrir diálogo de archivo y cargar datos</p></li>
+<li><p><strong>Cargar Carpeta</strong>: Funcionalidad de carga por lotes</p></li>
+<li><p><strong>Guardar/Exportar</strong>: Operaciones de exportación de datos</p></li>
+<li><p><strong>Salir</strong>: Cierre de aplicación</p></li>
+</ul>
+</section>
+<section id="menu-datos">
+<h3>Menú Datos<a class="headerlink" href="#menu-datos" title="Link to this heading"></a></h3>
+<p>Operaciones avanzadas de datos:</p>
+<ul class="simple">
+<li><p><strong>Unir Datos</strong>: Operaciones cross-dataset</p></li>
+<li><p><strong>Tabla Pivote</strong>: Resumen de datos</p></li>
+<li><p><strong>Filtrar Datos</strong>: Interfaz de filtrado de datos</p></li>
+<li><p><strong>Transformar Datos</strong>: Herramientas de manipulación de datos</p></li>
+</ul>
+</section>
+<section id="menu-ver">
+<h3>Menú Ver<a class="headerlink" href="#menu-ver" title="Link to this heading"></a></h3>
+<p>Gestión de interfaz:</p>
+<ul class="simple">
+<li><p><strong>Vista de Datos</strong>: Visualización de tabla</p></li>
+<li><p><strong>Vista de Gráficos</strong>: Visualización de gráficos</p></li>
+<li><p><strong>Vista de Datos Unidos</strong>: Resultados de join</p></li>
+<li><p><strong>Pantalla Completa</strong>: Alternar modo pantalla completa</p></li>
+</ul>
+</section>
+</section>
+<section id="flujo-de-datos-coordinacion">
+<h2>Flujo de Datos Coordinación<a class="headerlink" href="#flujo-de-datos-coordinacion" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>Pipeline de Carga de Datos<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Selección de Archivo</strong>: Usuario selecciona archivo(s)</p></li>
+<li><p><strong>Detección de Formato</strong>: Reconocimiento automático de formato</p></li>
+<li><p><strong>Parsing de Datos</strong>: Parsing específico de formato</p></li>
+<li><p><strong>Validación de Datos</strong>: Verificación de integridad y tipos</p></li>
+<li><p><strong>Actualización de Vista</strong>: Mostrar datos en vista apropiada</p></li>
+<li><p><strong>Actualización de Estado</strong>: Informar al usuario de completación</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">file_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Load Data File&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_filters</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">file_path</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_views_with_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to load file: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="coordinacion-de-exportacion">
+<h3>Coordinación de Exportación<a class="headerlink" href="#coordinacion-de-exportacion" title="Link to this heading"></a></h3>
+<p>Operaciones de exportación coordinan entre vistas y manejadores de exportación:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_type</span><span class="p">):</span>
+    <span class="n">current_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">currentWidget</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current_view</span><span class="p">,</span> <span class="s1">&#39;get_export_data&#39;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">current_view</span><span class="o">.</span><span class="n">get_export_data</span><span class="p">()</span>
+        <span class="n">export_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_export_handler</span><span class="p">(</span><span class="n">format_type</span><span class="p">)</span>
+        <span class="n">export_handler</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="senales-y-eventos">
+<h2>Señales y Eventos<a class="headerlink" href="#senales-y-eventos" title="Link to this heading"></a></h2>
+<section id="manejo-de-eventos">
+<h3>Manejo de Eventos<a class="headerlink" href="#manejo-de-eventos" title="Link to this heading"></a></h3>
+<p>La MainWindow conecta varias señales para mantener estado de aplicación:</p>
+<ul class="simple">
+<li><p><strong>Señales de Cambio de Vista</strong>: Actualizar menús cuando vistas cambian</p></li>
+<li><p><strong>Señales de Cambio de Datos</strong>: Refrescar visualizaciones cuando datos se actualizan</p></li>
+<li><p><strong>Señales de Progreso</strong>: Mostrar progreso para operaciones largas</p></li>
+<li><p><strong>Señales de Error</strong>: Mostrar mensajes de error al usuario</p></li>
+</ul>
+</section>
+<section id="configuracion-de-conexion">
+<h3>Configuración de Conexión<a class="headerlink" href="#configuracion-de-conexion" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Conexiones de menú</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">action_load_file</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">action_export_csv</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_data</span><span class="p">(</span><span class="s1">&#39;csv&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Conexiones de cambio de vista</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_view_changed</span><span class="p">)</span>
+
+    <span class="c1"># Conexiones de manejador de datos</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_data_loaded</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">progress_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_progress</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="barra-de-estado-actualizaciones">
+<h3>Barra de Estado Actualizaciones<a class="headerlink" href="#barra-de-estado-actualizaciones" title="Link to this heading"></a></h3>
+<p>La barra de estado proporciona retroalimentación en tiempo real:</p>
+<ul class="simple">
+<li><p><strong>Estado de Operación</strong>: Descripción de operación actual</p></li>
+<li><p><strong>Barra de Progreso</strong>: Indicación visual de progreso</p></li>
+<li><p><strong>Estadísticas de Datos</strong>: Conteos de filas/columnas</p></li>
+<li><p><strong>Uso de Memoria</strong>: Consumo de memoria actual</p></li>
+</ul>
+</section>
+<section id="dialogos-de-progreso">
+<h3>Diálogos de Progreso<a class="headerlink" href="#dialogos-de-progreso" title="Link to this heading"></a></h3>
+<p>Para operaciones de larga duración:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">show_progress_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span> <span class="o">=</span> <span class="n">QProgressDialog</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">,</span> <span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="bp">self</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModal</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">progress_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="manejo-de-errores">
+<h2>Manejo de Errores<a class="headerlink" href="#manejo-de-errores" title="Link to this heading"></a></h2>
+<section id="gestion-de-excepciones">
+<h3>Gestión de Excepciones<a class="headerlink" href="#gestion-de-excepciones" title="Link to this heading"></a></h3>
+<p>Manejo centralizado de errores para mensajes amigables de usuario:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Error </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+    <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="mecanismos-de-recuperacion">
+<h3>Mecanismos de Recuperación<a class="headerlink" href="#mecanismos-de-recuperacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Auto-guardado</strong>: Guardado periódico de estado</p></li>
+<li><p><strong>Degradación Graciosa</strong>: Continuar operación con funcionalidad reducida</p></li>
+<li><p><strong>Guía de Usuario</strong>: Mensajes de error claros con acciones sugeridas</p></li>
+</ul>
+</section>
+</section>
+<section id="puntos-de-integracion">
+<h2>Puntos de Integración<a class="headerlink" href="#puntos-de-integracion" title="Link to this heading"></a></h2>
+<section id="integracion-de-manejador-de-datos">
+<h3>Integración de Manejador de Datos<a class="headerlink" href="#integracion-de-manejador-de-datos" title="Link to this heading"></a></h3>
+<p>La MainWindow coordina con DataHandler para operaciones de datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span> <span class="o">=</span> <span class="n">DataHandler</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="o">.</span><span class="n">data_loaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_data_loaded</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integracion-de-vista">
+<h3>Integración de Vista<a class="headerlink" href="#integracion-de-vista" title="Link to this heading"></a></h3>
+<p>Cada vista implementa interfaces estándar para intercambio de datos:</p>
+<ul class="simple">
+<li><p><strong>set_data(data)</strong>: Cargar datos en vista</p></li>
+<li><p><strong>get_data()</strong>: Recuperar datos actuales</p></li>
+<li><p><strong>clear_data()</strong>: Resetear estado de vista</p></li>
+<li><p><strong>get_export_data()</strong>: Preparar datos para exportación</p></li>
+</ul>
+</section>
+<section id="arquitectura-de-plugin">
+<h3>Arquitectura de Plugin<a class="headerlink" href="#arquitectura-de-plugin" title="Link to this heading"></a></h3>
+<p>Extensibilidad futura a través de interfaces de plugin:</p>
+<ul class="simple">
+<li><p><strong>Plugins de Vista</strong>: Vistas de visualización personalizadas</p></li>
+<li><p><strong>Plugins de Exportación</strong>: Formatos de exportación adicionales</p></li>
+<li><p><strong>Plugins de Fuente de Datos</strong>: Capacidades de carga de datos nuevas</p></li>
+</ul>
+</section>
+</section>
+<section id="consideraciones-de-performance">
+<h2>Consideraciones de Performance<a class="headerlink" href="#consideraciones-de-performance" title="Link to this heading"></a></h2>
+<section id="gestion-de-memoria">
+<h3>Gestión de Memoria<a class="headerlink" href="#gestion-de-memoria" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Carga Lazy</strong>: Cargar datos bajo demanda</p></li>
+<li><p><strong>Cache de Vistas</strong>: Cachear estados de vista</p></li>
+<li><p><strong>Recolección de Basura</strong>: Limpieza explícita al cambiar vistas</p></li>
+</ul>
+</section>
+<section id="capacidad-de-respuesta-de-ui">
+<h3>Capacidad de Respuesta de UI<a class="headerlink" href="#capacidad-de-respuesta-de-ui" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Hilos</strong>: Procesamiento en segundo plano para operaciones pesadas</p></li>
+<li><p><strong>Actualizaciones de Progreso</strong>: Actualizaciones regulares de UI durante procesamiento</p></li>
+<li><p><strong>Soporte de Cancelación</strong>: Permitir al usuario cancelar operaciones</p></li>
+</ul>
+</section>
+</section>
+<section id="testing-y-debugging">
+<h2>Testing y Debugging<a class="headerlink" href="#testing-y-debugging" title="Link to this heading"></a></h2>
+<section id="unit-testing">
+<h3>Unit Testing<a class="headerlink" href="#unit-testing" title="Link to this heading"></a></h3>
+<p>Componentes de MainWindow deberían ser testeables:</p>
+<ul class="simple">
+<li><p><strong>Vistas Mock</strong>: Testear lógica de cambio de vistas</p></li>
+<li><p><strong>Manejador de Datos Mock</strong>: Testear flujo de datos</p></li>
+<li><p><strong>Simulación de Eventos</strong>: Testear conexiones signal/slot</p></li>
+</ul>
+</section>
+<section id="caracteristicas-de-debug">
+<h3>Características de Debug<a class="headerlink" href="#caracteristicas-de-debug" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Logging</strong>: Logging comprehensivo de operaciones</p></li>
+<li><p><strong>Profiling de Performance</strong>: Identificar cuellos de botella</p></li>
+<li><p><strong>Debugging de UI</strong>: Inspeccionar jerarquías de widgets</p></li>
+</ul>
+</section>
+</section>
+<section id="mejoras-futuras">
+<h2>Mejoras Futuras<a class="headerlink" href="#mejoras-futuras" title="Link to this heading"></a></h2>
+<section id="mejoras-planificadas">
+<h3>Mejoras Planificadas<a class="headerlink" href="#mejoras-planificadas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Interfaz de Documentos Múltiples</strong>: Soporte para múltiples datasets simultáneamente</p></li>
+<li><p><strong>Guardado de Espacio de Trabajo</strong>: Guardar/restaurar estado completo de aplicación</p></li>
+<li><p><strong>Sistema Deshacer/Rehacer</strong>: Historial de operaciones y reversión</p></li>
+<li><p><strong>Características de Colaboración</strong>: Edición simultánea multi-usuario</p></li>
+</ul>
+</section>
+<section id="extensibilidad">
+<h3>Extensibilidad<a class="headerlink" href="#extensibilidad" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>API de Plugin</strong>: Soporte de extensión de terceros</p></li>
+<li><p><strong>Sistema de Temas</strong>: Apariencia personalizable</p></li>
+<li><p><strong>Localización</strong>: Soporte multi-idioma</p></li>
+<li><p><strong>Accesibilidad</strong>: Lector de pantalla y navegación por teclado</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../architecture.html" class="btn btn-neutral float-left" title="Sistema de Arquitectura de Flash Sheet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_handler.html" class="btn btn-neutral float-right" title="Sistema de Data Handler - Recorrido Detallado del Código" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
