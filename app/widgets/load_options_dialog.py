@@ -3,9 +3,9 @@ Diálogo de Opciones de Carga para Flash View Sheet
 Permite configurar opciones como saltar filas y renombrar columnas
 """
 
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-                               QSpinBox, QLineEdit, QPushButton, QGroupBox, 
-                               QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView)
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                                QSpinBox, QLineEdit, QPushButton, QGroupBox,
+                                QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox)
 from PySide6.QtCore import Qt
 import pandas as pd
 
@@ -20,6 +20,7 @@ class LoadOptionsDialog(QDialog):
         self.resize(600, 400)
         self.skip_rows = 0
         self.column_names = []
+        self.enable_column_visibility = False
         self.setup_ui()
         
     def setup_ui(self):
@@ -53,7 +54,17 @@ class LoadOptionsDialog(QDialog):
         rename_layout.addWidget(add_row_btn)
         
         main_layout.addWidget(rename_group)
-        
+
+        # Grupo: Opciones Adicionales
+        additional_group = QGroupBox("Opciones Adicionales")
+        additional_layout = QVBoxLayout(additional_group)
+
+        self.column_visibility_checkbox = QCheckBox("Habilitar controles de visibilidad de columnas")
+        self.column_visibility_checkbox.setToolTip("Permite mostrar/ocultar columnas después de cargar los datos")
+        additional_layout.addWidget(self.column_visibility_checkbox)
+
+        main_layout.addWidget(additional_group)
+
         # Botones de diálogo
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
@@ -83,4 +94,5 @@ class LoadOptionsDialog(QDialog):
             new = self.table.item(row, 1).text().strip()
             if original and new:
                 self.column_names[original] = new
-        return self.skip_rows, self.column_names
+        self.enable_column_visibility = self.column_visibility_checkbox.isChecked()
+        return self.skip_rows, self.column_names, self.enable_column_visibility

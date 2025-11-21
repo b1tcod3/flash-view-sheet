@@ -123,10 +123,11 @@ class TestDataHandler(unittest.TestCase):
         filtered_df = aplicar_filtro(self.test_df, 'Nombre', 'a')
 
         # Verificar resultados
-        self.assertEqual(len(filtered_df), 3)  # Juan, María, Ana
+        self.assertEqual(len(filtered_df), 4)  # Juan, María, Ana, Carlos
         self.assertIn('Juan', filtered_df['Nombre'].values)
         self.assertIn('María', filtered_df['Nombre'].values)
         self.assertIn('Ana', filtered_df['Nombre'].values)
+        self.assertIn('Carlos', filtered_df['Nombre'].values)
 
     def test_aplicar_filtro_case_insensitive(self):
         """Probar que el filtro es case insensitive"""

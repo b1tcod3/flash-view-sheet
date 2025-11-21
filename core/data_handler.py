@@ -211,7 +211,7 @@ def obtener_estadisticas_basicas(df: pd.DataFrame) -> dict:
             'columnas_texto': len(df.select_dtypes(include=['object']).columns),
             'columnas_fecha': len(df.select_dtypes(include=['datetime']).columns),
             'memoria_uso_mb': df.memory_usage(deep=True).sum() / 1024 / 1024,
-            'filas_duplicadas': df.duplicated().sum(),
+            'filas_duplicadas': df.duplicated(keep=False).sum(),
             'valores_nulos_total': df.isnull().sum().sum()
         }
 

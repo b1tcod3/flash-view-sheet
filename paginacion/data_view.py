@@ -5,9 +5,10 @@ Contiene tabla paginada, controles de paginación y filtros
 
 import pandas as pd
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
-                               QComboBox, QLineEdit, QPushButton, QLabel,
-                               QGroupBox, QFrame, QMessageBox, QSpinBox,
-                               QApplication, QSizePolicy)
+                                QComboBox, QLineEdit, QPushButton, QLabel,
+                                QGroupBox, QFrame, QMessageBox, QSpinBox,
+                                QApplication, QSizePolicy, QCheckBox, QListWidget,
+                                QListWidgetItem, QScrollArea, QGridLayout)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QColor
 
@@ -36,7 +37,11 @@ class DataView(QWidget):
         
         # Estado de ordenamiento
         self._sorting_in_progress = False
-        
+
+        # Estado de visibilidad de columnas
+        self.column_visibility_container = None
+        self.column_visibility_layout = None
+
         # UI Components
         self.table_view = None
         self.filter_combo = None
@@ -61,7 +66,11 @@ class DataView(QWidget):
         # 1. Sección de filtros (superior)
         filter_group = self.create_filter_section()
         main_layout.addWidget(filter_group)
-        
+
+        # 1.5. Sección de visibilidad de columnas (opcional)
+        self.column_visibility_group = self.create_column_visibility_section()
+        main_layout.addWidget(self.column_visibility_group)
+
         # 2. Tabla de datos (centro)
         table_group = self.create_table_section()
         main_layout.addWidget(table_group, 1)  # Expandir para ocupar espacio disponible
@@ -89,21 +98,23 @@ class DataView(QWidget):
         """)
         
         filter_layout = QHBoxLayout(filter_group)
-        filter_layout.setSpacing(10)
-        
+        filter_layout.setSpacing(5)  # Reduce spacing for small screens
+
         # ComboBox para seleccionar columna
         self.filter_combo = QComboBox()
-        self.filter_combo.setMinimumWidth(150)
+        self.filter_combo.setMinimumWidth(120)  # Reduce minimum width
+        self.filter_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # Allow expansion
         self.filter_combo.setPlaceholderText("Seleccionar columna")
         filter_layout.addWidget(QLabel("Columna:"))
-        filter_layout.addWidget(self.filter_combo)
-        
+        filter_layout.addWidget(self.filter_combo, 1)  # Add stretch factor
+
         # LineEdit para término de búsqueda
         self.filter_input = QLineEdit()
-        self.filter_input.setMinimumWidth(200)
+        self.filter_input.setMinimumWidth(150)  # Reduce minimum width
+        self.filter_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # Allow expansion
         self.filter_input.setPlaceholderText("Término de búsqueda")
         filter_layout.addWidget(QLabel("Buscar:"))
-        filter_layout.addWidget(self.filter_input)
+        filter_layout.addWidget(self.filter_input, 2)  # Add stretch factor
         
         # Botón aplicar filtro
         self.apply_filter_btn = QPushButton("Aplicar Filtro")
@@ -214,73 +225,129 @@ class DataView(QWidget):
         """)
         
         pagination_layout = QHBoxLayout(pagination_group)
-        pagination_layout.setSpacing(15)
-        
+        pagination_layout.setSpacing(5)  # Reduce spacing
+
         # Información de página
         self.page_info_label = QLabel("Página 0 de 0 (0-0 de 0 filas)")
-        self.page_info_label.setFont(QFont("Arial", 10, QFont.Bold))
-        pagination_layout.addWidget(self.page_info_label)
-        
-        pagination_layout.addStretch()
-        
+        self.page_info_label.setFont(QFont("Arial", 9, QFont.Bold))  # Smaller font
+        self.page_info_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        pagination_layout.addWidget(self.page_info_label, 1)  # Allow expansion
+
         # Controles de tamaño de página
-        pagination_layout.addWidget(QLabel("Filas por página:"))
+        page_size_widget = QWidget()
+        page_size_layout = QHBoxLayout(page_size_widget)
+        page_size_layout.setSpacing(2)
+        page_size_layout.setContentsMargins(0, 0, 0, 0)
+        page_size_layout.addWidget(QLabel("Filas:"))
         self.page_size_spin = QSpinBox()
         self.page_size_spin.setMinimum(10)
         self.page_size_spin.setMaximum(1000)
         self.page_size_spin.setValue(10)
         self.page_size_spin.setSuffix(" filas")
+        self.page_size_spin.setMaximumWidth(80)  # Limit width
         self.page_size_spin.valueChanged.connect(self.change_page_size)
-        pagination_layout.addWidget(self.page_size_spin)
-        
-        # Botones de navegación
+        page_size_layout.addWidget(self.page_size_spin)
+        pagination_layout.addWidget(page_size_widget)
+
+        # Botones de navegación in a compact layout
+        nav_widget = QWidget()
+        nav_layout = QHBoxLayout(nav_widget)
+        nav_layout.setSpacing(2)
+        nav_layout.setContentsMargins(0, 0, 0, 0)
+
         self.first_page_btn = QPushButton("⏮️")
-        self.first_page_btn.setMaximumWidth(40)
+        self.first_page_btn.setMaximumWidth(30)  # Smaller buttons
         self.first_page_btn.setToolTip("Primera página")
         self.first_page_btn.clicked.connect(self.first_page)
-        pagination_layout.addWidget(self.first_page_btn)
-        
+        nav_layout.addWidget(self.first_page_btn)
+
         self.prev_page_btn = QPushButton("◀️")
-        self.prev_page_btn.setMaximumWidth(40)
+        self.prev_page_btn.setMaximumWidth(30)
         self.prev_page_btn.setToolTip("Página anterior")
         self.prev_page_btn.clicked.connect(self.previous_page)
-        pagination_layout.addWidget(self.prev_page_btn)
-        
+        nav_layout.addWidget(self.prev_page_btn)
+
         self.next_page_btn = QPushButton("▶️")
-        self.next_page_btn.setMaximumWidth(40)
+        self.next_page_btn.setMaximumWidth(30)
         self.next_page_btn.setToolTip("Página siguiente")
         self.next_page_btn.clicked.connect(self.next_page)
-        pagination_layout.addWidget(self.next_page_btn)
-        
+        nav_layout.addWidget(self.next_page_btn)
+
         self.last_page_btn = QPushButton("⏭️")
-        self.last_page_btn.setMaximumWidth(40)
+        self.last_page_btn.setMaximumWidth(30)
         self.last_page_btn.setToolTip("Última página")
         self.last_page_btn.clicked.connect(self.last_page)
-        pagination_layout.addWidget(self.last_page_btn)
+        nav_layout.addWidget(self.last_page_btn)
+
+        pagination_layout.addWidget(nav_widget)
         
         return pagination_group
+
+    def create_column_visibility_section(self) -> QGroupBox:
+        """Crear sección de visibilidad de columnas"""
+        column_group = QGroupBox("Visibilidad de Columnas")
+        column_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+            }
+        """)
+
+        column_layout = QVBoxLayout(column_group)
+
+        # Scroll area para las columnas
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setMaximumHeight(80)  # Altura máxima reducida
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        # Widget contenedor para los checkboxes
+        container_widget = QWidget()
+        self.column_visibility_layout = QHBoxLayout(container_widget)
+        self.column_visibility_layout.setSpacing(10)
+        self.column_visibility_layout.setContentsMargins(5, 5, 5, 5)
+
+        scroll_area.setWidget(container_widget)
+        column_layout.addWidget(scroll_area)
+
+        # Guardar referencia al contenedor
+        self.column_visibility_container = container_widget
+
+        return column_group
         
     def set_data(self, df: pd.DataFrame):
         """
         Establecer datos para mostrar
-        
+
         Args:
             df: DataFrame con datos
         """
         self.original_df = df.copy()
-        
+
         # Crear o actualizar PaginationManager
         if self.pagination_manager is None:
             self.pagination_manager = PaginationManager(df, self.page_size_spin.value())
             self.connect_pagination_signals()
         else:
             self.pagination_manager.set_data(df)
-        
+
         # Poblar ComboBox de filtros con nombres de columnas
         if not df.empty:
             self.filter_combo.clear()
             self.filter_combo.addItems(df.columns.tolist())
-        
+
+        # Actualizar controles de visibilidad de columnas
+        self.update_column_visibility_controls()
+
         # Actualizar vista
         self.update_view()
         
@@ -390,6 +457,53 @@ class DataView(QWidget):
         self.prev_page_btn.setEnabled(can_prev)
         self.next_page_btn.setEnabled(can_next)
         self.last_page_btn.setEnabled(can_next and self.pagination_manager.get_current_page() < self.pagination_manager.get_total_pages())
+
+    def update_column_visibility_controls(self):
+        """Actualizar controles de visibilidad de columnas"""
+        if self.original_df is not None and not self.original_df.empty:
+            # Mostrar el grupo de visibilidad de columnas
+            self.column_visibility_group.show()
+
+            # Limpiar layout actual
+            self._clear_layout(self.column_visibility_layout)
+
+            # Añadir checkboxes para cada columna
+            for col in self.original_df.columns:
+                checkbox = QCheckBox(col)
+                checkbox.setChecked(True)  # Por defecto todas visibles
+                checkbox.stateChanged.connect(self.on_column_visibility_changed)
+                self.column_visibility_layout.addWidget(checkbox)
+        else:
+            # Ocultar el grupo de visibilidad de columnas si no hay datos
+            self.column_visibility_group.hide()
+
+    def _clear_layout(self, layout):
+        """Limpiar todos los widgets de un layout"""
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+    def on_column_visibility_changed(self):
+        """Manejar cambio en visibilidad de columna"""
+        if self.table_view is None or self.original_df is None:
+            return
+
+        # Obtener columnas visibles
+        visible_columns = []
+        for i in range(self.column_visibility_layout.count()):
+            item = self.column_visibility_layout.itemAt(i)
+            if item and item.widget() and isinstance(item.widget(), QCheckBox):
+                checkbox = item.widget()
+                if checkbox.isChecked():
+                    visible_columns.append(checkbox.text())
+
+        # Aplicar visibilidad ocultando/mostrando columnas en el QTableView
+        for i, col in enumerate(self.original_df.columns):
+            if col in visible_columns:
+                self.table_view.showColumn(i)
+            else:
+                self.table_view.hideColumn(i)
         
     # Métodos de navegación de página
     def first_page(self):

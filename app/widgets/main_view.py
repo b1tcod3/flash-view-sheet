@@ -34,12 +34,12 @@ class MainView(QWidget):
         main_group = QGroupBox("Flash View Sheet - Visor de Datos Tabulares")
         main_group.setStyleSheet("""
             QGroupBox {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: bold;
                 border: 2px solid #4a90e2;
-                border-radius: 10px;
-                padding: 20px;
-                margin: 20px;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px;
             }
         """)
         group_layout = QVBoxLayout(main_group)
@@ -50,8 +50,8 @@ class MainView(QWidget):
         logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "assets", "logo.png")
         if os.path.exists(logo_path):
             pixmap = QPixmap(logo_path)
-            # Escalar la imagen manteniendo la proporción
-            scaled_pixmap = pixmap.scaled(128, 128, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            # Escalar la imagen manteniendo la proporción - smaller for small screens
+            scaled_pixmap = pixmap.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon_label.setPixmap(scaled_pixmap)
         else:
             # Fallback al emoji si el logo no existe
@@ -186,7 +186,7 @@ class MainView(QWidget):
             dialog.set_columns(columns)
 
         if dialog.exec():
-            skip_rows, column_names = dialog.get_options()
+            skip_rows, column_names, enable_column_visibility = dialog.get_options()
             # Emitir señal para recargar con las nuevas opciones
             self.reload_with_options.emit(self.current_file, skip_rows, column_names)
             

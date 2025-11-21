@@ -50,7 +50,13 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Flash View Sheet - Visor de Datos Tabulares")
-        self.setGeometry(100, 100, 1200, 800)
+        # Remove fixed geometry for responsiveness
+        self.setMinimumSize(800, 600)  # Set minimum size for small screens
+        self.resize(1200, 800)  # Default size
+
+        # Debug logging for responsiveness
+        print(f"DEBUG: MainWindow initialized with size {self.size()}")
+        self.resizeEvent = self.on_resize
 
         # Inicializar componentes
         self.df_original = None
@@ -205,6 +211,33 @@ class MainWindow(QMainWindow):
         export_pivot_action.triggered.connect(self.exportar_resultado_pivote)
         export_pivot_action.setEnabled(False)  # Se habilita solo con datos cargados
 
+        # Nuevo Menú Vista
+        vista_menu = menu_bar.addMenu("&Vista")
+
+        # Acción Vista Principal
+        vista_principal_action = vista_menu.addAction("&Vista Principal")
+        vista_principal_action.setShortcut("Ctrl+1")
+        vista_principal_action.triggered.connect(lambda: self.switch_view(0))
+        vista_principal_action.setStatusTip("Cambiar a la vista principal")
+
+        # Acción Vista de Datos
+        vista_datos_action = vista_menu.addAction("&Vista de Datos")
+        vista_datos_action.setShortcut("Ctrl+2")
+        vista_datos_action.triggered.connect(lambda: self.switch_view(1))
+        vista_datos_action.setStatusTip("Cambiar a la vista de datos")
+
+        # Acción Vista Información
+        vista_info_action = vista_menu.addAction("&Ver Información del dataset")
+        vista_info_action.setShortcut("Ctrl+I")
+        vista_info_action.triggered.connect(self.show_info_modal)
+        vista_info_action.setStatusTip("Mostrar información del dataset actual")
+
+        # Acción Vista Gráficos
+        vista_graficos_action = vista_menu.addAction("&Vista Gráficos")
+        vista_graficos_action.setShortcut("Ctrl+G")
+        vista_graficos_action.triggered.connect(lambda: self.switch_view(2))
+        vista_graficos_action.setStatusTip("Cambiar a la vista de gráficos")
+
         # Menú Ayuda
         ayuda_menu = menu_bar.addMenu("&Ayuda")
 
@@ -222,6 +255,11 @@ class MainWindow(QMainWindow):
         self.pivot_simple_action = pivot_simple_action
         self.pivot_combinada_action = pivot_combinada_action
         self.export_pivot_action = export_pivot_action
+        self.vista_menu = vista_menu
+        self.vista_principal_action = vista_principal_action
+        self.vista_datos_action = vista_datos_action
+        self.vista_info_action = vista_info_action
+        self.vista_graficos_action = vista_graficos_action
 
     def create_tool_bar(self):
         """Crear la barra de herramientas"""
@@ -234,6 +272,9 @@ class MainWindow(QMainWindow):
         # Widget contenedor para los botones de vista
         view_widget = QWidget()
         view_layout = QHBoxLayout(view_widget)
+        # Make layout responsive
+        view_layout.setSpacing(5)
+        view_layout.setContentsMargins(5, 5, 5, 5)
 
         # Botón Vista Principal
         self.view_main_btn = QPushButton("Vista Principal")
@@ -246,7 +287,7 @@ class MainWindow(QMainWindow):
         view_layout.addWidget(self.view_data_btn)
 
         # Botón Vista Información
-        self.view_info_btn = QPushButton("Vista Información")
+        self.view_info_btn = QPushButton("Ver Información del dataset")
         self.view_info_btn.clicked.connect(self.show_info_modal)
         view_layout.addWidget(self.view_info_btn)
 
@@ -581,7 +622,7 @@ class MainWindow(QMainWindow):
             if 'progress' in locals():
                 progress.close()
 
-    def on_reload_with_options(self, filepath, skip_rows, column_names):
+    def on_reload_with_options(self, filepath, skip_rows, column_names, enable_column_visibility):
         """Slot para manejar recarga de archivo con nuevas opciones"""
         self.mostrar_loading_indicator(filepath, skip_rows, column_names)
 
@@ -1472,6 +1513,11 @@ class MainWindow(QMainWindow):
         layout.addLayout(button_layout)
         
         dialog.exec()
+
+    def on_resize(self, event):
+        """Debug method to log resize events"""
+        print(f"DEBUG: MainWindow resized to {event.size()}")
+        super().resizeEvent(event)
 
     def closeEvent(self, event):
         """Manejar el cierre de la aplicación"""

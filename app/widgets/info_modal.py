@@ -143,7 +143,7 @@ class InfoModal(QDialog):
                     f"Columnas numéricas: {basic_stats.get('columnas_numericas', 'N/A')}",
                     f"Columnas de texto: {basic_stats.get('columnas_texto', 'N/A')}",
                     f"Uso de memoria: {basic_stats.get('memoria_uso_mb', 'N/A'):.2f} MB",
-                    f"Filas duplicadas: {basic_stats.get('filas_duplicadas', 'N/A'):,}",
+                    f"Total filas duplicadas: {basic_stats.get('filas_duplicadas', 'N/A'):,}",
                     f"Valores nulos totales: {basic_stats.get('valores_nulos_total', 'N/A'):,}",
                 ]
 

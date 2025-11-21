@@ -68,7 +68,7 @@ Paso 2: Explorar y Filtrar Datos (3 minutos)
       Filtrando datos por nombre de producto y región.
 
 3. **Ver Información del Conjunto de Datos**
-   - Haz clic en **"Ver"** → **"Información del Conjunto de Datos"**
+   - Haz clic en **"Vista"** → **"Ver Información del dataset"**
    - Revisa tipos de columna, valores nulos y estadísticas básicas
 
 Paso 3: Crear Tu Primer Gráfico (3 minutos)
