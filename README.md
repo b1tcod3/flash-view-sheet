@@ -31,6 +31,23 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+## Compilar ejecutable para Windows
+
+1. **Instalar PyInstaller**:
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. **Crear el ejecutable**:
+   ```bash
+   pyinstaller --onefile --windowed --hidden-import=numpy --hidden-import=pandas --hidden-import=openpyxl --hidden-import=PySide6.QtCore --hidden-import=PySide6.QtGui --hidden-import=PySide6.QtWidgets --collect-all=numpy --collect-all=pandas main.py
+   ```
+
+3. **Solución de problemas**:
+   - Si hay errores con NumPy, usar un entorno virtual limpio
+   - El parámetro `--collect-all=numpy` es crucial
+   - El ejecutable se genera en la carpeta `dist/`
+
 ## Estructura
 
 ```
