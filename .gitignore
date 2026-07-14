@@ -97,5 +97,3 @@ logs/
 # *.xls
 # *.csv
 
-# Documentation build
-docs/_build/
