@@ -5,6 +5,7 @@ Maneja la lógica de paginación independiente de la interfaz de usuario
 
 import pandas as pd
 from PySide6.QtCore import QObject, Signal
+from typing import Optional, Dict, Any
 
 
 class PaginationManager(QObject):
@@ -19,7 +20,7 @@ class PaginationManager(QObject):
     data_changed = Signal()  # Datos subyacentes cambiaron
     total_pages_changed = Signal(int)  # Número total de páginas cambió
     
-    def __init__(self, df: pd.DataFrame = None, page_size: int = 10):
+    def __init__(self, df: Optional[pd.DataFrame] = None, page_size: int = 10) -> None:
         """
         Inicializar el gestor de paginación
         
@@ -28,13 +29,14 @@ class PaginationManager(QObject):
             page_size: Número de filas por página
         """
         super().__init__()
-        self.original_df = df.copy() if df is not None else pd.DataFrame()
-        self.filtered_df = self.original_df.copy()
-        self.current_page = 1
-        self.page_size = page_size
+        self.original_df: pd.DataFrame = df.copy() if df is not None else pd.DataFrame()
+        self.filtered_df: pd.DataFrame = self.original_df.copy()
+        self.current_page: int = 1
+        self.page_size: int = page_size
+        self.total_pages: int = 0
         self._update_total_pages()
     
-    def set_data(self, df: pd.DataFrame, preserve_page: bool = True):
+    def set_data(self, df: pd.DataFrame, preserve_page: bool = True) -> None:
         """
         Establecer nuevos datos
         
@@ -67,7 +69,7 @@ class PaginationManager(QObject):
         
         self.data_changed.emit()
     
-    def set_page_size(self, size: int):
+    def set_page_size(self, size: int) -> None:
         """
         Establecer tamaño de página
         
@@ -89,7 +91,7 @@ class PaginationManager(QObject):
         """Obtener tamaño de página actual"""
         return self.page_size
     
-    def set_current_page(self, page: int):
+    def set_current_page(self, page: int) -> None:
         """
         Establecer página actual
         
@@ -127,25 +129,25 @@ class PaginationManager(QObject):
         
         return self.filtered_df.iloc[start_idx:end_idx].copy()
     
-    def next_page(self):
+    def next_page(self) -> None:
         """Ir a la siguiente página"""
         if self.current_page < self.total_pages:
             self.current_page += 1
             self.page_changed.emit(self.current_page)
     
-    def previous_page(self):
+    def previous_page(self) -> None:
         """Ir a la página anterior"""
         if self.current_page > 1:
             self.current_page -= 1
             self.page_changed.emit(self.current_page)
     
-    def first_page(self):
+    def first_page(self) -> None:
         """Ir a la primera página"""
         if self.current_page != 1:
             self.current_page = 1
             self.page_changed.emit(self.current_page)
     
-    def last_page(self):
+    def last_page(self) -> None:
         """Ir a la última página"""
         if self.current_page != self.total_pages:
             self.current_page = self.total_pages
@@ -159,7 +161,7 @@ class PaginationManager(QObject):
         """Verificar si se puede ir a la página anterior"""
         return self.current_page > 1
     
-    def apply_filter(self, column: str, term: str):
+    def apply_filter(self, column: str, term: str) -> None:
         """
         Aplicar filtro a los datos
         
@@ -187,7 +189,7 @@ class PaginationManager(QObject):
         self._update_total_pages()
         self.data_changed.emit()
     
-    def clear_filter(self):
+    def clear_filter(self) -> None:
         """Limpiar filtros y mostrar todos los datos"""
         self.filtered_df = self.original_df.copy()
         self.current_page = 1
@@ -208,7 +210,7 @@ class PaginationManager(QObject):
             'is_filtered': len(self.filtered_df) != len(self.original_df)
         }
     
-    def _update_total_pages(self):
+    def _update_total_pages(self) -> None:
         """Calcular número total de páginas"""
         if self.filtered_df.empty:
             self.total_pages = 0

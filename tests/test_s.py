@@ -6,7 +6,7 @@ Test específico para el bug de página 2 vacía
 import pandas as pd
 from paginacion.pagination_manager import PaginationManager
 
-def test_page2_bug():
+def test_page2_bug() -> None:
     """Test específico para reproducir el bug de página 2 vacía"""
     print("=" * 60)
     print("🔍 TEST ESPECÍFICO: Bug página 2 vacía")

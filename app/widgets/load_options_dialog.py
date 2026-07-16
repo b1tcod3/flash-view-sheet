@@ -4,26 +4,27 @@ Permite configurar opciones como saltar filas y renombrar columnas
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                                QSpinBox, QLineEdit, QPushButton, QGroupBox,
-                                QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox)
+                                 QSpinBox, QLineEdit, QPushButton, QGroupBox,
+                                 QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox)
 from PySide6.QtCore import Qt
 import pandas as pd
+from typing import Dict, Tuple
 
 class LoadOptionsDialog(QDialog):
     """
     Diálogo para configurar opciones de carga de datos
     """
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QDialog | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Opciones de Carga")
         self.resize(600, 400)
-        self.skip_rows = 0
-        self.column_names = []
-        self.enable_column_visibility = False
+        self.skip_rows: int = 0
+        self.column_names: Dict[str, str] = {}
+        self.enable_column_visibility: bool = False
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del diálogo"""
         main_layout = QVBoxLayout(self)
         
@@ -71,21 +72,21 @@ class LoadOptionsDialog(QDialog):
         buttons.rejected.connect(self.reject)
         main_layout.addWidget(buttons)
         
-    def add_row(self):
+    def add_row(self) -> None:
         """Añadir una fila al table para renombrar columna"""
         row = self.table.rowCount()
         self.table.insertRow(row)
         self.table.setItem(row, 0, QTableWidgetItem(""))
         self.table.setItem(row, 1, QTableWidgetItem(""))
         
-    def set_columns(self, columns):
+    def set_columns(self, columns: list[str]) -> None:
         """Establecer las columnas originales"""
         self.table.setRowCount(0)
         for col in columns:
             self.add_row()
             self.table.item(self.table.rowCount()-1, 0).setText(col)
             
-    def get_options(self):
+    def get_options(self) -> Tuple[int, Dict[str, str], bool]:
         """Obtener las opciones configuradas"""
         self.skip_rows = self.skip_spin.value()
         self.column_names = {}

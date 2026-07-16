@@ -10,7 +10,7 @@ from PySide6.QtCore import Qt
 
 from paginacion.data_view import DataView
 
-def test_page_preservation_debug():
+def test_page_preservation_debug() -> None:
     """Test que rastrea exactamente cuándo se pierde la página"""
     
     print("🔍 DEBUG: Rastreando pérdida de página")
@@ -51,7 +51,7 @@ def test_page_preservation_debug():
     original_set_data = data_view.pagination_manager.set_data
     call_count = 0
     
-    def debug_set_data(df, preserve_page=True):
+    def debug_set_data(df: pd.DataFrame, preserve_page: bool = True) -> bool:
         nonlocal call_count
         call_count += 1
         print(f"📞 set_data() #{call_count} - preserve_page={preserve_page}, página antes: {data_view.pagination_manager.current_page}")

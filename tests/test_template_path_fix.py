@@ -1,14 +1,14 @@
 """
 Test para verificar la corrección del problema de validación de plantilla
 """
-import os
 import tempfile
+from pathlib import Path
 import pandas as pd
 import openpyxl
 from PySide6.QtWidgets import QApplication
 from app.widgets.export_separated_dialog import ExportSeparatedDialog
 
-def test_template_path_stored():
+def test_template_path_stored() -> None:
     """Test que verifica que la ruta de plantilla se almacena correctamente"""
     print("🧪 Iniciando test de corrección de ruta de plantilla...")
     
@@ -41,7 +41,7 @@ def test_template_path_stored():
         
         # Simular selección de plantilla
         dialog._template_path = template_path  # Esto es lo que agregamos en la corrección
-        dialog.template_path_label.setText(f"📄 {os.path.basename(template_path)}")
+        dialog.template_path_label.setText(f"📄 {Path(template_path).name}")
         dialog.template_path_label.setToolTip(template_path)
         
         # Verificar que la ruta se almacena correctamente
@@ -61,10 +61,10 @@ def test_template_path_stored():
         return False
     finally:
         # Limpiar archivo temporal
-        if os.path.exists(template_path):
-            os.unlink(template_path)
+        if Path(template_path).exists():
+            Path(template_path).unlink()
 
-def test_validation_with_stored_template():
+def test_validation_with_stored_template() -> None:
     """Test que verifica la validación con plantilla almacenada"""
     print("🧪 Iniciando test de validación con plantilla almacenada...")
     
@@ -113,10 +113,10 @@ def test_validation_with_stored_template():
         return False
     finally:
         # Limpiar archivo temporal
-        if os.path.exists(template_path):
-            os.unlink(template_path)
+        if Path(template_path).exists():
+            Path(template_path).unlink()
 
-def test_filename_extension_validation():
+def test_filename_extension_validation() -> None:
     """Test que verifica validación de extensión de archivo de exportación"""
     print("🧪 Iniciando test de validación de extensión de archivo...")
     
@@ -188,8 +188,8 @@ def test_filename_extension_validation():
         return False
     finally:
         # Limpiar archivo temporal
-        if os.path.exists(template_path):
-            os.unlink(template_path)
+        if Path(template_path).exists():
+            Path(template_path).unlink()
 
 if __name__ == "__main__":
     print("🔍 Test de Corrección: Validación de Plantilla y Nombre de Archivo")

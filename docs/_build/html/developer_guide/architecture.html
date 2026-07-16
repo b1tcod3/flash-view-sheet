@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Arquitectura de Flash Sheet &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sistema de Arquitectura de Main Window - Recorrido Detallado del Código" href="code_walkthrough/main_window.html" />
+    <link rel="prev" title="Guía de Solución de Problemas" href="../user_guide/troubleshooting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sistema de Arquitectura de Flash Sheet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resumen-de-arquitectura">Resumen de Arquitectura</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#componentes-principales-de-arquitectura">Componentes Principales de Arquitectura</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flujo-de-datos-principal">Flujo de Datos Principal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#patrones-de-diseno-implementados">Patrones de Diseño Implementados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caracteristicas-avanzadas">Características Avanzadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arquitectura-general">Arquitectura General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diagrama-de-flujo-de-datos">Diagrama de Flujo de Datos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#componentes-principales">Componentes Principales</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exceltemplatesplitter-logica-core">1. ExcelTemplateSplitter (Lógica Core)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportseparatedconfig-gestion-de-configuracion">2. ExportSeparatedConfig (Gestión de Configuración)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-ui-interfaz-de-usuario">3. Componentes UI (Interfaz de Usuario)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datajoinmanager-logica-core-de-join">4. DataJoinManager (Lógica Core de Join)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#joinconfig-configuracion-de-join">5. JoinConfig (Configuración de Join)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#joinhistory-gestion-de-historial">6. JoinHistory (Gestión de Historial)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-ui-sistema-join">7. Componentes UI - Sistema Join</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#patrones-de-diseno">Patrones de Diseño</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#patron-factory">1. Patrón Factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patron-strategy">2. Patrón Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patron-observer">3. Patrón Observer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patron-template-method">4. Patrón Template Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patron-strategy-sistema-join">5. Patrón Strategy (Sistema Join)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#patron-factory-sistema-join">6. Patrón Factory (Sistema Join)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gestion-de-memoria-y-performance">Gestión de Memoria y Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-chunking-inteligente-automatico">1. Sistema de Chunking Inteligente Automático</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-memoria">2. Gestión de Memoria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preservacion-de-formato-de-plantilla-excel">3. Preservación de Formato de Plantilla Excel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizaciones-de-memoria-sistema-join">4. Optimizaciones de Memoria - Sistema Join</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#integracion-del-sistema">Integración del Sistema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#menu-principal">1. Menú Principal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-validacion">2. Sistema de Validación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-transformacion">3. Sistema de Transformación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integracion-de-sistema-join">4. Integración de Sistema Join</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manejo-de-errores">Manejo de Errores</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#jerarquia-de-excepciones">1. Jerarquía de Excepciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recuperacion-automatica">2. Recuperación Automática</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logging-y-auditoria">3. Logging y Auditoría</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#flujo-de-procesamiento-detallado">Flujo de Procesamiento Detallado</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#consideraciones-de-escalabilidad">Consideraciones de Escalabilidad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extensibilidad-del-sistema">Extensibilidad del Sistema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mejoras-futuras">Mejoras Futuras</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sistema de Arquitectura de Flash Sheet</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sistema-de-arquitectura-de-flash-sheet">
+<h1>Sistema de Arquitectura de Flash Sheet<a class="headerlink" href="#sistema-de-arquitectura-de-flash-sheet" title="Link to this heading"></a></h1>
+<p>Esta documentación describe la arquitectura completa de Flash Sheet, una aplicación de escritorio para visualización y análisis de datos tabulares.</p>
+<section id="resumen-de-arquitectura">
+<h2>Resumen de Arquitectura<a class="headerlink" href="#resumen-de-arquitectura" title="Link to this heading"></a></h2>
+<p>Flash Sheet es una aplicación de escritorio desarrollada en Python usando PySide6 (Qt6) que implementa una arquitectura MVC (Modelo-Vista-Controlador) con clara separación de responsabilidades. La aplicación está diseñada para manejar datasets grandes con optimizaciones de rendimiento y memoria.</p>
+<p><strong>Arquitectura General</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────┐
+│                    Aplicación Flash Sheet                   │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                    MainWindow (Controlador)              │ │
+│  │  ┌─────────────────────────────────────────────────────┐ │ │
+│  │  │  Barra de Menú  │  Barra de Herramientas  │  Barra de Estado               │ │ │
+│  │  └─────────────────────────────────────────────────────┘ │ │
+│  │  ┌─────────────────────────────────────────────────────┐ │ │
+│  │  │              QStackedWidget (Vistas)                 │ │ │
+│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐     │ │ │
+│  │  │  │MainView │ │DataView │ │Graphics │ │Joined   │     │ │ │
+│  │  │  │         │ │         │ │ View    │ │DataView │     │ │ │
+│  │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘     │ │ │
+│  │  └─────────────────────────────────────────────────────┘ │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                 Lógica de Negocio Core                      │ │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │ │
+│  │  │Data     │ │Join     │ │Pivot    │ │Export   │         │ │
+│  │  │Handler  │ │Manager  │ │Tables  │ │Functions│         │ │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                    Componentes UI                         │ │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │ │
+│  │  │Widgets  │ │Dialogs  │ │Views    │ │Modals   │         │ │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                 Capa de Acceso a Datos                    │ │
+│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐         │ │
+│  │  │File     │ │Database │ │Memory   │ │Cache    │         │ │
+│  │  │Loaders  │ │Connect. │ │Manager  │ │System   │         │ │
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘         │ │
+│  └─────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="componentes-principales-de-arquitectura">
+<h2>Componentes Principales de Arquitectura<a class="headerlink" href="#componentes-principales-de-arquitectura" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>MainWindow (Controlador Principal)</strong>
+- Coordina todas las operaciones de aplicación
+- Gestiona el ciclo de vida de vistas
+- Maneja comunicación entre componentes
+- Implementa patrón Singleton para acceso global</p></li>
+<li><p><strong>Sistema de Vistas (Capa de Vista)</strong>
+- <strong>MainView</strong>: Vista inicial con opciones de carga de datos
+- <strong>DataView</strong>: Vista de tabla con paginación y filtrado
+- <strong>GraphicsView</strong>: Herramientas de gráficos y visualización
+- <strong>JoinedDataView</strong>: Resultados de operaciones de unión de datos</p></li>
+<li><p><strong>Lógica de Negocio Core</strong>
+- <strong>DataHandler</strong>: Gestión de carga, procesamiento y exportación de datos
+- <strong>JoinManager</strong>: Operaciones de unión de datos tipo SQL
+- <strong>PivotTables</strong>: Funcionalidades de tablas pivote
+- <strong>ExportFunctions</strong>: Múltiples formatos de exportación</p></li>
+<li><p><strong>Componentes UI</strong>
+- Widgets reutilizables para interfaces
+- Diálogos modales para configuraciones
+- Barras de herramientas y menús</p></li>
+<li><p><strong>Capa de Acceso a Datos</strong>
+- Cargadores especializados por formato de archivo
+- Conexiones de base de datos
+- Gestión de memoria y caché</p></li>
+</ol>
+</section>
+<section id="flujo-de-datos-principal">
+<h2>Flujo de Datos Principal<a class="headerlink" href="#flujo-de-datos-principal" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usuario → MainWindow → Vista Activa → Lógica Core → Acceso a Datos → Almacenamiento
+   ↓       ↓       ↓       ↓       ↓       ↓
+Interfaz ← Coordinación ← Actualización ← Procesamiento ← Consulta ← Persistencia
+</pre></div>
+</div>
+<p><strong>Flujo Detallado</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Entrada de Usuario</strong>: Acciones de menú, botones, diálogos</p></li>
+<li><p><strong>Coordinación</strong>: MainWindow dirige acción a vista apropiada</p></li>
+<li><p><strong>Procesamiento</strong>: Vista delega lógica de negocio a módulo Core correspondiente</p></li>
+<li><p><strong>Acceso a Datos</strong>: Core usa Capa de Acceso a Datos para operaciones I/O</p></li>
+<li><p><strong>Actualización UI</strong>: Resultados fluyen de vuelta actualizando vistas</p></li>
+<li><p><strong>Persistencia</strong>: Datos se guardan según formato requerido</p></li>
+</ol>
+</section>
+<section id="patrones-de-diseno-implementados">
+<h2>Patrones de Diseño Implementados<a class="headerlink" href="#patrones-de-diseno-implementados" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>MVC (Modelo-Vista-Controlador)</strong>
+- <strong>Modelo</strong>: DataFrames de Pandas, configuraciones, estado de aplicación
+- <strong>Vista</strong>: Clases PySide6 (QWidgets, QDialogs, vistas personalizadas)
+- <strong>Controlador</strong>: MainWindow coordina entre modelos y vistas</p></li>
+<li><p><strong>Patrón Observer</strong>
+- Señales y slots de Qt para comunicación de componentes
+- Callbacks para notificación de progreso en operaciones largas</p></li>
+<li><p><strong>Patrón Factory</strong>
+- Creación de cargador de archivos según extensión
+- Generación de configuración y validador</p></li>
+<li><p><strong>Patrón Strategy</strong>
+- Diferentes estrategias de chunking para datasets grandes
+- Múltiples algoritmos de exportación</p></li>
+<li><p><strong>Patrón Singleton</strong>
+- Instancia única de MainWindow
+- Managers compartidos (JoinHistory, etc.)</p></li>
+<li><p><strong>Patrón Command</strong>
+- Operaciones de transformación de datos encapsuladas
+- Historial de operaciones para deshacer/rehacer</p></li>
+</ol>
+</section>
+<section id="caracteristicas-avanzadas">
+<h2>Características Avanzadas<a class="headerlink" href="#caracteristicas-avanzadas" title="Link to this heading"></a></h2>
+<p>Flash Sheet implementa características avanzadas con arquitecturas especializadas:</p>
+</section>
+<section id="arquitectura-general">
+<h2>Arquitectura General<a class="headerlink" href="#arquitectura-general" title="Link to this heading"></a></h2>
+<p>Flash Sheet implementa una arquitectura modular con clara separación de responsabilidades para sus dos funcionalidades principales:</p>
+<p><strong>Exportación Separada</strong>: Sistema para dividir datasets en múltiples archivos Excel usando plantillas
+<strong>Uniones de Datos (Joins)</strong>: Sistema para combinar datasets a través de operaciones de unión</p>
+<p>El sistema sigue una arquitectura modular con clara separación de responsabilidades:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📦 Aplicación Flash Sheet
+├── 🖥️ Capa de Interfaz (UI)
+│   ├── ExportSeparatedDialog (Configuración Principal)
+│   ├── ColumnMappingWidget (Gestión de Columnas)
+│   ├── ExcelTemplateDialog (Selección de Plantilla)
+│   └── FilePreviewDialog (Preview y Validación)
+│
+├── 🔧 Capa de Lógica de Negocio
+│   ├── ExcelTemplateSplitter (Lógica Core)
+│   ├── ExportSeparatedConfig (Configuración)
+│   └── Sistema de Optimización de Performance
+│
+├── 💾 Capa de Acceso a Datos
+│   ├── Sistema de Carga de Datos
+│   ├── Pipeline de Transformación
+│   └── Gestión de Plantillas Excel
+│
+└── 🗃️ Capa de Integración
+    ├── Menú Principal de Aplicación
+    ├── Operaciones de Sistema de Archivos
+    └── Características Existentes de Flash Sheet
+</pre></div>
+</div>
+</section>
+<section id="diagrama-de-flujo-de-datos">
+<h2>Diagrama de Flujo de Datos<a class="headerlink" href="#diagrama-de-flujo-de-datos" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📊 DataFrame Fuente
+        ↓
+┌─────────────────────┐
+│  ExcelTemplateSplitter  │
+│  ┌─────────────────┐ │
+│  │ Validation       │ │
+│  │ ┌─────────────┐ │ │
+│  │ │ Data Analysis │ │ │
+│  │ │ &amp; Preview    │ │ │
+│  │ └─────────────┘ │ │
+│  │                 │ │
+│  │ Column Mapping   │ │
+│  │ ┌─────────────┐ │ │
+│  │ │ Auto Detect  │ │ │
+│  │ │ Manual Config│ │ │
+│  │ └─────────────┘ │ │
+│  │                 │ │
+│  │ Export Process   │ │
+│  │ ┌─────────────┐ │ │
+│  │ │ Chunking     │ │ │
+│  │ │ Template Use │ │ │
+│  │ │ File Creation│ │ │
+│  │ └─────────────┘ │ │
+│  └─────────────────┘ │
+└─────────────────────┘
+        ↓
+📁 Múltiples Archivos Excel
+</pre></div>
+</div>
+<p><strong>Uniones de Datos (Sistema Join)</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📊 DataFrame Izquierdo     📊 DataFrame Derecho
+        ↓                     ↓
+┌─────────────────────┐       │
+│  DataJoinManager    │◄──────┘
+│  ┌─────────────────┐ │
+│  │ Join Processing │ │
+│  │ ┌─────────────┐ │ │
+│  │ │ Validation   │ │ │
+│  │ │ ┌─────────┐ │ │ │ │
+│  │ │ │ Type     │ │ │ │ │
+│  │ │ │ Check    │ │ │ │ │
+│  │ │ └─────────┘ │ │ │ │
+│  │ │             │ │ │ │
+│  │ │ Memory Est. │ │ │ │
+│  │ │ ┌─────────┐ │ │ │ │
+│  │ │ │ Chunking │ │ │ │ │
+│  │ │ │ Decision │ │ │ │ │
+│  │ │ └─────────┘ │ │ │ │
+│  └─────────────┘ │ │
+│                  │ │
+│ Join Execution  │ │
+│ ┌─────────────┐ │ │
+│ │ Inner/Left/ │ │ │
+│ │ Right/Cross │ │ │
+│ │ Operations  │ │ │
+│ └─────────────┘ │ │
+└─────────────────┘ │
+        ↓
+📊 DataFrame Unificado + Metadata
+        ↓
+💾 Almacenamiento JoinHistory
+</pre></div>
+</div>
+</section>
+<section id="componentes-principales">
+<h2>Componentes Principales<a class="headerlink" href="#componentes-principales" title="Link to this heading"></a></h2>
+<section id="exceltemplatesplitter-logica-core">
+<h3>1. ExcelTemplateSplitter (Lógica Core)<a class="headerlink" href="#exceltemplatesplitter-logica-core" title="Link to this heading"></a></h3>
+<p><strong>Responsabilidad</strong>: Lógica principal de separación y exportación</p>
+<p><strong>Características</strong>:
+- Análisis y validación de DataFrame
+- Gestión de configuración de separación
+- Procesamiento con optimizaciones de memoria
+- Manejo robusto de errores y recuperación</p>
+<p><strong>Código Base</strong>: <cite>core/data_handler.py</cite></p>
+</section>
+<section id="exportseparatedconfig-gestion-de-configuracion">
+<h3>2. ExportSeparatedConfig (Gestión de Configuración)<a class="headerlink" href="#exportseparatedconfig-gestion-de-configuracion" title="Link to this heading"></a></h3>
+<p><strong>Responsabilidad</strong>: Gestión de configuración y validación</p>
+<p><strong>Características</strong>:
+- Dataclass con validación integrada
+- Mapeo flexible de columnas
+- Configuración de plantillas Excel
+- Opciones de performance</p>
+<p><strong>Campos</strong>:
+- <cite>separator_column</cite>: Columna para separación de datos
+- <cite>template_path</cite>: Ruta a plantilla Excel
+- <cite>output_folder</cite>: Carpeta destino
+- <cite>column_mapping</cite>: Mapeo DataFrame ↔ Excel de columnas</p>
+</section>
+<section id="componentes-ui-interfaz-de-usuario">
+<h3>3. Componentes UI (Interfaz de Usuario)<a class="headerlink" href="#componentes-ui-interfaz-de-usuario" title="Link to this heading"></a></h3>
+<p><strong>ExportSeparatedDialog</strong>: Diálogo principal de configuración</p>
+<p><strong>ColumnMappingWidget</strong>: Gestión flexible de mapeo</p>
+<p><strong>ExcelTemplateDialog</strong>: Selección y validación de plantilla</p>
+<p><strong>FilePreviewDialog</strong>: Preview de archivos a generar</p>
+</section>
+<section id="datajoinmanager-logica-core-de-join">
+<h3>4. DataJoinManager (Lógica Core de Join)<a class="headerlink" href="#datajoinmanager-logica-core-de-join" title="Link to this heading"></a></h3>
+<p><strong>Responsabilidad</strong>: Lógica principal de operaciones de unión de datos</p>
+<p><strong>Características</strong>:
+- Ejecución de operaciones de unión (inner, left, right, cross)
+- Gestión automática de memoria con chunking
+- Validación de compatibilidad de datos
+- Optimizaciones de performance para datasets grandes
+- Generación detallada de metadata</p>
+<p><strong>Código Base</strong>: <cite>core/join/data_join_manager.py</cite></p>
+</section>
+<section id="joinconfig-configuracion-de-join">
+<h3>5. JoinConfig (Configuración de Join)<a class="headerlink" href="#joinconfig-configuracion-de-join" title="Link to this heading"></a></h3>
+<p><strong>Responsabilidad</strong>: Gestión de configuración para operaciones de join</p>
+<p><strong>Características</strong>:
+- Configuración completa de parámetros para joins
+- Validación integrada de configuración
+- Soporte para múltiples tipos de join
+- Gestión de sufijos para columnas duplicadas</p>
+<p><strong>Campos</strong>:
+- <cite>join_type</cite>: Tipo de join (INNER, LEFT, RIGHT, CROSS)
+- <cite>left_keys</cite>/<cite>right_keys</cite>: Columnas de join
+- <cite>suffixes</cite>: Sufijos para columnas duplicadas
+- <cite>validate_integrity</cite>: Validación de integridad referencial</p>
+</section>
+<section id="joinhistory-gestion-de-historial">
+<h3>6. JoinHistory (Gestión de Historial)<a class="headerlink" href="#joinhistory-gestion-de-historial" title="Link to this heading"></a></h3>
+<p><strong>Responsabilidad</strong>: Sistema de historial para operaciones de join</p>
+<p><strong>Características</strong>:
+- Almacenamiento persistente de operaciones
+- Re-ejecución de joins previos
+- Importación/exportación de configuración
+- Gestión automática de límite de entradas</p>
+<p><strong>Código Base</strong>: <cite>core/join/join_history.py</cite></p>
+</section>
+<section id="componentes-ui-sistema-join">
+<h3>7. Componentes UI - Sistema Join<a class="headerlink" href="#componentes-ui-sistema-join" title="Link to this heading"></a></h3>
+<p><strong>JoinDialog</strong>: Diálogo principal de configuración de join</p>
+<p><strong>JoinedDataView</strong>: Vista especializada para resultados de join con metadata</p>
+</section>
+</section>
+<section id="patrones-de-diseno">
+<h2>Patrones de Diseño<a class="headerlink" href="#patrones-de-diseno" title="Link to this heading"></a></h2>
+<section id="patron-factory">
+<h3>1. Patrón Factory<a class="headerlink" href="#patron-factory" title="Link to this heading"></a></h3>
+<p>Usado para creación de configuración y validación:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Factory de configuración</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">ExportSeparatedConfig</span><span class="p">(</span>
+    <span class="n">separator_column</span><span class="o">=</span><span class="s2">&quot;categoria&quot;</span><span class="p">,</span>
+    <span class="n">template_path</span><span class="o">=</span><span class="s2">&quot;plantilla.xlsx&quot;</span><span class="p">,</span>
+    <span class="c1"># ... más parámetros</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-strategy">
+<h3>2. Patrón Strategy<a class="headerlink" href="#patron-strategy" title="Link to this heading"></a></h3>
+<p>Para diferentes estrategias de optimización:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ChunkingStrategy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+    <span class="n">MODERATE</span> <span class="o">=</span> <span class="s2">&quot;moderate&quot;</span>
+    <span class="n">SIZE_BASED</span> <span class="o">=</span> <span class="s2">&quot;size&quot;</span>
+    <span class="n">GROUP_BASED</span> <span class="o">=</span> <span class="s2">&quot;group&quot;</span>
+    <span class="n">AGGRESSIVE</span> <span class="o">=</span> <span class="s2">&quot;aggressive&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-observer">
+<h3>3. Patrón Observer<a class="headerlink" href="#patron-observer" title="Link to this heading"></a></h3>
+<p>Para notificaciones de progreso:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">progress_callback</span><span class="p">(</span><span class="n">groups_procesados</span><span class="p">,</span> <span class="n">total_groups</span><span class="p">):</span>
+    <span class="c1"># Actualizar UI con progreso</span>
+    <span class="n">update_progress_bar</span><span class="p">(</span><span class="n">groups_procesados</span><span class="p">,</span> <span class="n">total_groups</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-template-method">
+<h3>4. Patrón Template Method<a class="headerlink" href="#patron-template-method" title="Link to this heading"></a></h3>
+<p>Para procesamiento de plantillas Excel:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_create_excel_file_with_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="c1"># Método template con pasos definidos</span>
+    <span class="n">workbook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_template</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_apply_column_mapping</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_insert_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_save_file</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-strategy-sistema-join">
+<h3>5. Patrón Strategy (Sistema Join)<a class="headerlink" href="#patron-strategy-sistema-join" title="Link to this heading"></a></h3>
+<p>Para diferentes estrategias de chunking en joins:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JoinChunkingStrategy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>           <span class="c1"># Sin chunking</span>
+    <span class="n">CROSS_OPTIMIZED</span> <span class="o">=</span> <span class="s2">&quot;cross&quot;</span>  <span class="c1"># Optimizado para cross joins</span>
+    <span class="n">MEMORY_BASED</span> <span class="o">=</span> <span class="s2">&quot;memory&quot;</span>    <span class="c1"># Basado en límites de memoria</span>
+    <span class="n">SIZE_BASED</span> <span class="o">=</span> <span class="s2">&quot;size&quot;</span>        <span class="c1"># Basado en tamaño de dataset</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-factory-sistema-join">
+<h3>6. Patrón Factory (Sistema Join)<a class="headerlink" href="#patron-factory-sistema-join" title="Link to this heading"></a></h3>
+<p>Para creación de configuración de join:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Factory de configuración de join</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">JoinConfig</span><span class="p">(</span>
+    <span class="n">join_type</span><span class="o">=</span><span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span>
+    <span class="n">left_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;customer_id&#39;</span><span class="p">],</span>
+    <span class="n">right_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+    <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_sales&#39;</span><span class="p">,</span> <span class="s1">&#39;_customer&#39;</span><span class="p">),</span>
+    <span class="n">validate_integrity</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="gestion-de-memoria-y-performance">
+<h2>Gestión de Memoria y Performance<a class="headerlink" href="#gestion-de-memoria-y-performance" title="Link to this heading"></a></h2>
+<section id="sistema-de-chunking-inteligente-automatico">
+<h3>1. Sistema de Chunking Inteligente Automático<a class="headerlink" href="#sistema-de-chunking-inteligente-automatico" title="Link to this heading"></a></h3>
+<p><strong>Estrategias Disponibles</strong>:</p>
+<ul class="simple">
+<li><p><strong>NONE</strong>: Sin chunking (datasets pequeños)</p></li>
+<li><p><strong>MODERATE</strong>: Chunking conservador (datasets medianos)</p></li>
+<li><p><strong>SIZE_BASED</strong>: Basado en tamaño de memoria</p></li>
+<li><p><strong>GROUP_BASED</strong>: Basado en número de grupos</p></li>
+<li><p><strong>AGGRESSIVE</strong>: Chunking agresivo (datasets muy grandes)</p></li>
+</ul>
+<p><strong>Decisión Automática</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">determine_optimal_chunking_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">separator_column</span><span class="p">):</span>
+    <span class="c1"># Análisis de dataset para estrategia óptima</span>
+    <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">memory_usage</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">unique_groups</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">separator_column</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">total_rows</span> <span class="o">&gt;</span> <span class="mi">100000</span> <span class="ow">and</span> <span class="n">memory_usage</span> <span class="o">&gt;</span> <span class="mi">500</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ChunkingStrategy</span><span class="o">.</span><span class="n">AGGRESSIVE</span>
+    <span class="k">elif</span> <span class="n">total_rows</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ChunkingStrategy</span><span class="o">.</span><span class="n">MODERATE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ChunkingStrategy</span><span class="o">.</span><span class="n">NONE</span>
+</pre></div>
+</div>
+</section>
+<section id="gestion-de-memoria">
+<h3>2. Gestión de Memoria<a class="headerlink" href="#gestion-de-memoria" title="Link to this heading"></a></h3>
+<p><strong>Monitoreo Continuo</strong>:</p>
+<ul class="simple">
+<li><p>Seguimiento continuo de uso de memoria</p></li>
+<li><p>Recolección automática de basura</p></li>
+<li><p>Límites configurables (por defecto: 2GB)</p></li>
+<li><p>Alertas automáticas de uso excesivo</p></li>
+</ul>
+<p><strong>Recuperación Automática</strong>:</p>
+<ul class="simple">
+<li><p>Limpieza de archivos temporales</p></li>
+<li><p>Continuidad de operaciones interrumpidas</p></li>
+<li><p>Persistencia de progreso en archivos .json</p></li>
+</ul>
+</section>
+<section id="preservacion-de-formato-de-plantilla-excel">
+<h3>3. Preservación de Formato de Plantilla Excel<a class="headerlink" href="#preservacion-de-formato-de-plantilla-excel" title="Link to this heading"></a></h3>
+<p><strong>Preservación Completa de Formato</strong>:</p>
+<ul class="simple">
+<li><p>Uso exclusivo de openpyxl para máxima compatibilidad</p></li>
+<li><p>Preservación completa de estilos</p></li>
+<li><p>Mantenimiento de fórmulas y validaciones</p></li>
+<li><p>Compatibilidad con Excel 2016+</p></li>
+</ul>
+<p><strong>Caché de Formato</strong>:</p>
+<ul class="simple">
+<li><p>Caché de formato Excel para performance</p></li>
+<li><p>Reutilización de estilos entre archivos</p></li>
+<li><p>Optimización de operaciones de escritura</p></li>
+</ul>
+</section>
+<section id="optimizaciones-de-memoria-sistema-join">
+<h3>4. Optimizaciones de Memoria - Sistema Join<a class="headerlink" href="#optimizaciones-de-memoria-sistema-join" title="Link to this heading"></a></h3>
+<p><strong>Chunking Inteligente para Joins</strong>:</p>
+<ul class="simple">
+<li><p><strong>Cross Joins</strong>: Procesamiento por chunks del dataset más pequeño</p></li>
+<li><p><strong>Regular Joins</strong>: Chunking del dataset más grande cuando necesario</p></li>
+<li><p><strong>Memory-Based</strong>: Activación automática cuando se excede umbral de memoria</p></li>
+<li><p><strong>Size-Based</strong>: Basado en tamaño de resultado estimado</p></li>
+</ul>
+<p><strong>Estimación de Memoria</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_estimate_memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="c1"># Estimación basada en tipos de join</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+        <span class="c1"># Cross join: producto cartesiano</span>
+        <span class="n">estimated_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_df</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_df</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Otros joins: estimación conservadora</span>
+        <span class="n">estimated_rows</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_df</span><span class="p">))</span>
+
+    <span class="c1"># Memoria por celda × filas × columnas</span>
+    <span class="k">return</span> <span class="n">estimated_rows</span> <span class="o">*</span> <span class="n">total_cols</span> <span class="o">*</span> <span class="mi">8</span>  <span class="c1"># 8 bytes por valor</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integracion-del-sistema">
+<h2>Integración del Sistema<a class="headerlink" href="#integracion-del-sistema" title="Link to this heading"></a></h2>
+<section id="menu-principal">
+<h3>1. Menú Principal<a class="headerlink" href="#menu-principal" title="Link to this heading"></a></h3>
+<p><strong>Ubicación</strong>: Nivel “Separar” al mismo nivel que “Archivo”</p>
+<p><strong>Opciones Disponibles</strong>:
+- Exportar Datos Separados
+- Configurar Plantillas</p>
+</section>
+<section id="sistema-de-validacion">
+<h3>2. Sistema de Validación<a class="headerlink" href="#sistema-de-validacion" title="Link to this heading"></a></h3>
+<p><strong>Integración con Cargadores Existentes</strong>:
+- Compatible con todos los formatos soportados
+- Validación integrada de datos
+- Manejo consistente de errores</p>
+</section>
+<section id="sistema-de-transformacion">
+<h3>3. Sistema de Transformación<a class="headerlink" href="#sistema-de-transformacion" title="Link to this heading"></a></h3>
+<p><strong>Compatibilidad con Pipeline de Transformación</strong>:
+- Funciona con datos transformados
+- Preserva historial de transformación
+- No interfiere con funcionalidades existentes</p>
+</section>
+<section id="integracion-de-sistema-join">
+<h3>4. Integración de Sistema Join<a class="headerlink" href="#integracion-de-sistema-join" title="Link to this heading"></a></h3>
+<p><strong>Menú Principal - Sistema Join</strong>:</p>
+<p><strong>Ubicación</strong>: Nuevo menú “Datos” con opción “Unir Datos…”</p>
+<p><strong>Opciones Disponibles</strong>:
+- Unir Datos…: Abre diálogo de configuración de join
+- Historial de Join: Gestión de operaciones de join</p>
+<p><strong>Sistema de Validación - Integración Join</strong>:</p>
+<p><strong>Integración con Sistema de Cargadores</strong>:
+- Compatible con todos los formatos soportados
+- Validación automática de tipos de datos para joins
+- Detección de columnas compatibles</p>
+<p><strong>Sistema de Transformación - Compatibilidad Join</strong>:
+- Los joins funcionan con datos previamente transformados
+- Los resultados de join pueden transformarse posteriormente
+- Historial completo preservado entre operaciones</p>
+</section>
+</section>
+<section id="manejo-de-errores">
+<h2>Manejo de Errores<a class="headerlink" href="#manejo-de-errores" title="Link to this heading"></a></h2>
+<section id="jerarquia-de-excepciones">
+<h3>1. Jerarquía de Excepciones<a class="headerlink" href="#jerarquia-de-excepciones" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SeparationError (Base)
+├── TemplateError (Problemas de plantilla Excel)
+├── ConfigurationError (Configuración inválida)
+└── MemoryError (Problemas de memoria)
+</pre></div>
+</div>
+<p><strong>Jerarquía de Excepciones - Sistema Join</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>JoinError (Base)
+├── JoinValidationError (Errores de validación de configuración)
+├── JoinExecutionError (Errores de ejecución)
+├── MemoryLimitExceededError (Límite de memoria excedido)
+└── UnsupportedJoinError (Tipo de join no soportado)
+</pre></div>
+</div>
+</section>
+<section id="recuperacion-automatica">
+<h3>2. Recuperación Automática<a class="headerlink" href="#recuperacion-automatica" title="Link to this heading"></a></h3>
+<p><strong>Estrategias de Recuperación</strong>:
+- Plantillas predeterminadas para archivos corruptos
+- Renombrado automático para conflictos de nombres
+- Continuidad post-falla con persistencia de progreso</p>
+</section>
+<section id="logging-y-auditoria">
+<h3>3. Logging y Auditoría<a class="headerlink" href="#logging-y-auditoria" title="Link to this heading"></a></h3>
+<p><strong>Sistema de Logging</strong>:
+- Logging detallado para debugging
+- Métricas automáticas de performance
+- Auditoría de operaciones</p>
+</section>
+</section>
+<section id="flujo-de-procesamiento-detallado">
+<h2>Flujo de Procesamiento Detallado<a class="headerlink" href="#flujo-de-procesamiento-detallado" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Inicialización</strong>
+- Cargar DataFrame
+- Validar datos
+- Configurar optimizaciones</p></li>
+<li><p><strong>Configuración</strong>
+- Seleccionar columna de separación
+- Configurar plantilla Excel
+- Definir mapeo de columnas</p></li>
+<li><p><strong>Validación</strong>
+- Verificar integridad de datos
+- Validar configuración
+- Generar preview</p></li>
+<li><p><strong>Procesamiento</strong>
+- Separar por grupos
+- Aplicar plantilla
+- Crear archivos Excel</p></li>
+<li><p><strong>Finalización</strong>
+- Generar resumen
+- Limpiar archivos temporales
+- Reporte de resultados</p></li>
+</ol>
+</section>
+<section id="consideraciones-de-escalabilidad">
+<h2>Consideraciones de Escalabilidad<a class="headerlink" href="#consideraciones-de-escalabilidad" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Datasets Pequeños</strong> (&lt; 10K filas)
+- Sin chunking
+- Procesamiento directo
+- Tiempo objetivo: &lt; 30 segundos</p></li>
+<li><p><strong>Datasets Medianos</strong> (10K-100K filas)
+- Chunking moderado
+- Optimización de memoria
+- Tiempo objetivo: &lt; 3 minutos</p></li>
+<li><p><strong>Datasets Grandes</strong> (100K-1M+ filas)
+- Chunking agresivo
+- Monitoreo continuo
+- Tiempo objetivo: &lt; 15 minutos</p></li>
+</ol>
+<p><strong>Consideraciones de Escalabilidad - Sistema Join</strong>:</p>
+<ol class="arabic simple" start="4">
+<li><p><strong>Cross Joins Grandes</strong> (Producto Cartesiano)
+- Chunking automático del dataset más pequeño
+- Monitoreo continuo de memoria
+- Tiempo objetivo: Dependiente del tamaño del resultado</p></li>
+<li><p><strong>Joins de Datasets Desbalanceados</strong>
+- Optimización automática basada en tamaños relativos
+- Selección inteligente de dataset de referencia
+- Eficiente en memoria para joins left/right</p></li>
+<li><p><strong>Joins de Múltiples Columnas</strong>
+- Optimización de índice para múltiples claves
+- Validación eficiente de integridad
+- Optimizado en memoria para joins complejos</p></li>
+</ol>
+</section>
+<section id="extensibilidad-del-sistema">
+<h2>Extensibilidad del Sistema<a class="headerlink" href="#extensibilidad-del-sistema" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Nuevas Estrategias de Chunking</strong>
+- Implementar nuevas estrategias en <cite>ChunkingStrategy</cite>
+- Agregar lógica de decisión en <cite>determine_optimal_chunking_strategy</cite></p></li>
+<li><p><strong>Nuevos Tipos de Plantilla</strong>
+- Extender <cite>ExcelTemplateManager</cite>
+- Agregar nuevos formatos de importación</p></li>
+<li><p><strong>Nuevas Validaciones</strong>
+- Extender <cite>ValidationResult</cite>
+- Agregar nuevos tipos de validación</p></li>
+<li><p><strong>Nuevos Formatos de Salida</strong>
+- Implementar nuevos exportadores
+- Agregar soporte para diferentes formatos</p></li>
+</ol>
+<p><strong>Extensibilidad del Sistema - Sistema Join</strong>:</p>
+<ol class="arabic simple" start="5">
+<li><p><strong>Nuevos Tipos de Join</strong>
+- Extender enum <cite>JoinType</cite>
+- Implementar lógica específica en <cite>DataJoinManager</cite>
+- Agregar validaciones correspondientes</p></li>
+<li><p><strong>Nuevas Estrategias de Chunking</strong>
+- Implementar <cite>JoinChunkingStrategy</cite> adicional
+- Agregar lógica de decisión en <cite>_should_use_chunking</cite>
+- Optimizar para casos de uso específicos</p></li>
+<li><p><strong>Nuevos Validadores de Datos</strong>
+- Extender <cite>ValidationResult</cite> con nuevas reglas
+- Implementar validaciones específicas de dominio
+- Agregar soporte para tipos de datos personalizados</p></li>
+<li><p><strong>Nuevos Formatos de Historial</strong>
+- Extender <cite>JoinHistory</cite> para nuevos formatos
+- Agregar importación/exportación para diferentes serializaciones
+- Implementar sincronización de base de datos</p></li>
+</ol>
+</section>
+<section id="mejoras-futuras">
+<h2>Mejoras Futuras<a class="headerlink" href="#mejoras-futuras" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Paralelización</strong>
+- Procesamiento paralelo de grupos
+- Multi-threading para I/O</p></li>
+<li><p><strong>Integración Cloud</strong>
+- Exportación directa a servicios cloud
+- Sincronización automática</p></li>
+<li><p><strong>Plantillas Avanzadas</strong>
+- Plantillas dinámicas
+- Configuración visual de plantillas</p></li>
+<li><p><strong>Procesamiento en Tiempo Real</strong>
+- Streaming para datasets masivos
+- Procesamiento en tiempo real</p></li>
+</ol>
+<p><strong>Mejoras Futuras - Sistema Join</strong>:</p>
+<ol class="arabic simple" start="5">
+<li><p><strong>Joins Paralelos</strong>
+- Procesamiento paralelo de chunks
+- Multi-threading para cross joins grandes
+- Optimización para sistemas multi-core</p></li>
+<li><p><strong>Joins Distribuidos</strong>
+- Soporte para datasets que no caben en memoria
+- Integración con bases de datos externas
+- Procesamiento distribuido en clusters</p></li>
+<li><p><strong>Joins Inteligentes</strong>
+- Detección automática de tipos de join apropiados
+- Sugerencias basadas en análisis de datos
+- Optimización automática de configuración</p></li>
+<li><p><strong>Joins de Condiciones Complejas</strong>
+- Soporte para joins con condiciones no de igualdad
+- Joins personalizados basados en funciones
+- Joins basados en similitud de texto</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../user_guide/troubleshooting.html" class="btn btn-neutral float-left" title="Guía de Solución de Problemas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="code_walkthrough/main_window.html" class="btn btn-neutral float-right" title="Sistema de Arquitectura de Main Window - Recorrido Detallado del Código" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

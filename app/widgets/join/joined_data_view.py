@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
+from typing import Optional, Dict, Any, List
 
 from paginacion.data_view import DataView
 from core.join.models import JoinResult, JoinMetadata
@@ -21,16 +22,16 @@ class JoinedDataView(DataView):
     # Señales
     new_join_requested = Signal()  # Solicitar nuevo cruce de datos
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self.join_metadata = None
-        self.left_dataset_name = ""
-        self.right_dataset_name = ""
+        self.join_metadata: Optional[JoinMetadata] = None
+        self.left_dataset_name: str = ""
+        self.right_dataset_name: str = ""
 
         # Añadir sección de metadatos del join
         self.add_join_metadata_section()
 
-    def add_join_metadata_section(self):
+    def add_join_metadata_section(self) -> None:
         """Añadir sección de metadatos del join al layout principal"""
         # Insertar después del título pero antes de los filtros
         main_layout = self.layout()
@@ -127,7 +128,7 @@ class JoinedDataView(DataView):
         # Habilitar botón de exportar
         self.export_btn.setEnabled(True)
 
-    def update_join_metadata_display(self):
+    def update_join_metadata_display(self) -> None:
         """Actualizar display de metadatos del join"""
         if self.join_metadata is None:
             self.metadata_text.setPlainText("No hay información de join disponible")
@@ -173,7 +174,7 @@ class JoinedDataView(DataView):
 
         self.metadata_text.setPlainText('\n'.join(info_lines))
 
-    def export_results(self):
+    def export_results(self) -> None:
         """Exportar resultados del join"""
         if self.original_df is None:
             QMessageBox.warning(self, "Error", "No hay datos para exportar")
@@ -293,13 +294,13 @@ class JoinedDataView(DataView):
                 f"Error durante la exportación:\n{str(e)}"
             )
 
-    def new_join(self):
+    def new_join(self) -> None:
         """Iniciar nuevo cruce de datos"""
         # Emitir señal para abrir nuevo diálogo de join
         self.new_join_requested.emit()
         QMessageBox.information(self, "Nuevo Cruce", "Abriendo diálogo para nuevo cruce...")
 
-    def show_history(self):
+    def show_history(self) -> None:
         """Mostrar historial de joins"""
         from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton, QTextEdit
         from PySide6.QtCore import Qt
@@ -380,7 +381,7 @@ class JoinedDataView(DataView):
 
         dialog.exec()
 
-    def _show_entry_details(self, entry, details_text):
+    def _show_entry_details(self, entry: Any, details_text: QTextEdit) -> None:
         """Mostrar detalles de una entrada del historial"""
         details = f"""
 Tipo: {entry.config.join_type.value if entry.config else 'N/A'}
@@ -396,7 +397,7 @@ Memoria: {entry.result_metadata.get('memory_usage', 'N/A'):.1f} MB
 
         details_text.setPlainText(details.strip())
 
-    def _export_history(self, join_history):
+    def _export_history(self, join_history: Any) -> None:
         """Exportar historial a archivo"""
         from PySide6.QtWidgets import QFileDialog
         import pandas as pd
@@ -415,7 +416,7 @@ Memoria: {entry.result_metadata.get('memory_usage', 'N/A'):.1f} MB
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Error exportando historial: {str(e)}")
 
-    def _clear_history(self, join_history, dialog):
+    def _clear_history(self, join_history: Any, dialog: QDialog) -> None:
         """Limpiar historial"""
         reply = QMessageBox.question(
             self, "Confirmar",
@@ -428,7 +429,7 @@ Memoria: {entry.result_metadata.get('memory_usage', 'N/A'):.1f} MB
             QMessageBox.information(self, "Éxito", "Historial limpiado.")
             dialog.accept()
 
-    def show_help(self):
+    def show_help(self) -> None:
         """Mostrar ayuda sobre joins"""
         help_text = """
         AYUDA: Vista de Datos Cruzados

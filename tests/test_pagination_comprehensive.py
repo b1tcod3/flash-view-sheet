@@ -9,7 +9,7 @@ from paginacion.data_view import DataView
 from paginacion.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
-def test_edge_cases():
+def test_edge_cases() -> None:
     """Probar casos extremos y regresiones"""
     print("=== TEST DE CASOS EXTREMOS Y REGRESIONES ===\n")
     
@@ -100,7 +100,7 @@ def test_edge_cases():
     
     return True
 
-def test_pagination_flow():
+def test_pagination_flow() -> None:
     """Probar flujo completo de paginación"""
     print("\n=== TEST DE FLUJO COMPLETO DE PAGINACIÓN ===\n")
     
@@ -152,7 +152,7 @@ def test_pagination_flow():
     print(f"\n{'✅ Flujo completo: OK' if all_pages_correct else '❌ Flujo completo: FAILED'}")
     return all_pages_correct
 
-def main():
+def main() -> int:
     """Función principal"""
     print("🔍 TEST COMPLETO POST-CORRECCIÓN")
     print("=" * 50)

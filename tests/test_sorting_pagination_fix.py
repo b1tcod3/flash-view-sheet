@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QApplication
 from paginacion.data_view import DataView
 from paginacion.pagination_manager import PaginationManager
 
-def test_complete_sorting_pagination_flow():
+def test_complete_sorting_pagination_flow() -> None:
     """Test completo del flujo de ordenamiento y paginación"""
     
     print("🧪 TEST COMPLETO: Flujo de ordenamiento y paginación")
@@ -162,7 +162,7 @@ def test_complete_sorting_pagination_flow():
     
     return page_preserved
 
-def test_edge_cases():
+def test_edge_cases() -> None:
     """Test de casos extremos"""
     
     print("🧪 TEST CASOS EXTREMOS")

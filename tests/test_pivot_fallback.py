@@ -4,11 +4,10 @@ Test para verificar el sistema de fallback de pivote a agregación
 """
 
 import sys
-import os
 import pandas as pd
 sys.path.insert(0, '.')
 
-def test_pivot_fallback_functionality():
+def test_pivot_fallback_functionality() -> None:
     """Test del sistema de fallback de pivote a agregación"""
     print("🧪 TESTING: Sistema de Fallback de Pivote a Agregación")
     print("=" * 60)
@@ -104,7 +103,7 @@ def test_pivot_fallback_functionality():
         traceback.print_exc()
         return False
 
-def test_fallback_integration():
+def test_fallback_integration() -> None:
     """Test de integración del fallback en main.py"""
     print("\n🔗 TESTING: Integración de Fallback en Main Window")
     print("=" * 50)
@@ -117,13 +116,13 @@ def test_fallback_integration():
         
         # Simular DataView
         class MockDataView:
-            def set_data(self, df):
+            def set_data(self, df: pd.DataFrame) -> bool:
                 self.data = df
                 print(f"✅ DataView actualizado: {df.shape}")
         
         # Simular MainWindow con las funciones de fallback
         class TestMainWindow:
-            def __init__(self):
+            def __init__(self) -> None:
                 self.data_view = MockDataView()
                 self.df_vista_actual = pd.DataFrame({
                     'region': ['Norte', 'Sur', 'Norte', 'Sur'],
@@ -133,20 +132,20 @@ def test_fallback_integration():
                 })
                 self.status_messages = []
             
-            def show_message(self, msg):
+            def show_message(self, msg) -> None:
                 self.status_messages.append(msg)
                 print(f"📢 Status: {msg}")
             
-            def statusBar(self):
+            def statusBar(self) -> bool:
                 return self
             
-            def showMessage(self, msg):
+            def showMessage(self, msg) -> bool:
                 self.show_message(msg)
             
-            def switch_view(self, index):
+            def switch_view(self, index: int) -> None:
                 print(f"🔄 Cambiando a vista {index}")
             
-            def crear_agregacion_fallback(self, config, tipo_pivote="simple"):
+            def crear_agregacion_fallback(self, config: dict, tipo_pivote="simple") -> pd.DataFrame:
                 """Copiar la lógica de fallback de main.py (versión corregida)"""
                 try:
                     # Determinar columnas de grouping (equivalente al índice del pivote)

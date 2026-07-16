@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch, mock_open, MagicMock
 import pandas as pd
 import numpy as np
 import tempfile
-import os
+from pathlib import Path
 import shutil
 import sys
 import time
@@ -13,7 +13,7 @@ import re
 import openpyxl
 from datetime import datetime
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.data_handler import (
     ExcelTemplateSplitter,
@@ -32,7 +32,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
     Suite expandida de tests de integración para la funcionalidad de exportación separada
     Se enfoca en casos especiales, escenarios avanzados y validación robusta
     """
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba y entorno"""
         # Crear DataFrame de prueba más complejo
         self.df = pd.DataFrame({
@@ -45,12 +45,12 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Crear archivos temporales
         self.temp_dir = tempfile.mkdtemp()
-        self.template_path = os.path.join(self.temp_dir, 'template.xlsx')
+        self.template_path = str(Path(self.temp_dir) / 'template.xlsx')
         self.create_test_template()
         
         # Crear directorio de salida
-        self.output_dir = os.path.join(self.temp_dir, 'output')
-        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir = str(Path(self.temp_dir) / 'output')
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
         
         # Configuración de prueba por defecto
         self.config = {
@@ -63,7 +63,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             'enable_chunking': False
         }
     
-    def create_test_template(self, template_path=None):
+    def create_test_template(self, template_path: str = None) -> pd.DataFrame:
         """Crear plantilla Excel de prueba"""
         if template_path is None:
             template_path = self.template_path
@@ -107,14 +107,14 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         workbook.save(template_path)
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar archivos temporales"""
         try:
             shutil.rmtree(self.temp_dir)
         except Exception as e:
             print(f"Error limpiando directorio temporal: {str(e)}")
     
-    def test_export_with_unicode_and_special_chars(self):
+    def test_export_with_unicode_and_special_chars(self) -> None:
         """Probar exportación con caracteres especiales y Unicode"""
         # DataFrame con caracteres especiales
         df_special = pd.DataFrame({
@@ -135,10 +135,10 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar que los archivos se crearon con nombres correctos
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             # Verificar que el nombre del archivo está sanitizado
-            filename = os.path.basename(file_path)
+            filename = Path(file_path).name
             self.assertNotIn('<', filename)
             self.assertNotIn('>', filename)
             self.assertNotIn(':', filename)
@@ -158,7 +158,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def test_export_with_dataframe_many_columns(self):
+    def test_export_with_dataframe_many_columns(self) -> None:
         """Probar exportación con DataFrame con muchas columnas"""
         # Crear DataFrame con muchas columnas
         num_cols = 50
@@ -173,7 +173,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         df_many_cols['Grupo'] = [f'Grupo_{i%3}' for i in range(10)]
         
         # Crear plantilla adecuada
-        many_cols_template_path = os.path.join(self.temp_dir, 'many_cols_template.xlsx')
+        many_cols_template_path = str(Path(self.temp_dir) / 'many_cols_template.xlsx')
         self.create_template_with_columns(many_cols_template_path, num_cols)
         
         # Configuración
@@ -194,7 +194,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         self.assertEqual(len(result['files_created']), 3)
         
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             # Verificar contenido del archivo
             workbook = openpyxl.load_workbook(file_path)
@@ -209,7 +209,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def create_template_with_columns(self, template_path, num_cols):
+    def create_template_with_columns(self, template_path: str, num_cols: int) -> str:
         """Crear plantilla con muchas columnas"""
         workbook = openpyxl.Workbook()
         sheet = workbook.active
@@ -222,12 +222,12 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         workbook.save(template_path)
     
-    def test_export_with_existing_files_and_conflicts(self):
+    def test_export_with_existing_files_and_conflicts(self) -> None:
         """Probar exportación con conflictos de nombres de archivos existentes"""
         # Crear algunos archivos existentes en el directorio de salida
         existing_files = ['Norte_2025-11-05.xlsx', 'Sur_2025-11-05.xlsx']
         for filename in existing_files:
-            file_path = os.path.join(self.output_dir, filename)
+            file_path = str(Path(self.output_dir) / filename)
             with open(file_path, 'w') as f:
                 f.write(f'Archivo existente: {filename}')
         
@@ -238,7 +238,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         self.assertTrue(result['success'])
         
         # Verificar que se crearon archivos con numeración
-        created_filenames = [os.path.basename(f) for f in result['files_created']]
+        created_filenames = [Path(f).name for f in result['files_created']]
         
         # Debería haber archivos con numeración para resolver conflictos
         self.assertTrue(any('Norte_' in f for f in created_filenames))
@@ -246,13 +246,13 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Los archivos originales deberían mantenerse
         for filename in existing_files:
-            original_path = os.path.join(self.output_dir, filename)
-            self.assertTrue(os.path.exists(original_path))
+            original_path = str(Path(self.output_dir) / filename)
+            self.assertTrue(Path(original_path).exists())
     
-    def test_export_with_invalid_template_handling(self):
+    def test_export_with_invalid_template_handling(self) -> None:
         """Probar manejo de plantillas inválidas o corruptas"""
         # Crear plantilla inválida
-        invalid_template_path = os.path.join(self.temp_dir, 'invalid_template.xlsx')
+        invalid_template_path = str(Path(self.temp_dir) / 'invalid_template.xlsx')
         with open(invalid_template_path, 'w') as f:
             f.write('Este no es un archivo Excel válido')
         
@@ -268,7 +268,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         self.assertGreater(len(result['errors']), 0)
         self.assertTrue(any('Excel' in error or 'plantilla' in error.lower() for error in result['errors']))
     
-    def test_export_with_compression_and_large_files(self):
+    def test_export_with_compression_and_large_files(self) -> None:
         """Probar exportación con compresión y archivos grandes"""
         # Crear DataFrame grande
         num_rows = 10000
@@ -301,13 +301,13 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar archivos generados
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             # Verificar que el archivo tiene un tamaño considerable
-            file_size_kb = os.path.getsize(file_path) / 1024
+            file_size_kb = Path(file_path).stat().st_size / 1024
             self.assertGreater(file_size_kb, 100)  # Al menos 100 KB
     
-    def test_export_with_cancellation_and_progress_tracking(self):
+    def test_export_with_cancellation_and_progress_tracking(self) -> None:
         """Probar cancelación de operación y seguimiento de progreso"""
         # Crear DataFrame con muchos grupos
         num_groups = 50
@@ -325,7 +325,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         cancellation_requested = False
         progress_updates = []
         
-        def progress_callback(current, total):
+        def progress_callback(current, total) -> None:
             progress_updates.append((current, total))
             # Solicitar cancelación después de 5 grupos
             if current >= 5 and not cancellation_requested:
@@ -354,13 +354,13 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Limpiar archivos creados durante el test
         for file_path in result['files_created']:
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            if Path(file_path).exists():
+                Path(file_path).unlink()
     
-    def test_export_with_different_worksheet_templates(self):
+    def test_export_with_different_worksheet_templates(self) -> None:
         """Probar exportación con plantillas que tienen múltiples hojas"""
         # Crear plantilla con múltiples hojas
-        multi_sheet_template_path = os.path.join(self.temp_dir, 'multi_sheet_template.xlsx')
+        multi_sheet_template_path = str(Path(self.temp_dir) / 'multi_sheet_template.xlsx')
         
         workbook = openpyxl.Workbook()
         
@@ -406,7 +406,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar que se preservó la hoja secundaria
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             workbook = openpyxl.load_workbook(file_path)
             sheet_names = workbook.sheetnames
@@ -417,7 +417,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def test_export_with_column_type_conversions(self):
+    def test_export_with_column_type_conversions(self) -> None:
         """Probar exportación con conversiones de tipos de datos"""
         # DataFrame con diferentes tipos de datos
         df_types = pd.DataFrame({
@@ -458,10 +458,10 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         workbook.close()
     
-    def test_export_with_special_cell_formats(self):
+    def test_export_with_special_cell_formats(self) -> None:
         """Probar preservación de formatos de celdas especiales"""
         # Crear plantilla con formatos especiales
-        format_template_path = os.path.join(self.temp_dir, 'format_template.xlsx')
+        format_template_path = str(Path(self.temp_dir) / 'format_template.xlsx')
         
         workbook = openpyxl.Workbook()
         sheet = workbook.active
@@ -511,7 +511,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar que los formatos se preservaron
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             workbook = openpyxl.load_workbook(file_path)
             sheet = workbook.active
@@ -523,14 +523,14 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def test_export_with_error_handling_and_logging(self):
+    def test_export_with_error_handling_and_logging(self) -> None:
         """Probar manejo de errores y logging durante exportación"""
         # Simular error en un grupo específico
         with patch.object(ExcelTemplateSplitter, '_create_excel_file_with_template') as mock_create:
             # Configurar mock para fallar solo en el primer grupo
-            def side_effect(output_path, data):
+            def side_effect(output_path: str, data: dict) -> None:
                 # Extraer nombre del grupo desde la ruta del archivo
-                group_name = os.path.splitext(os.path.basename(output_path))[0]
+                group_name = Path(output_path).stem
                 
                 # Fallar solo para el primer grupo
                 if 'Norte' in group_name:
@@ -567,7 +567,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             self.assertIn('failed_groups', result)
             self.assertIn('Norte', result['failed_groups'])
     
-    def test_export_with_very_large_datasets_and_memory_optimization(self):
+    def test_export_with_very_large_datasets_and_memory_optimization(self) -> None:
         """Probar exportación con datasets muy grandes y optimización de memoria"""
         # Crear dataset muy grande
         num_rows = 50000
@@ -602,7 +602,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar archivos generados
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             # Verificar contenido del archivo
             workbook = openpyxl.load_workbook(file_path)
@@ -614,7 +614,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def test_export_end_to_end_with_real_data(self):
+    def test_export_end_to_end_with_real_data(self) -> None:
         """Prueba end-to-end con datos reales más complejos"""
         # Crear DataFrame más realista
         df_realistic = pd.DataFrame({
@@ -628,7 +628,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         })
         
         # Crear plantilla realista
-        realistic_template_path = os.path.join(self.temp_dir, 'realistic_template.xlsx')
+        realistic_template_path = str(Path(self.temp_dir) / 'realistic_template.xlsx')
         self.create_realistic_template(realistic_template_path)
         
         # Configuración más compleja
@@ -654,7 +654,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         
         # Verificar archivos generados
         for file_path in result['files_created']:
-            self.assertTrue(os.path.exists(file_path))
+            self.assertTrue(Path(file_path).exists())
             
             # Verificar contenido del archivo
             workbook = openpyxl.load_workbook(file_path)
@@ -666,7 +666,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def create_realistic_template(self, template_path):
+    def create_realistic_template(self, template_path: str) -> str:
         """Crear plantilla más realista"""
         workbook = openpyxl.Workbook()
         sheet = workbook.active

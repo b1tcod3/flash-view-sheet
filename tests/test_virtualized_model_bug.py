@@ -10,7 +10,7 @@ from PySide6.QtCore import Qt
 from paginacion.data_view import DataView
 from app.models.pandas_model import VirtualizedPandasModel
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -20,7 +20,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class VirtualizedModelTest(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Test VirtualizedPandasModel Bug")
         self.setGeometry(100, 100, 800, 600)
@@ -86,7 +86,7 @@ class VirtualizedModelTest(QMainWindow):
         # Mostrar ventana
         self.show()
         
-    def test_data_access(self, model, model_name):
+    def test_data_access(self, model: Any, model_name: str) -> None:
         """Probar acceso a datos en el modelo"""
         print(f"\n🔍 TEST DE ACCESO - {model_name}:")
         
@@ -106,12 +106,12 @@ class VirtualizedModelTest(QMainWindow):
             else:
                 print(f"   ✅ Correcto")
     
-    def show_model(self, model):
+    def show_model(self, model: Any) -> None:
         """Cambiar modelo en la tabla"""
         print(f"\n🔄 Cambiando a modelo con {model.rowCount()} filas")
         self.table.setModel(model)
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

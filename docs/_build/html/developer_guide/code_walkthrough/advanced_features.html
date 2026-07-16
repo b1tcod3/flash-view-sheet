@@ -1,0 +1,769 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementación de Características Avanzadas &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Referencia de API" href="../api_reference.html" />
+    <link rel="prev" title="Arquitectura del Sistema de Vistas" href="views_system.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Implementación de Características Avanzadas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-de-carga-de-carpetas">Implementación de Carga de Carpetas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-folderloader">Arquitectura de FolderLoader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#descubrimiento-y-analisis-de-archivos">Descubrimiento y Análisis de Archivos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-alineacion-de-columnas">Sistema de Alineación de Columnas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-de-union-de-datos">Implementación de Unión de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-datajoinmanager">Arquitectura de DataJoinManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#motor-de-ejecucion-de-uniones">Motor de Ejecución de Uniones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validacion-y-optimizacion-de-uniones">Validación y Optimización de Uniones</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-de-exportacion-separada">Implementación de Exportación Separada</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-exceltemplatesplitter">Arquitectura de ExcelTemplateSplitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procesamiento-de-plantillas">Procesamiento de Plantillas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logica-de-insercion-de-datos">Lógica de Inserción de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-de-tablas-pivote">Implementación de Tablas Pivote</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-de-pivottablemanager">Arquitectura de PivotTableManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caracteristicas-avanzadas-de-pivote">Características Avanzadas de Pivote</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-rendimiento">Optimización de Rendimiento</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-memoria">Gestión de Memoria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#procesamiento-por-fragmentos">Procesamiento por Fragmentos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manejo-de-errores-y-recuperacion">Manejo de Errores y Recuperación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-robusta-de-errores">Gestión Robusta de Errores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#estrategias-de-recuperacion">Estrategias de Recuperación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pruebas-y-validacion">Pruebas y Validación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pruebas-completas">Pruebas Completas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pruebas-de-integracion">Pruebas de Integración</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mejoras-futuras">Mejoras Futuras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mejoras-planificadas">Mejoras Planificadas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Implementación de Características Avanzadas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guide/code_walkthrough/advanced_features.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="implementacion-de-caracteristicas-avanzadas">
+<h1>Implementación de Características Avanzadas<a class="headerlink" href="#implementacion-de-caracteristicas-avanzadas" title="Link to this heading"></a></h1>
+<p>Este documento cubre los detalles de implementación de las características avanzadas de Flash Sheet incluyendo carga de carpetas, uniones de datos, exportaciones separadas y tablas pivote.</p>
+<section id="implementacion-de-carga-de-carpetas">
+<h2>Implementación de Carga de Carpetas<a class="headerlink" href="#implementacion-de-carga-de-carpetas" title="Link to this heading"></a></h2>
+<section id="arquitectura-de-folderloader">
+<h3>Arquitectura de FolderLoader<a class="headerlink" href="#arquitectura-de-folderloader" title="Link to this heading"></a></h3>
+<p>El FolderLoader maneja el procesamiento por lotes de múltiples archivos Excel:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FolderLoader</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span> <span class="o">=</span> <span class="n">data_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load and consolidate multiple Excel files from a folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            folder_path: Path to folder containing Excel files</span>
+<span class="sd">            options: Configuration options for loading</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Consolidated DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">excel_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_excel_files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+        <span class="n">file_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze_files</span><span class="p">(</span><span class="n">excel_files</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interactive_alignment&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">alignment_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_alignment_config</span><span class="p">(</span><span class="n">file_metadata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alignment_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_align_columns</span><span class="p">(</span><span class="n">file_metadata</span><span class="p">)</span>
+
+        <span class="n">consolidated_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">consolidate_files</span><span class="p">(</span>
+            <span class="n">excel_files</span><span class="p">,</span> <span class="n">alignment_config</span><span class="p">,</span> <span class="n">options</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">consolidated_data</span>
+</pre></div>
+</div>
+</section>
+<section id="descubrimiento-y-analisis-de-archivos">
+<h3>Descubrimiento y Análisis de Archivos<a class="headerlink" href="#descubrimiento-y-analisis-de-archivos" title="Link to this heading"></a></h3>
+<p>Detección automática y extracción de metadatos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">discover_excel_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find all Excel files in the specified folder.&quot;&quot;&quot;</span>
+    <span class="n">excel_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;.xls&#39;</span><span class="p">]:</span>
+            <span class="n">excel_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">excel_files</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_paths</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract metadata from each Excel file.&quot;&quot;&quot;</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">file_paths</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xl</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">file_info</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">,</span>
+                <span class="s1">&#39;sheets&#39;</span><span class="p">:</span> <span class="n">xl</span><span class="o">.</span><span class="n">sheet_names</span><span class="p">,</span>
+                <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="s1">&#39;row_counts&#39;</span><span class="p">:</span> <span class="p">{}</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Analyze each sheet</span>
+            <span class="k">for</span> <span class="n">sheet_name</span> <span class="ow">in</span> <span class="n">xl</span><span class="o">.</span><span class="n">sheet_names</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">xl</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Sample first 5 rows</span>
+                <span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;row_counts&#39;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+            <span class="n">metadata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to analyze </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metadata</span>
+</pre></div>
+</div>
+</section>
+<section id="sistema-de-alineacion-de-columnas">
+<h3>Sistema de Alineación de Columnas<a class="headerlink" href="#sistema-de-alineacion-de-columnas" title="Link to this heading"></a></h3>
+<p>Alineación interactiva y automática de columnas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ColumnAlignmentDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_metadata</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_metadata</span> <span class="o">=</span> <span class="n">file_metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># File selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_metadata</span><span class="p">])</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_combo</span><span class="p">)</span>
+
+        <span class="c1"># Alignment table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_alignment_table</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alignment_table</span><span class="p">)</span>
+
+        <span class="c1"># Control buttons</span>
+        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_align_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Auto Align&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_align_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Manual Align&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_align_btn</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manual_align_btn</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">button_layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_signals</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-de-union-de-datos">
+<h2>Implementación de Unión de Datos<a class="headerlink" href="#implementacion-de-union-de-datos" title="Link to this heading"></a></h2>
+<section id="arquitectura-de-datajoinmanager">
+<h3>Arquitectura de DataJoinManager<a class="headerlink" href="#arquitectura-de-datajoinmanager" title="Link to this heading"></a></h3>
+<p>Gestión completa de operaciones de unión:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataJoinManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform join operation between two DataFrames.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            left_df: Left DataFrame</span>
+<span class="sd">            right_df: Right DataFrame</span>
+<span class="sd">            join_config: Join configuration dictionary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Join result DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">join_type</span> <span class="o">=</span> <span class="n">join_config</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="n">left_keys</span> <span class="o">=</span> <span class="n">join_config</span><span class="p">[</span><span class="s1">&#39;left_keys&#39;</span><span class="p">]</span>
+        <span class="n">right_keys</span> <span class="o">=</span> <span class="n">join_config</span><span class="p">[</span><span class="s1">&#39;right_keys&#39;</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_join</span><span class="p">(</span>
+                <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_type</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Apply additional options</span>
+            <span class="k">if</span> <span class="n">join_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;suffixes&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_suffixes</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">join_config</span><span class="p">[</span><span class="s1">&#39;suffixes&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">join_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_merge_indicator</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">join_config</span><span class="p">[</span><span class="s1">&#39;indicator&#39;</span><span class="p">])</span>
+
+            <span class="c1"># Store in history</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">join_history</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="n">join_config</span><span class="p">,</span>
+                <span class="s1">&#39;result_shape&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">shape</span>
+            <span class="p">})</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Join failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+</pre></div>
+</div>
+</section>
+<section id="motor-de-ejecucion-de-uniones">
+<h3>Motor de Ejecución de Uniones<a class="headerlink" href="#motor-de-ejecucion-de-uniones" title="Link to this heading"></a></h3>
+<p>Ejecución optimizada de uniones con múltiples estrategias:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_type</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute the actual join operation.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Validate join keys</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">validate_join_keys</span><span class="p">(</span><span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span><span class="p">)</span>
+
+    <span class="c1"># Choose join strategy based on data size</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_df</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000000</span><span class="p">:</span>  <span class="c1"># Large join</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">perform_chunked_join</span><span class="p">(</span>
+            <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_type</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">perform_direct_join</span><span class="p">(</span>
+            <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_type</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">perform_direct_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">join_type</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform standard pandas join.&quot;&quot;&quot;</span>
+    <span class="n">join_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;how&#39;</span><span class="p">:</span> <span class="n">join_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+        <span class="s1">&#39;left_on&#39;</span><span class="p">:</span> <span class="n">left_keys</span><span class="p">,</span>
+        <span class="s1">&#39;right_on&#39;</span><span class="p">:</span> <span class="n">right_keys</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">left_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">right_df</span><span class="p">,</span> <span class="o">**</span><span class="n">join_params</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validacion-y-optimizacion-de-uniones">
+<h3>Validación y Optimización de Uniones<a class="headerlink" href="#validacion-y-optimizacion-de-uniones" title="Link to this heading"></a></h3>
+<p>Validación de datos y optimización de rendimiento:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_join_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">,</span> <span class="n">right_df</span><span class="p">,</span> <span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate join key compatibility.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">left_key</span><span class="p">,</span> <span class="n">right_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left_keys</span><span class="p">,</span> <span class="n">right_keys</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">left_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Left key &#39;</span><span class="si">{</span><span class="n">left_key</span><span class="si">}</span><span class="s2">&#39; not found in left DataFrame&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">right_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Right key &#39;</span><span class="si">{</span><span class="n">right_key</span><span class="si">}</span><span class="s2">&#39; not found in right DataFrame&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check type compatibility</span>
+        <span class="n">left_type</span> <span class="o">=</span> <span class="n">left_df</span><span class="p">[</span><span class="n">left_key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">right_type</span> <span class="o">=</span> <span class="n">right_df</span><span class="p">[</span><span class="n">right_key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">types_compatible</span><span class="p">(</span><span class="n">left_type</span><span class="p">,</span> <span class="n">right_type</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type mismatch: </span><span class="si">{</span><span class="n">left_type</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">right_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">types_compatible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type1</span><span class="p">,</span> <span class="n">type2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if data types are compatible for joining.&quot;&quot;&quot;</span>
+    <span class="n">compatible_pairs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)),</span>
+        <span class="c1"># Add more compatibility rules</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">type1</span><span class="p">,</span> <span class="n">type2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">compatible_pairs</span> <span class="ow">or</span> <span class="n">type1</span> <span class="o">==</span> <span class="n">type2</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-de-exportacion-separada">
+<h2>Implementación de Exportación Separada<a class="headerlink" href="#implementacion-de-exportacion-separada" title="Link to this heading"></a></h2>
+<section id="arquitectura-de-exceltemplatesplitter">
+<h3>Arquitectura de ExcelTemplateSplitter<a class="headerlink" href="#arquitectura-de-exceltemplatesplitter" title="Link to this heading"></a></h3>
+<p>Exportaciones separadas basadas en plantillas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExcelTemplateSplitter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_by_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">separation_column</span><span class="p">,</span> <span class="n">template_path</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split DataFrame and export using Excel template.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df: Input DataFrame</span>
+<span class="sd">            separation_column: Column to split by</span>
+<span class="sd">            template_path: Path to Excel template</span>
+<span class="sd">            output_dir: Output directory</span>
+<span class="sd">            options: Export configuration options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">separation_column</span><span class="p">,</span> <span class="n">template_path</span><span class="p">)</span>
+
+        <span class="c1"># Load and cache template</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_template</span><span class="p">(</span><span class="n">template_path</span><span class="p">)</span>
+
+        <span class="c1"># Get unique values for separation</span>
+        <span class="n">unique_values</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">separation_column</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="c1"># Process each group</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">unique_values</span><span class="p">:</span>
+            <span class="n">group_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">separation_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
+            <span class="n">output_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_output_path</span><span class="p">(</span>
+                <span class="n">output_dir</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filename_template&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{value}</span><span class="s1">.xlsx&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">export_group</span><span class="p">(</span><span class="n">group_df</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+                    <span class="s1">&#39;output_path&#39;</span><span class="p">:</span> <span class="n">output_path</span><span class="p">,</span>
+                    <span class="s1">&#39;row_count&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_df</span><span class="p">)</span>
+                <span class="p">})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to export group </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</div>
+</section>
+<section id="procesamiento-de-plantillas">
+<h3>Procesamiento de Plantillas<a class="headerlink" href="#procesamiento-de-plantillas" title="Link to this heading"></a></h3>
+<p>Manejo de plantillas Excel e inserción de datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load and analyze Excel template.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">template_path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_cache</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_cache</span><span class="p">[</span><span class="n">template_path</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">template_path</span><span class="p">)</span>
+        <span class="n">template_info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;workbook&#39;</span><span class="p">:</span> <span class="n">wb</span><span class="p">,</span>
+            <span class="s1">&#39;sheets&#39;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s1">&#39;data_ranges&#39;</span><span class="p">:</span> <span class="p">{}</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Analyze each worksheet</span>
+        <span class="k">for</span> <span class="n">sheet_name</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet_name</span><span class="p">]</span>
+            <span class="n">template_info</span><span class="p">[</span><span class="s1">&#39;sheets&#39;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ws</span>
+
+            <span class="c1"># Find data insertion areas (look for placeholders or empty ranges)</span>
+            <span class="n">data_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_data_range</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data_range</span><span class="p">:</span>
+                <span class="n">template_info</span><span class="p">[</span><span class="s1">&#39;data_ranges&#39;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_range</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_cache</span><span class="p">[</span><span class="n">template_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">template_info</span>
+        <span class="k">return</span> <span class="n">template_info</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TemplateLoadError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load template: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logica-de-insercion-de-datos">
+<h3>Lógica de Inserción de Datos<a class="headerlink" href="#logica-de-insercion-de-datos" title="Link to this heading"></a></h3>
+<p>Inserción inteligente de datos en plantillas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_df</span><span class="p">,</span> <span class="n">template_info</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a data group using the template.&quot;&quot;&quot;</span>
+    <span class="n">wb</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">template_info</span><span class="p">[</span><span class="s1">&#39;workbook&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Get target sheet</span>
+    <span class="n">sheet_name</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sheet_name&#39;</span><span class="p">,</span> <span class="n">wb</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet_name</span><span class="p">]</span>
+
+    <span class="c1"># Determine insertion point</span>
+    <span class="n">start_row</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;start_row&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Default to row 2</span>
+    <span class="n">start_col</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;start_col&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Default to column A</span>
+
+    <span class="c1"># Insert data</span>
+    <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">group_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">start_row</span> <span class="o">+</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">start_col</span> <span class="o">+</span> <span class="n">col_idx</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Apply formatting if specified</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;preserve_formatting&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_formatting</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">start_row</span><span class="p">,</span> <span class="n">start_col</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+
+    <span class="c1"># Save the file</span>
+    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-de-tablas-pivote">
+<h2>Implementación de Tablas Pivote<a class="headerlink" href="#implementacion-de-tablas-pivote" title="Link to this heading"></a></h2>
+<section id="arquitectura-de-pivottablemanager">
+<h3>Arquitectura de PivotTableManager<a class="headerlink" href="#arquitectura-de-pivottablemanager" title="Link to this heading"></a></h3>
+<p>Creación y gestión dinámica de tablas pivote:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PivotTableManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pivot_history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">pivot_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create pivot table from DataFrame.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            df: Input DataFrame</span>
+<span class="sd">            pivot_config: Pivot configuration dictionary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Pivot table DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+                <span class="n">df</span><span class="p">,</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">),</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">),</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;columns&#39;</span><span class="p">),</span>
+                <span class="n">aggfunc</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;aggfunc&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">),</span>
+                <span class="n">fill_value</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fill_value&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">margins</span><span class="o">=</span><span class="n">pivot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;margins&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Store in history</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pivot_history</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="n">pivot_config</span><span class="p">,</span>
+                <span class="s1">&#39;result_shape&#39;</span><span class="p">:</span> <span class="n">pivot</span><span class="o">.</span><span class="n">shape</span>
+            <span class="p">})</span>
+
+            <span class="k">return</span> <span class="n">pivot</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pivot creation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+</pre></div>
+</div>
+</section>
+<section id="caracteristicas-avanzadas-de-pivote">
+<h3>Características Avanzadas de Pivote<a class="headerlink" href="#caracteristicas-avanzadas-de-pivote" title="Link to this heading"></a></h3>
+<p>Capacidades mejoradas de tablas pivote:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_multi_level_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create pivot with multiple index/column levels.&quot;&quot;&quot;</span>
+    <span class="n">pivot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">],</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>  <span class="c1"># Can be list for multi-level</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">],</span>  <span class="c1"># Can be list for multi-level</span>
+        <span class="n">aggfunc</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;aggfunc&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pivot</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_calculated_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pivot_df</span><span class="p">,</span> <span class="n">calculations</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add calculated fields to pivot table.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">calc_name</span><span class="p">,</span> <span class="n">calc_func</span> <span class="ow">in</span> <span class="n">calculations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">pivot_df</span><span class="p">[</span><span class="n">calc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pivot_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">calc_func</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pivot_df</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optimizacion-de-rendimiento">
+<h2>Optimización de Rendimiento<a class="headerlink" href="#optimizacion-de-rendimiento" title="Link to this heading"></a></h2>
+<section id="gestion-de-memoria">
+<h3>Gestión de Memoria<a class="headerlink" href="#gestion-de-memoria" title="Link to this heading"></a></h3>
+<p>Procesamiento eficiente para datasets grandes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">optimize_for_large_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_type</span><span class="p">,</span> <span class="n">data_size</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply optimizations based on data size and operation type.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data_size</span> <span class="o">&gt;</span> <span class="mi">1000000</span><span class="p">:</span>  <span class="c1"># 1M rows</span>
+        <span class="k">if</span> <span class="n">operation_type</span> <span class="o">==</span> <span class="s1">&#39;join&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;chunk_size&#39;</span><span class="p">:</span> <span class="mi">50000</span><span class="p">,</span>
+                <span class="s1">&#39;use_low_memory&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;parallel_processing&#39;</span><span class="p">:</span> <span class="kc">True</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">operation_type</span> <span class="o">==</span> <span class="s1">&#39;pivot&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;use_sparse&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;chunk_processing&#39;</span><span class="p">:</span> <span class="kc">True</span>
+            <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># Default settings</span>
+</pre></div>
+</div>
+</section>
+<section id="procesamiento-por-fragmentos">
+<h3>Procesamiento por Fragmentos<a class="headerlink" href="#procesamiento-por-fragmentos" title="Link to this heading"></a></h3>
+<p>Procesar operaciones grandes en fragmentos manejables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_in_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_func</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process data in chunks to manage memory.&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">]</span>
+        <span class="n">chunk_result</span> <span class="o">=</span> <span class="n">operation_func</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk_result</span><span class="p">)</span>
+
+    <span class="c1"># Combine results</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="manejo-de-errores-y-recuperacion">
+<h2>Manejo de Errores y Recuperación<a class="headerlink" href="#manejo-de-errores-y-recuperacion" title="Link to this heading"></a></h2>
+<section id="gestion-robusta-de-errores">
+<h3>Gestión Robusta de Errores<a class="headerlink" href="#gestion-robusta-de-errores" title="Link to this heading"></a></h3>
+<p>Manejo completo de errores para operaciones avanzadas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AdvancedFeatureError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JoinError</span><span class="p">(</span><span class="n">AdvancedFeatureError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExportError</span><span class="p">(</span><span class="n">AdvancedFeatureError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PivotError</span><span class="p">(</span><span class="n">AdvancedFeatureError</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="estrategias-de-recuperacion">
+<h3>Estrategias de Recuperación<a class="headerlink" href="#estrategias-de-recuperacion" title="Link to this heading"></a></h3>
+<p>Recuperación automática y guía al usuario:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">handle_operation_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">operation_type</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle errors with appropriate recovery strategies.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="ne">MemoryError</span><span class="p">):</span>
+        <span class="c1"># Suggest memory optimization</span>
+        <span class="n">suggestion</span> <span class="o">=</span> <span class="s2">&quot;Try processing in smaller chunks or use less data&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_recovery_dialog</span><span class="p">(</span><span class="n">suggestion</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">JoinError</span><span class="p">):</span>
+        <span class="c1"># Check join key validity</span>
+        <span class="k">if</span> <span class="s1">&#39;key not found&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+            <span class="n">suggestion</span> <span class="o">=</span> <span class="s2">&quot;Verify join keys exist in both datasets&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">suggestion</span> <span class="o">=</span> <span class="s2">&quot;Check data types compatibility&quot;</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">ExportError</span><span class="p">):</span>
+        <span class="c1"># Check file permissions and disk space</span>
+        <span class="n">suggestion</span> <span class="o">=</span> <span class="s2">&quot;Check file permissions and available disk space&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation_type</span><span class="si">}</span><span class="s2"> failed in </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">suggestion</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pruebas-y-validacion">
+<h2>Pruebas y Validación<a class="headerlink" href="#pruebas-y-validacion" title="Link to this heading"></a></h2>
+<section id="pruebas-completas">
+<h3>Pruebas Completas<a class="headerlink" href="#pruebas-completas" title="Link to this heading"></a></h3>
+<p>Cobertura de pruebas para características avanzadas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_folder_loading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test folder loading functionality.&quot;&quot;&quot;</span>
+    <span class="c1"># Create test files</span>
+    <span class="n">test_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_test_excel_files</span><span class="p">()</span>
+
+    <span class="c1"># Test loading</span>
+    <span class="n">loader</span> <span class="o">=</span> <span class="n">FolderLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_handler</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_folder</span><span class="p">)</span>
+
+    <span class="c1"># Validate results</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Check consolidation</span>
+    <span class="n">expected_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="n">test_files</span><span class="p">:</span>
+        <span class="n">expected_columns</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">file_info</span><span class="p">[</span><span class="s1">&#39;columns&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">expected_columns</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+<section id="pruebas-de-integracion">
+<h3>Pruebas de Integración<a class="headerlink" href="#pruebas-de-integracion" title="Link to this heading"></a></h3>
+<p>Pruebas de extremo a extremo de combinaciones de características:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_complete_workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test complete data processing workflow.&quot;&quot;&quot;</span>
+    <span class="c1"># Load folder</span>
+    <span class="n">consolidated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder_loader</span><span class="o">.</span><span class="n">load_folder</span><span class="p">(</span><span class="s1">&#39;test_data/&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Perform join</span>
+    <span class="n">joined</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_manager</span><span class="o">.</span><span class="n">perform_join</span><span class="p">(</span>
+        <span class="n">consolidated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_config</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Create pivot</span>
+    <span class="n">pivot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot_manager</span><span class="o">.</span><span class="n">create_pivot</span><span class="p">(</span><span class="n">joined</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot_config</span><span class="p">)</span>
+
+    <span class="c1"># Export separated</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excel_splitter</span><span class="o">.</span><span class="n">split_by_template</span><span class="p">(</span>
+        <span class="n">pivot</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;template.xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;output/&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Validate final results</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;output_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">exists</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="mejoras-futuras">
+<h2>Mejoras Futuras<a class="headerlink" href="#mejoras-futuras" title="Link to this heading"></a></h2>
+<section id="mejoras-planificadas">
+<h3>Mejoras Planificadas<a class="headerlink" href="#mejoras-planificadas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Integración de Machine Learning</strong>: Detección automática de claves de unión y operaciones óptimas</p></li>
+<li><p><strong>Procesamiento en Tiempo Real</strong>: Capacidades de procesamiento de datos en streaming</p></li>
+<li><p><strong>Integración en la Nube</strong>: Procesamiento directo de datos almacenados en la nube</p></li>
+<li><p><strong>Análisis Avanzado</strong>: Análisis estadístico y modelado integrado</p></li>
+<li><p><strong>Características de Colaboración</strong>: Operaciones simultáneas multiusuario</p></li>
+<li><p><strong>Monitoreo de Rendimiento</strong>: Métricas de rendimiento y optimización en tiempo real</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="views_system.html" class="btn btn-neutral float-left" title="Arquitectura del Sistema de Vistas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api_reference.html" class="btn btn-neutral float-right" title="Referencia de API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

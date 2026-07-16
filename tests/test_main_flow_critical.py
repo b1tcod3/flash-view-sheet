@@ -6,7 +6,7 @@ Test crítico: Simular exactamente el flujo de main.py con debug profundo
 import pandas as pd
 import sys
 import tempfile
-import os
+from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QThread, Signal, QTimer
 
@@ -19,13 +19,13 @@ class RealDataLoaderThread(QThread):
     data_loaded = Signal(object)
     error_occurred = Signal(str)
 
-    def __init__(self, filepath, skip_rows=0, column_names=None):
+    def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict = None) -> None:
         super().__init__()
         self.filepath = filepath
         self.skip_rows = skip_rows
         self.column_names = column_names if column_names else {}
 
-    def run(self):
+    def run(self) -> None:
         """Ejecutar la carga de datos exactamente como main.py"""
         print("🔍 REAL: Iniciando carga de datos...")
         try:
@@ -37,7 +37,7 @@ class RealDataLoaderThread(QThread):
             print(f"❌ REAL: Error en carga: {str(e)}")
             self.error_occurred.emit(str(e))
 
-def create_real_test_file():
+def create_real_test_file() -> pd.DataFrame:
     """Crear archivo CSV real para probar"""
     data = {
         'ID': list(range(1, 51)),  # 50 filas para tener múltiples páginas
@@ -57,7 +57,7 @@ def create_real_test_file():
     
     return temp_file.name, df
 
-def test_main_flow():
+def test_main_flow() -> None:
     """Test del flujo principal como en main.py"""
     print("=== TEST CRÍTICO: Flujo Principal de main.py ===")
     
@@ -86,7 +86,7 @@ def test_main_flow():
     
     print("\n🔍 REAL: Iniciando carga asíncrona...")
     
-    def on_data_loaded(df):
+    def on_data_loaded(df: pd.DataFrame) -> None:
         nonlocal data_view, df_original
         print(f"\n✅ REAL: Slot on_datos_cargados ejecutado")
         print(f"   - DataFrame recibido: {len(df)} filas")
@@ -132,7 +132,7 @@ def test_main_flow():
         # Timer para verificar estado después de un tiempo
         QTimer.singleShot(1000, lambda: verify_final_state(data_view, expected_df))
         
-    def on_error(error_message):
+    def on_error(error_message: str) -> None:
         print(f"❌ REAL: Error de carga: {error_message}")
         
     # Crear y ejecutar hilo de carga (como main.py)
@@ -144,12 +144,12 @@ def test_main_flow():
     print("🔍 REAL: Hilo de carga iniciado, esperando...")
     
     # Ejecutar aplicación por un tiempo y luego salir
-    def quit_app():
+    def quit_app() -> None:
         print("\n🔍 REAL: Finalizando test...")
         
         # Limpiar archivo temporal
-        if os.path.exists(filepath):
-            os.unlink(filepath)
+        if Path(filepath).exists():
+            Path(filepath).unlink()
             
         app.quit()
         
@@ -158,7 +158,7 @@ def test_main_flow():
     
     return app.exec()
 
-def verify_final_state(data_view, expected_df):
+def verify_final_state(data_view: Any, expected_df) -> None:
     """Verificar estado final después de la carga"""
     print(f"\n--- VERIFICACIÓN FINAL ---")
     

@@ -8,7 +8,7 @@ from paginacion.data_view import DataView
 from paginacion.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
-def create_test_data_unsorted():
+def create_test_data_unsorted() -> pd.DataFrame:
     """Crear datos de prueba desordenados"""
     data = {
         'ID': [10, 5, 15, 3, 20, 8, 12, 1, 25, 7],  # IDs desordenados
@@ -18,7 +18,7 @@ def create_test_data_unsorted():
     }
     return pd.DataFrame(data)
 
-def test_sorting_with_pagination():
+def test_sorting_with_pagination() -> None:
     """Test del ordenamiento con paginación"""
     print("=== TEST DE ORDENAMIENTO CON PAGINACIÓN ===\n")
     
@@ -105,7 +105,7 @@ def test_sorting_with_pagination():
     
     return True
 
-def test_sorting_integration_with_data_view():
+def test_sorting_integration_with_data_view() -> None:
     """Test de integración con DataView"""
     print("\n=== TEST DE INTEGRACIÓN CON DATAVIEW ===\n")
     
@@ -161,7 +161,7 @@ def test_sorting_integration_with_data_view():
         print(f"Error en test de integración: {e}")
         return False
 
-def main():
+def main() -> int:
     """Función principal"""
     print("🔍 TEST DE ORDENAMIENTO CON PAGINACIÓN")
     print("=" * 50)

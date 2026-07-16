@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.widgets.join.joined_data_view &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.widgets.join.joined_data_view</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.widgets.join.joined_data_view</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">JoinedDataView: Vista especializada para mostrar resultados de cruces de datos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span>
+                                <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QTextEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">Signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFont</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">paginacion.data_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.join.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinResult</span><span class="p">,</span> <span class="n">JoinMetadata</span>
+
+
+<div class="viewcode-block" id="JoinedDataView">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JoinedDataView</span><span class="p">(</span><span class="n">DataView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista especializada para mostrar resultados de operaciones de cruce</span>
+<span class="sd">    Hereda de DataView y añade información específica del join</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Señales</span>
+    <span class="n">new_join_requested</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>  <span class="c1"># Solicitar nuevo cruce de datos</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_dataset_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_dataset_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Añadir sección de metadatos del join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_join_metadata_section</span><span class="p">()</span>
+
+<div class="viewcode-block" id="JoinedDataView.add_join_metadata_section">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.add_join_metadata_section">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_join_metadata_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añadir sección de metadatos del join al layout principal&quot;&quot;&quot;</span>
+        <span class="c1"># Insertar después del título pero antes de los filtros</span>
+        <span class="n">main_layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+        <span class="c1"># Crear sección de metadatos</span>
+        <span class="n">metadata_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_join_metadata_section</span><span class="p">()</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">metadata_group</span><span class="p">)</span>  <span class="c1"># Insertar al inicio</span>
+
+        <span class="c1"># Forzar actualización del layout después de insertar</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.create_join_metadata_section">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.create_join_metadata_section">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_join_metadata_section</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QGroupBox</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Crear sección de metadatos del join&quot;&quot;&quot;</span>
+        <span class="n">metadata_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;📊 Metadatos del Cruce&quot;</span><span class="p">)</span>
+        <span class="n">metadata_group</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QGroupBox {</span>
+<span class="s2">                font-weight: bold;</span>
+<span class="s2">                border: 2px solid #27ae60;</span>
+<span class="s2">                border-radius: 5px;</span>
+<span class="s2">                margin-top: 10px;</span>
+<span class="s2">                padding-top: 10px;</span>
+<span class="s2">                background-color: #f8fff9;</span>
+<span class="s2">            }</span>
+<span class="s2">            QGroupBox::title {</span>
+<span class="s2">                subcontrol-origin: margin;</span>
+<span class="s2">                left: 10px;</span>
+<span class="s2">                padding: 0 5px 0 5px;</span>
+<span class="s2">                color: #27ae60;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">metadata_group</span><span class="p">)</span>
+
+        <span class="c1"># Información básica del join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span> <span class="o">=</span> <span class="n">QTextEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QTextEdit {</span>
+<span class="s2">                background-color: white;</span>
+<span class="s2">                border: 1px solid #ddd;</span>
+<span class="s2">                border-radius: 3px;</span>
+<span class="s2">                padding: 5px;</span>
+<span class="s2">                font-family: monospace;</span>
+<span class="s2">                font-size: 10px;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="p">)</span>
+
+        <span class="c1"># Botones de acción</span>
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;💾 Exportar Resultados&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_results</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_join_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;🔄 Nuevo Cruce&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_join_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_join</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_join_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;📋 Historial&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_history</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">help_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;❓ Ayuda&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">help_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_help</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">help_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">metadata_group</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.set_join_result">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.set_join_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_join_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">JoinResult</span><span class="p">,</span> <span class="n">left_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">right_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Establecer resultado del join y mostrar metadatos</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: Resultado del join</span>
+<span class="sd">            left_name: Nombre del dataset izquierdo</span>
+<span class="sd">            right_name: Nombre del dataset derecho</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_dataset_name</span> <span class="o">=</span> <span class="n">left_name</span> <span class="ow">or</span> <span class="s2">&quot;Dataset Izquierdo&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_dataset_name</span> <span class="o">=</span> <span class="n">right_name</span> <span class="ow">or</span> <span class="s2">&quot;Dataset Derecho&quot;</span>
+
+        <span class="c1"># Establecer datos en la vista padre</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Actualizar metadatos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_join_metadata_display</span><span class="p">()</span>
+
+        <span class="c1"># Habilitar botón de exportar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.update_join_metadata_display">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.update_join_metadata_display">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_join_metadata_display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar display de metadatos del join&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="s2">&quot;No hay información de join disponible&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span>
+
+        <span class="c1"># Formatear información del join</span>
+        <span class="n">info_lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Tipo de join y datasets</span>
+        <span class="n">join_type_names</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;inner&#39;</span><span class="p">:</span> <span class="s1">&#39;Inner Join&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="s1">&#39;Left Join&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;right&#39;</span><span class="p">:</span> <span class="s1">&#39;Right Join&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cross&#39;</span><span class="p">:</span> <span class="s1">&#39;Cross Join&#39;</span>
+        <span class="p">}</span>
+
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tipo: </span><span class="si">{</span><span class="n">join_type_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">join_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">metadata</span><span class="o">.</span><span class="n">join_type</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Datasets: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">left_dataset_name</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">right_dataset_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columnas join: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">join_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resultado: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">result_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> filas × </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">original_df</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;?&#39;</span><span class="si">}</span><span class="s2"> columnas&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tiempo procesamiento: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">processing_time_seconds</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> segundos&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memoria usada: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">memory_usage_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Estadísticas detalladas</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Estadísticas:&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Coincidencias: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">matched_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Solo izquierdo: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">left_only_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Solo derecho: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">right_only_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Total original izquierdo: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">left_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Total original derecho: </span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">right_rows</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Calcular porcentajes</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">left_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">left_match_pct</span> <span class="o">=</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">matched_rows</span> <span class="o">/</span> <span class="n">metadata</span><span class="o">.</span><span class="n">left_rows</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Cobertura izquierdo: </span><span class="si">{</span><span class="n">left_match_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">right_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">right_match_pct</span> <span class="o">=</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">matched_rows</span> <span class="o">/</span> <span class="n">metadata</span><span class="o">.</span><span class="n">right_rows</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="n">info_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Cobertura derecho: </span><span class="si">{</span><span class="n">right_match_pct</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_text</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">info_lines</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.export_results">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.export_results">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exportar resultados del join&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;No hay datos para exportar&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Crear diálogo de selección de formato</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span>
+
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">QDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Exportar Resultados del Cruce&quot;</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
+
+        <span class="c1"># Selección de formato</span>
+        <span class="n">format_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">format_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Formato:&quot;</span><span class="p">))</span>
+
+        <span class="n">format_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">format_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;CSV (.csv)&quot;</span><span class="p">,</span> <span class="s2">&quot;Excel (.xlsx)&quot;</span><span class="p">,</span> <span class="s2">&quot;PDF (.pdf)&quot;</span><span class="p">,</span> <span class="s2">&quot;Imagen (.png)&quot;</span><span class="p">])</span>
+        <span class="n">format_combo</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;Excel (.xlsx)&quot;</span><span class="p">)</span>
+        <span class="n">format_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">format_combo</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">format_layout</span><span class="p">)</span>
+
+        <span class="c1"># Botones</span>
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+
+        <span class="n">export_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Exportar&quot;</span><span class="p">)</span>
+        <span class="n">export_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">export_btn</span><span class="p">)</span>
+
+        <span class="n">cancel_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cancelar&quot;</span><span class="p">)</span>
+        <span class="n">cancel_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cancel_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">!=</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Obtener formato seleccionado</span>
+        <span class="n">format_text</span> <span class="o">=</span> <span class="n">format_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+        <span class="c1"># Determinar extensión y función de exportación</span>
+        <span class="k">if</span> <span class="s2">&quot;CSV&quot;</span> <span class="ow">in</span> <span class="n">format_text</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span>
+            <span class="n">file_filter</span> <span class="o">=</span> <span class="s2">&quot;CSV Files (*.csv);;All Files (*)&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;Excel&quot;</span> <span class="ow">in</span> <span class="n">format_text</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;xlsx&quot;</span>
+            <span class="n">file_filter</span> <span class="o">=</span> <span class="s2">&quot;Excel Files (*.xlsx);;All Files (*)&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;PDF&quot;</span> <span class="ow">in</span> <span class="n">format_text</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;pdf&quot;</span>
+            <span class="n">file_filter</span> <span class="o">=</span> <span class="s2">&quot;PDF Files (*.pdf);;All Files (*)&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;Imagen&quot;</span> <span class="ow">in</span> <span class="n">format_text</span><span class="p">:</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span>
+            <span class="n">file_filter</span> <span class="o">=</span> <span class="s2">&quot;Image Files (*.png *.jpg *.jpeg);;All Files (*)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Formato no soportado.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Diálogo para guardar archivo</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+        <span class="n">default_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cruce_Datos_</span><span class="si">{</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">filepath</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Guardar Resultados del Cruce&quot;</span><span class="p">,</span>
+            <span class="n">default_filename</span><span class="p">,</span>
+            <span class="n">file_filter</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filepath</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Ejecutar exportación</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">core.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">exportar_a_csv</span><span class="p">,</span> <span class="n">exportar_a_xlsx</span><span class="p">,</span> <span class="n">exportar_a_pdf</span><span class="p">,</span> <span class="n">exportar_a_imagen</span>
+
+            <span class="c1"># Obtener la función correcta</span>
+            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="n">exportar_a_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_df</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;xlsx&quot;</span><span class="p">:</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="n">exportar_a_xlsx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_df</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;pdf&quot;</span><span class="p">:</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="n">exportar_a_pdf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_df</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;png&quot;</span><span class="p">:</span>
+                <span class="c1"># Para imagen necesitamos la vista de tabla</span>
+                <span class="n">table_view</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">model</span><span class="p">(),</span> <span class="s1">&#39;rowCount&#39;</span><span class="p">):</span>
+                        <span class="n">table_view</span> <span class="o">=</span> <span class="n">child</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">table_view</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="n">exportar_a_imagen</span><span class="p">(</span><span class="n">table_view</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;Exportación Exitosa&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;Resultados del cruce exportados exitosamente a:</span><span class="se">\n</span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="s2">&quot;Error de Exportación&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Error al exportar el archivo. Verifique los permisos y el formato.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Error durante la exportación:</span><span class="se">\n</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.new_join">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.new_join">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iniciar nuevo cruce de datos&quot;&quot;&quot;</span>
+        <span class="c1"># Emitir señal para abrir nuevo diálogo de join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_join_requested</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Nuevo Cruce&quot;</span><span class="p">,</span> <span class="s2">&quot;Abriendo diálogo para nuevo cruce...&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.show_history">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.show_history">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mostrar historial de joins&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QListWidget</span><span class="p">,</span> <span class="n">QListWidgetItem</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QTextEdit</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+
+        <span class="c1"># Obtener historial del main window</span>
+        <span class="n">main_window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">main_window</span><span class="p">,</span> <span class="s1">&#39;join_history&#39;</span><span class="p">):</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;Sistema de historial no disponible&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">history_entries</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">join_history</span><span class="o">.</span><span class="n">get_entries</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">history_entries</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Historial&quot;</span><span class="p">,</span> <span class="s2">&quot;No hay operaciones de cruce registradas.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Crear diálogo</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">QDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Historial de Operaciones de Cruce&quot;</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
+
+        <span class="c1"># Lista de entradas</span>
+        <span class="n">list_widget</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">list_widget</span><span class="p">)</span>
+
+        <span class="c1"># Detalles de la entrada seleccionada</span>
+        <span class="n">details_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detalles de la operación seleccionada:&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">details_label</span><span class="p">)</span>
+
+        <span class="n">details_text</span> <span class="o">=</span> <span class="n">QTextEdit</span><span class="p">()</span>
+        <span class="n">details_text</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">details_text</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">details_text</span><span class="p">)</span>
+
+        <span class="c1"># Botones</span>
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="n">export_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Exportar Historial&quot;</span><span class="p">)</span>
+        <span class="n">export_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_history</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">join_history</span><span class="p">))</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">export_btn</span><span class="p">)</span>
+
+        <span class="n">clear_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Limpiar Historial&quot;</span><span class="p">)</span>
+        <span class="n">clear_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clear_history</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">join_history</span><span class="p">,</span> <span class="n">dialog</span><span class="p">))</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">clear_btn</span><span class="p">)</span>
+
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+
+        <span class="n">close_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cerrar&quot;</span><span class="p">)</span>
+        <span class="n">close_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">close_btn</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span>
+
+        <span class="c1"># Poblar lista</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">history_entries</span><span class="p">:</span>
+            <span class="n">item_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">join_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">left_dataset_name</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">right_dataset_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+                <span class="n">item_text</span> <span class="o">+=</span> <span class="s2">&quot; (ERROR)&quot;</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QListWidgetItem</span><span class="p">(</span><span class="n">item_text</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">UserRole</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
+            <span class="n">list_widget</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Conectar selección</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">on_item_selected</span><span class="p">():</span>
+            <span class="n">current_item</span> <span class="o">=</span> <span class="n">list_widget</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_item</span><span class="p">:</span>
+                <span class="n">entry</span> <span class="o">=</span> <span class="n">current_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">UserRole</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_show_entry_details</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">details_text</span><span class="p">)</span>
+
+        <span class="n">list_widget</span><span class="o">.</span><span class="n">itemSelectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_item_selected</span><span class="p">)</span>
+
+        <span class="c1"># Seleccionar primera entrada</span>
+        <span class="k">if</span> <span class="n">list_widget</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">list_widget</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_entry_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">details_text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mostrar detalles de una entrada del historial&quot;&quot;&quot;</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Tipo: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="o">.</span><span class="n">value</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="si">}</span>
+<span class="s2">Datasets: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">left_dataset_name</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">right_dataset_name</span><span class="si">}</span>
+<span class="s2">Columnas join: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="n">config</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="si">}</span>
+<span class="s2">Resultado: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;result_rows&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas</span>
+<span class="s2">Tiempo: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;processing_time&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s</span>
+<span class="s2">Memoria: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">result_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;memory_usage&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB</span>
+<span class="s2">Éxito: </span><span class="si">{</span><span class="s1">&#39;Sí&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="n">success</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;No&#39;</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">error_message</span><span class="p">:</span>
+            <span class="n">details</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Error: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">details_text</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">details</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_export_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">join_history</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exportar historial a archivo&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFileDialog</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+        <span class="n">filepath</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Exportar Historial&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;historial_cruce_</span><span class="si">{</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;JSON Files (*.json);;All Files (*)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">filepath</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">join_history</span><span class="o">.</span><span class="n">export_history</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Éxito&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Historial exportado a </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error exportando historial: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">join_history</span><span class="p">,</span> <span class="n">dialog</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limpiar historial&quot;&quot;&quot;</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Confirmar&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;¿Está seguro de que desea limpiar todo el historial de operaciones de cruce?&quot;</span><span class="p">,</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reply</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+            <span class="n">join_history</span><span class="o">.</span><span class="n">clear_history</span><span class="p">()</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Éxito&quot;</span><span class="p">,</span> <span class="s2">&quot;Historial limpiado.&quot;</span><span class="p">)</span>
+            <span class="n">dialog</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+
+<div class="viewcode-block" id="JoinedDataView.show_help">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.show_help">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mostrar ayuda sobre joins&quot;&quot;&quot;</span>
+        <span class="n">help_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        AYUDA: Vista de Datos Cruzados</span>
+
+<span class="s2">        Esta vista muestra los resultados de una operación de cruce (join) entre dos datasets.</span>
+
+<span class="s2">        TIPOS DE JOIN:</span>
+<span class="s2">        • Inner Join: Solo filas con coincidencias en ambas tablas</span>
+<span class="s2">        • Left Join: Todas las filas del dataset izquierdo + coincidencias del derecho</span>
+<span class="s2">        • Right Join: Todas las filas del dataset derecho + coincidencias del izquierdo</span>
+<span class="s2">        • Cross Join: Producto cartesiano de ambas tablas</span>
+
+<span class="s2">        METADATOS MOSTRADOS:</span>
+<span class="s2">        • Información del tipo de join realizado</span>
+<span class="s2">        • Estadísticas de coincidencias y pérdidas</span>
+<span class="s2">        • Tiempo y memoria utilizados</span>
+<span class="s2">        • Cobertura de datos</span>
+
+<span class="s2">        FUNCIONALIDADES:</span>
+<span class="s2">        • Filtrado y búsqueda en resultados</span>
+<span class="s2">        • Paginación para datasets grandes</span>
+<span class="s2">        • Exportación de resultados</span>
+<span class="s2">        • Historial de operaciones</span>
+
+<span class="s2">        Para más información, consulte la documentación completa.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Ayuda - Datos Cruzados&quot;</span><span class="p">,</span> <span class="n">help_text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JoinedDataView.get_join_info">
+<a class="viewcode-back" href="../../../../api/classes.html#app.widgets.join.joined_data_view.JoinedDataView.get_join_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_join_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtener información del join actual</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Diccionario con información del join</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;join_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">join_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s1">&#39;left_dataset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_dataset_name</span><span class="p">,</span>
+            <span class="s1">&#39;right_dataset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_dataset_name</span><span class="p">,</span>
+            <span class="s1">&#39;join_keys&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">join_keys</span><span class="p">,</span>
+            <span class="s1">&#39;result_rows&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">result_rows</span><span class="p">,</span>
+            <span class="s1">&#39;matched_rows&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">matched_rows</span><span class="p">,</span>
+            <span class="s1">&#39;processing_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">processing_time_seconds</span><span class="p">,</span>
+            <span class="s1">&#39;memory_usage&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">memory_usage_mb</span><span class="p">,</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_metadata</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

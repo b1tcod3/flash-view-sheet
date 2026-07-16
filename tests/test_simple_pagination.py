@@ -10,7 +10,7 @@ from PySide6.QtCore import Qt
 from paginacion.data_view import DataView
 from paginacion.pagination_manager import PaginationManager
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -22,7 +22,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class SimpleTestWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Test Simple - Sin Virtualización")
         self.setGeometry(100, 100, 1000, 600)
@@ -48,7 +48,7 @@ class SimpleTestWindow(QMainWindow):
         self.pagination_manager = None
         self.setup_pagination()
         
-    def create_navigation_buttons(self):
+    def create_navigation_buttons(self) -> pd.DataFrame:
         """Crear botones de navegación simples"""
         from PySide6.QtWidgets import QHBoxLayout, QPushButton
         
@@ -74,7 +74,7 @@ class SimpleTestWindow(QMainWindow):
         
         return widget
     
-    def setup_pagination(self):
+    def setup_pagination(self) -> None:
         """Configurar paginación"""
         df = create_test_data()
         self.pagination_manager = PaginationManager(df, page_size=10)
@@ -85,7 +85,7 @@ class SimpleTestWindow(QMainWindow):
         # Mostrar primera página
         self.show_current_page()
         
-    def show_current_page(self):
+    def show_current_page(self) -> None:
         """Mostrar página actual en tabla simple"""
         page_data = self.pagination_manager.get_page_data()
         
@@ -108,7 +108,7 @@ class SimpleTestWindow(QMainWindow):
         # Actualizar información
         self.update_info()
     
-    def update_info(self):
+    def update_info(self) -> None:
         """Actualizar información de página"""
         page_info = self.pagination_manager.get_page_info()
         from PySide6.QtWidgets import QLabel
@@ -126,7 +126,7 @@ class SimpleTestWindow(QMainWindow):
         # Actualizar estado de botones
         self.update_button_states()
     
-    def update_button_states(self):
+    def update_button_states(self) -> None:
         """Actualizar estado de botones"""
         can_prev = self.pagination_manager.can_go_previous()
         can_next = self.pagination_manager.can_go_next()
@@ -137,24 +137,24 @@ class SimpleTestWindow(QMainWindow):
         self.last_btn.setEnabled(can_next and self.pagination_manager.get_current_page() < self.pagination_manager.get_total_pages())
     
     # Métodos de navegación
-    def first_page(self):
+    def first_page(self) -> None:
         self.pagination_manager.first_page()
     
-    def previous_page(self):
+    def previous_page(self) -> None:
         self.pagination_manager.previous_page()
     
-    def next_page(self):
+    def next_page(self) -> None:
         self.pagination_manager.next_page()
     
-    def last_page(self):
+    def last_page(self) -> None:
         self.pagination_manager.last_page()
     
-    def on_page_changed(self, page):
+    def on_page_changed(self, page: int) -> None:
         """Manejar cambio de página"""
         print(f"\n🔄 CAMBIO A PÁGINA {page}")
         self.show_current_page()
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

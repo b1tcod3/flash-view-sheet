@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QApplication
 from app.widgets.simple_pivot_dialog import SimplePivotDialog
 
 
-def test_nunique_aggregation():
+def test_nunique_aggregation() -> None:
     """Test para validar la nueva función nunique (conteo único)"""
     print("🧪 TEST: Nueva agregación nunique (Conteo Único)")
     print("=" * 60)
@@ -140,7 +140,7 @@ def test_nunique_aggregation():
     return True
 
 
-def test_advanced_nunique_scenarios():
+def test_advanced_nunique_scenarios() -> None:
     """Test avanzado de diferentes escenarios con nunique"""
     print("\n🚀 TEST AVANZADO: Escenarios especiales con nunique")
     print("=" * 60)

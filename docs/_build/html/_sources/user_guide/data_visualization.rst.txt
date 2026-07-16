@@ -1,0 +1,146 @@
+Guía de Visualización de Datos
+===============================
+
+Esta guía cubre las características de visualización de datos en Flash Sheet, incluyendo vistas de tabla, filtrado, ordenamiento y herramientas de exploración de datos.
+
+Características de Vista de Tabla
+----------------------------------
+
+La tabla de datos principal proporciona capacidades comprehensivas de visualización y manipulación.
+
+Paginación
+~~~~~~~~~~
+
+Para datasets grandes, Flash Sheet automáticamente pagina los datos:
+
+- **Opciones de Tamaño de Página**: Elige entre 10, 25, 50, 100, o 500 filas por página
+- **Controles de Navegación**: Botones Primera, Anterior, Siguiente, Última página
+- **Salto de Página**: Ingresa números de página específicos directamente
+- **Visualización de Conteo de Filas**: Muestra rango actual y filas totales
+
+Operaciones de Columnas
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Ordenamiento**: Haz clic en encabezados de columna para ordenar ascendente/descendente
+- **Ordenamiento Multi-columna**: Mantén Shift mientras haces clic para ordenamientos secundarios
+- **Redimensionamiento de Columnas**: Arrastra bordes de columna para ajustar anchos
+- **Reordenamiento de Columnas**: Arrastra encabezados de columna para reordenar
+- **Visibilidad de Columnas**: Muestra/oculta columnas según sea necesario
+
+Filtrado de Datos
+-----------------
+
+Flash Sheet proporciona capacidades poderosas de filtrado para enfocarte en datos relevantes.
+
+Búsqueda Global
+~~~~~~~~~~~~~~~
+
+- **Caja de Búsqueda**: Ingresa texto para buscar a través de todas las columnas visibles
+- **Filtrado en Tiempo Real**: Los resultados se actualizan a medida que escribes
+- **Sensibilidad a Mayúsculas**: Alterna búsqueda sensible a mayúsculas
+- **Resaltado**: El texto coincidente se resalta en los resultados
+
+Filtros Específicos de Columna
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Aplica filtros a columnas individuales:
+
+- **Filtros de Texto**: Contiene, comienza con, termina con, coincidencia exacta
+- **Filtros Numéricos**: Mayor que, menor que, entre, igual
+- **Filtros de Fecha**: Antes, después, entre fechas
+- **Filtros de Valores Nulos**: Mostrar/ocultar valores nulos o vacíos
+
+Filtrado Avanzado
+~~~~~~~~~~~~~~~~~
+
+- **Combinaciones de Filtros**: Lógica AND/OR entre múltiples filtros
+- **Grupos de Filtros**: Crea jerarquías complejas de filtros
+- **Filtros Guardados**: Guarda y reutiliza configuraciones de filtro
+- **Historial de Filtros**: Accede a filtros usados recientemente
+
+Exploración de Datos
+--------------------
+
+Entendiendo Tu Conjunto de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Flash Sheet proporciona herramientas para analizar la estructura de tus datos:
+
+Resumen del Conjunto de Datos
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **Conteo de Filas**: Número total de registros
+- **Conteo de Columnas**: Número de columnas
+- **Tipos de Datos**: Detección automática de tipos de columna
+- **Uso de Memoria**: Tamaño del conjunto de datos y consumo de memoria
+- **Análisis de Nulos**: Conteo de valores faltantes por columna
+
+Estadísticas de Columnas
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Para columnas numéricas:
+
+- **Valores Mín/Máx**: Rango de valores
+- **Media/Promedio**: Tendencia central
+- **Desviación Estándar**: Dispersión de datos
+- **Cuartiles**: Análisis de distribución
+
+Para columnas de texto:
+
+- **Valores Únicos**: Conteo de valores distintos
+- **Más Frecuente**: Valores que ocurren más
+- **Estadísticas de Longitud**: Análisis de longitud de texto
+
+Verificación de Calidad de Datos
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **Detección de Duplicados**: Identifica filas duplicadas
+- **Verificaciones de Consistencia**: Valida patrones de datos
+- **Validación de Tipos**: Asegura consistencia de tipos de datos
+- **Validación de Rangos**: Verifica valores atípicos
+
+Personalización de Vista
+------------------------
+
+Apariencia de Tabla
+~~~~~~~~~~~~~~~~~~~
+
+- **Temas**: Opciones de tema claro y oscuro
+- **Tamaño de Fuente**: Tamaño de texto ajustable
+- **Altura de Fila**: Personaliza espaciado de filas
+- **Líneas de Cuadrícula**: Mostrar/ocultar cuadrícula de tabla
+
+Exportación de Vistas
+~~~~~~~~~~~~~~~~~~~~~
+
+- **Exportación de Vista Actual**: Exporta solo datos visibles/filtrados
+- **Conjunto de Datos Completo**: Exporta todo el conjunto de datos independientemente de filtros
+- **Rangos Personalizados**: Exporta rangos específicos de filas
+- **Opciones de Formato**: Elige formato de exportación y opciones
+
+Optimización de Rendimiento
+---------------------------
+
+Para datasets grandes, Flash Sheet incluye características de rendimiento:
+
+- **Carga Perezosa**: Carga datos bajo demanda
+- **Indexación**: Indexación automática para búsquedas rápidas
+- **Almacenamiento en Caché**: Almacena en caché resultados filtrados
+- **Gestión de Memoria**: Uso eficiente de memoria
+
+Atajos de Teclado
+-----------------
+
+- **Ctrl+F**: Enfocar caja de búsqueda
+- **Ctrl+Shift+F**: Limpiar todos los filtros
+- **Ctrl+G**: Ir a fila específica
+- **Ctrl+Home**: Primera página
+- **Ctrl+End**: Última página
+- **F3**: Repetir última búsqueda
+
+Próximos Pasos
+--------------
+
+- :doc:`graphics` - Crear gráficos visuales y gráficos
+- :doc:`basic_export` - Exportar tus datos visualizados
+- :doc:`advanced_features` - Técnicas avanzadas de visualización

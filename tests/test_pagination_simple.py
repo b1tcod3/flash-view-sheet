@@ -4,7 +4,6 @@ Script de prueba para verificar la funcionalidad de paginación (sin UI)
 """
 
 import sys
-import os
 import pandas as pd
 
 # Añadir el directorio actual al path para importar módulos
@@ -12,7 +11,7 @@ sys.path.insert(0, '/var/www/html/proyectos/flash-sheet')
 
 from paginacion.pagination_manager import PaginationManager
 
-def crear_datos_prueba():
+def crear_datos_prueba() -> pd.DataFrame:
     """Crear DataFrame de prueba con datos suficientes para paginación"""
     # Crear dataset grande para probar paginación
     n_filas = 250
@@ -28,7 +27,7 @@ def crear_datos_prueba():
     print(f"DataFrame creado con {len(df)} filas y {len(df.columns)} columnas")
     return df
 
-def probar_pagination_manager():
+def probar_pagination_manager() -> bool:
     """Probar la funcionalidad del PaginationManager"""
     print("\n=== Probando PaginationManager ===")
     
@@ -106,7 +105,7 @@ def probar_pagination_manager():
     
     return True
 
-def main():
+def main() -> int:
     """Función principal de prueba"""
     print("Iniciando pruebas de paginación (solo lógica)...")
     

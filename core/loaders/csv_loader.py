@@ -4,8 +4,8 @@ Handles Comma-Separated Values and Tab-Separated Values formats
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,7 +14,7 @@ class CsvLoader(FileLoader):
     File loader for CSV and TSV formats
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.csv', '.tsv']
 
     def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
@@ -53,7 +53,7 @@ class CsvLoader(FileLoader):
         Get information about the CSV/TSV file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             
             # Get first few lines to detect delimiter
             with open(self.filepath, 'r', encoding='utf-8', nrows=5) as f:

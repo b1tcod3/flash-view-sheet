@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura del Sistema de Vistas &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Advanced Features Implementation" href="advanced_features.html" />
+    <link rel="prev" title="Sistema de Data Handler - Recorrido Detallado del Código" href="data_handler.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Arquitectura del Sistema de Vistas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resumen-de-arquitectura">Resumen de Arquitectura</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#jerarquia-de-vistas">Jerarquía de Vistas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-vistas">Gestión de Vistas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interfaz-base-de-vista">Interfaz Base de Vista</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interfaz-comun">Interfaz Común</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-dataview">Implementación DataView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-de-visualizacion-de-tabla">Core de Visualización de Tabla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caracteristicas-de-tabla-de-datos">Características de Tabla de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sistema-de-paginacion">Sistema de Paginación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtrado-y-busqueda">Filtrado y Búsqueda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-graphicsview">Implementación GraphicsView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interfaz-de-creacion-de-graficos">Interfaz de Creación de Gráficos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-grafico">Configuración de Gráfico</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#motor-de-renderizado-de-grafico">Motor de Renderizado de Gráfico</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementacion-joineddataview">Implementación JoinedDataView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vista-especializada-de-resultados-join">Vista Especializada de Resultados Join</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualizacion-de-metadatos-join">Visualización de Metadatos Join</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comunicacion-entre-vistas">Comunicación entre Vistas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#flujo-de-datos-inter-vistas">Flujo de Datos Inter-Vistas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#actualizaciones-basadas-en-senales">Actualizaciones Basadas en Señales</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-estado-de-vista">Gestión de Estado de Vista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-performance">Optimización de Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#carga-lazy">Carga Lazy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-memoria">Gestión de Memoria</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scrolling-virtual">Scrolling Virtual</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-y-assurance-de-calidad">Testing y Assurance de Calidad</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#framework-de-testing-de-vistas">Framework de Testing de Vistas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#accesibilidad-y-usabilidad">Accesibilidad y Usabilidad</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#navegacion-por-teclado">Navegación por Teclado</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#soporte-de-lector-de-pantalla">Soporte de Lector de Pantalla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tema-y-estilo">Tema y Estilo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mejoras-futuras">Mejoras Futuras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mejoras-planificadas">Mejoras Planificadas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Arquitectura del Sistema de Vistas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guide/code_walkthrough/views_system.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arquitectura-del-sistema-de-vistas">
+<h1>Arquitectura del Sistema de Vistas<a class="headerlink" href="#arquitectura-del-sistema-de-vistas" title="Link to this heading"></a></h1>
+<p>El sistema de vistas en Flash Sheet implementa arquitectura modular para mostrar e interactuar con diferentes tipos de datos y visualizaciones.</p>
+<section id="resumen-de-arquitectura">
+<h2>Resumen de Arquitectura<a class="headerlink" href="#resumen-de-arquitectura" title="Link to this heading"></a></h2>
+<section id="jerarquia-de-vistas">
+<h3>Jerarquía de Vistas<a class="headerlink" href="#jerarquia-de-vistas" title="Link to this heading"></a></h3>
+<p>El sistema de vistas está construido alrededor de una clase View base con implementaciones especializadas:</p>
+<ul class="simple">
+<li><p><strong>BaseView</strong>: Clase abstracta base definiendo interfaz común</p></li>
+<li><p><strong>MainView</strong>: Vista inicial con opciones de carga de datos</p></li>
+<li><p><strong>DataView</strong>: Visualización primaria de tabla de datos con herramientas de manipulación</p></li>
+<li><p><strong>GraphicsView</strong>: Interfaz de creación de gráficos y visualización</p></li>
+<li><p><strong>JoinedDataView</strong>: Vista especializada para resultados de operaciones de join</p></li>
+<li><p><strong>PivotView</strong>: Interfaz de creación y edición de tablas pivote</p></li>
+</ul>
+</section>
+<section id="gestion-de-vistas">
+<h3>Gestión de Vistas<a class="headerlink" href="#gestion-de-vistas" title="Link to this heading"></a></h3>
+<p>Las vistas son gestionadas a través del QStackedWidget de MainWindow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ViewManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacked_widget</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span> <span class="o">=</span> <span class="n">stacked_widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_view</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">view_instance</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">view_instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">view_instance</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">switch_to_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">setCurrentWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_view</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">on_activated</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="interfaz-base-de-vista">
+<h2>Interfaz Base de Vista<a class="headerlink" href="#interfaz-base-de-vista" title="Link to this heading"></a></h2>
+<section id="interfaz-comun">
+<h3>Interfaz Común<a class="headerlink" href="#interfaz-comun" title="Link to this heading"></a></h3>
+<p>Todas las vistas implementan interfaz estándar para consistencia:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BaseView</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="c1"># Señales</span>
+    <span class="n">data_changed</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">view_closed</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">export_requested</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># formato</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inicializar interfaz de usuario de la vista&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cargar datos en la vista&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_display</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recuperar datos actuales de la vista&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resetear vista a estado vacío&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_display</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_export_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Preparar datos para exportación&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Refrescar visualización&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Llamado cuando vista se vuelve activa&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-dataview">
+<h2>Implementación DataView<a class="headerlink" href="#implementacion-dataview" title="Link to this heading"></a></h2>
+<section id="core-de-visualizacion-de-tabla">
+<h3>Core de Visualización de Tabla<a class="headerlink" href="#core-de-visualizacion-de-tabla" title="Link to this heading"></a></h3>
+<p>DataView proporciona interfaz primaria de tabla de datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DataView</span><span class="p">(</span><span class="n">BaseView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># Barra de herramientas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_toolbar</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="p">)</span>
+
+        <span class="c1"># Widget de tabla</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setSortingEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="c1"># Barra de estado</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="caracteristicas-de-tabla-de-datos">
+<h3>Características de Tabla de Datos<a class="headerlink" href="#caracteristicas-de-tabla-de-datos" title="Link to this heading"></a></h3>
+<p>Funcionalidad avanzada de tabla para exploración de datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Habilitar ordenamiento</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setSortingEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Configurar comportamiento de selección</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QTableWidget</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+
+    <span class="c1"># Configurar encabezados</span>
+    <span class="n">horizontal_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span>
+    <span class="n">horizontal_header</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">horizontal_header</span><span class="o">.</span><span class="n">setSectionsMovable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Conectar señales</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">itemChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_item_changed</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">itemSelectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_selection_changed</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sistema-de-paginacion">
+<h3>Sistema de Paginación<a class="headerlink" href="#sistema-de-paginacion" title="Link to this heading"></a></h3>
+<p>Manejo eficiente de datasets grandes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PaginationWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_view</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span> <span class="o">=</span> <span class="n">table_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_size</span> <span class="o">=</span> <span class="n">page_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_pages</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Página 1 de 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first_btn</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_btn</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">page_label</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_btn</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_btn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_signals</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="filtrado-y-busqueda">
+<h3>Filtrado y Búsqueda<a class="headerlink" href="#filtrado-y-busqueda" title="Link to this heading"></a></h3>
+<p>Capacidades de filtrado de datos en tiempo real:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FilterWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_view</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_view</span> <span class="o">=</span> <span class="n">data_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># Búsqueda global</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_box</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_box</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Buscar todas las columnas...&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search_box</span><span class="p">)</span>
+
+        <span class="c1"># Filtros específicos de columna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_signals</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_column_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+            <span class="n">filter_widget</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+            <span class="n">filter_widget</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtrar </span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;int64&#39;</span><span class="p">,</span> <span class="s1">&#39;float64&#39;</span><span class="p">]:</span>
+            <span class="n">filter_widget</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+            <span class="n">min_spin</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+            <span class="n">max_spin</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+            <span class="n">filter_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">min_spin</span><span class="p">)</span>
+            <span class="n">filter_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">))</span>
+            <span class="n">filter_widget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">max_spin</span><span class="p">)</span>
+        <span class="c1"># Agregar filtros de fecha, etc.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">filter_widget</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-graphicsview">
+<h2>Implementación GraphicsView<a class="headerlink" href="#implementacion-graphicsview" title="Link to this heading"></a></h2>
+<section id="interfaz-de-creacion-de-graficos">
+<h3>Interfaz de Creación de Gráficos<a class="headerlink" href="#interfaz-de-creacion-de-graficos" title="Link to this heading"></a></h3>
+<p>Vista de visualización para crear y gestionar gráficos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GraphicsView</span><span class="p">(</span><span class="n">BaseView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># Selector de tipo de gráfico</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chart_type_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chart_type_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span>
+            <span class="s1">&#39;Gráfico de Barras&#39;</span><span class="p">,</span> <span class="s1">&#39;Gráfico de Líneas&#39;</span><span class="p">,</span> <span class="s1">&#39;Gráfico de Torta&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Gráfico de Dispersión&#39;</span><span class="p">,</span> <span class="s1">&#39;Histograma&#39;</span><span class="p">,</span> <span class="s1">&#39;Gráfico de Caja&#39;</span>
+        <span class="p">])</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_type_combo</span><span class="p">)</span>
+
+        <span class="c1"># Configuración de gráfico</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_widget</span> <span class="o">=</span> <span class="n">ChartConfigWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_widget</span><span class="p">)</span>
+
+        <span class="c1"># Área de visualización de gráfico</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chart_view</span> <span class="o">=</span> <span class="n">QChartView</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_view</span><span class="p">)</span>
+
+        <span class="c1"># Opciones de exportación</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_widget</span> <span class="o">=</span> <span class="n">ChartExportWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_widget</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="configuracion-de-grafico">
+<h3>Configuración de Gráfico<a class="headerlink" href="#configuracion-de-grafico" title="Link to this heading"></a></h3>
+<p>Configuración dinámica de gráfico basada en tipo seleccionado:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ChartConfigWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_config</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_chart_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chart_type</span><span class="p">):</span>
+        <span class="c1"># Limpiar configuración previa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_config</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s1">&#39;bar&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_config</span> <span class="o">=</span> <span class="n">BarChartConfig</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s1">&#39;line&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_config</span> <span class="o">=</span> <span class="n">LineChartConfig</span><span class="p">()</span>
+        <span class="c1"># etc.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_config</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chart_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_config</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_config</span> <span class="k">else</span> <span class="p">{}</span>
+</pre></div>
+</div>
+</section>
+<section id="motor-de-renderizado-de-grafico">
+<h3>Motor de Renderizado de Gráfico<a class="headerlink" href="#motor-de-renderizado-de-grafico" title="Link to this heading"></a></h3>
+<p>Integración Qt Charts para renderizado de alto performance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">render_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">chart</span> <span class="o">=</span> <span class="n">QChart</span><span class="p">()</span>
+
+    <span class="c1"># Crear series basadas en config</span>
+    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bar&#39;</span><span class="p">:</span>
+        <span class="n">series</span> <span class="o">=</span> <span class="n">QBarSeries</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">bar_set</span> <span class="o">=</span> <span class="n">QBarSet</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
+            <span class="n">bar_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar_set</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;line&#39;</span><span class="p">:</span>
+        <span class="n">series</span> <span class="o">=</span> <span class="n">QLineSeries</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">series</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">chart</span><span class="o">.</span><span class="n">addSeries</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+
+    <span class="c1"># Configurar ejes</span>
+    <span class="n">axis_x</span> <span class="o">=</span> <span class="n">QBarCategoryAxis</span><span class="p">()</span>
+    <span class="n">axis_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;categories&#39;</span><span class="p">])</span>
+    <span class="n">chart</span><span class="o">.</span><span class="n">setAxisX</span><span class="p">(</span><span class="n">axis_x</span><span class="p">,</span> <span class="n">series</span><span class="p">)</span>
+
+    <span class="n">axis_y</span> <span class="o">=</span> <span class="n">QValueAxis</span><span class="p">()</span>
+    <span class="n">chart</span><span class="o">.</span><span class="n">setAxisY</span><span class="p">(</span><span class="n">axis_y</span><span class="p">,</span> <span class="n">series</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">chart_view</span><span class="o">.</span><span class="n">setChart</span><span class="p">(</span><span class="n">chart</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementacion-joineddataview">
+<h2>Implementación JoinedDataView<a class="headerlink" href="#implementacion-joineddataview" title="Link to this heading"></a></h2>
+<section id="vista-especializada-de-resultados-join">
+<h3>Vista Especializada de Resultados Join<a class="headerlink" href="#vista-especializada-de-resultados-join" title="Link to this heading"></a></h3>
+<p>Interfaz dedicada para mostrar resultados de operaciones de join:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JoinedDataView</span><span class="p">(</span><span class="n">BaseView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># Visualización de metadatos de join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_widget</span> <span class="o">=</span> <span class="n">JoinMetadataWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_widget</span><span class="p">)</span>
+
+        <span class="c1"># Tabla de resultados</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_table</span><span class="p">)</span>
+
+        <span class="c1"># Estadísticas de join</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stats_widget</span> <span class="o">=</span> <span class="n">JoinStatsWidget</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats_widget</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualizacion-de-metadatos-join">
+<h3>Visualización de Metadatos Join<a class="headerlink" href="#visualizacion-de-metadatos-join" title="Link to this heading"></a></h3>
+<p>Información sobre operación de join realizada:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JoinMetadataWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_type_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_table_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_table_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_keys_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_rows_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Tipo de Join:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_type_label</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Tabla Izquierda:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_table_label</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Tabla Derecha:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_table_label</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Claves de Join:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_keys_label</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Filas Resultantes:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_rows_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">join_info</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_type_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">join_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_table_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">join_info</span><span class="p">[</span><span class="s1">&#39;left_table&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_table_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">join_info</span><span class="p">[</span><span class="s1">&#39;right_table&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_keys_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">join_info</span><span class="p">[</span><span class="s1">&#39;keys&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_rows_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">join_info</span><span class="p">[</span><span class="s1">&#39;result_count&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="comunicacion-entre-vistas">
+<h2>Comunicación entre Vistas<a class="headerlink" href="#comunicacion-entre-vistas" title="Link to this heading"></a></h2>
+<section id="flujo-de-datos-inter-vistas">
+<h3>Flujo de Datos Inter-Vistas<a class="headerlink" href="#flujo-de-datos-inter-vistas" title="Link to this heading"></a></h3>
+<p>Las vistas se comunican a través del coordinador MainWindow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># En MainWindow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_data_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">current_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">currentWidget</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current_view</span><span class="p">,</span> <span class="s1">&#39;set_data&#39;</span><span class="p">):</span>
+        <span class="n">current_view</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_view_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="n">new_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacked_widget</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">new_view</span><span class="p">,</span> <span class="s1">&#39;on_activated&#39;</span><span class="p">):</span>
+        <span class="n">new_view</span><span class="o">.</span><span class="n">on_activated</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="actualizaciones-basadas-en-senales">
+<h3>Actualizaciones Basadas en Señales<a class="headerlink" href="#actualizaciones-basadas-en-senales" title="Link to this heading"></a></h3>
+<p>Las vistas emiten señales para notificar cambios:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># En DataView</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_item_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="c1"># Actualizar datos internos</span>
+    <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">row</span><span class="p">(),</span> <span class="n">item</span><span class="o">.</span><span class="n">column</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+    <span class="c1"># Notificar otros componentes</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">data_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="gestion-de-estado-de-vista">
+<h3>Gestión de Estado de Vista<a class="headerlink" href="#gestion-de-estado-de-vista" title="Link to this heading"></a></h3>
+<p>Preservando estado de vista durante cambios:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ViewState</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_position</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_settings</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_column</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AscendingOrder</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="c1"># Guardar estado actual de vista</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="c1"># Restaurar estado guardado</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optimizacion-de-performance">
+<h2>Optimización de Performance<a class="headerlink" href="#optimizacion-de-performance" title="Link to this heading"></a></h2>
+<section id="carga-lazy">
+<h3>Carga Lazy<a class="headerlink" href="#carga-lazy" title="Link to this heading"></a></h3>
+<p>Cargar componentes de vista bajo demanda:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_view_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_loaded</span><span class="p">:</span>
+        <span class="c1"># Cargar componentes pesados</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_table_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_chart_components</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="gestion-de-memoria">
+<h3>Gestión de Memoria<a class="headerlink" href="#gestion-de-memoria" title="Link to this heading"></a></h3>
+<p>Uso eficiente de memoria para datasets grandes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">optimize_for_large_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_size</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">data_size</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">:</span>  <span class="c1"># 100K filas</span>
+        <span class="c1"># Deshabilitar ordenamiento en tiempo real</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setSortingEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Habilitar paginación</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable_pagination</span><span class="p">()</span>
+
+        <span class="c1"># Usar scrolling virtual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable_virtual_scrolling</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="scrolling-virtual">
+<h3>Scrolling Virtual<a class="headerlink" href="#scrolling-virtual" title="Link to this heading"></a></h3>
+<p>Mostrar datasets grandes sin cargar todos los datos:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">VirtualTableModel</span><span class="p">(</span><span class="n">QAbstractTableModel</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_source</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span> <span class="o">=</span> <span class="n">data_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_size</span> <span class="o">=</span> <span class="n">page_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">rowCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">QModelIndex</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">total_rows</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">columnCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">QModelIndex</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">total_columns</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">Qt</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
+            <span class="n">page</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_size</span>
+            <span class="k">if</span> <span class="n">page</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">page</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">load_page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+
+            <span class="n">row_in_page</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_size</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">page</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row_in_page</span><span class="p">,</span> <span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-y-assurance-de-calidad">
+<h2>Testing y Assurance de Calidad<a class="headerlink" href="#testing-y-assurance-de-calidad" title="Link to this heading"></a></h2>
+<section id="framework-de-testing-de-vistas">
+<h3>Framework de Testing de Vistas<a class="headerlink" href="#framework-de-testing-de-vistas" title="Link to this heading"></a></h3>
+<p>Testing comprehensivo para componentes de vista:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_data_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Crear datos de prueba</span>
+    <span class="n">test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+        <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Crear vista</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">DataView</span><span class="p">()</span>
+
+    <span class="c1"># Test carga de datos</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">test_df</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">rowCount</span><span class="p">(),</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">columnCount</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Test recuperación de datos</span>
+    <span class="n">retrieved_data</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">retrieved_data</span><span class="p">,</span> <span class="n">test_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="accesibilidad-y-usabilidad">
+<h2>Accesibilidad y Usabilidad<a class="headerlink" href="#accesibilidad-y-usabilidad" title="Link to this heading"></a></h2>
+<section id="navegacion-por-teclado">
+<h3>Navegación por Teclado<a class="headerlink" href="#navegacion-por-teclado" title="Link to this heading"></a></h3>
+<p>Accesibilidad completa por teclado:</p>
+<ul class="simple">
+<li><p><strong>Navegación por Tab</strong>: Mover entre controles</p></li>
+<li><p><strong>Teclas de Flecha</strong>: Navegar celdas de tabla</p></li>
+<li><p><strong>Enter/Espacio</strong>: Activar botones y controles</p></li>
+<li><p><strong>Teclas de Atajo</strong>: Operaciones comunes (Ctrl+C, Ctrl+V, etc.)</p></li>
+</ul>
+</section>
+<section id="soporte-de-lector-de-pantalla">
+<h3>Soporte de Lector de Pantalla<a class="headerlink" href="#soporte-de-lector-de-pantalla" title="Link to this heading"></a></h3>
+<p>Características de accesibilidad para tecnologías asistivas:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup_accessibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Configurar nombres accesibles y descripciones</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setAccessibleName</span><span class="p">(</span><span class="s2">&quot;Tabla de datos&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">setAccessibleDescription</span><span class="p">(</span><span class="s2">&quot;Tabla de visualización principal de datos&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Configurar encabezados de tabla</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">columnCount</span><span class="p">()):</span>
+        <span class="n">header_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">horizontalHeaderItem</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="n">header_item</span><span class="o">.</span><span class="n">setAccessibleDescription</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columna </span><span class="si">{</span><span class="n">col</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tema-y-estilo">
+<h3>Tema y Estilo<a class="headerlink" href="#tema-y-estilo" title="Link to this heading"></a></h3>
+<p>Apariencia personalizable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme_name</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">theme_name</span> <span class="o">==</span> <span class="s1">&#39;dark&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QTableWidget {</span>
+<span class="s2">                background-color: #2b2b2b;</span>
+<span class="s2">                color: #ffffff;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">theme_name</span> <span class="o">==</span> <span class="s1">&#39;light&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            QTableWidget {</span>
+<span class="s2">                background-color: #ffffff;</span>
+<span class="s2">                color: #000000;</span>
+<span class="s2">            }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="mejoras-futuras">
+<h2>Mejoras Futuras<a class="headerlink" href="#mejoras-futuras" title="Link to this heading"></a></h2>
+<section id="mejoras-planificadas">
+<h3>Mejoras Planificadas<a class="headerlink" href="#mejoras-planificadas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Filtrado Avanzado</strong>: Multi-columna, regex, y filtros personalizados</p></li>
+<li><p><strong>Edición de Datos</strong>: Edición in-place de celdas con validación</p></li>
+<li><p><strong>Vistas Colaborativas</strong>: Edición simultánea multi-usuario</p></li>
+<li><p><strong>Plugins de Vista Personalizada</strong>: Extensiones de vista de terceros</p></li>
+<li><p><strong>Visualización 3D</strong>: Visualización tridimensional de datos</p></li>
+<li><p><strong>Actualizaciones en Tiempo Real</strong>: Streaming de datos en vivo y actualizaciones</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_handler.html" class="btn btn-neutral float-left" title="Sistema de Data Handler - Recorrido Detallado del Código" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_features.html" class="btn btn-neutral float-right" title="Advanced Features Implementation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

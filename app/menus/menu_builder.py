@@ -11,6 +11,7 @@ from .archivo_menu import ArchivoMenu
 from .datos_menu import DatosMenu
 from .vista_menu import VistaMenu
 from .exportar_menu import ExportarMenu
+from typing import Any
 
 
 class MenuBuilder:
@@ -22,7 +23,7 @@ class MenuBuilder:
         menubar = builder.build()
     """
     
-    def __init__(self, parent_window):
+    def __init__(self, parent_window: Any) -> None:
         """
         Inicializar el constructor de menús.
         
@@ -63,7 +64,7 @@ class MenuBuilder:
         
         return self.menu_bar
     
-    def _build_archivo_menu(self):
+    def _build_archivo_menu(self) -> None:
         """Construir el menú Archivo."""
         ArchivoMenu.create(
             self.menu_bar,
@@ -71,18 +72,18 @@ class MenuBuilder:
             self.parent_window
         )
     
-    def _build_separar_menu(self):
+    def _build_separar_menu(self) -> None:
         """Construir el menú Separar."""
         from PySide6.QtWidgets import QMenu
         
         self.separar_menu = self.menu_bar.addMenu("&Separar")
         self.separar_menu.addAction(MenuActions.EXPORTAR_SEPARADO)
         
-    def _build_datos_menu(self):
+    def _build_datos_menu(self) -> None:
         """Construir el menú Datos."""
         DatosMenu.create(self.menu_bar, self.parent_window)
     
-    def _build_tabla_pivote_menu(self):
+    def _build_tabla_pivote_menu(self) -> None:
         """Construir el menú Tabla Pivote."""
         from PySide6.QtWidgets import QMenu
         
@@ -93,7 +94,7 @@ class MenuBuilder:
         self.tabla_pivote_menu.addSeparator()
         self.tabla_pivote_menu.addAction(MenuActions.EXPORTAR_PIVOTE)
     
-    def _build_vista_menu(self):
+    def _build_vista_menu(self) -> None:
         """Construir el menú Vista."""
         VistaMenu.create(
             self.menu_bar,
@@ -101,14 +102,14 @@ class MenuBuilder:
             self.parent_window
         )
     
-    def _build_ayuda_menu(self):
+    def _build_ayuda_menu(self) -> None:
         """Construir el menú Ayuda."""
         from PySide6.QtWidgets import QMenu
         
         ayuda_menu = self.menu_bar.addMenu("&Ayuda")
         ayuda_menu.addAction(MenuActions.ACERCA_DE)
     
-    def _connect_actions(self):
+    def _connect_actions(self) -> None:
         """Conectar acciones a los slots del parent window."""
         # Archivo
         MenuActions.ABRIR.triggered.connect(self.parent_window.abrir_archivo)
@@ -152,7 +153,7 @@ class MenuBuilder:
         # Ayuda
         MenuActions.ACERCA_DE.triggered.connect(self.parent_window.mostrar_acerca_de)
     
-    def update_data_menus(self, has_data: bool):
+    def update_data_menus(self, has_data: bool) -> None:
         """
         Actualizar estado de menús que requieren datos.
         
@@ -161,7 +162,7 @@ class MenuBuilder:
         """
         MenuActions.enable_data_actions(has_data)
     
-    def get_menu_references(self) -> dict:
+    def get_menu_references(self) -> dict[str, Any]:
         """
         Obtener referencias a los menús para uso externo.
         

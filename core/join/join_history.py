@@ -3,9 +3,9 @@ JoinHistory: Sistema para mantener historial de operaciones de cruce
 """
 
 import json
-import os
+from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
 import pandas as pd
 
@@ -28,15 +28,15 @@ class JoinHistoryEntry:
 class JoinHistory:
     """Sistema para mantener historial de operaciones de cruce"""
 
-    def __init__(self, max_entries: int = 50):
+    def __init__(self, max_entries: int = 50) -> None:
         self.max_entries = max_entries
         self.entries: List[JoinHistoryEntry] = []
-        self.history_file = os.path.join(os.path.dirname(__file__), "join_history.json")
+        self.history_file = Path(__file__).parent / "join_history.json"
 
         # Cargar historial existente
         self._load_history()
 
-    def add_entry(self, left_name: str, right_name: str, config: JoinConfig, result: JoinResult):
+    def add_entry(self, left_name: str, right_name: str, config: JoinConfig, result: JoinResult) -> None:
         """Añadir nueva entrada al historial"""
         entry_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.entries)}"
 
@@ -67,25 +67,25 @@ class JoinHistory:
         # Guardar
         self._save_history()
 
-    def get_entries(self, limit: int = None) -> List[JoinHistoryEntry]:
+    def get_entries(self, limit: Optional[int] = None) -> List[JoinHistoryEntry]:
         """Obtener entradas del historial"""
         if limit:
             return self.entries[:limit]
         return self.entries
 
-    def get_entry(self, entry_id: str) -> JoinHistoryEntry:
+    def get_entry(self, entry_id: str) -> Optional[JoinHistoryEntry]:
         """Obtener entrada específica por ID"""
         for entry in self.entries:
             if entry.id == entry_id:
                 return entry
         return None
 
-    def clear_history(self):
+    def clear_history(self) -> None:
         """Limpiar todo el historial"""
         self.entries = []
         self._save_history()
 
-    def export_history(self, filepath: str):
+    def export_history(self, filepath: str) -> None:
         """Exportar historial a archivo JSON"""
         data = {
             'exported_at': datetime.now().isoformat(),
@@ -95,7 +95,7 @@ class JoinHistory:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
 
-    def import_history(self, filepath: str):
+    def import_history(self, filepath: str) -> None:
         """Importar historial desde archivo JSON"""
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
@@ -140,7 +140,7 @@ class JoinHistory:
             'error_message': entry.error_message
         }
 
-    def _dict_to_entry(self, data: Dict[str, Any]) -> JoinHistoryEntry:
+    def _dict_to_entry(self, data: Dict[str, Any]) -> Optional[JoinHistoryEntry]:
         """Convertir diccionario a entrada"""
         try:
             from .models import JoinType
@@ -169,9 +169,9 @@ class JoinHistory:
         except Exception:
             return None
 
-    def _load_history(self):
+    def _load_history(self) -> None:
         """Cargar historial desde archivo"""
-        if os.path.exists(self.history_file):
+        if Path(self.history_file).exists():
             try:
                 with open(self.history_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
@@ -186,7 +186,7 @@ class JoinHistory:
                 # Si hay error, empezar con historial vacío
                 self.entries = []
 
-    def _save_history(self):
+    def _save_history(self) -> None:
         """Guardar historial a archivo"""
         try:
             data = {

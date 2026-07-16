@@ -4,8 +4,8 @@ Handles SQLite database files
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,10 +14,10 @@ class SqliteLoader(FileLoader):
     File loader for SQLite database format
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.db', '.sqlite', '.sqlite3']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None, table_name: str = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None, table_name: Optional[str] = None) -> pd.DataFrame:
         """
         Load SQLite database into DataFrame
         
@@ -56,7 +56,7 @@ class SqliteLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading SQLite file {self.filepath}: {str(e)}")
 
-    def _get_first_table(self) -> str:
+    def _get_first_table(self) -> Optional[str]:
         """
         Get the name of the first table in the database
         
@@ -80,7 +80,7 @@ class SqliteLoader(FileLoader):
         Get information about the SQLite file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             
             # Get database metadata
             try:
@@ -158,7 +158,7 @@ class SqliteLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading SQLite file in chunks: {str(e)}")
 
-    def get_table_names(self) -> list:
+    def get_table_names(self) -> List[str]:
         """
         Get list of table names in the database
         

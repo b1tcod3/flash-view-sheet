@@ -4,13 +4,13 @@ Pruebas unitarias para el módulo data_handler
 
 import unittest
 import pandas as pd
-import os
 import tempfile
+from pathlib import Path
 from unittest.mock import patch
 
 # Añadir el directorio raíz al path para importar módulos
 import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.data_handler import (
     cargar_datos, obtener_metadata, obtener_estadisticas,
@@ -21,7 +21,7 @@ from core.data_handler import (
 class TestDataHandler(unittest.TestCase):
     """Pruebas para las funciones del data_handler"""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Configuración antes de cada prueba"""
         # Crear DataFrame de prueba
         self.test_df = pd.DataFrame({
@@ -34,19 +34,18 @@ class TestDataHandler(unittest.TestCase):
         # Crear directorio temporal para archivos de prueba
         self.temp_dir = tempfile.mkdtemp()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpieza después de cada prueba"""
         # Limpiar archivos temporales
-        for file in os.listdir(self.temp_dir):
-            file_path = os.path.join(self.temp_dir, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-        os.rmdir(self.temp_dir)
+        for file in Path(self.temp_dir).iterdir():
+            if file.is_file():
+                file.unlink()
+        Path(self.temp_dir).rmdir()
 
-    def test_cargar_datos_csv(self):
+    def test_cargar_datos_csv(self) -> None:
         """Probar carga de datos desde CSV"""
         # Crear archivo CSV temporal
-        csv_path = os.path.join(self.temp_dir, 'test.csv')
+        csv_path = str(Path(self.temp_dir) / 'test.csv')
         self.test_df.to_csv(csv_path, index=False)
 
         # Cargar datos
@@ -55,10 +54,10 @@ class TestDataHandler(unittest.TestCase):
         # Verificar que los datos se cargaron correctamente
         pd.testing.assert_frame_equal(loaded_df, self.test_df)
 
-    def test_cargar_datos_excel(self):
+    def test_cargar_datos_excel(self) -> None:
         """Probar carga de datos desde Excel"""
         # Crear archivo Excel temporal
-        excel_path = os.path.join(self.temp_dir, 'test.xlsx')
+        excel_path = str(Path(self.temp_dir) / 'test.xlsx')
         self.test_df.to_excel(excel_path, index=False)
 
         # Cargar datos
@@ -67,22 +66,22 @@ class TestDataHandler(unittest.TestCase):
         # Verificar que los datos se cargaron correctamente
         pd.testing.assert_frame_equal(loaded_df, self.test_df)
 
-    def test_cargar_datos_archivo_inexistente(self):
+    def test_cargar_datos_archivo_inexistente(self) -> None:
         """Probar carga de datos con archivo inexistente"""
         with self.assertRaises(FileNotFoundError):
             cargar_datos('/ruta/inexistente/test.csv')
 
-    def test_cargar_datos_formato_no_soportado(self):
+    def test_cargar_datos_formato_no_soportado(self) -> None:
         """Probar carga de datos con formato no soportado"""
         # Crear archivo temporal con extensión no soportada
-        txt_path = os.path.join(self.temp_dir, 'test.txt')
+        txt_path = str(Path(self.temp_dir) / 'test.txt')
         with open(txt_path, 'w') as f:
             f.write('contenido de texto')
 
         with self.assertRaises(ValueError):
             cargar_datos(txt_path)
 
-    def test_obtener_metadata(self):
+    def test_obtener_metadata(self) -> None:
         """Probar obtención de metadata"""
         metadata = obtener_metadata(self.test_df)
 
@@ -94,7 +93,7 @@ class TestDataHandler(unittest.TestCase):
         self.assertIn('Edad', metadata['columnas_numericas'])
         self.assertIn('Nombre', metadata['columnas_texto'])
 
-    def test_obtener_estadisticas_basicas(self):
+    def test_obtener_estadisticas_basicas(self) -> None:
         """Probar obtención de estadísticas básicas"""
         stats = obtener_estadisticas_basicas(self.test_df)
 
@@ -106,7 +105,7 @@ class TestDataHandler(unittest.TestCase):
         self.assertGreater(stats['memoria_uso_mb'], 0)
         self.assertEqual(stats['filas_duplicadas'], 0)
 
-    def test_obtener_estadisticas_dataframe_vacio(self):
+    def test_obtener_estadisticas_dataframe_vacio(self) -> None:
         """Probar obtención de estadísticas con DataFrame vacío"""
         empty_df = pd.DataFrame()
         stats = obtener_estadisticas_basicas(empty_df)
@@ -117,7 +116,7 @@ class TestDataHandler(unittest.TestCase):
         self.assertEqual(stats['columnas_numericas'], 0)
         self.assertEqual(stats['columnas_texto'], 0)
 
-    def test_aplicar_filtro_simple(self):
+    def test_aplicar_filtro_simple(self) -> None:
         """Probar aplicación de filtro simple"""
         # Filtrar por nombre que contenga 'a'
         filtered_df = aplicar_filtro(self.test_df, 'Nombre', 'a')
@@ -129,7 +128,7 @@ class TestDataHandler(unittest.TestCase):
         self.assertIn('Ana', filtered_df['Nombre'].values)
         self.assertIn('Carlos', filtered_df['Nombre'].values)
 
-    def test_aplicar_filtro_case_insensitive(self):
+    def test_aplicar_filtro_case_insensitive(self) -> None:
         """Probar que el filtro es case insensitive"""
         # Filtrar por 'MADRID' en minúsculas
         filtered_df = aplicar_filtro(self.test_df, 'Ciudad', 'madrid')
@@ -138,19 +137,19 @@ class TestDataHandler(unittest.TestCase):
         self.assertEqual(len(filtered_df), 1)
         self.assertEqual(filtered_df['Ciudad'].iloc[0], 'Madrid')
 
-    def test_aplicar_filtro_columna_inexistente(self):
+    def test_aplicar_filtro_columna_inexistente(self) -> None:
         """Probar filtro con columna inexistente"""
         with self.assertRaises(ValueError):
             aplicar_filtro(self.test_df, 'ColumnaInexistente', 'test')
 
-    def test_aplicar_filtro_sin_resultados(self):
+    def test_aplicar_filtro_sin_resultados(self) -> None:
         """Probar filtro que no produce resultados"""
         filtered_df = aplicar_filtro(self.test_df, 'Nombre', 'xyz')
 
         # Verificar que no hay resultados
         self.assertEqual(len(filtered_df), 0)
 
-    def test_aplicar_filtro_con_nulos(self):
+    def test_aplicar_filtro_con_nulos(self) -> None:
         """Probar filtro con valores nulos"""
         # Crear DataFrame con valores nulos
         df_with_nulls = self.test_df.copy()
@@ -161,10 +160,10 @@ class TestDataHandler(unittest.TestCase):
         # Verificar que los nulos no interfieren
         self.assertEqual(len(filtered_df), 0)  # Juan ahora es None
 
-    def test_carga_csv_grande_con_chunks(self):
+    def test_carga_csv_grande_con_chunks(self) -> None:
         """Probar carga de CSV grande con chunks"""
         # Crear CSV grande (simulado)
-        large_csv_path = os.path.join(self.temp_dir, 'large_test.csv')
+        large_csv_path = str(Path(self.temp_dir) / 'large_test.csv')
 
         # Crear DataFrame más grande
         large_df = pd.DataFrame({
@@ -181,7 +180,7 @@ class TestDataHandler(unittest.TestCase):
         # Verificar que se cargaron todos los datos
         pd.testing.assert_frame_equal(loaded_df, large_df)
 
-    def test_obtener_estadisticas_con_columnas_especificas(self):
+    def test_obtener_estadisticas_con_columnas_especificas(self) -> None:
         """Probar obtención de estadísticas con columnas específicas"""
         # Obtener estadísticas solo para columnas numéricas
         numeric_cols = ['Edad', 'Salario']

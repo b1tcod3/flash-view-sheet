@@ -12,7 +12,7 @@ from PySide6.QtCore import QTimer
 # Importar componentes del proyecto
 from paginacion.data_view import DataView
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba diversos"""
     np.random.seed(42)  # Para reproducibilidad
     
@@ -28,7 +28,7 @@ def create_test_data():
     }
     return pd.DataFrame(data)
 
-def test_dataview_integration():
+def test_dataview_integration() -> None:
     """Test de integración completo con DataView"""
     
     print("🧪 TEST DE INTEGRACIÓN: DataView completo")
@@ -190,7 +190,7 @@ def test_dataview_integration():
         'filters_work': filters_work
     }
 
-def test_dataview_different_data_types():
+def test_dataview_different_data_types() -> None:
     """Test con diferentes tipos de datos"""
     
     print("🧪 TEST: Diferentes tipos de datos")

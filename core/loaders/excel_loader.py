@@ -4,8 +4,8 @@ Handles Excel formats (.xlsx, .xls)
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,7 +14,7 @@ class ExcelLoader(FileLoader):
     File loader for Excel formats
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.xlsx', '.xls']
 
     def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
@@ -50,8 +50,8 @@ class ExcelLoader(FileLoader):
         Get information about the Excel file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
-            extension = os.path.splitext(self.filepath)[1].lower()
+            file_size = Path(self.filepath).stat().st_size
+            extension = Path(self.filepath).suffix.lower()
             
             # Get basic sheet information
             try:
@@ -86,7 +86,7 @@ class ExcelLoader(FileLoader):
         try:
             # Load a small sample to count rows
             df_sample = pd.read_excel(self.filepath, nrows=1000)
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             
             # Rough estimation based on file size
             sample_size = 1000

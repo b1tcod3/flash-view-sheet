@@ -6,9 +6,9 @@ Script para crear archivos Excel de ejemplo para la funcionalidad de carga de ca
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import os
+from pathlib import Path
 
-def create_sample_data():
+def create_sample_data() -> None:
     """Crear datos de ejemplo para diferentes trimestres"""
 
     # Productos disponibles
@@ -24,7 +24,7 @@ def create_sample_data():
     regiones = ["Norte", "Sur", "Este", "Oeste", "Centro"]
 
     # Función para generar datos de un trimestre
-    def generate_quarter_data(year, quarter, num_records=50):
+    def generate_quarter_data(year: int, quarter: int, num_records: int = 50) -> pd.DataFrame:
         np.random.seed(42 + quarter)  # Semilla consistente por trimestre
 
         start_date = datetime(year, (quarter-1)*3 + 1, 1)
@@ -47,7 +47,7 @@ def create_sample_data():
         return df
 
     # Crear directorio si no existe
-    os.makedirs('sample_data', exist_ok=True)
+    Path('sample_data').mkdir(parents=True, exist_ok=True)
 
     # Generar datos para cada trimestre de 2025
     quarters = [
@@ -62,7 +62,7 @@ def create_sample_data():
         df = generate_quarter_data(year, quarter)
 
         # Guardar como Excel
-        filepath = os.path.join('sample_data', filename)
+        filepath = str(Path('sample_data') / filename)
         df.to_excel(filepath, index=False)
 
         print(f"  ✓ {len(df)} registros guardados en {filepath}")

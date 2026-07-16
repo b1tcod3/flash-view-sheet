@@ -4,8 +4,8 @@ Handles JavaScript Object Notation format
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,7 +14,7 @@ class JsonLoader(FileLoader):
     File loader for JSON format
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.json']
 
     def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
@@ -50,7 +50,7 @@ class JsonLoader(FileLoader):
         Get information about the JSON file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             
             # Get basic JSON structure information
             try:

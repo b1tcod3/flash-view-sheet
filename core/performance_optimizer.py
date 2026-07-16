@@ -4,12 +4,11 @@ Optimizador de Rendimiento para ExcelTemplateSplitter
 Implementa chunking inteligente, gestión de memoria y optimizaciones de openpyxl
 """
 
-import os
 import time
 import psutil
 import gc
 import threading
-from typing import Dict, List, Optional, Iterator, Tuple, Any
+from typing import Dict, List, Optional, Iterator, Tuple, Any, Callable
 from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
@@ -54,7 +53,7 @@ class SystemResources:
 class PerformanceOptimizer:
     """Optimizador principal de rendimiento"""
     
-    def __init__(self, chunking_strategy: ChunkingStrategy = ChunkingStrategy.MODERATE):
+    def __init__(self, chunking_strategy: ChunkingStrategy = ChunkingStrategy.MODERATE) -> None:
         self.chunking_strategy = chunking_strategy
         self.memory_threshold_mb = 2048  # 2GB threshold
         self.performance_cache = {}
@@ -190,7 +189,7 @@ class PerformanceOptimizer:
                 disk_write_speed_mbps=100
             )
     
-    def optimize_memory_usage(self):
+    def optimize_memory_usage(self) -> None:
         """Optimizar uso de memoria con garbage collection"""
         gc.collect()
         
@@ -250,7 +249,7 @@ class PerformanceOptimizer:
 class ExcelFormatOptimizer:
     """Optimizador específico para operaciones de Excel"""
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.format_cache = {}  # Cache para formatos Excel
         self.cache_limit = 100  # Límite de entradas en cache
     
@@ -334,7 +333,7 @@ class ExcelFormatOptimizer:
             print(f"Error preservando formato Excel: {str(e)}")
             return False
     
-    def _detect_existing_data_range(self, sheet, start_cell: str) -> str:
+    def _detect_existing_data_range(self, sheet: Any, start_cell: str) -> str:
         """Detectar rango de datos existente"""
         start_row, start_col = self._cell_coordinates_to_indices(start_cell)
         
@@ -349,7 +348,7 @@ class ExcelFormatOptimizer:
         
         return ""
     
-    def _cache_existing_formats(self, sheet, data_range: str) -> Dict:
+    def _cache_existing_formats(self, sheet: Any, data_range: str) -> Dict[Tuple[int, int], Any]:
         """Cachear formatos existentes para preservación"""
         formats = {}
         
@@ -379,7 +378,7 @@ class ExcelFormatOptimizer:
         
         return formats
     
-    def _apply_cached_format(self, cell, cached_format: Dict):
+    def _apply_cached_format(self, cell: Any, cached_format: Dict[str, Any]) -> None:
         """Aplicar formato cacheado a celda"""
         try:
             if 'font' in cached_format and cached_format['font']:
@@ -410,23 +409,23 @@ class ExcelFormatOptimizer:
 class ProgressMonitor:
     """Monitor de progreso con cancelación de operaciones"""
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.cancelled = False
         self.paused = False
-        self.callbacks = []
+        self.callbacks: List[Callable[[ProcessingMetrics], None]] = []
         self._lock = threading.Lock()
     
-    def cancel_operation(self):
+    def cancel_operation(self) -> None:
         """Cancelar operación en curso"""
         with self._lock:
             self.cancelled = True
     
-    def pause_operation(self):
+    def pause_operation(self) -> None:
         """Pausar operación en curso"""
         with self._lock:
             self.paused = True
     
-    def resume_operation(self):
+    def resume_operation(self) -> None:
         """Reanudar operación pausada"""
         with self._lock:
             self.paused = False
@@ -441,16 +440,16 @@ class ProgressMonitor:
         with self._lock:
             return self.paused
     
-    def wait_if_paused(self):
+    def wait_if_paused(self) -> None:
         """Esperar si la operación está pausada"""
         while self.is_paused():
             time.sleep(0.1)  # Esperar 100ms
     
-    def add_progress_callback(self, callback):
+    def add_progress_callback(self, callback: Callable[[ProcessingMetrics], None]) -> None:
         """Agregar callback de progreso"""
         self.callbacks.append(callback)
     
-    def update_progress(self, metrics: ProcessingMetrics):
+    def update_progress(self, metrics: ProcessingMetrics) -> None:
         """Actualizar progreso y notificar callbacks"""
         # Verificar cancelación
         if self.is_cancelled():
@@ -463,7 +462,7 @@ class ProgressMonitor:
             except Exception as e:
                 print(f"Error en callback de progreso: {e}")
     
-    def reset(self):
+    def reset(self) -> None:
         """Resetear estado del monitor"""
         with self._lock:
             self.cancelled = False

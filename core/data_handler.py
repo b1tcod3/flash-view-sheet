@@ -5,15 +5,16 @@ Módulo para manejo de datos - carga, análisis y exportación
 import pandas as pd
 import numpy as np
 import os
+from pathlib import Path
 from typing import Optional, Tuple, Dict, Any
 import sys
 
 # Añadir directorio raíz para importar config
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import optimization_config
 
 
-def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
+def cargar_datos(filepath: str, chunk_size: Optional[int] = None) -> pd.DataFrame:
     """
     Cargar datos desde un archivo usando el nuevo sistema de loaders
 
@@ -55,7 +56,7 @@ def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
     return loader.load()
 
 
-def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict = None, chunk_size: int = None) -> pd.DataFrame:
+def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: Optional[dict] = None, chunk_size: Optional[int] = None) -> pd.DataFrame:
     """
     Cargar datos desde un archivo con opciones adicionales usando el sistema de loaders
 
@@ -74,7 +75,9 @@ def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: d
     loader = get_file_loader(filepath)
     
     # Aplicar optimización para archivos grandes
-    if chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100):
+    # Nota: load_in_chunks no soporta skip_rows/column_names, usar carga normal si se requieren
+    has_options = (skip_rows > 0) or (column_names is not None and len(column_names) > 0)
+    if not has_options and (chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100)):
         if chunk_size is None:
             # Usar configuración de optimización
             file_info = loader.get_memory_usage_info()
@@ -145,7 +148,7 @@ def obtener_metadata(df: pd.DataFrame) -> Dict[str, Any]:
     return metadata
 
 
-def obtener_estadisticas(df: pd.DataFrame, columnas: list = None, percentiles: list = None) -> pd.DataFrame:
+def obtener_estadisticas(df: pd.DataFrame, columnas: Optional[list] = None, percentiles: Optional[list] = None) -> pd.DataFrame:
     """
     Obtener estadísticas descriptivas del DataFrame con optimización para datasets grandes
 
@@ -375,7 +378,7 @@ def exportar_a_sql(df: pd.DataFrame, filepath: str, nombre_tabla: str) -> bool:
         return False
 
 
-def exportar_a_imagen(table_view, filepath: str) -> bool:
+def exportar_a_imagen(table_view: Any, filepath: str) -> bool:
     """
     Exportar vista de tabla a imagen
 
@@ -469,7 +472,7 @@ def exportar_a_csv(df: pd.DataFrame, filepath: str, delimiter: str = ',', encodi
         return False
 
 
-def limpiar_datos(df: pd.DataFrame, opciones: dict = None) -> pd.DataFrame:
+def limpiar_datos(df: pd.DataFrame, opciones: Optional[dict] = None) -> pd.DataFrame:
     """
     Limpiar datos del DataFrame aplicando varias operaciones de limpieza
 
@@ -622,6 +625,7 @@ import shutil
 import hashlib
 import re
 import gc
+from pathlib import Path
 from datetime import datetime
 from typing import Optional, List, Dict, Any, Union, Tuple, Iterator, Callable
 from dataclasses import dataclass, field
@@ -657,17 +661,17 @@ except ImportError:
         AGGRESSIVE = "aggressive"
     
     class SystemResources:
-        def __init__(self):
-            self.memory_usage_mb = 0.0
-            self.cpu_percent = 0.0
-            self.disk_free_gb = 0.0
+        def __init__(self) -> None:
+            self.memory_usage_mb: float = 0.0
+            self.cpu_percent: float = 0.0
+            self.disk_free_gb: float = 0.0
     
     class PerformanceConfig:
-        def __init__(self):
-            self.memory_threshold_mb = 2048
-            self.chunk_size = 1000
-            self.max_concurrent_operations = 2
-            self.progress_interval = 10
+        def __init__(self) -> None:
+            self.memory_threshold_mb: int = 2048
+            self.chunk_size: int = 1000
+            self.max_concurrent_operations: int = 2
+            self.progress_interval: int = 10
 
 
 @dataclass
@@ -707,14 +711,14 @@ class ExportSeparatedConfig:
             errors.append("Columna de separación es requerida")
         
         # Validar plantilla Excel
-        if not os.path.exists(self.template_path):
+        if not Path(self.template_path).exists():
             errors.append(f"Plantilla no encontrada: {self.template_path}")
         elif not self.template_path.lower().endswith(('.xlsx', '.xlsm')):
             errors.append("Plantilla debe ser archivo .xlsx o .xlsm")
         
         # Validar carpeta destino
         try:
-            os.makedirs(self.output_folder, exist_ok=True)
+            Path(self.output_folder).mkdir(parents=True, exist_ok=True)
             if not os.access(self.output_folder, os.W_OK):
                 errors.append(f"Sin permisos de escritura en: {self.output_folder}")
         except Exception as e:
@@ -757,14 +761,14 @@ class ValidationResult:
     warnings: List[str] = field(default_factory=list)
     info: List[str] = field(default_factory=list)
     
-    def add_error(self, error: str):
+    def add_error(self, error: str) -> None:
         self.errors.append(error)
         self.is_valid = False
     
-    def add_warning(self, warning: str):
+    def add_warning(self, warning: str) -> None:
         self.warnings.append(warning)
     
-    def add_info(self, info: str):
+    def add_info(self, info: str) -> None:
         self.info.append(info)
 
 
@@ -782,7 +786,7 @@ class ExportResult:
 
 class SeparationError(Exception):
     """Error base para separación de datos"""
-    def __init__(self, message: str, error_code: str = None, details: dict = None):
+    def __init__(self, message: str, error_code: Optional[str] = None, details: Optional[dict] = None) -> None:
         super().__init__(message)
         self.error_code = error_code
         self.details = details or {}
@@ -806,7 +810,7 @@ class MemoryError(SeparationError):
 class ExcelTemplateSplitter:
     """Clase principal para separación de datos con plantillas Excel"""
     
-    def __init__(self, df: pd.DataFrame, config: ExportSeparatedConfig):
+    def __init__(self, df: pd.DataFrame, config: ExportSeparatedConfig) -> None:
         """
         Inicializar separador con DataFrame y configuración
         
@@ -829,14 +833,14 @@ class ExcelTemplateSplitter:
         # Configurar optimizaciones de rendimiento
         self._setup_performance_optimization()
     
-    def _setup_logger(self):
+    def _setup_logger(self) -> Any:
         """Configurar logging consistente con sistema existente"""
         import logging
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.INFO)
         return logger
     
-    def _setup_performance_optimization(self):
+    def _setup_performance_optimization(self) -> None:
         """Configurar optimizaciones de rendimiento avanzadas"""
         # Inicializar optimizador de rendimiento si está disponible
         if PERFORMANCE_OPTIMIZER_AVAILABLE and self.config.enable_chunking:
@@ -906,11 +910,11 @@ class ExcelTemplateSplitter:
             result.add_error("No hay datos para separar")
         
         # Validación de plantilla Excel
-        if os.path.exists(self.config.template_path):
+        if Path(self.config.template_path).exists():
             try:
                 workbook = load_workbook(self.config.template_path, read_only=True)
                 workbook.close()
-                result.add_info(f"Plantilla validada: {os.path.basename(self.config.template_path)}")
+                result.add_info(f"Plantilla validada: {Path(self.config.template_path).name}")
             except Exception as e:
                 result.add_error(f"Error validando plantilla Excel: {str(e)}")
         
@@ -972,7 +976,7 @@ class ExcelTemplateSplitter:
             for group_name, group_df in groups:
                 # Generar nombre de archivo
                 filename = self._generate_filename_for_group(group_name, len(group_df))
-                file_path = os.path.join(self.config.output_folder, filename)
+                file_path = str(Path(self.config.output_folder) / filename)
                 
                 # Estimar tamaño de archivo (aproximado)
                 estimated_size_kb = len(group_df) * 0.5  # ~0.5KB por fila (estimado)
@@ -1044,7 +1048,8 @@ class ExcelTemplateSplitter:
         
         # Límite de longitud
         if len(sanitized) > 255:
-            name_part, ext = os.path.splitext(sanitized)
+            name_part = Path(sanitized).stem
+            ext = Path(sanitized).suffix
             available_length = 255 - len(ext)
             sanitized = name_part[:available_length-3] + '...' + ext
         
@@ -1140,7 +1145,7 @@ class ExcelTemplateSplitter:
         try:
             # Generar nombre de archivo
             filename = self._generate_filename_for_group(group_name, len(group_df))
-            file_path = os.path.join(self.config.output_folder, filename)
+            file_path = str(Path(self.config.output_folder) / filename)
             
             # Verificar conflictos de nombres
             file_path = self._resolve_filename_conflicts(file_path)
@@ -1247,16 +1252,18 @@ class ExcelTemplateSplitter:
     
     def _resolve_filename_conflicts(self, file_path: str) -> str:
         """Resolver conflictos de nombres de archivo"""
-        if not os.path.exists(file_path):
+        p = Path(file_path)
+        if not p.exists():
             return file_path
         
         # Auto-numeración
-        name_part, ext = os.path.splitext(file_path)
+        name_part = p.stem
+        ext = p.suffix
         counter = 1
         
         while True:
             new_path = f"{name_part}_{counter:02d}{ext}"
-            if not os.path.exists(new_path):
+            if not Path(new_path).exists():
                 return new_path
             counter += 1
             
@@ -1265,16 +1272,17 @@ class ExcelTemplateSplitter:
                 timestamp = str(int(time.time()))
                 return f"{name_part}_{timestamp}{ext}"
     
-    def cancel_operation(self):
+    def cancel_operation(self) -> None:
         """Cancelar operación en curso"""
         self._cancelled = True
     
-    def cleanup_temp_files(self):
+    def cleanup_temp_files(self) -> None:
         """Limpiar archivos temporales en caso de cancelación"""
         for file_path in self.created_files:
             try:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+                p = Path(file_path)
+                if p.exists():
+                    p.unlink()
             except Exception as e:
                 self.logger.warning(f"No se pudo limpiar archivo temporal {file_path}: {str(e)}")
 

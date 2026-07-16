@@ -23,13 +23,13 @@ class FilterValueWidget(QWidget):
     
     value_changed = Signal(object)  # Valor del filtro
     
-    def __init__(self, filter_type="equals", parent=None):
+    def __init__(self, filter_type: str = "equals", parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.filter_type = filter_type
-        self.value_widget = None
+        self.value_widget: Optional[QWidget] = None
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar interfaz según el tipo de filtro"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(5, 5, 5, 5)
@@ -136,11 +136,11 @@ class FilterValueWidget(QWidget):
             self.value_widget.textChanged.connect(self.on_value_changed)
             layout.addWidget(self.value_widget)
             
-    def on_value_changed(self):
+    def on_value_changed(self) -> None:
         """Emitir señal cuando cambie el valor"""
         self.value_changed.emit(self.get_value())
         
-    def get_value(self):
+    def get_value(self) -> Any:
         """Obtener valor actual del filtro"""
         if self.filter_type == "between":
             return [self.min_widget.value(), self.max_widget.value()]
@@ -157,7 +157,7 @@ class FilterValueWidget(QWidget):
                 return [x.strip() for x in text_value.split(',') if x.strip()]
             return text_value
             
-    def set_value(self, value):
+    def set_value(self, value: Any) -> None:
         """Establecer valor del filtro"""
         if self.filter_type == "between" and isinstance(value, list) and len(value) >= 2:
             self.min_widget.setValue(float(value[0]))
@@ -186,14 +186,14 @@ class PivotFilterPanel(QWidget):
     filters_changed = Signal(dict)  # Diccionario de filtros
     preview_requested = Signal()    # Solicitud de preview
     
-    def __init__(self, df_original=None, parent=None):
+    def __init__(self, df_original: Optional[pd.DataFrame] = None, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
-        self.active_filters = {}  # Diccionario de filtros activos
+        self.active_filters: Dict[str, Dict[str, Any]] = {}
         self.setup_ui()
         self.setup_connections()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del panel"""
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)
@@ -230,7 +230,7 @@ class PivotFilterPanel(QWidget):
         # Panel de información
         self.create_info_panel(main_layout)
         
-    def create_filter_tab(self):
+    def create_filter_tab(self) -> None:
         """Crear tab para crear nuevos filtros"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -319,7 +319,7 @@ class PivotFilterPanel(QWidget):
         
         self.filter_tabs.addTab(tab, "Crear Filtro")
         
-    def create_active_filters_tab(self):
+    def create_active_filters_tab(self) -> None:
         """Crear tab para ver y gestionar filtros activos"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -394,7 +394,7 @@ class PivotFilterPanel(QWidget):
         
         self.filter_tabs.addTab(tab, "Filtros Activos")
         
-    def create_logic_combination_tab(self):
+    def create_logic_combination_tab(self) -> None:
         """Crear tab para combinación lógica de filtros"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -463,7 +463,7 @@ class PivotFilterPanel(QWidget):
         
         self.filter_tabs.addTab(tab, "Combinación Lógica")
         
-    def create_info_panel(self, main_layout):
+    def create_info_panel(self, main_layout: QVBoxLayout) -> None:
         """Crear panel de información"""
         info_frame = QFrame()
         info_frame.setStyleSheet("""
@@ -482,13 +482,13 @@ class PivotFilterPanel(QWidget):
         
         main_layout.addWidget(info_frame)
         
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         self.filter_type_combo.currentTextChanged.connect(self.on_filter_type_changed)
         self.filter_value_widget.value_changed.connect(self.on_filter_value_changed)
         self.active_filters_list.itemSelectionChanged.connect(self.on_filter_selection_changed)
         
-    def setup_filter_types(self):
+    def setup_filter_types(self) -> None:
         """Configurar tipos de filtro disponibles"""
         filter_types = [
             ("equals", "Igual a"),
@@ -516,7 +516,7 @@ class PivotFilterPanel(QWidget):
         for value, text in filter_types:
             self.filter_type_combo.addItem(text, value)
             
-    def set_data(self, df):
+    def set_data(self, df: Optional[pd.DataFrame]) -> None:
         """Establecer datos para filtrar"""
         self.df_original = df
         
@@ -525,7 +525,7 @@ class PivotFilterPanel(QWidget):
             self.filter_column_combo.clear()
             self.filter_column_combo.addItems(df.columns.tolist())
             
-    def on_filter_type_changed(self, text):
+    def on_filter_type_changed(self, text: str) -> None:
         """Manejar cambio de tipo de filtro"""
         # Obtener el valor del tipo
         filter_type = self.filter_type_combo.currentData()
@@ -537,18 +537,18 @@ class PivotFilterPanel(QWidget):
         else:
             self.filter_value_widget.setVisible(False)
             
-    def on_filter_value_changed(self, value):
+    def on_filter_value_changed(self, value: Any) -> None:
         """Manejar cambio de valor de filtro"""
         # Actualizar información
         self.update_filter_info()
         
-    def on_filter_selection_changed(self):
+    def on_filter_selection_changed(self) -> None:
         """Manejar selección de filtro en lista"""
         # Actualizar botones de acción
         has_selection = self.active_filters_list.currentItem() is not None
         # Habilitar/deshabilitar botones según selección
         
-    def add_filter(self):
+    def add_filter(self) -> None:
         """Agregar nuevo filtro"""
         if self.df_original is None:
             QMessageBox.warning(self, "Advertencia", "No hay datos para filtrar.")
@@ -596,7 +596,7 @@ class PivotFilterPanel(QWidget):
         # Mostrar información
         self.info_label.setText(f"Filtro agregado: {column} {filter_type} {value}")
         
-    def remove_filter(self):
+    def remove_filter(self) -> None:
         """Eliminar filtro seleccionado"""
         current_item = self.active_filters_list.currentItem()
         if current_item:
@@ -609,7 +609,7 @@ class PivotFilterPanel(QWidget):
                 self.update_filters_statistics()
                 self.emit_filters_changed()
                 
-    def edit_filter(self):
+    def edit_filter(self) -> None:
         """Editar filtro seleccionado"""
         current_item = self.active_filters_list.currentItem()
         if current_item:
@@ -619,7 +619,7 @@ class PivotFilterPanel(QWidget):
                 # Cargar en el formulario de creación
                 self.load_filter_to_form(filter_data)
                 
-    def clear_all_filters(self):
+    def clear_all_filters(self) -> None:
         """Limpiar todos los filtros"""
         self.active_filters.clear()
         self.update_active_filters_list()
@@ -627,17 +627,17 @@ class PivotFilterPanel(QWidget):
         self.emit_filters_changed()
         self.info_label.setText("Todos los filtros han sido eliminados.")
         
-    def move_filter_up(self):
+    def move_filter_up(self) -> None:
         """Mover filtro seleccionado hacia arriba"""
         # TODO: Implementar reordenamiento
         pass
         
-    def move_filter_down(self):
+    def move_filter_down(self) -> None:
         """Mover filtro seleccionado hacia abajo"""
         # TODO: Implementar reordenamiento
         pass
         
-    def load_filter_to_form(self, filter_data):
+    def load_filter_to_form(self, filter_data: Dict[str, Any]) -> None:
         """Cargar filtro en el formulario para edición"""
         column = filter_data['column']
         config = filter_data['config']
@@ -659,7 +659,7 @@ class PivotFilterPanel(QWidget):
         if value is not None:
             self.filter_value_widget.set_value(value)
             
-    def update_active_filters_list(self):
+    def update_active_filters_list(self) -> None:
         """Actualizar lista de filtros activos"""
         self.active_filters_list.clear()
         
@@ -681,7 +681,7 @@ class PivotFilterPanel(QWidget):
             
             self.active_filters_list.addItem(item)
             
-    def update_filters_statistics(self):
+    def update_filters_statistics(self) -> None:
         """Actualizar estadísticas de filtros"""
         total_filters = len(self.active_filters)
         
@@ -699,7 +699,7 @@ class PivotFilterPanel(QWidget):
                 
             self.filters_stats_label.setText(stats_text)
             
-    def update_filter_info(self):
+    def update_filter_info(self) -> None:
         """Actualizar información del filtro actual"""
         column = self.filter_column_combo.currentText()
         filter_type = self.filter_type_combo.currentText()
@@ -716,7 +716,7 @@ class PivotFilterPanel(QWidget):
         else:
             self.info_label.setText("Configure un filtro seleccionando columna, tipo y valor.")
             
-    def preview_filters(self):
+    def preview_filters(self) -> None:
         """Previsualizar resultado de filtros"""
         if not self.active_filters:
             QMessageBox.information(self, "Información", "No hay filtros para previsualizar.")
@@ -743,7 +743,7 @@ Reducción: {((len(self.df_original) - len(filtered_df)) / len(self.df_original)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al aplicar filtros: {str(e)}")
             
-    def apply_filters_to_dataframe(self, df):
+    def apply_filters_to_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Aplicar filtros a un DataFrame"""
         from core.pivot import PivotFilterManager
         
@@ -758,7 +758,7 @@ Reducción: {((len(self.df_original) - len(filtered_df)) / len(self.df_original)
             
         return filter_manager.apply_filters(df, filters_dict)
         
-    def emit_filters_changed(self):
+    def emit_filters_changed(self) -> None:
         """Emitir señal de cambio de filtros"""
         # Convertir a formato para el sistema de pivoteo
         filters_dict = {}
@@ -769,11 +769,11 @@ Reducción: {((len(self.df_original) - len(filtered_df)) / len(self.df_original)
             
         self.filters_changed.emit(filters_dict)
         
-    def get_active_filters(self):
+    def get_active_filters(self) -> Dict[str, Dict[str, Any]]:
         """Obtener filtros activos"""
         return self.active_filters.copy()
         
-    def set_active_filters(self, filters_dict):
+    def set_active_filters(self, filters_dict: Dict[str, Any]) -> None:
         """Establecer filtros activos desde diccionario"""
         self.active_filters.clear()
         

@@ -8,6 +8,7 @@ but this module is kept for potential future use or advanced filtering.
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QComboBox, QLineEdit, QPushButton
 from PySide6.QtCore import Signal
+from typing import List
 
 
 class FilterToolbar(QWidget):
@@ -25,7 +26,7 @@ class FilterToolbar(QWidget):
     filter_applied = Signal(str, str)  # column, term
     filter_cleared = Signal()
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         """
         Initialize the filter toolbar.
         
@@ -44,7 +45,7 @@ class FilterToolbar(QWidget):
         self._setup_ui()
         self._connect_signals()
     
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Set up the user interface."""
         # Main layout
         self.layout = QHBoxLayout(self)
@@ -71,7 +72,7 @@ class FilterToolbar(QWidget):
         self.clear_filter_btn = QPushButton("Limpiar Filtro")
         self.layout.addWidget(self.clear_filter_btn)
     
-    def _connect_signals(self):
+    def _connect_signals(self) -> None:
         """Connect button signals to slots."""
         self.apply_filter_btn.clicked.connect(self._on_apply_filter)
         self.clear_filter_btn.clicked.connect(self._on_clear_filter)
@@ -79,7 +80,7 @@ class FilterToolbar(QWidget):
         # Allow pressing Enter in filter input
         self.filter_input.returnPressed.connect(self._on_apply_filter)
     
-    def _on_apply_filter(self):
+    def _on_apply_filter(self) -> None:
         """Handle apply filter button click."""
         column = self.filter_combo.currentText()
         term = self.filter_input.text().strip()
@@ -87,12 +88,12 @@ class FilterToolbar(QWidget):
         if column and term:
             self.filter_applied.emit(column, term)
     
-    def _on_clear_filter(self):
+    def _on_clear_filter(self) -> None:
         """Handle clear filter button click."""
         self.clear()
         self.filter_cleared.emit()
     
-    def populate_columns(self, columns):
+    def populate_columns(self, columns: List[str]) -> None:
         """
         Populate the column combo box.
         
@@ -102,12 +103,12 @@ class FilterToolbar(QWidget):
         self.filter_combo.clear()
         self.filter_combo.addItems(columns)
     
-    def clear(self):
+    def clear(self) -> None:
         """Clear filter controls."""
         self.filter_input.clear()
         self.filter_combo.setCurrentIndex(-1)
     
-    def get_current_column(self):
+    def get_current_column(self) -> str:
         """
         Get the currently selected column.
         
@@ -116,7 +117,7 @@ class FilterToolbar(QWidget):
         """
         return self.filter_combo.currentText()
     
-    def get_current_term(self):
+    def get_current_term(self) -> str:
         """
         Get the current search term.
         
@@ -125,7 +126,7 @@ class FilterToolbar(QWidget):
         """
         return self.filter_input.text().strip()
     
-    def set_enabled(self, enabled):
+    def set_enabled(self, enabled: bool) -> None:
         """
         Enable or disable all filter controls.
         

@@ -7,7 +7,6 @@ Tests the new pivot module functionality according to the plan
 import pandas as pd
 import numpy as np
 import sys
-import os
 import traceback
 from datetime import datetime, timedelta
 
@@ -21,7 +20,7 @@ except ImportError as e:
     print(f"❌ Failed to import pivot modules: {e}")
     sys.exit(1)
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Create test data for pivot table testing"""
     np.random.seed(42)
     
@@ -39,7 +38,7 @@ def create_test_data():
     print(f"✅ Created test data with shape: {df.shape}")
     return df
 
-def test_simple_pivot_basic():
+def test_simple_pivot_basic() -> None:
     """Test basic SimplePivotTable functionality"""
     print("\n🧪 Testing Basic Simple Pivot Table...")
     
@@ -72,7 +71,7 @@ def test_simple_pivot_basic():
     
     return True
 
-def test_simple_pivot_with_filters():
+def test_simple_pivot_with_filters() -> None:
     """Test SimplePivotTable with filters"""
     print("\n🧪 Testing Simple Pivot Table with Filters...")
     
@@ -108,7 +107,7 @@ def test_simple_pivot_with_filters():
     
     return True
 
-def test_simple_pivot_multiple_aggregations():
+def test_simple_pivot_multiple_aggregations() -> None:
     """Test SimplePivotTable with different aggregation functions"""
     print("\n🧪 Testing Simple Pivot Table with Multiple Aggregations...")
     
@@ -137,7 +136,7 @@ def test_simple_pivot_multiple_aggregations():
     print("✅ Multiple aggregation functions test passed")
     return True
 
-def test_simple_pivot_with_margins():
+def test_simple_pivot_with_margins() -> None:
     """Test SimplePivotTable with margins/totals"""
     print("\n🧪 Testing Simple Pivot Table with Margins...")
     
@@ -172,7 +171,7 @@ def test_simple_pivot_with_margins():
     
     return True
 
-def test_simple_pivot_error_handling():
+def test_simple_pivot_error_handling() -> None:
     """Test SimplePivotTable error handling"""
     print("\n🧪 Testing Simple Pivot Table Error Handling...")
     
@@ -208,7 +207,7 @@ def test_simple_pivot_error_handling():
     print("✅ Error handling test passed")
     return True
 
-def test_filter_manager():
+def test_filter_manager() -> None:
     """Test PivotFilterManager functionality"""
     print("\n🧪 Testing PivotFilterManager...")
     
@@ -235,7 +234,7 @@ def test_filter_manager():
     
     return True
 
-def test_aggregation_manager():
+def test_aggregation_manager() -> None:
     """Test PivotAggregationManager functionality"""
     print("\n🧪 Testing PivotAggregationManager...")
     
@@ -262,7 +261,7 @@ def test_aggregation_manager():
     
     return True
 
-def test_performance():
+def test_performance() -> None:
     """Test performance with larger dataset"""
     print("\n🧪 Testing Performance with Larger Dataset...")
     
@@ -313,7 +312,7 @@ def test_performance():
     
     return True
 
-def main():
+def main() -> int:
     """Run all tests"""
     print("🚀 Starting Pivot Table Implementation Tests")
     print("=" * 60)

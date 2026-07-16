@@ -4,11 +4,10 @@ Test para verificar la diferenciación de diálogos de pivote
 """
 
 import sys
-import os
 import pandas as pd
 sys.path.insert(0, '.')
 
-def test_dialog_differentiation():
+def test_dialog_differentiation() -> None:
     """Test de diferenciación entre diálogos Simple y Combinado"""
     print("🧪 TESTING: Diferenciación de Diálogos de Pivote")
     print("=" * 60)
@@ -92,7 +91,7 @@ def test_dialog_differentiation():
         traceback.print_exc()
         return False
 
-def test_menu_integration():
+def test_menu_integration() -> None:
     """Test de integración con el menú principal"""
     print("\n🔗 TESTING: Integración con Menú Principal")
     print("=" * 50)
@@ -114,7 +113,7 @@ def test_menu_integration():
             'categoria': ['A', 'A', 'B'],
             'ventas': [100, 150, 200]
         })
-        main_window.df_vista_actual = df_test
+        main_window.data_service.df_vista_actual = df_test
         
         # Verificar que las funciones existen
         if hasattr(main_window, 'abrir_pivot_simple'):

@@ -22,7 +22,7 @@ class BasePivotTable(ABC):
     Proporciona funcionalidad común para Simple y Combined pivot tables
     """
     
-    def __init__(self, name: str, description: str):
+    def __init__(self, name: str, description: str) -> None:
         """
         Inicializar tabla pivote base
         
@@ -399,7 +399,7 @@ class SimplePivotTable(BasePivotTable):
     Una columna para filas, una para columnas, una para valores, una función de agregación
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Inicializar tabla pivote simple"""
         super().__init__(
             "simple_pivot",
@@ -489,7 +489,7 @@ class CombinedPivotTable(BasePivotTable):
     Múltiples columnas para filas/columnas/valores, múltiples funciones de agregación
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Inicializar tabla pivote combinada"""
         super().__init__(
             "combined_pivot",

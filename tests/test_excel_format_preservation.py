@@ -5,7 +5,7 @@ Tests específicos para verificar preservación de formato Excel
 import unittest
 import pandas as pd
 import tempfile
-import os
+from pathlib import Path
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 from openpyxl.utils import get_column_letter
@@ -17,7 +17,7 @@ from core.excel_format_preserver import ExcelFormatPreserver
 class TestExcelFormatPreservation(unittest.TestCase):
     """Tests para verificar que el formato Excel se preserve durante la inserción de datos"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos y plantillas de prueba con formato"""
         # Crear DataFrame de prueba
         self.df_test = pd.DataFrame({
@@ -44,16 +44,16 @@ class TestExcelFormatPreservation(unittest.TestCase):
             start_cell='A5'
         )
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar archivos temporales"""
         try:
-            os.unlink(self.temp_template.name)
+            Path(self.temp_template.name).unlink()
             import shutil
             shutil.rmtree(self.config.output_folder)
         except:
             pass
     
-    def _create_formatted_template(self, template_path: str):
+    def _create_formatted_template(self, template_path: str) -> None:
         """Crear plantilla Excel con formato específico para testing"""
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -105,7 +105,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         
         wb.save(template_path)
     
-    def test_format_preservation_basic(self):
+    def test_format_preservation_basic(self) -> None:
         """Test básico de preservación de formato"""
         # Crear splitter
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
@@ -114,19 +114,19 @@ class TestExcelFormatPreservation(unittest.TestCase):
         group_data = self.df_test[self.df_test['Region'] == 'Norte'].copy()
         
         # Crear archivo de salida
-        output_path = os.path.join(self.config.output_folder, 'Norte_test_format.xlsx')
+        output_path = str(Path(self.config.output_folder) / 'Norte_test_format.xlsx')
         
         # Procesar grupo
         result = splitter._export_group('Norte', group_data)
         
         # Verificar que se creó el archivo
         self.assertTrue(result.success)
-        self.assertTrue(os.path.exists(output_path))
+        self.assertTrue(Path(output_path).exists())
         
         # Verificar que el formato se preservó
         self._verify_format_preservation(output_path)
     
-    def test_format_preservation_with_preserver(self):
+    def test_format_preservation_with_preserver(self) -> None:
         """Test de preservación usando ExcelFormatPreserver directamente"""
         preserver = ExcelFormatPreserver()
         
@@ -156,11 +156,11 @@ class TestExcelFormatPreservation(unittest.TestCase):
             self._verify_format_preservation(test_output.name)
         finally:
             try:
-                os.unlink(test_output.name)
+                Path(test_output.name).unlink()
             except:
                 pass
     
-    def _verify_format_preservation(self, output_path: str):
+    def _verify_format_preservation(self, output_path: str) -> None:
         """Verificar que el formato se preservó en el archivo de salida"""
         # Cargar archivo de salida
         output_wb = openpyxl.load_workbook(output_path, data_only=False)
@@ -210,7 +210,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         
         output_wb.close()
     
-    def test_multiple_format_elements(self):
+    def test_multiple_format_elements(self) -> None:
         """Test con múltiples elementos de formato complejo"""
         # Crear plantilla más compleja
         complex_template = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
@@ -278,7 +278,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
             
         finally:
             try:
-                os.unlink(complex_template.name)
+                Path(complex_template.name).unlink()
                 import shutil
                 shutil.rmtree(config.output_folder)
             except:

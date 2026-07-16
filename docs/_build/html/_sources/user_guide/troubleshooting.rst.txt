@@ -1,0 +1,396 @@
+Guía de Solución de Problemas
+===============================
+
+Esta guía te ayuda a resolver problemas y cuestiones comunes que pueden ocurrir al usar Flash Sheet.
+
+Obteniendo Ayuda
+----------------
+
+Antes de Solucionar Problemas
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Verificar Versión**: Asegurar que estés usando la versión más reciente
+- **Requisitos del Sistema**: Verificar que tu sistema cumpla los requisitos mínimos
+- **Permisos**: Verificar permisos de acceso a archivos y carpetas
+- **Actualizaciones**: Buscar actualizaciones disponibles
+
+Recursos de Ayuda
+~~~~~~~~~~~~~~~~~
+
+- **Documentación**: Guías comprehensivas de usuario y desarrollador
+- **Ejemplos**: Ejemplos de trabajo en el directorio `/examples/`
+- **Logs**: Verificar logs de aplicación para detalles de error
+- **Comunidad**: Reportar problemas en el repositorio del proyecto
+
+Problemas y Soluciones Comunes
+------------------------------
+
+Problemas de Carga de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Archivo No Carga
+^^^^^^^^^^^^^^^^
+
+**Síntomas:** Diálogo de selección de archivo se cierra sin cargar datos
+
+**Causas Posibles y Soluciones:**
+
+1. **Formato No Soportado**
+   - Verificar si el formato de archivo está soportado (CSV, Excel, JSON, etc.)
+   - Convertir archivo a formato soportado
+
+2. **Corrupción de Archivo**
+   - Abrir archivo en aplicación original para verificar validez
+   - Reparar archivo si es posible o usar backup
+
+3. **Problemas de Codificación**
+   - Probar diferentes opciones de codificación (UTF-8, ISO-8859-1)
+   - Guardar archivo con codificación apropiada
+
+4. **Tamaño de Archivo Grande**
+   - Verificar memoria disponible
+   - Considerar dividir archivos grandes
+   - Usar versión de 64-bit de Flash Sheet
+
+Errores de Permisos
+^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Errores "Acceso denegado" o "Permiso denegado"
+
+**Soluciones:**
+
+1. **Permisos de Archivo**
+   - Asegurar acceso de lectura al archivo
+   - Verificar que archivo no esté bloqueado por otra aplicación
+   - Cerrar Excel/otras aplicaciones que puedan tener archivo abierto
+
+2. **Permisos de Carpeta**
+   - Verificar acceso de escritura a carpetas destino
+   - Ejecutar Flash Sheet como administrador si es necesario
+   - Verificar permisos de unidad de red
+
+Problemas de Memoria
+^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Aplicación se bloquea o errores "Sin memoria"
+
+**Soluciones:**
+
+1. **Aumentar Memoria**
+   - Cerrar otras aplicaciones
+   - Usar versión de 64-bit
+   - Agregar más RAM si es posible
+
+2. **Optimización de Datos**
+   - Cargar solo columnas necesarias
+   - Usar muestreo de datos para datasets grandes
+   - Aplicar filtros antes de operaciones
+
+Problemas de Visualización de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Tabla No Muestra Datos
+^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Tabla vacía o datos faltantes
+
+**Causas Posibles:**
+
+1. **Dataset Vacío**
+   - Verificar si archivo contiene datos
+   - Verificar selección de hoja correcta en archivos Excel
+
+2. **Problemas de Filtro**
+   - Limpiar todos los filtros activos
+   - Verificar criterios de filtro
+
+3. **Configuraciones de Visualización**
+   - Resetear configuraciones de vista de tabla
+   - Verificar configuraciones de visibilidad de columna
+
+Tipos de Datos Incorrectos
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Números mostrados como texto, fechas no reconocidas
+
+**Soluciones:**
+
+1. **Detección de Tipo**
+   - Recargar archivo con diferente codificación
+   - Especificar manualmente tipos de columna
+
+2. **Limpieza de Datos**
+   - Limpiar datos en archivo fuente
+   - Usar herramientas de transformación de datos
+
+Problemas de Exportación
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Exportación Falla
+^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Proceso de exportación se detiene con error
+
+**Problemas Comunes:**
+
+1. **Archivo Bloqueado**
+   - Cerrar archivo destino si está abierto
+   - Verificar permisos de archivo
+
+2. **Espacio en Disco**
+   - Liberar espacio en disco
+   - Elegir destino diferente
+
+3. **Problemas de Ruta**
+   - Evitar caracteres especiales en rutas
+   - Usar unidades locales en lugar de unidades de red
+
+Formato de Exportación Incorrecto
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Archivo exportado tiene formato incorrecto o datos faltantes
+
+**Soluciones:**
+
+1. **Configuraciones de Formato**
+   - Verificar configuración de exportación
+   - Verificar delimitador y configuraciones de codificación
+
+2. **Selección de Datos**
+   - Confirmar rango de datos correcto seleccionado
+   - Verificar selección de columna
+
+Problemas de Gráficos y Visualización
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gráficos No se Muestran
+^^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Área de gráfico en blanco o mensajes de error
+
+**Causas Posibles:**
+
+1. **Problemas de Datos**
+   - Verificar datos contienen valores numéricos para gráficos
+   - Verificar suficientes puntos de datos
+
+2. **Configuración de Gráfico**
+   - Resetear configuraciones de gráfico
+   - Probar diferentes tipos de gráfico
+
+3. **Problemas de Memoria**
+   - Reducir complejidad de gráfico
+   - Usar muestreo de datos
+
+Problemas de Rendimiento
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Operaciones Lentas
+^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Operaciones toman tiempo inusualmente largo
+
+**Consejos de Optimización:**
+
+1. **Tamaño de Datos**
+   - Usar muestreo de datos para datasets grandes
+   - Aplicar filtros para reducir volumen de datos
+
+2. **Recursos del Sistema**
+   - Cerrar aplicaciones innecesarias
+   - Verificar uso de CPU y memoria
+
+3. **Configuración**
+   - Ajustar configuraciones de rendimiento
+   - Usar almacenamiento más rápido (SSD vs HDD)
+
+Bloqueos de Aplicación
+~~~~~~~~~~~~~~~~~~~~~~
+
+Cierres Inesperados
+^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Aplicación se cierra inesperadamente
+
+**Pasos de Diagnóstico:**
+
+1. **Verificar Logs**
+   - Revisar archivos de log de aplicación
+   - Buscar mensajes de error
+
+2. **Recursos del Sistema**
+   - Monitorear uso de memoria
+   - Verificar estabilidad del sistema
+
+3. **Problemas de Versión**
+   - Actualizar a versión más reciente
+   - Verificar compatibilidad con OS
+
+Opciones de Recuperación
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+- **Auto-guardado**: Recuperar trabajo no guardado
+- **Archivos de Backup**: Usar copias de backup
+- **Modo Seguro**: Iniciar con características mínimas
+
+Problemas de Características Avanzadas
+---------------------------------------
+
+Problemas de Operación de Unión
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unión Falla
+^^^^^^^^^^^
+
+**Síntomas:** Operación de unión no se completa o da errores
+
+**Problemas Comunes:**
+
+1. **Desajuste de Tipo de Columna**
+   - Asegurar columnas de unión tienen tipos compatibles
+   - Convertir tipos de datos si es necesario
+
+2. **Restricciones de Memoria**
+   - Reducir tamaños de dataset
+   - Usar uniones internas en lugar de externas
+
+3. **Calidad de Clave**
+   - Verificar valores nulos en claves de unión
+   - Verificar unicidad de clave
+
+Problemas de Exportación Separada
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Problemas de Plantilla
+^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Exportación basada en plantilla falla
+
+**Soluciones:**
+
+1. **Formato de Plantilla**
+   - Usar formato .xlsx (no .xls)
+   - Asegurar plantilla no esté corrupta
+
+2. **Mapeo de Columnas**
+   - Verificar nombres de columna coinciden
+   - Verificar compatibilidad de tipos de datos
+
+3. **Permisos de Archivo**
+   - Asegurar acceso de escritura a directorio destino
+
+Errores de Tabla Pivote
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Creación de Pivote Falla
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Síntomas:** Incapaz de crear tabla pivote
+
+**Causas Posibles:**
+
+1. **Tipos de Datos**
+   - Asegurar columnas numéricas para valores
+   - Verificar columnas categóricas para agrupamiento
+
+2. **Problemas de Memoria**
+   - Reducir tamaño de datos
+   - Usar muestreo de datos
+
+3. **Configuración**
+   - Verificar selecciones de campo
+   - Verificar compatibilidad de función de agregación
+
+Configuración y Configuraciones
+-------------------------------
+
+Reseteando Preferencias
+~~~~~~~~~~~~~~~~~~~~~~~
+
+**Para resetear configuraciones de aplicación:**
+
+1. Cerrar Flash Sheet
+2. Eliminar archivo de configuración (ubicación varía por OS)
+3. Reiniciar aplicación con configuraciones predeterminadas
+
+Actualizando Flash Sheet
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Proceso de Actualización:**
+
+1. Verificar actualizaciones en aplicación
+2. Descargar versión nueva
+3. Hacer backup de datos importantes
+4. Instalar actualización
+5. Probar funcionalidad
+
+Compatibilidad del Sistema
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Sistemas Operativos Soportados:**
+
+- **Windows**: 10, 11 (64-bit)
+- **macOS**: 10.15 y posterior
+- **Linux**: Ubuntu 18.04+, CentOS 7+
+
+**Requisitos Mínimos:**
+
+- **RAM**: 4GB
+- **Almacenamiento**: 500MB de espacio libre
+- **Pantalla**: Resolución 1024x768
+
+Obteniendo Ayuda Adicional
+--------------------------
+
+Soporte Comunitario
+~~~~~~~~~~~~~~~~~~~
+
+- **Rastreador de Problemas**: Reportar bugs y solicitar características
+- **Foros de Discusión**: Hacer preguntas y compartir soluciones
+- **Documentación**: Guías comprehensivas y ejemplos
+
+Soporte Profesional
+~~~~~~~~~~~~~~~~~~~
+
+Para usuarios empresariales:
+
+- **Soporte de Prioridad**: Tiempos de respuesta más rápidos
+- **Soluciones Personalizadas**: Implementaciones adaptadas
+- **Entrenamiento**: Sesiones de entrenamiento in situ o remoto
+
+Información de Diagnóstico
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Al reportar problemas, incluir:**
+
+- **Información de Versión**: Versión de Flash Sheet y build
+- **Detalles del Sistema**: Versión de OS, especificaciones de hardware
+- **Mensajes de Error**: Texto exacto de error y códigos
+- **Pasos para Reproducir**: Pasos detallados de reproducción
+- **Datos de Muestra**: Datos mínimos que reproducen el problema
+
+Prácticas de Prevención de Mejores Prácticas
+--------------------------------------------
+
+Mantenimiento Regular
+~~~~~~~~~~~~~~~~~~~~
+
+- **Mantener Actualizado**: Instalar actualizaciones regularmente
+- **Backup de Datos**: Mantener backups de archivos importantes
+- **Monitorear Recursos**: Observar uso de recursos del sistema
+- **Limpiar Archivos Temp**: Remover archivos temporales periódicamente
+
+Gestión de Datos
+~~~~~~~~~~~~~~~~
+
+- **Validar Entrada**: Verificar datos antes de cargar
+- **Usar Formatos Consistentes**: Estandarizar formatos de datos
+- **Documentar Procesos**: Registrar flujos de trabajo exitosos
+- **Probar con Muestras**: Validar con datasets pequeños primero
+
+Próximos Pasos
+--------------
+
+- :doc:`getting_started` - Regresar a uso básico
+- :doc:`advanced_features` - Funcionalidad avanzada
+- :doc:`../developer_guide/contributing` - Contribuyendo al proyecto

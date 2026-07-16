@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, Q
 from PySide6.QtCore import QTimer
 from paginacion.data_view import DataView
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -21,7 +21,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class VisualDebugWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Debug Visualización - Paginación")
         self.setGeometry(100, 100, 1200, 800)
@@ -69,7 +69,7 @@ class VisualDebugWindow(QMainWindow):
         self.debug_timer.timeout.connect(self.update_debug_info)
         self.debug_timer.start(2000)  # Cada 2 segundos
         
-    def load_data(self):
+    def load_data(self) -> None:
         """Cargar datos de prueba"""
         self.status_label.setText("Estado: Cargando datos...")
         
@@ -81,14 +81,14 @@ class VisualDebugWindow(QMainWindow):
         self.status_label.setText("Estado: Datos cargados")
         print("✅ VISUAL: Datos establecidos")
         
-    def go_to_page2(self):
+    def go_to_page2(self) -> None:
         """Ir a página 2 manualmente"""
         if self.data_view.pagination_manager:
             print("🔍 VISUAL: Navegando a página 2...")
             self.data_view.pagination_manager.next_page()
             self.status_label.setText("Estado: Navegando a página 2")
             
-    def go_to_page3(self):
+    def go_to_page3(self) -> None:
         """Ir a página 3 manualmente"""
         if self.data_view.pagination_manager:
             print("🔍 VISUAL: Navegando a página 3...")
@@ -96,14 +96,14 @@ class VisualDebugWindow(QMainWindow):
                 self.data_view.pagination_manager.next_page()
             self.status_label.setText("Estado: Navegando a página 3")
             
-    def test_next_page(self):
+    def test_next_page(self) -> None:
         """Test navegación siguiente página"""
         if self.data_view.pagination_manager:
             current = self.data_view.pagination_manager.get_current_page()
             print(f"🔍 VISUAL: Página actual: {current}")
             self.data_view.pagination_manager.next_page()
             
-    def update_debug_info(self):
+    def update_debug_info(self) -> None:
         """Actualizar información de debug"""
         if self.data_view.pagination_manager is not None:
             pm = self.data_view.pagination_manager
@@ -119,7 +119,7 @@ class VisualDebugWindow(QMainWindow):
         else:
             self.status_label.setText("Estado: Sin paginación")
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

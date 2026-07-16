@@ -14,12 +14,12 @@ class InfoPanel(QWidget):
     Widget para mostrar información y estadísticas del DataFrame
     """
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.df = None
+        self.df: pd.DataFrame | None = None
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del panel de información"""
         # Layout principal
         main_layout = QVBoxLayout(self)
@@ -64,7 +64,7 @@ class InfoPanel(QWidget):
         main_layout.addWidget(columns_group)
         main_layout.addWidget(stats_group)
         
-    def update_info(self, df: pd.DataFrame):
+    def update_info(self, df: pd.DataFrame) -> None:
         """
         Actualizar la información mostrada con nuevos datos
         
@@ -92,7 +92,7 @@ class InfoPanel(QWidget):
         # Actualizar estadísticas
         self.update_statistics(df)
         
-    def update_statistics(self, df: pd.DataFrame):
+    def update_statistics(self, df: pd.DataFrame) -> None:
         """
         Actualizar las estadísticas mostradas con lazy loading
 
@@ -146,7 +146,7 @@ class InfoPanel(QWidget):
             error_label.setStyleSheet("color: red;")
             self.stats_layout.addWidget(error_label)
 
-    def _mostrar_estadisticas_detalladas(self, df: pd.DataFrame):
+    def _mostrar_estadisticas_detalladas(self, df: pd.DataFrame) -> None:
         """
         Mostrar estadísticas detalladas para datasets pequeños
 

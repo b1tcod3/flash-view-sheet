@@ -7,6 +7,7 @@ en la aplicación, permitiendo su reutilización y mantenimiento centralizado.
 
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
+from typing import Any, List, Optional
 
 
 class MenuActions:
@@ -49,7 +50,7 @@ class MenuActions:
     ACERCA_DE = None
     
     @classmethod
-    def initialize_actions(cls, parent_window):
+    def initialize_actions(cls, parent_window: Any) -> None:
         """
         Inicializar todas las acciones con referencias al ventana padre.
         
@@ -140,7 +141,7 @@ class MenuActions:
         cls.ACERCA_DE.setStatusTip("Mostrar información sobre la aplicación")
     
     @classmethod
-    def enable_data_actions(cls, enable: bool = True):
+    def enable_data_actions(cls, enable: bool = True) -> None:
         """Habilitar/deshabilitar acciones que requieren datos cargados."""
         actions = [
             cls.EXPORTAR_SEPARADO,
@@ -154,7 +155,7 @@ class MenuActions:
                 action.setEnabled(enable)
     
     @classmethod
-    def get_archivo_actions(cls):
+    def get_archivo_actions(cls) -> List[Optional[Any]]:
         """Obtener lista de acciones del menú Archivo."""
         return [
             cls.ABRIR,
@@ -170,7 +171,7 @@ class MenuActions:
         ]
     
     @classmethod
-    def get_exportar_actions(cls):
+    def get_exportar_actions(cls) -> List[Optional[Any]]:
         """Obtener lista de acciones del submenú Exportar."""
         return [
             cls.EXPORTAR_PDF,
@@ -181,7 +182,7 @@ class MenuActions:
         ]
     
     @classmethod
-    def get_vista_actions(cls):
+    def get_vista_actions(cls) -> List[Optional[Any]]:
         """Obtener lista de acciones del menú Vista."""
         return [
             cls.VISTA_PRINCIPAL,

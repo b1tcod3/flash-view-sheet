@@ -4,18 +4,18 @@ Test específico del SimpleExcelPreserver que está funcionando
 """
 
 import sys
-import os
 import tempfile
+from pathlib import Path
 import pandas as pd
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from core.simple_excel_preserver import SimpleExcelFormatPreserver
 
 
-def test_simple_preserver():
+def test_simple_preserver() -> None:
     """Test del SimpleExcelPreserver que está funcionando"""
     print("🔍 TEST DEL SIMPLE EXCEL PRESERVER")
     print("=" * 50)
@@ -124,8 +124,8 @@ def test_simple_preserver():
     result_wb.close()
     
     # Limpiar
-    os.unlink(template_path.name)
-    os.unlink(output_path.name)
+    Path(template_path.name).unlink()
+    Path(output_path.name).unlink()
     
     print("\n✅ Test del SimpleExcelPreserver completado exitosamente")
     return True

@@ -4,11 +4,10 @@ Test para validar la funcionalidad de columnas opcionales en diálogo simple
 """
 
 import sys
-import os
 import pandas as pd
 sys.path.insert(0, '.')
 
-def test_optional_columns_functionality():
+def test_optional_columns_functionality() -> None:
     """Test de funcionalidad de columnas opcionales"""
     print("🧪 TESTING: Columnas Opcionales en Diálogo Simple")
     print("=" * 60)
@@ -73,10 +72,10 @@ def test_optional_columns_functionality():
         
         # Simular MainWindow
         class MockMainWindow:
-            def __init__(self, df):
+            def __init__(self, df: pd.DataFrame) -> None:
                 self.df_vista_actual = df
             
-            def crear_agregacion_simple(self, config):
+            def crear_agregacion_simple(self, config: dict) -> pd.DataFrame:
                 """Simular la función crear_agregacion_simple"""
                 index_column = config.get('index')
                 values_column = config.get('values')

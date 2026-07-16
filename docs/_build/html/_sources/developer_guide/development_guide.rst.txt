@@ -1,0 +1,852 @@
+Guía de Desarrollo
+==================
+
+Esta guía proporciona información esencial para desarrolladores que contribuyen a Flash Sheet, incluyendo estándares de código, flujo de trabajo de desarrollo, prácticas de testing y procedimientos de deployment.
+
+Inicio
+-----
+
+Entorno de Desarrollo
+~~~~~~~~~~~~~~~~~~~~~
+
+**Prerrequisitos:**
+
+- Python 3.7+
+- Git
+- Herramienta de entorno virtual (venv, conda, o virtualenv)
+- Herramientas de desarrollo Qt (para PySide6)
+
+**Clonar y Configurar:**
+
+.. code-block:: bash
+
+   git clone https://github.com/your-org/flash-sheet.git
+   cd flash-sheet
+   python -m venv venv
+   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   pip install -r requirements-dev.txt
+
+**Dependencias de Desarrollo:**
+
+.. code-block:: txt
+
+   # requirements-dev.txt
+   pytest>=6.0.0
+   pytest-cov>=2.0.0
+   black>=21.0.0
+   flake8>=3.9.0
+   mypy>=0.800
+   sphinx>=4.0.0
+   tox>=3.0.0
+
+Estructura del Proyecto
+-----------------------
+
+Organización del Código
+~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+   flash-sheet/
+   ├── main.py                 # Punto de entrada de aplicación
+   ├── app/                    # Paquete de aplicación principal
+   │   ├── __init__.py
+   │   ├── main_window.py      # Implementación de ventana principal
+   │   ├── data_handler.py     # Núcleo de gestión de datos
+   │   └── widgets/            # Componentes UI
+   │       ├── __init__.py
+   │       ├── data_view.py    # Vista de tabla de datos
+   │       ├── graphics_view.py # Vista de gráficos
+   │       └── dialogs/        # Ventanas de diálogo
+   ├── core/                   # Lógica de negocio
+   │   ├── __init__.py
+   │   ├── data_loader.py      # Utilidades de carga de datos
+   │   ├── data_exporter.py    # Funcionalidad de exportación
+   │   ├── join_manager.py     # Operaciones de unión de datos
+   │   └── pivot_manager.py    # Operaciones de tablas pivote
+   ├── tests/                  # Suite de testing
+   │   ├── __init__.py
+   │   ├── unit/               # Tests unitarios
+   │   ├── integration/        # Tests de integración
+   │   └── fixtures/           # Datos de test
+   ├── docs/                   # Documentación
+   │   ├── conf.py
+   │   ├── index.rst
+   │   └── ...
+   ├── scripts/                # Scripts utilitarios
+   ├── examples/               # Código y datos de ejemplo
+   └── requirements.txt
+
+Estándares de Código
+-------------------
+
+Guía de Estilo Python
+~~~~~~~~~~~~~~~~~~~~~
+
+**Seguir PEP 8 con estas adiciones:**
+
+- Longitud máxima de línea: 100 caracteres
+- Usar type hints para parámetros de función y valores de retorno
+- Usar docstrings para todos los métodos públicos
+- Usar nombres de variables descriptivos
+- Preferir f-strings sobre .format() y %
+
+**Formateo de Código:**
+
+.. code-block:: bash
+
+   # Formatear código con Black
+   black --line-length 100 .
+
+   # Verificar estilo con Flake8
+   flake8 --max-line-length 100 .
+
+**Verificación de Tipos:**
+
+.. code-block:: bash
+
+   # Ejecutar mypy para verificación estática de tipos
+   mypy --ignore-missing-imports .
+
+Formato de Docstring
+~~~~~~~~~~~~~~~~~~~~
+
+Usar docstrings estilo Google:
+
+.. code-block:: python
+
+   def load_file(self, file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+       """Cargar datos desde un archivo.
+
+       Args:
+           file_path: Ruta al archivo de datos a cargar.
+           encoding: Codificación de texto a usar para leer el archivo.
+
+       Returns:
+           Un DataFrame de pandas conteniendo los datos cargados.
+
+       Raises:
+           FileNotFoundError: Si no se encuentra el archivo especificado.
+           UnsupportedFormatError: Si el formato de archivo no está soportado.
+       """
+       pass
+
+Convenciones de Nomenclatura
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Clases**: PascalCase (DataHandler, MainWindow)
+- **Métodos/Funciones**: snake_case (load_file, export_data)
+- **Constantes**: UPPER_CASE (MAX_CHUNK_SIZE, DEFAULT_ENCODING)
+- **Miembros privados**: Guión bajo inicial (_internal_method)
+- **Módulos**: snake_case (data_handler.py, main_window.py)
+
+Manejo de Errores
+~~~~~~~~~~~~~~~~~
+
+**Jerarquía de Excepciones:**
+
+.. code-block:: python
+
+   class FlashSheetError(Exception):
+       """Excepción base para Flash Sheet."""
+       pass
+
+   class DataError(FlashSheetError):
+       """Errores relacionados con datos."""
+       pass
+
+   class FileError(DataError):
+       """Errores de operaciones de archivo."""
+       pass
+
+**Patrón de Manejo de Errores:**
+
+.. code-block:: python
+
+   try:
+       data = self.load_file(file_path)
+   except FileNotFoundError:
+       raise FileError(f"Archivo no encontrado: {file_path}")
+   except UnsupportedFormatError as e:
+       self.logger.error(f"Formato no soportado: {e}")
+       raise
+   except Exception as e:
+       self.logger.error(f"Error inesperado: {e}")
+       raise DataError("Error al cargar datos") from e
+
+Flujo de Trabajo de Desarrollo
+-----------------------------
+
+Flujo de Trabajo Git
+~~~~~~~~~~~~~~~~~~~~
+
+**Estrategia de Ramificación:**
+
+- ``main``: Código listo para producción
+- ``develop``: Rama de integración para características
+- ``feature/*``: Ramas de características
+- ``bugfix/*``: Ramas de corrección de bugs
+- ``release/*``: Preparación de releases
+
+**Mensajes de Commit:**
+
+.. code-block:: text
+
+   type(scope): description
+
+   [cuerpo opcional]
+
+   [footer opcional]
+
+**Tipos:**
+
+- ``feat``: Nuevas características
+- ``fix``: Correcciones de bugs
+- ``docs``: Cambios en documentación
+- ``style``: Cambios de estilo de código
+- ``refactor``: Refactorización de código
+- ``test``: Adiciones/modificaciones de tests
+- ``chore``: Tareas de mantenimiento
+
+**Ejemplo:**
+
+.. code-block:: text
+
+   feat(data-loader): Agregar soporte para archivos Parquet
+
+   - Implementar detección de archivos Parquet
+   - Agregar dependencia fastparquet
+   - Actualizar validación de formato
+
+   Closes #123
+
+Proceso de Pull Request
+~~~~~~~~~~~~~~~~~~~~~~~
+
+1. **Crear Rama de Característica:**
+
+   .. code-block:: bash
+
+       git checkout -b feature/nueva-caracteristica develop
+
+2. **Hacer Cambios:**
+
+   - Escribir código siguiendo estándares
+   - Agregar/actualizar tests
+   - Actualizar documentación
+
+3. **Ejecutar Verificaciones de Calidad:**
+
+   .. code-block:: bash
+
+       # Ejecutar todos los tests
+       pytest
+
+       # Verificar calidad de código
+       black --check .
+       flake8 .
+       mypy .
+
+4. **Commit de Cambios:**
+
+   .. code-block:: bash
+
+       git add .
+       git commit -m "feat: Agregar nueva característica"
+
+5. **Push y Crear PR:**
+
+   .. code-block:: bash
+
+       git push origin feature/nueva-caracteristica
+
+6. **Revisión de Código:**
+
+   - Abordar comentarios de revisión
+   - Asegurar que CI pase
+   - Obtener aprobación
+
+7. **Merge:**
+
+   - Merge squash a rama develop
+   - Eliminar rama de característica
+
+Testing
+-------
+
+Estructura de Tests
+~~~~~~~~~~~~~~~~~~~
+
+**Organización de Tests:**
+
+::
+
+   tests/
+   ├── unit/                    # Tests unitarios
+   │   ├── test_data_handler.py
+   │   ├── test_main_window.py
+   │   └── ...
+   ├── integration/            # Tests de integración
+   │   ├── test_file_loading.py
+   │   ├── test_export_workflow.py
+   │   └── ...
+   ├── fixtures/               # Datos de test
+   │   ├── sample_data.csv
+   │   ├── test_template.xlsx
+   │   └── ...
+   └── conftest.py             # Configuración de Pytest
+
+Testing Unitario
+~~~~~~~~~~~~~~~~
+
+**Ejemplo de Test Unitario:**
+
+.. code-block:: python
+
+   import pytest
+   from app.data_handler import DataHandler
+
+   class TestDataHandler:
+       def test_load_csv_file(self, tmp_path):
+           # Crear archivo CSV de test
+           csv_file = tmp_path / "test.csv"
+           csv_file.write_text("name,age\nAlice,30\nBob,25\n")
+
+           # Test de carga
+           handler = DataHandler()
+           df = handler.load_file(str(csv_file))
+
+           assert len(df) == 2
+           assert list(df.columns) == ['name', 'age']
+           assert df.iloc[0]['name'] == 'Alice'
+
+       def test_unsupported_format(self):
+           handler = DataHandler()
+
+           with pytest.raises(UnsupportedFormatError):
+               handler.load_file("test.unsupported")
+
+Testing de Integración
+~~~~~~~~~~~~~~~~~~~~~~
+
+**Ejemplo de Test End-to-End:**
+
+.. code-block:: python
+
+   def test_complete_data_workflow(self, tmp_path):
+       # Configurar datos de test
+       csv_file = tmp_path / "input.csv"
+       csv_file.write_text("id,name,value\n1,A,100\n2,B,200\n")
+
+       output_file = tmp_path / "output.xlsx"
+
+       # Ejecutar flujo de trabajo
+       handler = DataHandler()
+       data = handler.load_file(str(csv_file))
+
+       # Aplicar alguna transformación
+       data['doubled'] = data['value'] * 2
+
+       # Exportar
+       handler.export_data(data, 'excel', str(output_file))
+
+       # Verificar
+       assert output_file.exists()
+       reloaded = handler.load_file(str(output_file))
+       assert len(reloaded) == 2
+       assert 'doubled' in reloaded.columns
+
+Gestión de Datos de Test
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Uso de Fixtures:**
+
+.. code-block:: python
+
+   @pytest.fixture
+   def sample_dataframe():
+       return pd.DataFrame({
+           'id': [1, 2, 3],
+           'name': ['Alice', 'Bob', 'Charlie'],
+           'value': [100, 200, 300]
+       })
+
+   @pytest.fixture
+   def temp_csv_file(tmp_path, sample_dataframe):
+       file_path = tmp_path / "test.csv"
+       sample_dataframe.to_csv(file_path, index=False)
+       return str(file_path)
+
+**Ejecución de Tests:**
+
+.. code-block:: bash
+
+   # Ejecutar todos los tests
+   pytest
+
+   # Ejecutar con cobertura
+   pytest --cov=app --cov-report=html
+
+   # Ejecutar test específico
+   pytest tests/unit/test_data_handler.py::TestDataHandler::test_load_csv_file
+
+   # Ejecutar tests que coincidan con patrón
+   pytest -k "csv"
+
+Integración Continua
+~~~~~~~~~~~~~~~~~~~~
+
+**Configuración de GitHub Actions:**
+
+.. code-block:: yaml
+
+   name: CI
+
+   on: [push, pull_request]
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       strategy:
+         matrix:
+           python-version: [3.7, 3.8, 3.9]
+
+       steps:
+       - uses: actions/checkout@v2
+       - name: Configurar Python ${{ matrix.python-version }}
+         uses: actions/setup-python@v2
+         with:
+           python-version: ${{ matrix.python-version }}
+       - name: Instalar dependencias
+         run: |
+           pip install -r requirements.txt
+           pip install -r requirements-dev.txt
+       - name: Ejecutar tests
+         run: pytest --cov=app --cov-report=xml
+       - name: Subir cobertura
+         uses: codecov/codecov-action@v1
+
+Documentación
+-------------
+
+Construyendo Documentación
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Configuración de Sphinx:**
+
+.. code-block:: bash
+
+   # Instalar dependencias de documentación
+   pip install sphinx sphinx-rtd-theme
+
+   # Construir documentación HTML
+   cd docs
+   make html
+
+**Estructura de Documentación:**
+
+- **Guía de Usuario**: Documentación para usuarios finales
+- **Guía de Desarrollador**: Referencia de API e información de desarrollo
+- **Notas de Release**: Logs de cambios de versión
+
+Escribiendo Documentación
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Formato reStructuredText (RST):**
+
+.. code-block:: rst
+
+   Título de Sección
+   =================
+
+   Subsección
+   ----------
+
+   **Texto en negrita**, *texto en cursiva*, ``código``
+
+   .. code-block:: python
+
+       # Ejemplo de código
+       def hello_world():
+           print("Hello, World!")
+
+   :param name: Descripción del parámetro
+   :returns: Descripción del valor de retorno
+
+**Testing de Documentación:**
+
+.. code-block:: bash
+
+   # Test de construcción de documentación
+   cd docs
+   make doctest
+
+   # Verificar enlaces
+   make linkcheck
+
+Deployment
+----------
+
+Empaquetado
+~~~~~~~~~~~
+
+**PyInstaller para Ejecutable Standalone:**
+
+.. code-block:: bash
+
+   # Instalar PyInstaller
+   pip install pyinstaller
+
+   # Crear ejecutable
+   pyinstaller --onefile --windowed main.py
+
+**Configuración de Setup.py:**
+
+.. code-block:: python
+
+   from setuptools import setup, find_packages
+
+   setup(
+       name="flash-sheet",
+       version="1.0.0",
+       packages=find_packages(),
+       install_requires=[
+           'pandas>=1.3.0',
+           'PySide6>=6.0.0',
+           'openpyxl>=3.0.0',
+           'numpy>=1.21.0',
+       ],
+       entry_points={
+           'console_scripts': [
+               'flash-sheet=main:main',
+           ],
+       },
+   )
+
+Proceso de Release
+~~~~~~~~~~~~~~~~~~
+
+**Gestión de Versiones:**
+
+1. **Actualizar Versión:**
+
+   .. code-block:: python
+
+       # En __init__.py o version.py
+       __version__ = "1.1.0"
+
+2. **Actualizar Changelog:**
+
+   .. code-block:: text
+
+       # CHANGELOG.md
+       ## [1.1.0] - 2025-11-17
+       ### Agregado
+       - Nueva característica X
+       ### Corregido
+       - Corrección de bug Y
+
+3. **Crear Rama de Release:**
+
+   .. code-block:: bash
+
+       git checkout -b release/1.1.0 develop
+
+4. **Ejecutar Tests Finales:**
+
+   .. code-block:: bash
+
+       tox  # Ejecutar tests en múltiples versiones de Python
+
+5. **Construir Documentación:**
+
+   .. code-block:: bash
+
+       cd docs && make html
+
+6. **Crear Release de GitHub:**
+
+   - Etiquetar release: ``git tag -a v1.1.0``
+   - Push tags: ``git push origin v1.1.0``
+   - Crear release en GitHub con changelog
+
+Distribución
+~~~~~~~~~~~~
+
+**Upload a PyPI:**
+
+.. code-block:: bash
+
+   # Construir distribución
+   python setup.py sdist bdist_wheel
+
+   # Upload a PyPI
+   twine upload dist/*
+
+**Builds Específicos de Plataforma:**
+
+- **Windows**: Usar PyInstaller en Windows
+- **macOS**: Build en macOS para app nativa
+- **Linux**: Crear paquetes .deb o .rpm
+
+Optimización de Performance
+---------------------------
+
+Gestión de Memoria
+~~~~~~~~~~~~~~~~~~
+
+**Manejo de Datasets Grandes:**
+
+.. code-block:: python
+
+   class MemoryEfficientLoader:
+       def load_large_csv(self, file_path, chunk_size=10000):
+           """Cargar archivos CSV grandes en chunks."""
+           chunks = []
+           for chunk in pd.read_csv(file_path, chunksize=chunk_size):
+               # Procesar chunk
+               processed = self.process_chunk(chunk)
+               chunks.append(processed)
+
+           return pd.concat(chunks, ignore_index=True)
+
+**Monitoreo de Memoria:**
+
+.. code-block:: python
+
+   import psutil
+   import os
+
+   def get_memory_usage():
+       process = psutil.Process(os.getpid())
+       return process.memory_info().rss / 1024 / 1024  # MB
+
+Responsividad de UI
+~~~~~~~~~~~~~~~~~~~
+
+**Procesamiento en Segundo Plano:**
+
+.. code-block:: python
+
+   from PySide6.QtCore import QThread, Signal
+
+   class DataLoadWorker(QThread):
+       finished = Signal(object)
+       error = Signal(str)
+       progress = Signal(int)
+
+       def __init__(self, file_path):
+           super().__init__()
+           self.file_path = file_path
+
+       def run(self):
+           try:
+               # Cargar datos en segundo plano
+               data = self.load_data()
+               self.finished.emit(data)
+           except Exception as e:
+               self.error.emit(str(e))
+
+**Uso:**
+
+.. code-block:: python
+
+   worker = DataLoadWorker(file_path)
+   worker.finished.connect(self.on_data_loaded)
+   worker.error.connect(self.on_load_error)
+   worker.start()
+
+Profiling de Código
+~~~~~~~~~~~~~~~~~~~
+
+**Profiling de Performance:**
+
+.. code-block:: python
+
+   import cProfile
+   import pstats
+
+   def profile_function(func, *args, **kwargs):
+       profiler = cProfile.Profile()
+       profiler.enable()
+
+       result = func(*args, **kwargs)
+
+       profiler.disable()
+       stats = pstats.Stats(profiler).sort_stats('cumulative')
+       stats.print_stats(20)  # Top 20 funciones
+
+       return result
+
+**Profiling de Memoria:**
+
+.. code-block:: python
+
+   from memory_profiler import profile
+
+   @profile
+   def memory_intensive_function():
+       # Función a perfilar
+       pass
+
+Consideraciones de Seguridad
+---------------------------
+
+Validación de Entrada
+~~~~~~~~~~~~~~~~~~~~~
+
+**Saneamiento de Datos:**
+
+.. code-block:: python
+
+   def sanitize_filename(filename):
+       """Remover caracteres peligrosos del nombre de archivo."""
+       import re
+       return re.sub(r'[<>:"/\\|?*]', '', filename)
+
+**Prevención de SQL Injection:**
+
+.. code-block:: python
+
+   # Usar consultas parametrizadas
+   query = "SELECT * FROM table WHERE id = ?"
+   df = pd.read_sql(query, connection, params=(user_id,))
+
+Configuración Segura
+~~~~~~~~~~~~~~~~~~~~~
+
+**Manejo de Datos Sensibles:**
+
+.. code-block:: python
+
+   import os
+
+   class SecureConfig:
+       def get_database_url(self):
+           # Usar variables de entorno para datos sensibles
+           return os.getenv('DATABASE_URL')
+
+       def get_api_key(self):
+           return os.getenv('API_KEY')
+
+**Permisos de Archivo:**
+
+.. code-block:: bash
+
+   # Establecer permisos apropiados
+   chmod 600 config/secrets.json
+
+Guías de Contribución
+---------------------
+
+Reportes de Problemas
+~~~~~~~~~~~~~~~~~~~~~
+
+**Plantilla de Reporte de Bug:**
+
+.. code-block:: text
+
+   ## Reporte de Bug
+
+   **Versión:** 1.0.0
+   **SO:** Windows 10
+   **Python:** 3.8.5
+
+   **Descripción:**
+   Descripción breve del bug
+
+   **Pasos para Reproducir:**
+   1. Paso 1
+   2. Paso 2
+   3. Paso 3
+
+   **Comportamiento Esperado:**
+   Qué debería suceder
+
+   **Comportamiento Actual:**
+   Qué realmente sucede
+
+   **Contexto Adicional:**
+   Screenshots, logs, etc.
+
+Solicitudes de Características
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Plantilla de Solicitud de Característica:**
+
+.. code-block:: text
+
+   ## Solicitud de Característica
+
+   **Problema:**
+   Descripción del problema que esta característica resolvería
+
+   **Solución:**
+   Descripción de la solución propuesta
+
+   **Alternativas:**
+   Soluciones alternativas consideradas
+
+   **Contexto Adicional:**
+   Mockups, ejemplos, etc.
+
+Contribución de Código
+~~~~~~~~~~~~~~~~~~~~~~
+
+**Checklist de Pull Request:**
+
+- [ ] Tests agregados/actualizados
+- [ ] Documentación actualizada
+- [ ] Código sigue guías de estilo
+- [ ] Mensajes de commit siguen convención
+- [ ] CI pasa
+- [ ] Revisado por al menos un maintainer
+
+**Proceso de Revisión de Código:**
+
+1. **Verificaciones Automatizadas:** CI ejecuta tests y verificaciones de calidad
+2. **Revisión por Pares:** Al menos un maintainer revisa código
+3. **Discusión:** Abordar comentarios de revisión
+4. **Aprobación:** Maintainers aprueban PR
+5. **Merge:** PR se merge a rama develop
+
+Comunidad
+---------
+
+Canales de Comunicación
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Issues de GitHub:** Reportes de bugs y solicitudes de características
+- **Discusiones de GitHub:** Preguntas generales y discusiones
+- **Email:** developer@flash-sheet.org para issues de seguridad
+
+Código de Conducta
+~~~~~~~~~~~~~~~~~~
+
+**Nuestros Estándares:**
+
+- Ser respetuoso e inclusivo
+- Enfocarse en feedback constructivo
+- Aceptar responsabilidad por errores
+- Mostrar empatía hacia otros miembros de la comunidad
+
+**Comportamiento Inaceptable:**
+
+- Acoso o discriminación
+- Ataques personales
+- Spam o contenido off-topic
+- Compartir información privada
+
+Licencia
+-------
+
+**Licencia MIT**
+
+Copyright (c) 2025 Contribuidores de Flash Sheet
+
+Por la presente se concede permiso, libre de cargos, a cualquier persona que obtenga una copia de este software y de los archivos de documentación asociados (el "Software"), a utilizar el Software sin restricción, incluyendo sin limitación los derechos a usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender copias del Software, y a permitir a las personas a las que se les proporcione el Software a hacer lo mismo, sujeto a las siguientes condiciones:
+
+El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o porciones sustanciales del Software.
+
+EL SOFTWARE SE PROPORCIONA "COMO ESTÁ", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD PARA UN PROPÓSITO PARTICULAR E INCUMPLIMIENTO. EN NINGÚN CASO LOS AUTORES O PROPIETARIOS DE LOS DERECHOS DE AUTOR SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑOS U OTRAS RESPONSABILIDADES, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O CUALQUIER OTRA FORMA, QUE SURJA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTROS TRATOS EN EL SOFTWARE.

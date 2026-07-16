@@ -13,15 +13,15 @@ class InfoModal(QDialog):
     Modal para mostrar información detallada del DataFrame
     """
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QDialog | None = None) -> None:
         super().__init__(parent)
-        self.df = None
+        self.df: pd.DataFrame | None = None
         self.setWindowTitle("Información del Archivo")
         self.setModal(True)
         self.resize(600, 500)
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del modal"""
         main_layout = QVBoxLayout(self)
         
@@ -83,7 +83,7 @@ class InfoModal(QDialog):
         main_layout.addWidget(stats_group)
         main_layout.addWidget(close_button)
         
-    def update_info(self, df: pd.DataFrame, filename: str = None):
+    def update_info(self, df: pd.DataFrame, filename: str = "") -> None:
         """
         Actualizar la información mostrada con nuevos datos
         
@@ -114,7 +114,7 @@ class InfoModal(QDialog):
         # Actualizar estadísticas
         self.update_statistics(df)
         
-    def update_statistics(self, df: pd.DataFrame):
+    def update_statistics(self, df: pd.DataFrame) -> None:
         """
         Actualizar las estadísticas mostradas
         
@@ -168,10 +168,10 @@ class InfoModal(QDialog):
             error_label.setStyleSheet("color: red;")
             self.stats_layout.addWidget(error_label)
 
-    def _mostrar_estadisticas_detalladas(self, df: pd.DataFrame):
+    def _mostrar_estadisticas_detalladas(self, df: pd.DataFrame) -> None:
         """
         Mostrar estadísticas detalladas para datasets pequeños
-
+        
         Args:
             df: DataFrame de Pandas
         """

@@ -2,10 +2,12 @@
 Excepciones personalizadas para funcionalidad de cruce de datos
 """
 
+from typing import Optional
+
 
 class JoinError(Exception):
     """Excepción base para errores de join"""
-    def __init__(self, message: str, error_code: str = None, details: dict = None):
+    def __init__(self, message: str, error_code: Optional[str] = None, details: Optional[dict] = None) -> None:
         super().__init__(message)
         self.error_code = error_code
         self.details = details or {}

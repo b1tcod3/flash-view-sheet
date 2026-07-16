@@ -4,10 +4,10 @@ Proporciona interfaz detallada para configurar parámetros de pivoteo
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                               QGroupBox, QTabWidget, QListWidget, QListWidgetItem,
-                               QPushButton, QComboBox, QLineEdit, QCheckBox,
-                               QSpinBox, QDoubleSpinBox, QTextEdit, QFormLayout,
-                               QDialogButtonBox, QSplitter, QFrame, QMessageBox, QWidget)
+                                QGroupBox, QTabWidget, QListWidget, QListWidgetItem,
+                                QPushButton, QComboBox, QLineEdit, QCheckBox,
+                                QSpinBox, QDoubleSpinBox, QTextEdit, QFormLayout,
+                                QDialogButtonBox, QSplitter, QFrame, QMessageBox, QWidget)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
@@ -24,14 +24,14 @@ class PivotConfigDialog(QDialog):
     configuration_applied = Signal(dict)  # Parámetros configurados
     preview_requested = Signal(dict)      # Solicitud de preview
     
-    def __init__(self, df_original=None, parent=None):
+    def __init__(self, df_original: pd.DataFrame | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
-        self.current_config = {}
+        self.current_config: Dict[str, Any] = {}
         self.setup_ui()
         self.setup_connections()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del diálogo"""
         self.setWindowTitle("Configuración Avanzada - Tabla Pivote")
         self.resize(800, 600)
@@ -77,7 +77,7 @@ class PivotConfigDialog(QDialog):
         # Panel de botones
         self.create_button_panel(main_layout)
         
-    def create_basic_config_tab(self):
+    def create_basic_config_tab(self) -> None:
         """Crear tab de configuración básica"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -149,7 +149,7 @@ class PivotConfigDialog(QDialog):
         
         self.config_tabs.addTab(tab, "Configuración Básica")
         
-    def create_filters_config_tab(self):
+    def create_filters_config_tab(self) -> None:
         """Crear tab de configuración de filtros"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -247,7 +247,7 @@ class PivotConfigDialog(QDialog):
         
         self.config_tabs.addTab(tab, "Filtros Avanzados")
         
-    def create_aggregations_config_tab(self):
+    def create_aggregations_config_tab(self) -> None:
         """Crear tab de configuración de agregaciones"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -357,7 +357,7 @@ class PivotConfigDialog(QDialog):
         
         self.config_tabs.addTab(tab, "Agregaciones")
         
-    def create_advanced_options_tab(self):
+    def create_advanced_options_tab(self) -> None:
         """Crear tab de opciones avanzadas"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -416,7 +416,7 @@ class PivotConfigDialog(QDialog):
         
         self.config_tabs.addTab(tab, "Opciones Avanzadas")
         
-    def create_preview_tab(self):
+    def create_preview_tab(self) -> None:
         """Crear tab de vista previa"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -480,7 +480,7 @@ class PivotConfigDialog(QDialog):
         
         self.config_tabs.addTab(tab, "Vista Previa")
         
-    def create_button_panel(self, main_layout):
+    def create_button_panel(self, main_layout: QVBoxLayout) -> None:
         """Crear panel de botones del diálogo"""
         button_frame = QFrame()
         button_frame.setStyleSheet("""
@@ -525,7 +525,7 @@ class PivotConfigDialog(QDialog):
         
         main_layout.addWidget(button_frame)
         
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         # Actualizar preview cuando cambien los tabs
         self.config_tabs.currentChanged.connect(self.on_tab_changed)
@@ -540,7 +540,7 @@ class PivotConfigDialog(QDialog):
         for list_widget in lists_to_connect:
             list_widget.itemSelectionChanged.connect(self.update_configuration_preview)
             
-    def set_data(self, df):
+    def set_data(self, df: pd.DataFrame | None) -> None:
         """Establecer datos para configurar"""
         self.df_original = df
         
@@ -563,7 +563,7 @@ class PivotConfigDialog(QDialog):
             # Actualizar información del dataset
             self.update_dataset_info()
             
-    def update_dataset_info(self):
+    def update_dataset_info(self) -> None:
         """Actualizar información del dataset"""
         if self.df_original is not None:
             info_text = f"""
@@ -577,7 +577,7 @@ Primeras 3 filas:
             """
             self.dataset_info_text.setPlainText(info_text)
             
-    def on_agg_mode_changed(self, text):
+    def on_agg_mode_changed(self, text: str) -> None:
         """Manejar cambio de modo de agregación"""
         if "específica" in text:
             # Mostrar configuración específica por valor
@@ -600,12 +600,12 @@ Primeras 3 filas:
                             func_item = QListWidgetItem(f"{item.text()}: {func}")
                             self.functions_table.addItem(func_item)
                             
-    def on_tab_changed(self, index):
+    def on_tab_changed(self, index: int) -> None:
         """Manejar cambio de tabs"""
         if index == 4:  # Tab de preview
             self.update_configuration_preview()
             
-    def update_configuration_preview(self):
+    def update_configuration_preview(self) -> None:
         """Actualizar vista previa de configuración"""
         config = self.get_current_configuration()
         
@@ -635,12 +635,12 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         
         self.config_preview_text.setPlainText(preview_text)
         
-    def get_current_configuration(self):
+    def get_current_configuration(self) -> Dict[str, Any]:
         """Obtener configuración actual"""
-        config = {}
+        config: Dict[str, Any] = {}
         
         # Índices seleccionados
-        index_columns = []
+        index_columns: List[str] = []
         for i in range(self.index_columns_list.count()):
             item = self.index_columns_list.item(i)
             if item.isSelected():
@@ -648,7 +648,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['index'] = index_columns
         
         # Columnas del pivote seleccionadas
-        pivot_columns = []
+        pivot_columns: List[str] = []
         for i in range(self.pivot_columns_list.count()):
             item = self.pivot_columns_list.item(i)
             if item.isSelected():
@@ -656,7 +656,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['columns'] = pivot_columns
         
         # Valores seleccionados
-        values_columns = []
+        values_columns: List[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.isSelected():
@@ -664,7 +664,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['values'] = values_columns
         
         # Funciones de agregación
-        agg_functions = []
+        agg_functions: List[str] = []
         for i in range(self.functions_table.count()):
             item = self.functions_table.item(i)
             text = item.text()
@@ -691,7 +691,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         
         return config
         
-    def get_config(self):
+    def get_config(self) -> Dict[str, Any]:
         """Obtener configuración en formato compatible con las funciones de pivote"""
         config = self.get_current_configuration()
         
@@ -721,23 +721,23 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         
         return config
         
-    def add_filter(self):
+    def add_filter(self) -> None:
         """Agregar nuevo filtro"""
         # TODO: Implementar diálogo de filtro
         pass
         
-    def edit_filter(self):
+    def edit_filter(self) -> None:
         """Editar filtro seleccionado"""
         # TODO: Implementar edición de filtro
         pass
         
-    def remove_filter(self):
+    def remove_filter(self) -> None:
         """Eliminar filtro seleccionado"""
         current_row = self.filters_list.currentRow()
         if current_row >= 0:
             self.filters_list.takeItem(current_row)
             
-    def add_aggregation_function(self):
+    def add_aggregation_function(self) -> None:
         """Agregar función de agregación"""
         current_item = self.available_functions_list.currentItem()
         if current_item:
@@ -745,30 +745,30 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
             func_name = func_text.split(' - ')[0]
             self.functions_table.addItem(func_name)
             
-    def remove_aggregation_function(self):
+    def remove_aggregation_function(self) -> None:
         """Eliminar función de agregación"""
         current_row = self.functions_table.currentRow()
         if current_row >= 0:
             self.functions_table.takeItem(current_row)
             
-    def preview_configuration(self):
+    def preview_configuration(self) -> None:
         """Vista previa de la configuración"""
         config = self.get_current_configuration()
         self.preview_requested.emit(config)
         
-    def test_configuration(self):
+    def test_configuration(self) -> None:
         """Probar configuración actual"""
         config = self.get_current_configuration()
         # TODO: Implementar prueba de configuración
         QMessageBox.information(self, "Prueba", "Funcionalidad de prueba en desarrollo.")
         
-    def apply_configuration(self):
+    def apply_configuration(self) -> None:
         """Aplicar configuración"""
         config = self.get_current_configuration()
         self.configuration_applied.emit(config)
         QMessageBox.information(self, "Éxito", "Configuración aplicada exitosamente.")
         
-    def accept_configuration(self):
+    def accept_configuration(self) -> None:
         """Aceptar configuración y cerrar"""
         config = self.get_current_configuration()
         self.configuration_applied.emit(config)

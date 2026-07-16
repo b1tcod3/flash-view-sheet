@@ -5,7 +5,7 @@ Tests actualizados para la clase ExcelTemplateSplitter y funcionalidad de separa
 import unittest
 import pandas as pd
 import tempfile
-import os
+from pathlib import Path
 import json
 from unittest.mock import patch, MagicMock, mock_open
 import openpyxl
@@ -16,7 +16,7 @@ from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig, Vali
 class TestExcelTemplateSplitter(unittest.TestCase):
     """Tests para ExcelTemplateSplitter"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         # Crear DataFrame de prueba
         self.df_test = pd.DataFrame({
@@ -50,15 +50,15 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             start_cell='A5'
         )
         
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar archivos temporales"""
         try:
-            os.unlink(self.temp_template.name)
-            os.rmdir(self.config.output_folder)
+            Path(self.temp_template.name).unlink()
+            Path(self.config.output_folder).rmdir()
         except:
             pass
     
-    def test_init(self):
+    def test_init(self) -> None:
         """Test inicialización del splitter"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         
@@ -67,7 +67,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertFalse(hasattr(splitter, 'groups_data'))  # No existe este atributo
         self.assertFalse(hasattr(splitter, 'is_cancelled'))  # No existe este atributo
     
-    def test_validate_configuration(self):
+    def test_validate_configuration(self) -> None:
         """Test validación de configuración"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         result = splitter.validate_configuration()
@@ -78,7 +78,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertIsInstance(result.errors, list)
         self.assertIsInstance(result.warnings, list)
     
-    def test_validate_configuration_invalid_column(self):
+    def test_validate_configuration_invalid_column(self) -> None:
         """Test validación con columna inexistente"""
         config = ExportSeparatedConfig(
             separator_column='ColumnaInexistente',
@@ -92,7 +92,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertGreater(len(result.errors), 0)
     
-    def test_analyze_data(self):
+    def test_analyze_data(self) -> None:
         """Test análisis de datos"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         result = splitter.analyze_data()
@@ -106,7 +106,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertEqual(result['unique_values'], 4)  # Norte, Sur, Este, Oeste
         self.assertIn('estimated_groups', result)
     
-    def test_generate_file_preview(self):
+    def test_generate_file_preview(self) -> None:
         """Test generación de preview de archivos"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         preview = splitter.generate_file_preview()
@@ -122,7 +122,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertTrue(file_info['filename'].endswith('.xlsx'))
             self.assertGreater(file_info['rows'], 0)
     
-    def test_generate_filename_for_group(self):
+    def test_generate_filename_for_group(self) -> None:
         """Test generación de nombres de archivo"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         filename = splitter._generate_filename_for_group('TestGroup', 100)
@@ -131,7 +131,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertTrue(filename.endswith('.xlsx'))
         self.assertIn('TestGroup', filename)
     
-    def test_sanitize_filename(self):
+    def test_sanitize_filename(self) -> None:
         """Test sanitización de nombres de archivo"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         
@@ -147,12 +147,12 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         shortened_name = splitter._sanitize_filename(long_name)
         self.assertLess(len(shortened_name), 260)
     
-    def test_resolve_filename_conflicts(self):
+    def test_resolve_filename_conflicts(self) -> None:
         """Test resolución de conflictos de nombres"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         
         # Crear archivo temporal
-        test_path = os.path.join(self.config.output_folder, 'test.xlsx')
+        test_path = str(Path(self.config.output_folder) / 'test.xlsx')
         with open(test_path, 'w') as f:
             f.write('test')
         
@@ -161,7 +161,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertNotEqual(resolved_path, test_path)
         self.assertTrue(resolved_path.endswith('.xlsx'))
     
-    def test_separate_and_export_success(self):
+    def test_separate_and_export_success(self) -> None:
         """Test exportación exitosa"""
         # Crear directorio temporal
         temp_output = tempfile.mkdtemp()
@@ -183,7 +183,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertIn('files_created', result)
             self.assertIn('groups_processed', result)
     
-    def test_separate_and_export_validation_failure(self):
+    def test_separate_and_export_validation_failure(self) -> None:
         """Test fallo en validación"""
         # Configuración inválida
         config = ExportSeparatedConfig(
@@ -201,7 +201,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             'error' in result or 'validation_errors' in result or 'errors' in result
         )
     
-    def test_export_group_success(self):
+    def test_export_group_success(self) -> None:
         """Test exportación exitosa de grupo individual"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         
@@ -217,7 +217,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertEqual(result.group_name, 'Norte')
             self.assertEqual(result.rows_processed, 2)
     
-    def test_cancel_operation(self):
+    def test_cancel_operation(self) -> None:
         """Test cancelación de operación"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         splitter.cancel_operation()
@@ -226,12 +226,12 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertTrue(hasattr(splitter, '_cancelled'))
         self.assertTrue(splitter._cancelled)
     
-    def test_cleanup_temp_files(self):
+    def test_cleanup_temp_files(self) -> None:
         """Test limpieza de archivos temporales"""
         splitter = ExcelTemplateSplitter(self.df_test, self.config)
         
         # Crear archivo temporal
-        temp_file = os.path.join(self.config.output_folder, 'temp.xlsx')
+        temp_file = str(Path(self.config.output_folder) / 'temp.xlsx')
         with open(temp_file, 'w') as f:
             f.write('test')
         
@@ -239,13 +239,13 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         splitter.cleanup_temp_files()
         
         # Verificar que se limpia el archivo
-        self.assertFalse(os.path.exists(temp_file))
+        self.assertFalse(Path(temp_file).exists())
 
 
 class TestExportSeparatedConfig(unittest.TestCase):
     """Tests para ExportSeparatedConfig"""
     
-    def test_init(self):
+    def test_init(self) -> None:
         """Test inicialización"""
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -260,7 +260,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertEqual(config.start_cell, 'A1')  # Default
         self.assertEqual(config.handle_duplicates, 'overwrite')  # Default
     
-    def test_validate(self):
+    def test_validate(self) -> None:
         """Test validación de configuración"""
         with tempfile.NamedTemporaryFile(suffix='.xlsx') as tmp:
             # Crear archivo Excel válido
@@ -281,7 +281,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
             self.assertIn('errors', result)
             self.assertIn('warnings', result)
     
-    def test_get_default_mapping(self):
+    def test_get_default_mapping(self) -> None:
         """Test obtención de mapeo por defecto"""
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -302,7 +302,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
 class TestValidationResult(unittest.TestCase):
     """Tests para ValidationResult"""
     
-    def test_default_state(self):
+    def test_default_state(self) -> None:
         """Test estado por defecto"""
         result = ValidationResult()
         
@@ -311,7 +311,7 @@ class TestValidationResult(unittest.TestCase):
         self.assertEqual(result.warnings, [])
         self.assertEqual(result.info, [])
     
-    def test_add_error(self):
+    def test_add_error(self) -> None:
         """Test agregar error"""
         result = ValidationResult()
         result.add_error("Test error")
@@ -319,7 +319,7 @@ class TestValidationResult(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertIn("Test error", result.errors)
     
-    def test_add_warning(self):
+    def test_add_warning(self) -> None:
         """Test agregar warning"""
         result = ValidationResult()
         result.add_warning("Test warning")
@@ -327,7 +327,7 @@ class TestValidationResult(unittest.TestCase):
         self.assertTrue(result.is_valid)  # Warnings no invalidan
         self.assertIn("Test warning", result.warnings)
     
-    def test_add_info(self):
+    def test_add_info(self) -> None:
         """Test agregar info"""
         result = ValidationResult()
         result.add_info("Test info")
@@ -339,7 +339,7 @@ class TestValidationResult(unittest.TestCase):
 class TestExportResult(unittest.TestCase):
     """Tests para ExportResult"""
     
-    def test_default_state(self):
+    def test_default_state(self) -> None:
         """Test estado por defecto"""
         result = ExportResult()
         

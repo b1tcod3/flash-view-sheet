@@ -27,7 +27,7 @@ class ViewSwitcher(QWidget):
     view_graphics = Signal()
     view_joined = Signal()
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         """
         Initialize the view switcher.
         
@@ -40,7 +40,7 @@ class ViewSwitcher(QWidget):
         self._setup_ui()
         self._connect_signals()
     
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Set up the user interface."""
         # Main layout
         self.layout = QHBoxLayout(self)
@@ -73,7 +73,7 @@ class ViewSwitcher(QWidget):
         self.view_joined_btn.setEnabled(False)  # Enabled when join results exist
         self.layout.addWidget(self.view_joined_btn)
     
-    def _connect_signals(self):
+    def _connect_signals(self) -> None:
         """Connect button signals to slots."""
         self.view_main_btn.clicked.connect(self.view_main.emit)
         self.view_data_btn.clicked.connect(self.view_data.emit)
@@ -81,7 +81,7 @@ class ViewSwitcher(QWidget):
         self.view_graphics_btn.clicked.connect(self.view_graphics.emit)
         self.view_joined_btn.clicked.connect(self.view_joined.emit)
     
-    def set_joined_enabled(self, enabled):
+    def set_joined_enabled(self, enabled: bool) -> None:
         """
         Enable or disable the joined data view button.
         
@@ -90,7 +90,7 @@ class ViewSwitcher(QWidget):
         """
         self.view_joined_btn.setEnabled(enabled)
     
-    def set_main_enabled(self, enabled):
+    def set_main_enabled(self, enabled: bool) -> None:
         """
         Enable or disable the main view button.
         
@@ -99,7 +99,7 @@ class ViewSwitcher(QWidget):
         """
         self.view_main_btn.setEnabled(enabled)
     
-    def set_data_enabled(self, enabled):
+    def set_data_enabled(self, enabled: bool) -> None:
         """
         Enable or disable the data view button.
         
@@ -108,7 +108,7 @@ class ViewSwitcher(QWidget):
         """
         self.view_data_btn.setEnabled(enabled)
     
-    def set_info_enabled(self, enabled):
+    def set_info_enabled(self, enabled: bool) -> None:
         """
         Enable or disable the info view button.
         
@@ -117,7 +117,7 @@ class ViewSwitcher(QWidget):
         """
         self.view_info_btn.setEnabled(enabled)
     
-    def set_graphics_enabled(self, enabled):
+    def set_graphics_enabled(self, enabled: bool) -> None:
         """
         Enable or disable the graphics view button.
         

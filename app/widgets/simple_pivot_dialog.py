@@ -5,11 +5,12 @@ Interfaz básica para pivote simple con selección individual de columnas
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                               QGroupBox, QComboBox, QPushButton, QFormLayout,
-                               QDialogButtonBox, QMessageBox, QWidget, QTextEdit)
+                                QGroupBox, QComboBox, QPushButton, QFormLayout,
+                                QDialogButtonBox, QMessageBox, QWidget, QTextEdit)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 import pandas as pd
+from typing import Optional, Dict, Any, List
 
 
 class SimplePivotDialog(QDialog):
@@ -18,13 +19,13 @@ class SimplePivotDialog(QDialog):
     Una sola columna para cada parámetro
     """
     
-    def __init__(self, df_original=None, parent=None):
+    def __init__(self, df_original: Optional[pd.DataFrame] = None, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
         self.setup_ui()
         self.setup_connections()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del diálogo"""
         self.setWindowTitle("Tabla Pivote Simple")
         self.resize(600, 400)
@@ -55,7 +56,7 @@ class SimplePivotDialog(QDialog):
         # Panel de botones
         self.create_button_panel(main_layout)
         
-    def create_basic_config_group(self, main_layout):
+    def create_basic_config_group(self, main_layout: QVBoxLayout) -> None:
         """Crear grupo de configuración básica"""
         config_group = QGroupBox("Configuración Básica")
         config_layout = QFormLayout(config_group)
@@ -78,7 +79,7 @@ class SimplePivotDialog(QDialog):
         
         main_layout.addWidget(config_group)
         
-    def create_aggregation_config_group(self, main_layout):
+    def create_aggregation_config_group(self, main_layout: QVBoxLayout) -> None:
         """Crear grupo de configuración de agregación"""
         agg_group = QGroupBox("Función de Agregación")
         agg_layout = QFormLayout(agg_group)
@@ -100,7 +101,7 @@ class SimplePivotDialog(QDialog):
         
         main_layout.addWidget(agg_group)
         
-    def create_dataset_info_group(self, main_layout):
+    def create_dataset_info_group(self, main_layout: QVBoxLayout) -> None:
         """Crear grupo de información del dataset"""
         info_group = QGroupBox("Información del Dataset")
         info_layout = QVBoxLayout(info_group)
@@ -112,7 +113,7 @@ class SimplePivotDialog(QDialog):
         
         main_layout.addWidget(info_group)
         
-    def create_button_panel(self, main_layout):
+    def create_button_panel(self, main_layout: QVBoxLayout) -> None:
         """Crear panel de botones del diálogo"""
         button_layout = QHBoxLayout()
         
@@ -147,7 +148,7 @@ class SimplePivotDialog(QDialog):
         button_layout.addWidget(self.dialog_buttons)
         main_layout.addLayout(button_layout)
         
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         # Actualizar preview cuando cambien las selecciones
         combos_to_watch = [self.index_combo, self.columns_combo, self.values_combo, self.agg_func_combo]
@@ -155,7 +156,7 @@ class SimplePivotDialog(QDialog):
         for combo in combos_to_watch:
             combo.currentTextChanged.connect(self.update_preview)
             
-    def set_data(self, df):
+    def set_data(self, df: Optional[pd.DataFrame]) -> None:
         """Establecer datos para configurar"""
         self.df_original = df
         
@@ -177,7 +178,7 @@ class SimplePivotDialog(QDialog):
             # Actualizar información del dataset
             self.update_dataset_info()
             
-    def update_dataset_info(self):
+    def update_dataset_info(self) -> None:
         """Actualizar información del dataset"""
         if self.df_original is not None:
             info_text = f"""Dataset: {self.df_original.shape[0]} filas, {self.df_original.shape[1]} columnas
@@ -187,7 +188,7 @@ Columnas disponibles: {', '.join(self.df_original.columns.tolist())}
 Tip: Para un pivote simple, selecciona una columna para las filas, una para las columnas del pivote, y una con valores numéricos para agregar."""
             self.dataset_info_text.setPlainText(info_text)
             
-    def update_preview(self):
+    def update_preview(self) -> None:
         """Actualizar vista previa de configuración"""
         index_col = self.index_combo.currentText()
         columns_col = self.columns_combo.currentText()
@@ -219,7 +220,7 @@ FILAS RESULTADO: El pivote creará una tabla con las filas basadas en '{index_co
             
             self.dataset_info_text.setPlainText(current_info + "\n\n" + preview_text)
             
-    def show_preview(self):
+    def show_preview(self) -> None:
         """Mostrar vista previa detallada"""
         config = self.get_config()
         
@@ -240,7 +241,7 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         
         QMessageBox.information(self, "Vista Previa", preview_text)
         
-    def get_config(self):
+    def get_config(self) -> Dict[str, Any]:
         """Obtener configuración actual"""
         config = {
             'index': self.index_combo.currentText() if self.index_combo.currentText() else None,
@@ -252,7 +253,7 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         
         return config
         
-    def validate_configuration(self):
+    def validate_configuration(self) -> List[str]:
         """Validar que la configuración esté completa"""
         config = self.get_config()
         
@@ -267,7 +268,7 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
             
         return missing_fields
         
-    def accept_configuration(self):
+    def accept_configuration(self) -> None:
         """Aceptar configuración y cerrar"""
         # Validar configuración
         missing_fields = self.validate_configuration()
@@ -326,6 +327,6 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         # Todo validado, aceptar
         self.accept()
         
-    def get_configuration(self):
+    def get_configuration(self) -> Dict[str, Any]:
         """Obtener configuración final (alias para compatibilidad)"""
         return self.get_config()

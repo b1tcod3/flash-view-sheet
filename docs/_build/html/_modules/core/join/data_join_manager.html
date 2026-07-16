@@ -1,0 +1,624 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>core.join.data_join_manager &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">core.join.data_join_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for core.join.data_join_manager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DataJoinManager: Clase principal para operaciones de cruce de datos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">JoinResult</span><span class="p">,</span> <span class="n">JoinMetadata</span><span class="p">,</span> <span class="n">ValidationResult</span><span class="p">,</span> <span class="n">JoinType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinValidationError</span><span class="p">,</span> <span class="n">JoinExecutionError</span><span class="p">,</span> <span class="n">MemoryLimitExceededError</span><span class="p">,</span> <span class="n">UnsupportedJoinError</span>
+
+
+<div class="viewcode-block" id="DataJoinManager">
+<a class="viewcode-back" href="../../../api/classes.html#core.join.data_join_manager.DataJoinManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataJoinManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clase principal responsable de ejecutar operaciones de cruce entre datasets&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataJoinManager.__init__">
+<a class="viewcode-back" href="../../../api/classes.html#core.join.data_join_manager.DataJoinManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">right_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inicializar DataJoinManager con los datasets</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            left_df: DataFrame del dataset izquierdo</span>
+<span class="sd">            right_df: DataFrame del dataset derecho</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span> <span class="o">=</span> <span class="n">left_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span> <span class="o">=</span> <span class="n">right_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataJoinManager.execute_join">
+<a class="viewcode-back" href="../../../api/classes.html#core.join.data_join_manager.DataJoinManager.execute_join">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JoinResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecutar operación de join según configuración</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            JoinResult con datos y metadatos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Validar configuración</span>
+            <span class="n">validation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">validation</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                <span class="c1"># Para errores críticos, fallar</span>
+                <span class="k">return</span> <span class="n">JoinResult</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="n">JoinMetadata</span><span class="p">(</span>
+                        <span class="n">left_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">),</span>
+                        <span class="n">right_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">),</span>
+                        <span class="n">result_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">join_type</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">,</span>
+                        <span class="n">join_keys</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span>
+                        <span class="n">matched_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">left_only_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">right_only_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">memory_usage_mb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                        <span class="n">processing_time_seconds</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span>
+                        <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="p">),</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">error_message</span><span class="o">=</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">validation</span><span class="o">.</span><span class="n">errors</span><span class="p">),</span>
+                    <span class="n">processing_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Verificar límites de memoria antes de ejecutar</span>
+            <span class="n">estimated_memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_memory_usage</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="n">available_memory</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">available</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>  <span class="c1"># MB</span>
+
+            <span class="c1"># Determinar si usar chunking</span>
+            <span class="n">use_chunking</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_use_chunking</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">estimated_memory</span><span class="p">,</span> <span class="n">available_memory</span><span class="p">)</span>
+
+            <span class="c1"># Ejecutar join (con o sin chunking)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">use_chunking</span><span class="p">:</span>
+                    <span class="n">result_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_chunked_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">JoinExecutionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error ejecutando join: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Calcular metadatos</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_metadata</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">result_df</span><span class="p">,</span> <span class="n">start_time</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">JoinResult</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">result_df</span><span class="p">,</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">processing_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">JoinResult</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">JoinMetadata</span><span class="p">(</span>
+                    <span class="n">left_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">),</span>
+                    <span class="n">right_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">),</span>
+                    <span class="n">result_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">join_type</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">,</span>
+                    <span class="n">join_keys</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span>
+                    <span class="n">matched_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">left_only_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">right_only_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">memory_usage_mb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">processing_time_seconds</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                <span class="p">),</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                <span class="n">processing_time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataJoinManager.validate_join">
+<a class="viewcode-back" href="../../../api/classes.html#core.join.data_join_manager.DataJoinManager.validate_join">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validar configuración de join</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración a validar</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ValidationResult con resultado de validación</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">ValidationResult</span><span class="p">()</span>
+
+        <span class="c1"># Validar tipos de join</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">UnsupportedJoinError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tipo de join no soportado: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Para cross join, no se necesitan keys</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Cross join no requiere columnas de join&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Validar columnas de join</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Columnas de join del dataset izquierdo son requeridas&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Columnas de join del dataset derecho son requeridas&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Número de columnas de join debe ser igual en ambos datasets&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Verificar existencia de columnas</span>
+        <span class="n">missing_left</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_left</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columnas no encontradas en dataset izquierdo: </span><span class="si">{</span><span class="n">missing_left</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">missing_right</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_right</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columnas no encontradas en dataset derecho: </span><span class="si">{</span><span class="n">missing_right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Verificar compatibilidad de tipos (advertencia)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_valid</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">validate_integrity</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">left_key</span><span class="p">,</span> <span class="n">right_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">):</span>
+                <span class="n">left_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">[</span><span class="n">left_key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="n">right_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">[</span><span class="n">right_key</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="k">if</span> <span class="n">left_dtype</span> <span class="o">!=</span> <span class="n">right_dtype</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Tipos de datos diferentes para </span><span class="si">{</span><span class="n">left_key</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">left_dtype</span><span class="si">}</span><span class="s2">) y </span><span class="si">{</span><span class="n">right_key</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">right_dtype</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="c1"># Verificar columnas duplicadas</span>
+        <span class="n">left_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">right_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">duplicated</span> <span class="o">=</span> <span class="n">left_cols</span> <span class="o">&amp;</span> <span class="n">right_cols</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">duplicated</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columnas duplicadas detectadas: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">duplicated</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Considere usar sufijos personalizados&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="DataJoinManager.get_join_preview">
+<a class="viewcode-back" href="../../../api/classes.html#core.join.data_join_manager.DataJoinManager.get_join_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_join_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtener preview del resultado del join</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+<span class="sd">            max_rows: Número máximo de filas a devolver</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame con preview de resultados</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Para previews, usar una versión optimizada que limita el procesamiento</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+                <span class="c1"># Para cross join, tomar muestras pequeñas de ambos datasets</span>
+                <span class="n">left_sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)))</span>
+                <span class="n">right_sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)))</span>
+                <span class="n">temp_manager</span> <span class="o">=</span> <span class="n">DataJoinManager</span><span class="p">(</span><span class="n">left_sample</span><span class="p">,</span> <span class="n">right_sample</span><span class="p">)</span>
+                <span class="n">result_df</span> <span class="o">=</span> <span class="n">temp_manager</span><span class="o">.</span><span class="n">_perform_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">max_rows</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Para otros joins, usar el método normal pero limitar el resultado</span>
+                <span class="n">result_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">max_rows</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecutar la operación de join según configuración</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame con resultado del join</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Para cross join</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;cross&#39;</span><span class="p">,</span>
+                <span class="n">suffixes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">suffixes</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Para otros joins</span>
+        <span class="n">how_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">:</span> <span class="s1">&#39;inner&#39;</span><span class="p">,</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Usar indicator para calcular estadísticas</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">,</span>
+            <span class="n">left_on</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">,</span>
+            <span class="n">right_on</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span>
+            <span class="n">how</span><span class="o">=</span><span class="n">how_map</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">],</span>
+            <span class="n">suffixes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">suffixes</span><span class="p">,</span>
+            <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">validate</span><span class="o">=</span><span class="s1">&#39;m:m&#39;</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">validate_integrity</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Remover columna indicator si no se solicita</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">indicator</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_merge&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Ordenar si se solicita</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">sort_results</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Filtrar columnas si se especifica</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">include_columns</span><span class="p">:</span>
+            <span class="c1"># Verificar que las columnas existan en el resultado</span>
+            <span class="n">existing_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">include_columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">existing_columns</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">existing_columns</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Si ninguna columna existe, mantener todas las columnas</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">result_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JoinMetadata</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calcular metadatos del join realizado</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+<span class="sd">            result_df: DataFrame resultado</span>
+<span class="sd">            start_time: Tiempo de inicio</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            JoinMetadata con estadísticas</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">processing_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="c1"># Estadísticas básicas</span>
+        <span class="n">left_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span>
+        <span class="n">right_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+        <span class="n">result_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_df</span><span class="p">)</span>
+
+        <span class="c1"># Calcular estadísticas de matching</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="n">matched_rows</span> <span class="o">=</span> <span class="n">result_rows</span>
+            <span class="n">left_only_rows</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">right_only_rows</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Usar merge temporal con indicator para estadísticas</span>
+            <span class="n">temp_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">,</span>
+                <span class="n">left_on</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">,</span>
+                <span class="n">right_on</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span>
+                <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="n">matched_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_result</span><span class="p">[</span><span class="n">temp_result</span><span class="p">[</span><span class="s1">&#39;_merge&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;both&#39;</span><span class="p">])</span>
+            <span class="n">left_only_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_result</span><span class="p">[</span><span class="n">temp_result</span><span class="p">[</span><span class="s1">&#39;_merge&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;left_only&#39;</span><span class="p">])</span>
+            <span class="n">right_only_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_result</span><span class="p">[</span><span class="n">temp_result</span><span class="p">[</span><span class="s1">&#39;_merge&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;right_only&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Uso de memoria</span>
+        <span class="n">memory_usage</span> <span class="o">=</span> <span class="n">result_df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+
+        <span class="k">return</span> <span class="n">JoinMetadata</span><span class="p">(</span>
+            <span class="n">left_rows</span><span class="o">=</span><span class="n">left_rows</span><span class="p">,</span>
+            <span class="n">right_rows</span><span class="o">=</span><span class="n">right_rows</span><span class="p">,</span>
+            <span class="n">result_rows</span><span class="o">=</span><span class="n">result_rows</span><span class="p">,</span>
+            <span class="n">join_type</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">,</span>
+            <span class="n">join_keys</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">left_keys</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span>
+            <span class="n">matched_rows</span><span class="o">=</span><span class="n">matched_rows</span><span class="p">,</span>
+            <span class="n">left_only_rows</span><span class="o">=</span><span class="n">left_only_rows</span><span class="p">,</span>
+            <span class="n">right_only_rows</span><span class="o">=</span><span class="n">right_only_rows</span><span class="p">,</span>
+            <span class="n">memory_usage_mb</span><span class="o">=</span><span class="n">memory_usage</span><span class="p">,</span>
+            <span class="n">processing_time_seconds</span><span class="o">=</span><span class="n">processing_time</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_should_use_chunking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">,</span> <span class="n">estimated_memory</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">available_memory</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determinar si se debe usar chunking basado en estimaciones de memoria</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+<span class="sd">            estimated_memory: Memoria estimada en MB</span>
+<span class="sd">            available_memory: Memoria disponible en MB</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True si se debe usar chunking</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Usar chunking si se estima usar más del 50% de la memoria disponible</span>
+        <span class="n">memory_threshold</span> <span class="o">=</span> <span class="n">available_memory</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+        <span class="c1"># Especialmente para cross joins que pueden ser muy grandes</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="n">cross_product_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+            <span class="c1"># Usar chunking para cross joins con 1M o más combinaciones</span>
+            <span class="k">if</span> <span class="n">cross_product_size</span> <span class="o">&gt;=</span> <span class="mi">1_000_000</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">estimated_memory</span> <span class="o">&gt;</span> <span class="n">memory_threshold</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_chunked_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecutar join usando procesamiento por chunks para datasets grandes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame con resultado del join</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_chunked_cross_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_chunked_regular_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_chunked_cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecutar cross join usando chunks para evitar problemas de memoria</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame con resultado del cross join</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Para cross joins grandes, procesar por chunks del dataset más pequeño</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">):</span>
+            <span class="n">smaller_df</span><span class="p">,</span> <span class="n">larger_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span>
+            <span class="n">swap_order</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">smaller_df</span><span class="p">,</span> <span class="n">larger_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span>
+            <span class="n">swap_order</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">smaller_df</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># Dividir en al menos 10 chunks</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">smaller_df</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">):</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">smaller_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">]</span>
+            <span class="n">chunk_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">chunk</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">swap_order</span> <span class="k">else</span> <span class="n">larger_df</span><span class="p">,</span>
+                <span class="n">larger_df</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">swap_order</span> <span class="k">else</span> <span class="n">chunk</span><span class="p">,</span>
+                <span class="n">how</span><span class="o">=</span><span class="s1">&#39;cross&#39;</span><span class="p">,</span>
+                <span class="n">suffixes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">suffixes</span>
+            <span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk_result</span><span class="p">)</span>
+
+        <span class="c1"># Combinar todos los resultados</span>
+        <span class="n">final_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">final_result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_chunked_regular_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecutar join regular usando chunks para optimizar memoria</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame con resultado del join</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Para joins regulares, usar el dataset más pequeño como referencia</span>
+        <span class="c1"># y procesar el más grande por chunks si es necesario</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">):</span>
+            <span class="n">reference_df</span><span class="p">,</span> <span class="n">chunk_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span>
+            <span class="n">left_on</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span>
+            <span class="n">swap_order</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reference_df</span><span class="p">,</span> <span class="n">chunk_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span>
+            <span class="n">left_on</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span>
+            <span class="n">swap_order</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Si el dataset de referencia es pequeño, hacer join normal</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_df</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="c1"># Para datasets grandes, dividir el chunk_df en partes</span>
+        <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk_df</span><span class="p">)</span> <span class="o">//</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># Dividir en 5 chunks máximo</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">how_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">:</span> <span class="s1">&#39;inner&#39;</span><span class="p">,</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+            <span class="n">JoinType</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk_df</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">):</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">chunk_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">swap_order</span><span class="p">:</span>
+                <span class="n">chunk_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">chunk</span><span class="p">,</span> <span class="n">reference_df</span><span class="p">,</span>
+                    <span class="n">left_on</span><span class="o">=</span><span class="n">right_on</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="n">left_on</span><span class="p">,</span>
+                    <span class="n">how</span><span class="o">=</span><span class="n">how_map</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">],</span>
+                    <span class="n">suffixes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">suffixes</span><span class="p">,</span>
+                    <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">validate</span><span class="o">=</span><span class="s1">&#39;m:m&#39;</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">validate_integrity</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">chunk_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                    <span class="n">reference_df</span><span class="p">,</span> <span class="n">chunk</span><span class="p">,</span>
+                    <span class="n">left_on</span><span class="o">=</span><span class="n">left_on</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="n">right_on</span><span class="p">,</span>
+                    <span class="n">how</span><span class="o">=</span><span class="n">how_map</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">join_type</span><span class="p">],</span>
+                    <span class="n">suffixes</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">suffixes</span><span class="p">,</span>
+                    <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">validate</span><span class="o">=</span><span class="s1">&#39;m:m&#39;</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">validate_integrity</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk_result</span><span class="p">)</span>
+
+        <span class="c1"># Combinar resultados</span>
+        <span class="n">final_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Remover duplicados si es inner join (pueden aparecer en chunks)</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">INNER</span><span class="p">:</span>
+            <span class="n">final_result</span> <span class="o">=</span> <span class="n">final_result</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+        <span class="c1"># Remover columna indicator si no se solicita</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">indicator</span><span class="p">:</span>
+            <span class="n">final_result</span> <span class="o">=</span> <span class="n">final_result</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;_merge&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Ordenar si se solicita</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">sort_results</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">:</span>
+            <span class="n">sort_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">left_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">swap_order</span> <span class="k">else</span> <span class="n">config</span><span class="o">.</span><span class="n">right_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sort_key</span> <span class="ow">in</span> <span class="n">final_result</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">final_result</span> <span class="o">=</span> <span class="n">final_result</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">sort_key</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_estimate_memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">JoinConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimar uso de memoria para la operación de join</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config: Configuración del join</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Memoria estimada en MB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left_memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+        <span class="n">right_memory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+
+        <span class="c1"># Estimación básica: resultado tendrá al menos el tamaño de los datasets combinados</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">join_type</span> <span class="o">==</span> <span class="n">JoinType</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="c1"># Cross join: producto cartesiano</span>
+            <span class="n">estimated_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">)</span>
+            <span class="n">estimated_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Otros joins: estimación conservadora</span>
+            <span class="n">estimated_rows</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="p">))</span>
+            <span class="n">estimated_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># Estimación por celda (8 bytes promedio por valor)</span>
+        <span class="n">estimated_memory</span> <span class="o">=</span> <span class="p">(</span><span class="n">estimated_rows</span> <span class="o">*</span> <span class="n">estimated_cols</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+
+        <span class="c1"># Factor de overhead (índices, etc.)</span>
+        <span class="k">return</span> <span class="n">estimated_memory</span> <span class="o">*</span> <span class="mf">1.5</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

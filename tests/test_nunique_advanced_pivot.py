@@ -10,7 +10,7 @@ from app.widgets.pivot_config_dialog import PivotConfigDialog
 from app.widgets.pivot_aggregation_panel import PivotAggregationPanel
 
 
-def test_nunique_in_advanced_pivot():
+def test_nunique_in_advanced_pivot() -> None:
     """Test para validar nunique en diálogos de pivoteo avanzado"""
     print("🧪 TEST: nunique en Pivoteo Avanzado")
     print("=" * 60)
@@ -161,7 +161,7 @@ def test_nunique_in_advanced_pivot():
     return True
 
 
-def test_advanced_nunique_workflow():
+def test_advanced_nunique_workflow() -> None:
     """Test de flujo completo con nunique en pivoteo avanzado"""
     print("\n🚀 TEST: Flujo completo con nunique en pivoteo avanzado")
     print("=" * 60)

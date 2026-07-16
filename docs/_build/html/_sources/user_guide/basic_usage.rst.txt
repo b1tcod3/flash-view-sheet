@@ -1,0 +1,139 @@
+Guía de Uso Básico
+=====================
+
+Esta guía cubre las operaciones fundamentales en Flash Sheet, incluyendo carga de archivos de datos, navegación de la interfaz y realización de operaciones básicas de datos.
+
+Carga de Archivos de Datos
+--------------------------
+
+Flash Sheet soporta múltiples formatos de datos para carga:
+
+Formatos Soportados
+~~~~~~~~~~~~~~~~~~~
+
+- **CSV**: Valores separados por coma (.csv)
+- **Excel**: Archivos Microsoft Excel (.xlsx, .xls)
+- **JSON**: Notación de Objetos JavaScript (.json)
+- **Parquet**: Formato columnar de almacenamiento (.parquet)
+- **HDF5**: Formato de Datos Jerárquicos (.h5)
+- **Bases de Datos SQL**: Conexión directa a bases de datos
+
+Carga de un Archivo Único
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Haz clic en **"Archivo"** → **"Cargar Archivo"** en el menú principal
+2. Navega a tu archivo de datos
+3. Selecciona el archivo y haz clic en **"Abrir"**
+4. Los datos serán cargados y mostrados en la vista de tabla principal
+
+Opciones de Carga de Archivos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Selección de Codificación**: Elige la codificación de texto apropiada (UTF-8, ISO-8859-1, etc.)
+- **Detección de Delimitadores**: Detección automática de delimitadores CSV
+- **Fila de Encabezado**: Especifica qué fila contiene nombres de columna
+- **Tipos de Datos**: Detección automática de tipos de columna
+
+Navegación de la Interfaz
+-------------------------
+
+Componentes de Interfaz Principal
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La interfaz de Flash Sheet consiste en varias áreas clave:
+
+- **Barra de Menú**: Acceso a todas las funciones de la aplicación
+- **Barra de Herramientas**: Acceso rápido a operaciones comunes
+- **Vista de Datos**: Tabla principal mostrando datos cargados
+- **Barra de Estado**: Información sobre el conjunto de datos actual y operaciones
+
+Navegación de Vistas
+~~~~~~~~~~~~~~~~~~~~
+
+Flash Sheet proporciona múltiples vistas para diferentes propósitos:
+
+- **Vista de Datos**: Vista de tabla principal con herramientas de manipulación de datos
+- **Vista de Gráficos**: Herramientas de gráficos y visualización
+- **Vista de Datos Unidos**: Resultados de operaciones de unión de datos
+
+Cambiando entre vistas usando el sistema de pestañas o opciones de menú.
+
+Operaciones de Tabla de Datos
+-----------------------------
+
+Visualización de Datos
+~~~~~~~~~~~~~~~~~~~~~~
+
+- **Paginación**: Navega a través de datasets grandes usando controles de página
+- **Ordenamiento de Columnas**: Haz clic en encabezados de columna para ordenar datos
+- **Redimensionamiento de Columnas**: Arrastra bordes de columna para ajustar anchos
+- **Selección de Filas**: Haz clic en filas para seleccionarlas para operaciones
+
+Filtrado y Búsqueda
+~~~~~~~~~~~~~~~~~~~
+
+- **Búsqueda Global**: Usa la caja de búsqueda para encontrar valores específicos
+- **Filtros de Columnas**: Aplica filtros a columnas individuales
+- **Filtros Avanzados**: Combina múltiples condiciones de filtro
+- **Persistencia de Filtros**: Guarda y reutiliza configuraciones de filtro
+
+Información del Conjunto de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Ve información comprehensiva sobre tus datos cargados:
+
+- **Conteo de Filas**: Número total de registros
+- **Conteo de Columnas**: Número de columnas
+- **Tipos de Datos**: Información de tipo para cada columna
+- **Uso de Memoria**: Información de tamaño del conjunto de datos
+- **Valores Nulos**: Conteo de valores faltantes por columna
+
+Exportación Básica de Datos
+---------------------------
+
+Flash Sheet soporta múltiples formatos de exportación:
+
+Exportación a CSV
+~~~~~~~~~~~~~~~~~
+
+1. Haz clic en **"Exportar"** → **"Exportar CSV"**
+2. Elige la carpeta de destino
+3. Configura opciones de exportación (delimitador, codificación, etc.)
+4. Haz clic en **"Exportar"**
+
+Exportación a Excel
+~~~~~~~~~~~~~~~~~~~
+
+1. Haz clic en **"Exportar"** → **"Exportar Excel"**
+2. Selecciona destino y nombre de archivo
+3. Elige si incluir formato
+4. Haz clic en **"Exportar"**
+
+Otras Opciones de Exportación
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- **Exportación PDF**: Genera reportes PDF formateados
+- **Exportación SQL**: Crea declaraciones INSERT de SQL
+- **Exportación de Imagen**: Guarda gráficos y visualizaciones como imágenes
+
+Atajos de Teclado
+-----------------
+
+Atajos de teclado comunes para operación eficiente:
+
+- **Ctrl+O**: Abrir archivo
+- **Ctrl+S**: Guardar/exportar vista actual
+- **Ctrl+F**: Enfocar caja de búsqueda
+- **Ctrl+R**: Refrescar vista de datos
+- **Ctrl+5**: Recargar conjunto de datos
+- **Esc**: Cancelar operación actual
+
+Próximos Pasos
+--------------
+
+Una vez cómodo con operaciones básicas, explora:
+
+- :doc:`data_visualization` - Técnicas avanzadas de visualización de datos
+- :doc:`graphics` - Creación de gráficos y visualizaciones
+- :doc:`basic_export` - Opciones completas de exportación
+- :doc:`advanced_features` - Manipulación avanzada de datos

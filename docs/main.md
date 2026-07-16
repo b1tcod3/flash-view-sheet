@@ -1,85 +1,83 @@
-# main.py — Documentación Completa
+# main.py — Documentacion Completa
 
-Punto de entrada principal de la aplicación **Flash View Sheet**. Define `MainWindow` (la ventana principal Qt) y la función `main()` que arranca el event loop.
+Punto de entrada principal de la aplicacion **Flash View Sheet**. Define `MainWindow` (la ventana principal Qt) y la funcion `main()` que arranca el event loop.
 
 ---
 
-## Índice
+## Indice
 
-1. [Visión General](#1-visión-general)
+1. [Vision General](#1-vision-general)
 2. [Importaciones](#2-importaciones)
 3. [Clase MainWindow](#3-clase-mainwindow)
    - [3.1 Constructor](#31-constructor)
-   - [3.2 Métodos de Inicialización](#32-métodos-de-inicialización)
-   - [3.3 Propiedades de Compatibilidad](#33-propiedades-de-compatibilidad)
-   - [3.4 Métodos Delegados](#34-métodos-delegados)
-   - [3.5 Gestión de Carga de Archivos](#35-gestión-de-carga-de-archivos)
-   - [3.6 Carga de Carpeta](#36-carga-de-carpeta)
-   - [3.7 Operaciones de Exportación](#37-operaciones-de-exportación)
-   - [3.8 Acerca De](#38-acerca-de)
-   - [3.9 Eventos](#39-eventos)
-4. [Función main()](#4-función-main)
+   - [3.2 Metodos de Inicializacion](#32-metodos-de-inicializacion)
+   - [3.3 Metodos Delegados](#33-metodos-delegados)
+   - [3.4 Gestion de Carga de Archivos](#34-gestion-de-carga-de-archivos)
+   - [3.5 Carga de Carpeta](#35-carga-de-carpeta)
+   - [3.6 Operaciones de Exportacion](#36-operaciones-de-exportacion)
+   - [3.7 Acerca De](#37-acerca-de)
+   - [3.8 Eventos](#38-eventos)
+4. [Funcion main()](#4-funcion-main)
 5. [Diagrama de Dependencias](#5-diagrama-de-dependencias)
-6. [Flujo de Señales](#6-flujo-de-señales)
+6. [Flujo de Senales](#6-flujo-de-senales)
 
 ---
 
-## 1. Visión General
+## 1. Vision General
 
-`main.py` (298 líneas) actúa como **orquestador de componentes**. Su responsabilidad es:
+`main.py` (285 lineas) actua como **orquestador de componentes**. Su responsabilidad es:
 
-- Crear la aplicación Qt (`QApplication`)
-- Instantiar y conectar todos los subsistemas (servicios, coordinadores, vistas, menús, toolbar)
-- Delegar toda la lógica de negocio a `AppCoordinator`
-- Delegar la gestión de datos a `DataService`
-- Delegar la navegación de vistas a `ViewCoordinator`
+- Crear la aplicacion Qt (`QApplication`)
+- Instantiar y conectar todos los subsistemas (servicios, coordinadores, vistas, menus, toolbar)
+- Delegar toda la logica de negocio a `AppCoordinator`
+- Delegar la gestion de datos a `DataService`
+- Delegar la navegacion de vistas a `ViewCoordinator`
 
-No contiene lógica de negocio propia. Sigue el patrón **Coordinator**: `MainWindow` es el punto de conexión central que integra servicios, vistas y coordinadores.
+No contiene logica de negocio propia. Sigue el patron **Coordinator**: `MainWindow` es el punto de conexion central que integra servicios, vistas y coordinadores.
 
 ---
 
 ## 2. Importaciones
 
-### Módulos estándar
-| Módulo | Uso |
+### Modulos estandar
+| Modulo | Uso |
 |--------|-----|
 | `sys` | Acceso a `sys.argv` y `sys.exit()` |
-| `os` | Rutas de archivos (`os.path.join`, `os.path.exists`) |
+| `pathlib.Path` | Rutas de archivos (reemplaza `os.path`) |
 
 ### PySide6 (Qt6)
-| Símbolo | Módulo | Uso |
+| Simbolo | Modulo | Uso |
 |---------|--------|-----|
 | `QApplication` | `PySide6.QtWidgets` | Event loop de Qt |
 | `QMainWindow` | `PySide6.QtWidgets` | Clase base de la ventana principal |
 | `QStackedWidget` | `PySide6.QtWidgets` | Contenedor de vistas apiladas |
-| `QFileDialog` | `PySide6.QtWidgets` | Diálogo de selección de archivos |
-| `Signal` | `PySide6.QtCore` | Sistema de señales Qt |
-| `QIcon` | `PySide6.QtGui` | Icono de la aplicación |
+| `QObject` | `PySide6.QtCore` | Base para atributos de tipo QObject |
+| `QAction` | `PySide6.QtGui` | Acciones de menu |
+| `QCloseEvent` | `PySide6.QtGui` | Evento de cierre de ventana |
+| `QIcon` | `PySide6.QtGui` | Icono de la aplicacion |
 
-### Servicios de la aplicación
-| Símbolo | Módulo | Responsabilidad |
+### Servicios de la aplicacion
+| Simbolo | Modulo | Responsabilidad |
 |---------|--------|-----------------|
 | `DataService` | `app.services` | Carga y estado de datos |
-| `ExportService` | `app.services` | Todas las operaciones de exportación |
+| `ExportService` | `app.services` | Todas las operaciones de exportacion |
 | `FilterService` | `app.services` | Filtrado de datos |
 | `PivotService` | `app.services` | Tablas pivote |
 
 ### Componentes de UI
-| Símbolo | Módulo | Responsabilidad |
+| Simbolo | Modulo | Responsabilidad |
 |---------|--------|-----------------|
-| `ToolbarManager` | `app.toolbar` | Gestión del toolbar principal |
-| `ViewCoordinator` | `app.view_manager` | Coordinación de vistas y navegación |
-| `AppCoordinator` | `app.app_coordinator` | Orquestador central de lógica de negocio |
-| `FolderLoadDialog` | `app.widgets` | Diálogo de carga de carpetas |
-| `InfoModal` | `app.widgets` | Modal de información del dataset |
+| `ToolbarManager` | `app.toolbar` | Gestion del toolbar principal |
+| `ViewCoordinator` | `app.view_manager` | Coordinacion de vistas y navegacion |
+| `AppCoordinator` | `app.app_coordinator` | Orquestador central de logica de negocio |
+| `MenuActions` | `app.menus` | Acciones de menu compartidas (single source of truth) |
 
-### Importaciones lazy (dentro de métodos)
-| Símbolo | Módulo | Cuándo se importa |
+### Importaciones lazy (dentro de metodos)
+| Simbolo | Modulo | Cuando se importa |
 |---------|--------|-------------------|
 | `JoinHistory` | `core.join.join_history` | `_init_coordinator()` |
-| `MenuBuilder`, `MenuActions` | `app.menus` | `_create_menu_bar()` |
+| `MenuBuilder` | `app.menus` | `_create_menu_bar()` |
 | `AboutDialog` | `app.widgets.about_dialog` | `mostrar_acerca_de()` |
-| `QMessageBox` | `PySide6.QtWidgets` | `show_info_modal()` (rama de warning) |
 
 ---
 
@@ -87,57 +85,68 @@ No contiene lógica de negocio propia. Sigue el patrón **Coordinator**: `MainWi
 
 ```python
 class MainWindow(QMainWindow):
-    """Ventana principal de la aplicación - Orquestador de componentes"""
+    """Ventana principal de la aplicacion - Orquestador de componentes"""
 ```
 
 Hereda de `QMainWindow` (Qt). Funciona como el orquestador central que conecta todos los subsistemas.
 
-### Señales
+### Atributos de instancia
 
-| Señal | Tipo | Propósito |
-|-------|------|-----------|
-| `reload_with_options` | `Signal(str, int, dict)` | Re-exportada para compatibilidad con vistas existentes |
+| Atributo | Tipo | Descripcion |
+|----------|------|-------------|
+| `data_service` | `DataService` | Estado y carga de datos |
+| `export_service` | `ExportService` | Exportaciones |
+| `filter_service` | `FilterService` | Filtrado |
+| `pivot_service` | `PivotService` | Tablas pivote |
+| `toolbar_manager` | `ToolbarManager` | Barra de herramientas |
+| `view_coordinator` | `ViewCoordinator` | Navegacion entre vistas |
+| `coordinator` | `AppCoordinator` | Orquestador central |
+| `join_history` | `Optional[JoinHistory]` | Historial de joins |
+| `stacked_widget` | `QStackedWidget` | Contenedor de vistas |
+| `separar_menu` | `Optional[QObject]` | Referencia al menu Separar |
+| `datos_menu` | `Optional[QObject]` | Referencia al menu Datos |
+| `tabla_pivote_menu` | `Optional[QObject]` | Referencia al menu Tabla Pivote |
 
 ---
 
 ### 3.1 Constructor
 
 ```python
-def __init__(self):
+def __init__(self) -> None:
 ```
 
-**Orden de inicialización:**
+**Orden de inicializacion:**
 
 1. `super().__init__()` — Inicializa QMainWindow
-2. `setWindowTitle()` — Título: "Flash View Sheet - Visor de Datos Tabulares"
-3. `setMinimumSize(800, 600)` — Tamaño mínimo
-4. `resize(1200, 800)` — Tamaño inicial
+2. `setWindowTitle()` — Titulo: "Flash View Sheet - Visor de Datos Tabulares"
+3. `setMinimumSize(800, 600)` — Tamano minimo
+4. `resize(1200, 800)` — Tamano inicial
 5. `_init_services()` — Crea los 4 servicios
 6. `_init_toolbar()` — Crea el gestor del toolbar
 7. `_init_coordinator()` — Crea coordinadores y JoinHistory
-8. `_setup_ui()` — Construye la interfaz (widget central, vistas, menú, toolbar)
-9. `_setup_connections()` — Conecta señales entre componentes
+8. `_setup_ui()` — Construye la interfaz (widget central, vistas, menu, toolbar)
+9. `_setup_connections()` — Conecta senales entre componentes
 
 ---
 
-### 3.2 Métodos de Inicialización
+### 3.2 Metodos de Inicializacion
 
 #### `_init_services()`
 
 ```python
-def _init_services(self):
+def _init_services(self) -> None:
     self.data_service = DataService()
     self.export_service = ExportService(self)
     self.filter_service = FilterService()
     self.pivot_service = PivotService()
 ```
 
-Crea las 4 instancias de servicio. `ExportService` recibe `self` (la ventana) como referencia para diálogos modales.
+Crea las 4 instancias de servicio. `ExportService` recibe `self` (la ventana) como referencia para dialogos modales.
 
 #### `_init_toolbar()`
 
 ```python
-def _init_toolbar(self):
+def _init_toolbar(self) -> None:
     self.toolbar_manager = ToolbarManager(self)
 ```
 
@@ -146,17 +155,17 @@ Crea el gestor del toolbar, pasando la ventana como referencia.
 #### `_init_coordinator()`
 
 ```python
-def _init_coordinator(self):
+def _init_coordinator(self) -> None:
 ```
 
-Paso más complejo de la inicialización:
+Paso mas complejo de la inicializacion:
 
 1. Crea `ViewCoordinator(self)` — gestiona las 4 vistas
 2. Crea `AppCoordinator(...)` con 7 dependencias:
    - `parent_window=self`
    - `data_service`, `export_service`, `pivot_service`
    - `view_coordinator`, `toolbar_manager`
-   - `join_history=None` (se inicializa después)
+   - `join_history=None` (se inicializa despues)
 3. Importa y crea `JoinHistory()` (persiste historial en JSON)
 4. Asigna `join_history` al coordinator
 5. Conecta `coordinator.status_message` → `statusBar().showMessage`
@@ -164,7 +173,7 @@ Paso más complejo de la inicialización:
 #### `_setup_ui()`
 
 ```python
-def _setup_ui(self):
+def _setup_ui(self) -> None:
     self._create_central_widget()
     self._create_views()
     self._create_menu_bar()
@@ -172,119 +181,87 @@ def _setup_ui(self):
     self.statusBar().showMessage("Listo para cargar datos")
 ```
 
-Secuencia de construcción de la UI.
+Secuencia de construccion de la UI.
 
 #### `_create_central_widget()`
 
 ```python
-def _create_central_widget(self):
+def _create_central_widget(self) -> None:
     self.stacked_widget = QStackedWidget()
     self.setCentralWidget(self.stacked_widget)
 ```
 
-Crea el `QStackedWidget` que contendrá todas las vistas apiladas.
+Crea el `QStackedWidget` que contendra todas las vistas apiladas.
 
 #### `_create_views()`
 
 ```python
-def _create_views(self):
+def _create_views(self) -> None:
     self.view_coordinator.create_views(self.stacked_widget)
     self.stacked_widget.addWidget(self.view_coordinator.get_stacked_widget())
 ```
 
-Delega la creación de vistas (MainView, DataView, GraphicsView, JoinedDataView) al `ViewCoordinator`.
+Delega la creacion de vistas (MainView, DataView, GraphicsView, JoinedDataView) al `ViewCoordinator`.
 
 #### `_create_menu_bar()`
 
 ```python
-def _create_menu_bar(self):
+def _create_menu_bar(self) -> None:
 ```
 
 1. Importa `MenuBuilder` y `MenuActions` (import lazy)
 2. Crea `MenuBuilder(self)` y llama `build()`
-3. Obtiene referencias a menús: `separar_menu`, `datos_menu`, `tabla_pivote_menu`
+3. Obtiene referencias a menus: `separar_menu`, `datos_menu`, `tabla_pivote_menu`
 4. Obtiene acciones: `EXPORTAR_SEPARADO`, `CRUZAR_DATOS`, `PIVOT_SIMPLE`, `PIVOT_COMBINADA`, `EXPORTAR_PIVOTE`
 
 #### `_add_toolbar()`
 
 ```python
-def _add_toolbar(self):
+def _add_toolbar(self) -> None:
     self.toolbar_manager.create_toolbar()
     self.addToolBar(self.toolbar_manager.get_toolbar())
 ```
 
-Crea y añade el toolbar a la ventana.
+Crea y anade el toolbar a la ventana.
 
 #### `_setup_connections()`
 
 ```python
-def _setup_connections(self):
+def _setup_connections(self) -> None:
 ```
 
-Conecta señales de las vistas al coordinator:
+Conecta senales de las vistas al coordinator:
 
-| Señal | Conecta a |
+| Senal | Conecta a |
 |-------|-----------|
-| `main_view.file_loaded` | `self._on_file_loaded` |
-| `main_view.reload_with_options` | `self._on_reload_with_options` |
+| `main_view.load_file_clicked` | `coordinator.solicitar_apertura_archivo` |
+| `main_view.reload_with_options` | `MainWindow._on_reload_with_options` |
 | `data_view.filter_applied` | `coordinator.on_filter_applied` |
 | `data_view.filter_cleared` | `coordinator.on_filter_cleared` |
 | `data_view.data_updated` | `coordinator.on_data_updated` |
 | `joined_view.new_join_requested` | `coordinator.abrir_cruzar_datos` |
+| `coordinator.datos_originales_cargados` | `view_coordinator.on_datos_originales_cargados` |
+| `coordinator.datos_actualizados` | `view_coordinator.on_datos_actualizados` |
+| `coordinator.datos_disponibles` | `MenuActions.enable_data_actions` |
+| `coordinator.datos_disponibles` | `toolbar_manager.on_datos_disponibles` |
 
-Cada conexión verifica que la vista no sea `None` antes de conectar.
-
----
-
-### 3.3 Propiedades de Compatibilidad
-
-Propiedades Python que actúan como wrappers sobre `DataService`:
-
-#### `df_original`
-
-```python
-@property
-def df_original(self):
-    return self.data_service.datos_originales
-
-@df_original.setter
-def df_original(self, value):
-    self.data_service.df_original = value
-```
-
-Acceso al DataFrame original (sin filtros). Getter lee de `data_service.datos_originales`, setter escribe en `data_service.df_original`.
-
-#### `df_vista_actual`
-
-```python
-@property
-def df_vista_actual(self):
-    return self.data_service.datos_actuales
-
-@df_vista_actual.setter
-def df_vista_actual(self, value):
-    self.data_service.datos_vista_actual = value
-```
-
-Acceso al DataFrame de la vista actual (con filtros aplicados).
-
-**Nota:** Estas propiedades existen para mantener compatibilidad con código existente que accede directamente a `main_window.df_original`.
+Cada conexion verifica que la vista no sea `None` antes de conectar.
 
 ---
 
-### 3.4 Métodos Delegados
+### 3.3 Metodos Delegados
 
 Todos delegan directamente al `AppCoordinator` o `ViewCoordinator`:
 
-| Método | Delega a | Descripción |
+| Metodo | Delega a | Descripcion |
 |--------|----------|-------------|
 | `switch_view(index)` | `view_coordinator.switch_to(index)` | Cambiar vista activa |
-| `show_info_modal()` | Crea `InfoModal` localmente | Mostrar info del dataset |
-| `abrir_archivo()` | Flujo propio (ver 3.5) | Abrir diálogo de carga |
-| `cargar_carpeta()` | Flujo propio (ver 3.6) | Abrir diálogo de carga de carpeta |
-| `abrir_cruzar_datos()` | `coordinator.abrir_cruzar_datos()` | Abrir diálogo de join |
-| `abrir_pivot_simple()` | `coordinator.abrir_pivot_simple()` | Abrir diálogo pivote simple |
-| `abrir_pivot_combinada()` | `coordinator.abrir_pivot_combinada()` | Abrir diálogo pivote combinada |
+| `show_info_modal()` | `coordinator.mostrar_info()` | Mostrar info del dataset |
+| `abrir_archivo()` | `coordinator.solicitar_apertura_archivo()` | Abrir dialogo de carga |
+| `cargar_carpeta()` | `coordinator.solicitar_carga_carpeta()` | Abrir dialogo de carga de carpeta |
+| `abrir_cruzar_datos()` | `coordinator.abrir_cruzar_datos()` | Abrir dialogo de join |
+| `abrir_pivot_simple()` | `coordinator.abrir_pivot_simple()` | Abrir dialogo pivote simple |
+| `abrir_pivot_combinada()` | `coordinator.abrir_pivot_combinada()` | Abrir dialogo pivote combinada |
 | `exportar_resultado_pivote()` | `coordinator.exportar_resultado_pivote()` | Exportar pivote |
 | `exportar_a_pdf()` | `coordinator.exportar_a_pdf()` | Exportar a PDF |
 | `exportar_a_xlsx()` | `coordinator.exportar_a_xlsx()` | Exportar a Excel |
@@ -292,83 +269,50 @@ Todos delegan directamente al `AppCoordinator` o `ViewCoordinator`:
 | `exportar_a_sql()` | `coordinator.exportar_a_sql()` | Exportar a SQL |
 | `exportar_a_imagen()` | `coordinator.exportar_a_imagen()` | Exportar a imagen |
 | `exportar_datos_separados()` | `coordinator.exportar_datos_separados()` | Exportar datos separados |
-| `mostrar_acerca_de()` | `AboutDialog.show_about(self)` | Mostrar diálogo Acerca de |
+| `mostrar_acerca_de()` | `AboutDialog.show_about(self)` | Mostrar dialogo Acerca de |
+
+**Nota:** `MainWindow` no contiene logica de negocio. Todos los metodos son delegaciones unidireccionales al `AppCoordinator`.
 
 ---
 
-### 3.5 Gestión de Carga de Archivos
+### 3.4 Gestion de Carga de Archivos
 
 #### `abrir_archivo()`
 
 ```python
-def abrir_archivo(self):
-    file_filter = self.data_service.get_file_filter()
-    filepath, _ = QFileDialog.getOpenFileName(
-        self, "Abrir archivo de datos", "", file_filter)
-    if filepath:
-        self._mostrar_loading_indicator(filepath)
+def abrir_archivo(self) -> None:
+    self.coordinator.solicitar_apertura_archivo()
 ```
 
-**Flujo:**
-1. Obtiene el filtro de archivos soportados desde `DataService`
-2. Abre `QFileDialog` nativo del SO
-3. Si el usuario selecciona un archivo, llama a `_mostrar_loading_indicator()`
+Delega al coordinador, quien abre `QFileDialog`, valida la extension y arranca el hilo de carga.
 
-#### `_on_file_loaded(filepath, skip_rows=0, column_names=None)`
-
-Callback conectado a `main_view.file_loaded`. Reenvía a `_mostrar_loading_indicator()`.
-
-#### `_on_reload_with_options(filepath, skip_rows, column_names, enable_vis)`
-
-Callback conectado a `main_view.reload_with_options`. Reenvía a `_mostrar_loading_indicator()` (ignora `enable_vis`).
-
-#### `_mostrar_loading_indicator(filepath, skip_rows=0, column_names=None)`
+#### `_on_reload_with_options(filepath, skip_rows, column_names, enable_column_visibility)`
 
 ```python
-def _mostrar_loading_indicator(self, filepath, skip_rows=0, column_names=None):
-    progress = self.data_service.create_progress_dialog(
-        "Cargando datos", "Cargando archivo...")
-    progress.show()
-    thread = self.data_service.create_loader_thread(filepath, skip_rows, column_names)
-    thread.data_loaded.connect(self.coordinator.on_datos_cargados)
-    thread.error_occurred.connect(self.coordinator.on_error_carga)
-    thread.start()
+def _on_reload_with_options(self, filepath, skip_rows, column_names, enable_column_visibility=True):
+    self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility)
 ```
 
-**Flujo:**
-1. Crea diálogo de progreso via `DataService`
-2. Crea hilo de carga (`DataLoaderThread`) via `DataService`
-3. Conecta `data_loaded` → `coordinator.on_datos_cargados`
-4. Conecta `error_occurred` → `coordinator.on_error_carga`
-5. Inicia el hilo
-
-**Patrón:** Carga asíncrona en hilo separado para no bloquear la UI.
+Callback conectado a `main_view.reload_with_options`. Reenvia al coordinador con el parametro `enable_column_visibility`.
 
 ---
 
-### 3.6 Carga de Carpeta
+### 3.5 Carga de Carpeta
 
 ```python
-def cargar_carpeta(self):
-    dialog = FolderLoadDialog(self)
-    if dialog.exec():
-        config = dialog.get_config()
-        if config and config.folder_path:
-            self.coordinator.procesar_carga_carpeta(config)
+def cargar_carpeta(self) -> None:
+    self.coordinator.solicitar_carga_carpeta()
 ```
 
-**Flujo:**
-1. Abre `FolderLoadDialog` como modal
-2. Si el usuario acepta, obtiene la configuración (`FolderLoadConfig`)
-3. Si hay ruta válida, delega al coordinator para procesar
+Delega al coordinador, quien abre `FolderLoadDialog`, obtiene la configuracion y procesa la carga en hilo separado.
 
 ---
 
-### 3.7 Operaciones de Exportación
+### 3.6 Operaciones de Exportacion
 
-Todos los métodos de exportación siguen el mismo patrón: delegan directamente al `AppCoordinator`.
+Todos los metodos de exportacion siguen el mismo patron: delegan directamente al `AppCoordinator`.
 
-| Método | Formato | Servicio utilizado |
+| Metodo | Formato | Servicio utilizado |
 |--------|---------|-------------------|
 | `exportar_a_pdf()` | PDF | `ExportService` (via reportlab) |
 | `exportar_a_xlsx()` | Excel | `ExportService` (via openpyxl) |
@@ -380,40 +324,54 @@ Todos los métodos de exportación siguen el mismo patrón: delegan directamente
 
 ---
 
-### 3.8 Acerca De
+### 3.7 Acerca De
 
 ```python
-def mostrar_acerca_de(self):
+def mostrar_acerca_de(self) -> None:
     from app.widgets.about_dialog import AboutDialog
     AboutDialog.show_about(self)
 ```
 
-Import lazy de `AboutDialog`. Método estático `show_about()` recibe la ventana padre.
+Import lazy de `AboutDialog`. Metodo estatico `show_about()` recibe la ventana padre.
 
 ---
 
-### 3.9 Eventos
+### 3.8 Eventos
 
 #### `closeEvent(event)`
 
 ```python
-def closeEvent(self, event):
+def closeEvent(self, event: QCloseEvent) -> None:
+    # 1. Detener threads y liberar DataFrames grandes
     self.data_service.cleanup()
+    self.pivot_service.cleanup()
+    
+    # 2. Desconectar coordinator y liberar vistas
+    self.coordinator.cleanup()
+    self.view_coordinator.cleanup()
+    
     event.accept()
 ```
 
-Se ejecuta al cerrar la ventana. Limpia recursos de `DataService` y acepta el evento de cierre.
+**Flujo de limpieza ordenada (4 pasos):**
+
+1. `data_service.cleanup()` — Detiene hilos de carga, libera DataFrames
+2. `pivot_service.cleanup()` — Libera resultado y configuracion de pivote
+3. `coordinator.cleanup()` — Desconecta senales, libera referencias
+4. `view_coordinator.cleanup()` — Libera todas las referencias a vistas
+
+El orden importa: primero los servicios (liberan datos), luego los coordinadores (liberan referencias).
 
 ---
 
-## 4. Función main()
+## 4. Funcion main()
 
 ```python
-def main():
+def main() -> None:
     app = QApplication(sys.argv)
-    logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
-    if os.path.exists(logo_path):
-        app.setWindowIcon(QIcon(logo_path))
+    logo_path = Path(__file__).parent / "assets" / "logo.png"
+    if logo_path.exists():
+        app.setWindowIcon(QIcon(str(logo_path)))
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
@@ -422,20 +380,20 @@ def main():
 **Flujo de arranque:**
 
 1. Crea `QApplication` con `sys.argv`
-2. Busca `assets/logo.png` (relativo al directorio del script)
-3. Si existe, lo establece como icono de la aplicación
-4. Instancia `MainWindow()` (ejecuta toda la inicialización descrita arriba)
+2. Busca `assets/logo.png` usando `pathlib.Path` (relativo al directorio del script)
+3. Si existe, lo establece como icono de la aplicacion
+4. Instancia `MainWindow()` (ejecuta toda la inicializacion descrita arriba)
 5. Muestra la ventana (`window.show()`)
 6. Entra al event loop de Qt (`app.exec()`)
 7. Cuando el event loop termina, llama a `sys.exit()`
 
-**Punto de ejecución:**
+**Punto de ejecucion:**
 ```python
 if __name__ == "__main__":
     main()
 ```
 
-Solo se ejecuta `main()` si el archivo se ejecuta directamente (no si se importa como módulo).
+Solo se ejecuta `main()` si el archivo se ejecuta directamente (no si se importa como modulo).
 
 ---
 
@@ -449,7 +407,7 @@ main.py
 │   ├── view_manager/      (ViewCoordinator)
 │   ├── app_coordinator.py (AppCoordinator)
 │   ├── menus/             (MenuBuilder, MenuActions)
-│   └── widgets/           (FolderLoadDialog, InfoModal, AboutDialog)
+│   └── widgets/           (AboutDialog)
 ├── core/
 │   └── join/              (JoinHistory)
 └── assets/                (logo.png)
@@ -464,37 +422,42 @@ MainWindow
  ├── FilterService        ← Filtrado
  ├── PivotService         ← Tablas pivote
  ├── ToolbarManager       ← Barra de herramientas
- ├── ViewCoordinator      ← Navegación entre vistas
+ ├── ViewCoordinator      ← Navegacion entre vistas
  ├── AppCoordinator       ← Orquestador central
  │    ├── Usa: DataService, ExportService, PivotService
  │    ├── Usa: ViewCoordinator, ToolbarManager
+ │    ├── Crea: FolderLoadDialog, JoinDialog, PivotConfigDialog
  │    └── Usa: JoinHistory
  └── JoinHistory          ← Historial de joins (persistente en JSON)
 ```
 
 ---
 
-## 6. Flujo de Señales
+## 6. Flujo de Senales
 
 ```
 [Usuario] → MainWindow methods → AppCoordinator → Services
                                         ↓
                                   ViewCoordinator → Views
                                         ↓
-                              StatusBar messages
+                              StatusBar messages (via status_message signal)
 ```
 
 ### Conexiones activas
 
-| Emisor | Señal | Receptor | Slot |
+| Emisor | Senal | Receptor | Slot |
 |--------|-------|----------|------|
-| `main_view` | `file_loaded(str)` | `MainWindow` | `_on_file_loaded()` |
-| `main_view` | `reload_with_options(str,int,dict)` | `MainWindow` | `_on_reload_with_options()` |
+| `main_view` | `load_file_clicked()` | `AppCoordinator` | `solicitar_apertura_archivo()` |
+| `main_view` | `reload_with_options(str,int,dict,bool)` | `MainWindow` | `_on_reload_with_options()` |
 | `data_view` | `filter_applied(str,str)` | `AppCoordinator` | `on_filter_applied()` |
 | `data_view` | `filter_cleared()` | `AppCoordinator` | `on_filter_cleared()` |
 | `data_view` | `data_updated(DataFrame)` | `AppCoordinator` | `on_data_updated()` |
 | `joined_view` | `new_join_requested()` | `AppCoordinator` | `abrir_cruzar_datos()` |
 | `AppCoordinator` | `status_message(str)` | `MainWindow.statusBar()` | `showMessage()` |
+| `AppCoordinator` | `datos_originales_cargados(DataFrame)` | `ViewCoordinator` | `on_datos_originales_cargados()` |
+| `AppCoordinator` | `datos_actualizados(DataFrame)` | `ViewCoordinator` | `on_datos_actualizados()` |
+| `AppCoordinator` | `datos_disponibles(bool)` | `MenuActions` | `enable_data_actions()` |
+| `AppCoordinator` | `datos_disponibles(bool)` | `ToolbarManager` | `on_datos_disponibles()` |
 
 ---
 
@@ -502,12 +465,13 @@ MainWindow
 
 | Aspecto | Detalle |
 |---------|---------|
-| **Líneas** | 298 |
-| **Responsabilidad** | Orquestador de componentes, no contiene lógica de negocio |
-| **Patrón** | Coordinator / Facade |
+| **Lineas** | 285 |
+| **Responsabilidad** | Orquestador de componentes, no contiene logica de negocio |
+| **Patron** | Coordinator / Facade |
 | **Servicios** | 4 (Data, Export, Filter, Pivot) |
 | **Vistas** | 4 (Main, Data, Graphics, Joined) |
 | **Coordinadores** | 2 (ViewCoordinator, AppCoordinator) |
-| **Acciones de menú** | 17 |
+| **Acciones de menu** | 17 |
 | **Formatos de carga** | 16+ (CSV, Excel, JSON, XML, Parquet, etc.) |
-| **Formatos de exportación** | 6 (PDF, XLSX, CSV, SQL, imagen, separado) |
+| **Formatos de exportacion** | 6 (PDF, XLSX, CSV, SQL, imagen, separado) |
+| **Senales del coordinator** | 4 (status_message, datos_originales_cargados, datos_actualizados, datos_disponibles) |

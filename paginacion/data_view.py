@@ -11,9 +11,11 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
                                 QListWidgetItem, QScrollArea, QGridLayout)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QColor
+from PySide6.QtCore import QLayout
 
 from .pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
+from typing import Optional, Dict, List, Any
 
 
 class DataView(QWidget):
@@ -27,37 +29,37 @@ class DataView(QWidget):
     filter_cleared = Signal()
     data_updated = Signal()  # Datos actualizados (para actualizar gráficos, etc.)
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         
         # Componentes principales
-        self.pagination_manager = None
-        self.pandas_model = None
-        self.original_df = None
+        self.pagination_manager: Optional[PaginationManager] = None
+        self.pandas_model: Optional[VirtualizedPandasModel] = None
+        self.original_df: Optional[pd.DataFrame] = None
         
         # Estado de ordenamiento
-        self._sorting_in_progress = False
+        self._sorting_in_progress: bool = False
 
         # Estado de visibilidad de columnas
-        self.column_visibility_container = None
-        self.column_visibility_layout = None
+        self.column_visibility_container: Optional[QWidget] = None
+        self.column_visibility_layout: Optional[QHBoxLayout] = None
 
         # UI Components
-        self.table_view = None
-        self.filter_combo = None
-        self.filter_input = None
-        self.apply_filter_btn = None
-        self.clear_filter_btn = None
-        self.page_size_spin = None
-        self.page_info_label = None
-        self.first_page_btn = None
-        self.prev_page_btn = None
-        self.next_page_btn = None
-        self.last_page_btn = None
+        self.table_view: Optional[QTableView] = None
+        self.filter_combo: Optional[QComboBox] = None
+        self.filter_input: Optional[QLineEdit] = None
+        self.apply_filter_btn: Optional[QPushButton] = None
+        self.clear_filter_btn: Optional[QPushButton] = None
+        self.page_size_spin: Optional[QSpinBox] = None
+        self.page_info_label: Optional[QLabel] = None
+        self.first_page_btn: Optional[QPushButton] = None
+        self.prev_page_btn: Optional[QPushButton] = None
+        self.next_page_btn: Optional[QPushButton] = None
+        self.last_page_btn: Optional[QPushButton] = None
         
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz de usuario"""
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(10)
@@ -351,20 +353,20 @@ class DataView(QWidget):
         # Actualizar vista
         self.update_view()
         
-    def connect_pagination_signals(self):
+    def connect_pagination_signals(self) -> None:
         """Conectar señales del PaginationManager"""
         self.pagination_manager.page_changed.connect(self.on_page_changed)
         self.pagination_manager.page_size_changed.connect(self.on_page_size_changed)
         self.pagination_manager.data_changed.connect(self.on_data_changed)
         self.pagination_manager.total_pages_changed.connect(self.on_total_pages_changed)
         
-    def connect_model_signals(self):
+    def connect_model_signals(self) -> None:
         """Conectar señales del modelo para manejar ordenamiento"""
         if self.pandas_model is not None:
             # Conectar señal de cambio de layout (ordenamiento)
             self.pandas_model.layoutChanged.connect(self.on_model_sorted)
             
-    def on_model_sorted(self):
+    def on_model_sorted(self) -> None:
         """Manejar cuando el modelo es ordenado"""
         if self.pandas_model is not None and self.pagination_manager is not None:
             # Prevenir re-entrada y actualizaciones duplicadas
@@ -396,7 +398,7 @@ class DataView(QWidget):
             finally:
                 self._sorting_in_progress = False
         
-    def update_view(self):
+    def update_view(self) -> None:
         """Actualizar vista con datos actuales"""
         if self.pagination_manager is None or self.original_df is None:
             return
@@ -426,7 +428,7 @@ class DataView(QWidget):
         # Emitir señal de datos actualizados
         self.data_updated.emit()
         
-    def update_page_info(self):
+    def update_page_info(self) -> None:
         """Actualizar etiqueta de información de página"""
         if self.pagination_manager is None:
             self.page_info_label.setText("Sin datos")
@@ -442,7 +444,7 @@ class DataView(QWidget):
         
         self.page_info_label.setText(text)
         
-    def update_pagination_buttons(self):
+    def update_pagination_buttons(self) -> None:
         """Actualizar estado de botones de paginación"""
         if self.pagination_manager is None:
             # Deshabilitar todos los botones
@@ -458,7 +460,7 @@ class DataView(QWidget):
         self.next_page_btn.setEnabled(can_next)
         self.last_page_btn.setEnabled(can_next and self.pagination_manager.get_current_page() < self.pagination_manager.get_total_pages())
 
-    def update_column_visibility_controls(self):
+    def update_column_visibility_controls(self) -> None:
         """Actualizar controles de visibilidad de columnas"""
         if self.original_df is not None and not self.original_df.empty:
             # Mostrar el grupo de visibilidad de columnas
@@ -477,14 +479,14 @@ class DataView(QWidget):
             # Ocultar el grupo de visibilidad de columnas si no hay datos
             self.column_visibility_group.hide()
 
-    def _clear_layout(self, layout):
+    def _clear_layout(self, layout: QLayout) -> None:
         """Limpiar todos los widgets de un layout"""
         while layout.count():
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
 
-    def on_column_visibility_changed(self):
+    def on_column_visibility_changed(self) -> None:
         """Manejar cambio en visibilidad de columna"""
         if self.table_view is None or self.original_df is None:
             return
@@ -506,22 +508,22 @@ class DataView(QWidget):
                 self.table_view.hideColumn(i)
         
     # Métodos de navegación de página
-    def first_page(self):
+    def first_page(self) -> None:
         """Ir a la primera página"""
         if self.pagination_manager:
             self.pagination_manager.first_page()
             
-    def previous_page(self):
+    def previous_page(self) -> None:
         """Ir a la página anterior"""
         if self.pagination_manager:
             self.pagination_manager.previous_page()
             
-    def next_page(self):
+    def next_page(self) -> None:
         """Ir a la página siguiente"""
         if self.pagination_manager:
             self.pagination_manager.next_page()
             
-    def last_page(self):
+    def last_page(self) -> None:
         """Ir a la última página"""
         if self.pagination_manager:
             self.pagination_manager.last_page()
@@ -532,7 +534,7 @@ class DataView(QWidget):
             self.pagination_manager.set_page_size(size)
             
     # Métodos de filtrado
-    def apply_filter(self):
+    def apply_filter(self) -> None:
         """Aplicar filtro"""
         if self.pagination_manager is None:
             return
@@ -557,7 +559,7 @@ class DataView(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al aplicar filtro: {str(e)}")
             
-    def clear_filter(self):
+    def clear_filter(self) -> None:
         """Limpiar filtro"""
         if self.pagination_manager:
             self.pagination_manager.clear_filter()

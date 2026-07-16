@@ -5,10 +5,11 @@ Diálogo modal que muestra información sobre la aplicación.
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-                                QPushButton, QFrame)
+                                QPushButton, QFrame, QWidget)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
-import os
+from pathlib import Path
+from typing import Optional
 
 
 class AboutDialog(QDialog):
@@ -18,12 +19,12 @@ class AboutDialog(QDialog):
     AUTHOR = "b1tcod3"
     GITHUB_URL = "https://github.com/b1tcod3"
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.parent_window = parent
         self.setup_ui()
     
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del diálogo"""
         self.setWindowTitle("Acerca de Flash View Sheet")
         self.setModal(True)
@@ -49,7 +50,7 @@ class AboutDialog(QDialog):
         # Botón OK
         self._create_buttons(layout)
     
-    def _create_header(self, layout):
+    def _create_header(self, layout: QVBoxLayout) -> None:
         """Crear header con logo y título"""
         header_layout = QHBoxLayout()
         
@@ -71,37 +72,36 @@ class AboutDialog(QDialog):
         header_layout.addLayout(title_layout)
         layout.addLayout(header_layout)
     
-    def _create_logo(self):
+    def _create_logo(self) -> QLabel:
         """Crear etiqueta con logo"""
         logo_label = QLabel()
         
         logo_path = self._get_logo_path()
-        if logo_path and os.path.exists(logo_path):
+        if logo_path and Path(logo_path).exists():
             pixmap = QPixmap(logo_path).scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             logo_label.setPixmap(pixmap)
         
         logo_label.setAlignment(Qt.AlignCenter)
         return logo_label
     
-    def _get_logo_path(self):
+    def _get_logo_path(self) -> Optional[str]:
         """Obtener ruta del logo"""
         if self.parent_window:
-            # Try to find logo relative to main.py
             import sys
-            main_dir = os.path.dirname(sys.modules.get('__main__', type(sys)).__file__ or '.')
-            logo_path = os.path.join(main_dir, "assets", "logo.png")
-            if os.path.exists(logo_path):
-                return logo_path
+            main_dir = Path(sys.modules.get('__main__', type(sys)).__file__ or '.').parent
+            logo_path = main_dir / "assets" / "logo.png"
+            if logo_path.exists():
+                return str(logo_path)
         
         # Fallback to app/assets
-        current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        logo_path = os.path.join(current_dir, "assets", "logo.png")
-        if os.path.exists(logo_path):
-            return logo_path
+        current_dir = Path(__file__).resolve().parent.parent.parent
+        logo_path = current_dir / "assets" / "logo.png"
+        if logo_path.exists():
+            return str(logo_path)
         
         return None
     
-    def _create_description(self, layout):
+    def _create_description(self, layout: QVBoxLayout) -> None:
         """Crear sección de descripción"""
         desc_text = """
         <p><b>Flash View Sheet</b> es una aplicación ligera para visualizar 
@@ -122,7 +122,7 @@ class AboutDialog(QDialog):
         desc_label.setTextFormat(Qt.RichText)
         layout.addWidget(desc_label)
     
-    def _create_creator(self, layout):
+    def _create_creator(self, layout: QVBoxLayout) -> None:
         """Crear sección de creador"""
         creator_text = f"""
         <p><b>Creador:</b> {self.AUTHOR}</p>
@@ -134,7 +134,7 @@ class AboutDialog(QDialog):
         creator_label.setStyleSheet("background-color: #f0f0f0; padding: 10px; border-radius: 5px;")
         layout.addWidget(creator_label)
     
-    def _create_buttons(self, layout):
+    def _create_buttons(self, layout: QVBoxLayout) -> None:
         """Crear botones de acción"""
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
@@ -147,7 +147,7 @@ class AboutDialog(QDialog):
         layout.addLayout(btn_layout)
     
     @classmethod
-    def show_about(cls, parent):
+    def show_about(cls, parent: Optional[QWidget] = None) -> None:
         """Método estático para mostrar el diálogo"""
         dialog = cls(parent)
         dialog.exec()

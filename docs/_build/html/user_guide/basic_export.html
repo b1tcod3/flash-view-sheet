@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Exportación Básica &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Características Avanzadas" href="advanced_features.html" />
+    <link rel="prev" title="Guía de Gráficos y Visualizaciones" href="graphics.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Exportación Básica</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#formatos-de-exportacion-soportados">Formatos de Exportación Soportados</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-de-exportacion-de-datos">Formatos de Exportación de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-de-exportacion-de-visualizacion">Formatos de Exportación de Visualización</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exportacion-de-tablas-de-datos">Exportación de Tablas de Datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-csv">Exportación CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-excel">Exportación Excel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-json">Exportación JSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-sql">Exportación SQL</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exportacion-de-graficos-y-visualizaciones">Exportación de Gráficos y Visualizaciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-pdf">Exportación PDF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-de-imagen">Exportación de Imagen</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#opciones-de-exportacion-y-configuraciones">Opciones de Exportación y Configuraciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#seleccion-de-rango-de-datos">Selección de Rango de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seleccion-de-columnas">Selección de Columnas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nomenclatura-de-archivos-y-organizacion">Nomenclatura de Archivos y Organización</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nomenclatura-automatica">Nomenclatura Automática</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plantillas-personalizadas">Plantillas Personalizadas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exportacion-por-lotes">Exportación por Lotes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#consideraciones-de-rendimiento">Consideraciones de Rendimiento</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-datasets-grandes">Manejo de Datasets Grandes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consejos-de-optimizacion">Consejos de Optimización</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#solucion-de-problemas-de-exportacion">Solución de Problemas de Exportación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-comunes">Problemas Comunes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recuperacion-de-errores">Recuperación de Errores</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Exportación Básica</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/basic_export.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-exportacion-basica">
+<h1>Guía de Exportación Básica<a class="headerlink" href="#guia-de-exportacion-basica" title="Link to this heading"></a></h1>
+<p>Flash Sheet proporciona capacidades comprehensivas de exportación para guardar tus datos y visualizaciones en varios formatos para uso en otras aplicaciones.</p>
+<section id="formatos-de-exportacion-soportados">
+<h2>Formatos de Exportación Soportados<a class="headerlink" href="#formatos-de-exportacion-soportados" title="Link to this heading"></a></h2>
+<section id="formatos-de-exportacion-de-datos">
+<h3>Formatos de Exportación de Datos<a class="headerlink" href="#formatos-de-exportacion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>CSV (Valores Separados por Coma)</strong>: Formato universal de hoja de cálculo</p></li>
+<li><p><strong>Excel (.xlsx)</strong>: Formato Microsoft Excel con formato</p></li>
+<li><p><strong>JSON</strong>: Formato de datos estructurado para aplicaciones web</p></li>
+<li><p><strong>Parquet</strong>: Formato columnar para big data</p></li>
+<li><p><strong>HDF5</strong>: Formato de datos científicos</p></li>
+<li><p><strong>SQL</strong>: Declaraciones de inserción de base de datos</p></li>
+</ul>
+</section>
+<section id="formatos-de-exportacion-de-visualizacion">
+<h3>Formatos de Exportación de Visualización<a class="headerlink" href="#formatos-de-exportacion-de-visualizacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>PDF</strong>: Formato de documento portable para reportes</p></li>
+<li><p><strong>PNG</strong>: Formato de imagen de alta calidad</p></li>
+<li><p><strong>SVG</strong>: Gráficos vectoriales escalables</p></li>
+<li><p><strong>JPEG</strong>: Formato de imagen comprimida</p></li>
+</ul>
+</section>
+</section>
+<section id="exportacion-de-tablas-de-datos">
+<h2>Exportación de Tablas de Datos<a class="headerlink" href="#exportacion-de-tablas-de-datos" title="Link to this heading"></a></h2>
+<section id="exportacion-csv">
+<h3>Exportación CSV<a class="headerlink" href="#exportacion-csv" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar CSV”</strong></p></li>
+<li><p>Elige la carpeta de destino y nombre de archivo</p></li>
+<li><p>Configura opciones:
+- <strong>Delimitador</strong>: Coma, punto y coma, tabulación, o personalizado
+- <strong>Codificación</strong>: UTF-8, ISO-8859-1, u otra
+- <strong>Incluir Encabezados</strong>: Incluir nombres de columna como primera fila
+- <strong>Carácter de Comillas</strong>: Carácter para encerrar campos</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong></p></li>
+</ol>
+</section>
+<section id="exportacion-excel">
+<h3>Exportación Excel<a class="headerlink" href="#exportacion-excel" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar Excel”</strong></p></li>
+<li><p>Selecciona destino y nombre de archivo</p></li>
+<li><p>Elige opciones:
+- <strong>Nombre de Hoja</strong>: Nombre para la hoja de trabajo Excel
+- <strong>Incluir Formato</strong>: Preservar formato de tabla
+- <strong>Auto-ajustar Columnas</strong>: Ajustar anchos de columna automáticamente
+- <strong>Congelar Encabezados</strong>: Mantener encabezados de columna visibles al desplazarse</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong></p></li>
+</ol>
+</section>
+<section id="exportacion-json">
+<h3>Exportación JSON<a class="headerlink" href="#exportacion-json" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar JSON”</strong></p></li>
+<li><p>Configura opciones de formato:
+- <strong>Imprimir Bonito</strong>: JSON formateado con indentación
+- <strong>Compacto</strong>: JSON minificado para archivos más pequeños
+- <strong>Formato Array</strong>: Exportar como array de objetos JSON
+- <strong>Formato Object</strong>: Exportar como objeto JSON único</p></li>
+</ol>
+</section>
+<section id="exportacion-sql">
+<h3>Exportación SQL<a class="headerlink" href="#exportacion-sql" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar SQL”</strong></p></li>
+<li><p>Selecciona tipo de base de datos (MySQL, PostgreSQL, SQLite, etc.)</p></li>
+<li><p>Configura opciones:
+- <strong>Nombre de Tabla</strong>: Nombre para la tabla de base de datos
+- <strong>Crear Tabla</strong>: Incluir declaración CREATE TABLE
+- <strong>Eliminar Tabla</strong>: Incluir DROP TABLE IF EXISTS
+- <strong>Método de Inserción</strong>: INSERT único o bulk INSERT</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong></p></li>
+</ol>
+</section>
+</section>
+<section id="exportacion-de-graficos-y-visualizaciones">
+<h2>Exportación de Gráficos y Visualizaciones<a class="headerlink" href="#exportacion-de-graficos-y-visualizaciones" title="Link to this heading"></a></h2>
+<section id="exportacion-pdf">
+<h3>Exportación PDF<a class="headerlink" href="#exportacion-pdf" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Cambia a <strong>Vista de Gráficos</strong></p></li>
+<li><p>Selecciona el gráfico a exportar</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar PDF”</strong></p></li>
+<li><p>Configura:
+- <strong>Tamaño de Página</strong>: A4, Carta, Legal, Personalizado
+- <strong>Orientación</strong>: Retrato o Paisaje
+- <strong>Márgenes</strong>: Márgenes de página en pulgadas/cm
+- <strong>Calidad</strong>: Configuraciones de resolución</p></li>
+</ol>
+</section>
+<section id="exportacion-de-imagen">
+<h3>Exportación de Imagen<a class="headerlink" href="#exportacion-de-imagen" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Selecciona el gráfico en Vista de Gráficos</p></li>
+<li><p>Haz clic en <strong>“Exportar”</strong> → <strong>“Exportar Imagen”</strong></p></li>
+<li><p>Elige formato (PNG, JPEG, SVG)</p></li>
+<li><p>Configura:
+- <strong>Resolución</strong>: DPI (72, 150, 300, personalizado)
+- <strong>Tamaño</strong>: Ancho y alto en píxeles
+- <strong>Fondo</strong>: Transparente o color sólido
+- <strong>Calidad</strong>: Nivel de compresión (para JPEG)</p></li>
+</ol>
+</section>
+</section>
+<section id="opciones-de-exportacion-y-configuraciones">
+<h2>Opciones de Exportación y Configuraciones<a class="headerlink" href="#opciones-de-exportacion-y-configuraciones" title="Link to this heading"></a></h2>
+<section id="seleccion-de-rango-de-datos">
+<h3>Selección de Rango de Datos<a class="headerlink" href="#seleccion-de-rango-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Todos los Datos</strong>: Exportar el conjunto de datos completo</p></li>
+<li><p><strong>Vista Actual</strong>: Exportar solo datos visibles/filtrados</p></li>
+<li><p><strong>Filas Seleccionadas</strong>: Exportar solo filas seleccionadas</p></li>
+<li><p><strong>Rango Personalizado</strong>: Especificar rango de filas a exportar</p></li>
+</ul>
+</section>
+<section id="seleccion-de-columnas">
+<h3>Selección de Columnas<a class="headerlink" href="#seleccion-de-columnas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Todas las Columnas</strong>: Exportar todas las columnas</p></li>
+<li><p><strong>Columnas Visibles</strong>: Solo columnas actualmente visibles</p></li>
+<li><p><strong>Columnas Seleccionadas</strong>: Elegir columnas específicas</p></li>
+<li><p><strong>Orden Personalizado</strong>: Reordenar orden de columnas para exportación</p></li>
+</ul>
+</section>
+</section>
+<section id="nomenclatura-de-archivos-y-organizacion">
+<h2>Nomenclatura de Archivos y Organización<a class="headerlink" href="#nomenclatura-de-archivos-y-organizacion" title="Link to this heading"></a></h2>
+<section id="nomenclatura-automatica">
+<h3>Nomenclatura Automática<a class="headerlink" href="#nomenclatura-automatica" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Timestamp</strong>: Incluir fecha/hora en nombre de archivo</p></li>
+<li><p><strong>Nombre de Dataset</strong>: Usar nombre de dataset original</p></li>
+<li><p><strong>Tipo de Exportación</strong>: Incluir formato en nombre de archivo</p></li>
+<li><p><strong>Números Secuenciales</strong>: Para múltiples exportaciones</p></li>
+</ul>
+</section>
+<section id="plantillas-personalizadas">
+<h3>Plantillas Personalizadas<a class="headerlink" href="#plantillas-personalizadas" title="Link to this heading"></a></h3>
+<p>Usa placeholders para nomenclatura dinámica:</p>
+<ul class="simple">
+<li><p><cite>{date}</cite>: Fecha actual (YYYY-MM-DD)</p></li>
+<li><p><cite>{time}</cite>: Hora actual (HHMMSS)</p></li>
+<li><p><cite>{dataset}</cite>: Nombre del dataset</p></li>
+<li><p><cite>{type}</cite>: Formato de exportación</p></li>
+<li><p><cite>{counter}</cite>: Número secuencial</p></li>
+</ul>
+</section>
+<section id="exportacion-por-lotes">
+<h3>Exportación por Lotes<a class="headerlink" href="#exportacion-por-lotes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Múltiples Formatos</strong>: Exportar a varios formatos simultáneamente</p></li>
+<li><p><strong>Archivos Divididos</strong>: Dividir datasets grandes en múltiples archivos</p></li>
+<li><p><strong>Aplicación de Plantilla</strong>: Aplicar diferentes configuraciones por formato</p></li>
+</ul>
+</section>
+</section>
+<section id="consideraciones-de-rendimiento">
+<h2>Consideraciones de Rendimiento<a class="headerlink" href="#consideraciones-de-rendimiento" title="Link to this heading"></a></h2>
+<section id="manejo-de-datasets-grandes">
+<h3>Manejo de Datasets Grandes<a class="headerlink" href="#manejo-de-datasets-grandes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Chunking</strong>: Dividir automáticamente exportaciones grandes</p></li>
+<li><p><strong>Gestión de Memoria</strong>: Procesamiento eficiente para big data</p></li>
+<li><p><strong>Seguimiento de Progreso</strong>: Monitorear progreso de exportación</p></li>
+<li><p><strong>Cancelación</strong>: Detener exportaciones de larga duración</p></li>
+</ul>
+</section>
+<section id="consejos-de-optimizacion">
+<h3>Consejos de Optimización<a class="headerlink" href="#consejos-de-optimizacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Filtrar Primero</strong>: Aplicar filtros antes de exportar para reducir tamaño</p></li>
+<li><p><strong>Seleccionar Columnas</strong>: Exportar solo columnas necesarias</p></li>
+<li><p><strong>Elegir Formato</strong>: Seleccionar formato apropiado para tu caso de uso</p></li>
+<li><p><strong>Compresión</strong>: Usar formatos comprimidos cuando sea posible</p></li>
+</ul>
+</section>
+</section>
+<section id="solucion-de-problemas-de-exportacion">
+<h2>Solución de Problemas de Exportación<a class="headerlink" href="#solucion-de-problemas-de-exportacion" title="Link to this heading"></a></h2>
+<section id="problemas-comunes">
+<h3>Problemas Comunes<a class="headerlink" href="#problemas-comunes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Archivo Bloqueado</strong>: Cerrar archivo si está abierto en otra aplicación</p></li>
+<li><p><strong>Permiso Denegado</strong>: Verificar permisos de escritura en carpeta destino</p></li>
+<li><p><strong>Espacio en Disco</strong>: Asegurar espacio suficiente para exportación</p></li>
+<li><p><strong>Problemas de Codificación</strong>: Elegir codificación de texto apropiada</p></li>
+</ul>
+</section>
+<section id="recuperacion-de-errores">
+<h3>Recuperación de Errores<a class="headerlink" href="#recuperacion-de-errores" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Exportaciones Parciales</strong>: Reanudar exportaciones interrumpidas</p></li>
+<li><p><strong>Creación de Backup</strong>: Backup automático de archivos existentes</p></li>
+<li><p><strong>Validación</strong>: Verificar integridad de exportación</p></li>
+<li><p><strong>Archivos de Log</strong>: Revisar logs detallados de errores</p></li>
+</ul>
+</section>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Técnicas avanzadas de exportación</p></li>
+<li><p><a class="reference internal" href="troubleshooting.html"><span class="doc">Guía de Solución de Problemas</span></a> - Problemas relacionados con exportación</p></li>
+<li><p><a class="reference internal" href="getting_started.html"><span class="doc">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</span></a> - Resumen de uso básico</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphics.html" class="btn btn-neutral float-left" title="Guía de Gráficos y Visualizaciones" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_features.html" class="btn btn-neutral float-right" title="Guía de Características Avanzadas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

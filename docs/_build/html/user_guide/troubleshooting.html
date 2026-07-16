@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Solución de Problemas &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sistema de Arquitectura de Flash Sheet" href="../developer_guide/architecture.html" />
+    <link rel="prev" title="Guía de Características Avanzadas" href="advanced_features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Solución de Problemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#obteniendo-ayuda">Obteniendo Ayuda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#antes-de-solucionar-problemas">Antes de Solucionar Problemas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recursos-de-ayuda">Recursos de Ayuda</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#problemas-y-soluciones-comunes">Problemas y Soluciones Comunes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-carga-de-datos">Problemas de Carga de Datos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#archivo-no-carga">Archivo No Carga</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errores-de-permisos">Errores de Permisos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#problemas-de-memoria">Problemas de Memoria</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-visualizacion-de-datos">Problemas de Visualización de Datos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tabla-no-muestra-datos">Tabla No Muestra Datos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tipos-de-datos-incorrectos">Tipos de Datos Incorrectos</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-exportacion">Problemas de Exportación</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exportacion-falla">Exportación Falla</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#formato-de-exportacion-incorrecto">Formato de Exportación Incorrecto</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-graficos-y-visualizacion">Problemas de Gráficos y Visualización</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#graficos-no-se-muestran">Gráficos No se Muestran</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-rendimiento">Problemas de Rendimiento</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#operaciones-lentas">Operaciones Lentas</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#bloqueos-de-aplicacion">Bloqueos de Aplicación</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cierres-inesperados">Cierres Inesperados</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opciones-de-recuperacion">Opciones de Recuperación</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#problemas-de-caracteristicas-avanzadas">Problemas de Características Avanzadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-operacion-de-union">Problemas de Operación de Unión</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#union-falla">Unión Falla</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-de-exportacion-separada">Problemas de Exportación Separada</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#problemas-de-plantilla">Problemas de Plantilla</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errores-de-tabla-pivote">Errores de Tabla Pivote</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creacion-de-pivote-falla">Creación de Pivote Falla</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuracion-y-configuraciones">Configuración y Configuraciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reseteando-preferencias">Reseteando Preferencias</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#actualizando-flash-sheet">Actualizando Flash Sheet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compatibilidad-del-sistema">Compatibilidad del Sistema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#obteniendo-ayuda-adicional">Obteniendo Ayuda Adicional</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#soporte-comunitario">Soporte Comunitario</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#soporte-profesional">Soporte Profesional</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#informacion-de-diagnostico">Información de Diagnóstico</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#practicas-de-prevencion-de-mejores-practicas">Prácticas de Prevención de Mejores Prácticas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mantenimiento-regular">Mantenimiento Regular</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-datos">Gestión de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Solución de Problemas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-solucion-de-problemas">
+<h1>Guía de Solución de Problemas<a class="headerlink" href="#guia-de-solucion-de-problemas" title="Link to this heading"></a></h1>
+<p>Esta guía te ayuda a resolver problemas y cuestiones comunes que pueden ocurrir al usar Flash Sheet.</p>
+<section id="obteniendo-ayuda">
+<h2>Obteniendo Ayuda<a class="headerlink" href="#obteniendo-ayuda" title="Link to this heading"></a></h2>
+<section id="antes-de-solucionar-problemas">
+<h3>Antes de Solucionar Problemas<a class="headerlink" href="#antes-de-solucionar-problemas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Verificar Versión</strong>: Asegurar que estés usando la versión más reciente</p></li>
+<li><p><strong>Requisitos del Sistema</strong>: Verificar que tu sistema cumpla los requisitos mínimos</p></li>
+<li><p><strong>Permisos</strong>: Verificar permisos de acceso a archivos y carpetas</p></li>
+<li><p><strong>Actualizaciones</strong>: Buscar actualizaciones disponibles</p></li>
+</ul>
+</section>
+<section id="recursos-de-ayuda">
+<h3>Recursos de Ayuda<a class="headerlink" href="#recursos-de-ayuda" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Documentación</strong>: Guías comprehensivas de usuario y desarrollador</p></li>
+<li><p><strong>Ejemplos</strong>: Ejemplos de trabajo en el directorio <cite>/examples/</cite></p></li>
+<li><p><strong>Logs</strong>: Verificar logs de aplicación para detalles de error</p></li>
+<li><p><strong>Comunidad</strong>: Reportar problemas en el repositorio del proyecto</p></li>
+</ul>
+</section>
+</section>
+<section id="problemas-y-soluciones-comunes">
+<h2>Problemas y Soluciones Comunes<a class="headerlink" href="#problemas-y-soluciones-comunes" title="Link to this heading"></a></h2>
+<section id="problemas-de-carga-de-datos">
+<h3>Problemas de Carga de Datos<a class="headerlink" href="#problemas-de-carga-de-datos" title="Link to this heading"></a></h3>
+<section id="archivo-no-carga">
+<h4>Archivo No Carga<a class="headerlink" href="#archivo-no-carga" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Diálogo de selección de archivo se cierra sin cargar datos</p>
+<p><strong>Causas Posibles y Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Formato No Soportado</strong>
+- Verificar si el formato de archivo está soportado (CSV, Excel, JSON, etc.)
+- Convertir archivo a formato soportado</p></li>
+<li><p><strong>Corrupción de Archivo</strong>
+- Abrir archivo en aplicación original para verificar validez
+- Reparar archivo si es posible o usar backup</p></li>
+<li><p><strong>Problemas de Codificación</strong>
+- Probar diferentes opciones de codificación (UTF-8, ISO-8859-1)
+- Guardar archivo con codificación apropiada</p></li>
+<li><p><strong>Tamaño de Archivo Grande</strong>
+- Verificar memoria disponible
+- Considerar dividir archivos grandes
+- Usar versión de 64-bit de Flash Sheet</p></li>
+</ol>
+</section>
+<section id="errores-de-permisos">
+<h4>Errores de Permisos<a class="headerlink" href="#errores-de-permisos" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Errores “Acceso denegado” o “Permiso denegado”</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Permisos de Archivo</strong>
+- Asegurar acceso de lectura al archivo
+- Verificar que archivo no esté bloqueado por otra aplicación
+- Cerrar Excel/otras aplicaciones que puedan tener archivo abierto</p></li>
+<li><p><strong>Permisos de Carpeta</strong>
+- Verificar acceso de escritura a carpetas destino
+- Ejecutar Flash Sheet como administrador si es necesario
+- Verificar permisos de unidad de red</p></li>
+</ol>
+</section>
+<section id="problemas-de-memoria">
+<h4>Problemas de Memoria<a class="headerlink" href="#problemas-de-memoria" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Aplicación se bloquea o errores “Sin memoria”</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Aumentar Memoria</strong>
+- Cerrar otras aplicaciones
+- Usar versión de 64-bit
+- Agregar más RAM si es posible</p></li>
+<li><p><strong>Optimización de Datos</strong>
+- Cargar solo columnas necesarias
+- Usar muestreo de datos para datasets grandes
+- Aplicar filtros antes de operaciones</p></li>
+</ol>
+</section>
+</section>
+<section id="problemas-de-visualizacion-de-datos">
+<h3>Problemas de Visualización de Datos<a class="headerlink" href="#problemas-de-visualizacion-de-datos" title="Link to this heading"></a></h3>
+<section id="tabla-no-muestra-datos">
+<h4>Tabla No Muestra Datos<a class="headerlink" href="#tabla-no-muestra-datos" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Tabla vacía o datos faltantes</p>
+<p><strong>Causas Posibles:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Dataset Vacío</strong>
+- Verificar si archivo contiene datos
+- Verificar selección de hoja correcta en archivos Excel</p></li>
+<li><p><strong>Problemas de Filtro</strong>
+- Limpiar todos los filtros activos
+- Verificar criterios de filtro</p></li>
+<li><p><strong>Configuraciones de Visualización</strong>
+- Resetear configuraciones de vista de tabla
+- Verificar configuraciones de visibilidad de columna</p></li>
+</ol>
+</section>
+<section id="tipos-de-datos-incorrectos">
+<h4>Tipos de Datos Incorrectos<a class="headerlink" href="#tipos-de-datos-incorrectos" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Números mostrados como texto, fechas no reconocidas</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Detección de Tipo</strong>
+- Recargar archivo con diferente codificación
+- Especificar manualmente tipos de columna</p></li>
+<li><p><strong>Limpieza de Datos</strong>
+- Limpiar datos en archivo fuente
+- Usar herramientas de transformación de datos</p></li>
+</ol>
+</section>
+</section>
+<section id="problemas-de-exportacion">
+<h3>Problemas de Exportación<a class="headerlink" href="#problemas-de-exportacion" title="Link to this heading"></a></h3>
+<section id="exportacion-falla">
+<h4>Exportación Falla<a class="headerlink" href="#exportacion-falla" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Proceso de exportación se detiene con error</p>
+<p><strong>Problemas Comunes:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Archivo Bloqueado</strong>
+- Cerrar archivo destino si está abierto
+- Verificar permisos de archivo</p></li>
+<li><p><strong>Espacio en Disco</strong>
+- Liberar espacio en disco
+- Elegir destino diferente</p></li>
+<li><p><strong>Problemas de Ruta</strong>
+- Evitar caracteres especiales en rutas
+- Usar unidades locales en lugar de unidades de red</p></li>
+</ol>
+</section>
+<section id="formato-de-exportacion-incorrecto">
+<h4>Formato de Exportación Incorrecto<a class="headerlink" href="#formato-de-exportacion-incorrecto" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Archivo exportado tiene formato incorrecto o datos faltantes</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Configuraciones de Formato</strong>
+- Verificar configuración de exportación
+- Verificar delimitador y configuraciones de codificación</p></li>
+<li><p><strong>Selección de Datos</strong>
+- Confirmar rango de datos correcto seleccionado
+- Verificar selección de columna</p></li>
+</ol>
+</section>
+</section>
+<section id="problemas-de-graficos-y-visualizacion">
+<h3>Problemas de Gráficos y Visualización<a class="headerlink" href="#problemas-de-graficos-y-visualizacion" title="Link to this heading"></a></h3>
+<section id="graficos-no-se-muestran">
+<h4>Gráficos No se Muestran<a class="headerlink" href="#graficos-no-se-muestran" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Área de gráfico en blanco o mensajes de error</p>
+<p><strong>Causas Posibles:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Problemas de Datos</strong>
+- Verificar datos contienen valores numéricos para gráficos
+- Verificar suficientes puntos de datos</p></li>
+<li><p><strong>Configuración de Gráfico</strong>
+- Resetear configuraciones de gráfico
+- Probar diferentes tipos de gráfico</p></li>
+<li><p><strong>Problemas de Memoria</strong>
+- Reducir complejidad de gráfico
+- Usar muestreo de datos</p></li>
+</ol>
+</section>
+</section>
+<section id="problemas-de-rendimiento">
+<h3>Problemas de Rendimiento<a class="headerlink" href="#problemas-de-rendimiento" title="Link to this heading"></a></h3>
+<section id="operaciones-lentas">
+<h4>Operaciones Lentas<a class="headerlink" href="#operaciones-lentas" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Operaciones toman tiempo inusualmente largo</p>
+<p><strong>Consejos de Optimización:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Tamaño de Datos</strong>
+- Usar muestreo de datos para datasets grandes
+- Aplicar filtros para reducir volumen de datos</p></li>
+<li><p><strong>Recursos del Sistema</strong>
+- Cerrar aplicaciones innecesarias
+- Verificar uso de CPU y memoria</p></li>
+<li><p><strong>Configuración</strong>
+- Ajustar configuraciones de rendimiento
+- Usar almacenamiento más rápido (SSD vs HDD)</p></li>
+</ol>
+</section>
+</section>
+<section id="bloqueos-de-aplicacion">
+<h3>Bloqueos de Aplicación<a class="headerlink" href="#bloqueos-de-aplicacion" title="Link to this heading"></a></h3>
+<section id="cierres-inesperados">
+<h4>Cierres Inesperados<a class="headerlink" href="#cierres-inesperados" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Aplicación se cierra inesperadamente</p>
+<p><strong>Pasos de Diagnóstico:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Verificar Logs</strong>
+- Revisar archivos de log de aplicación
+- Buscar mensajes de error</p></li>
+<li><p><strong>Recursos del Sistema</strong>
+- Monitorear uso de memoria
+- Verificar estabilidad del sistema</p></li>
+<li><p><strong>Problemas de Versión</strong>
+- Actualizar a versión más reciente
+- Verificar compatibilidad con OS</p></li>
+</ol>
+</section>
+<section id="opciones-de-recuperacion">
+<h4>Opciones de Recuperación<a class="headerlink" href="#opciones-de-recuperacion" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Auto-guardado</strong>: Recuperar trabajo no guardado</p></li>
+<li><p><strong>Archivos de Backup</strong>: Usar copias de backup</p></li>
+<li><p><strong>Modo Seguro</strong>: Iniciar con características mínimas</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="problemas-de-caracteristicas-avanzadas">
+<h2>Problemas de Características Avanzadas<a class="headerlink" href="#problemas-de-caracteristicas-avanzadas" title="Link to this heading"></a></h2>
+<section id="problemas-de-operacion-de-union">
+<h3>Problemas de Operación de Unión<a class="headerlink" href="#problemas-de-operacion-de-union" title="Link to this heading"></a></h3>
+<section id="union-falla">
+<h4>Unión Falla<a class="headerlink" href="#union-falla" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Operación de unión no se completa o da errores</p>
+<p><strong>Problemas Comunes:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Desajuste de Tipo de Columna</strong>
+- Asegurar columnas de unión tienen tipos compatibles
+- Convertir tipos de datos si es necesario</p></li>
+<li><p><strong>Restricciones de Memoria</strong>
+- Reducir tamaños de dataset
+- Usar uniones internas en lugar de externas</p></li>
+<li><p><strong>Calidad de Clave</strong>
+- Verificar valores nulos en claves de unión
+- Verificar unicidad de clave</p></li>
+</ol>
+</section>
+</section>
+<section id="problemas-de-exportacion-separada">
+<h3>Problemas de Exportación Separada<a class="headerlink" href="#problemas-de-exportacion-separada" title="Link to this heading"></a></h3>
+<section id="problemas-de-plantilla">
+<h4>Problemas de Plantilla<a class="headerlink" href="#problemas-de-plantilla" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Exportación basada en plantilla falla</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Formato de Plantilla</strong>
+- Usar formato .xlsx (no .xls)
+- Asegurar plantilla no esté corrupta</p></li>
+<li><p><strong>Mapeo de Columnas</strong>
+- Verificar nombres de columna coinciden
+- Verificar compatibilidad de tipos de datos</p></li>
+<li><p><strong>Permisos de Archivo</strong>
+- Asegurar acceso de escritura a directorio destino</p></li>
+</ol>
+</section>
+</section>
+<section id="errores-de-tabla-pivote">
+<h3>Errores de Tabla Pivote<a class="headerlink" href="#errores-de-tabla-pivote" title="Link to this heading"></a></h3>
+<section id="creacion-de-pivote-falla">
+<h4>Creación de Pivote Falla<a class="headerlink" href="#creacion-de-pivote-falla" title="Link to this heading"></a></h4>
+<p><strong>Síntomas:</strong> Incapaz de crear tabla pivote</p>
+<p><strong>Causas Posibles:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Tipos de Datos</strong>
+- Asegurar columnas numéricas para valores
+- Verificar columnas categóricas para agrupamiento</p></li>
+<li><p><strong>Problemas de Memoria</strong>
+- Reducir tamaño de datos
+- Usar muestreo de datos</p></li>
+<li><p><strong>Configuración</strong>
+- Verificar selecciones de campo
+- Verificar compatibilidad de función de agregación</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="configuracion-y-configuraciones">
+<h2>Configuración y Configuraciones<a class="headerlink" href="#configuracion-y-configuraciones" title="Link to this heading"></a></h2>
+<section id="reseteando-preferencias">
+<h3>Reseteando Preferencias<a class="headerlink" href="#reseteando-preferencias" title="Link to this heading"></a></h3>
+<p><strong>Para resetear configuraciones de aplicación:</strong></p>
+<ol class="arabic simple">
+<li><p>Cerrar Flash Sheet</p></li>
+<li><p>Eliminar archivo de configuración (ubicación varía por OS)</p></li>
+<li><p>Reiniciar aplicación con configuraciones predeterminadas</p></li>
+</ol>
+</section>
+<section id="actualizando-flash-sheet">
+<h3>Actualizando Flash Sheet<a class="headerlink" href="#actualizando-flash-sheet" title="Link to this heading"></a></h3>
+<p><strong>Proceso de Actualización:</strong></p>
+<ol class="arabic simple">
+<li><p>Verificar actualizaciones en aplicación</p></li>
+<li><p>Descargar versión nueva</p></li>
+<li><p>Hacer backup de datos importantes</p></li>
+<li><p>Instalar actualización</p></li>
+<li><p>Probar funcionalidad</p></li>
+</ol>
+</section>
+<section id="compatibilidad-del-sistema">
+<h3>Compatibilidad del Sistema<a class="headerlink" href="#compatibilidad-del-sistema" title="Link to this heading"></a></h3>
+<p><strong>Sistemas Operativos Soportados:</strong></p>
+<ul class="simple">
+<li><p><strong>Windows</strong>: 10, 11 (64-bit)</p></li>
+<li><p><strong>macOS</strong>: 10.15 y posterior</p></li>
+<li><p><strong>Linux</strong>: Ubuntu 18.04+, CentOS 7+</p></li>
+</ul>
+<p><strong>Requisitos Mínimos:</strong></p>
+<ul class="simple">
+<li><p><strong>RAM</strong>: 4GB</p></li>
+<li><p><strong>Almacenamiento</strong>: 500MB de espacio libre</p></li>
+<li><p><strong>Pantalla</strong>: Resolución 1024x768</p></li>
+</ul>
+</section>
+</section>
+<section id="obteniendo-ayuda-adicional">
+<h2>Obteniendo Ayuda Adicional<a class="headerlink" href="#obteniendo-ayuda-adicional" title="Link to this heading"></a></h2>
+<section id="soporte-comunitario">
+<h3>Soporte Comunitario<a class="headerlink" href="#soporte-comunitario" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Rastreador de Problemas</strong>: Reportar bugs y solicitar características</p></li>
+<li><p><strong>Foros de Discusión</strong>: Hacer preguntas y compartir soluciones</p></li>
+<li><p><strong>Documentación</strong>: Guías comprehensivas y ejemplos</p></li>
+</ul>
+</section>
+<section id="soporte-profesional">
+<h3>Soporte Profesional<a class="headerlink" href="#soporte-profesional" title="Link to this heading"></a></h3>
+<p>Para usuarios empresariales:</p>
+<ul class="simple">
+<li><p><strong>Soporte de Prioridad</strong>: Tiempos de respuesta más rápidos</p></li>
+<li><p><strong>Soluciones Personalizadas</strong>: Implementaciones adaptadas</p></li>
+<li><p><strong>Entrenamiento</strong>: Sesiones de entrenamiento in situ o remoto</p></li>
+</ul>
+</section>
+<section id="informacion-de-diagnostico">
+<h3>Información de Diagnóstico<a class="headerlink" href="#informacion-de-diagnostico" title="Link to this heading"></a></h3>
+<p><strong>Al reportar problemas, incluir:</strong></p>
+<ul class="simple">
+<li><p><strong>Información de Versión</strong>: Versión de Flash Sheet y build</p></li>
+<li><p><strong>Detalles del Sistema</strong>: Versión de OS, especificaciones de hardware</p></li>
+<li><p><strong>Mensajes de Error</strong>: Texto exacto de error y códigos</p></li>
+<li><p><strong>Pasos para Reproducir</strong>: Pasos detallados de reproducción</p></li>
+<li><p><strong>Datos de Muestra</strong>: Datos mínimos que reproducen el problema</p></li>
+</ul>
+</section>
+</section>
+<section id="practicas-de-prevencion-de-mejores-practicas">
+<h2>Prácticas de Prevención de Mejores Prácticas<a class="headerlink" href="#practicas-de-prevencion-de-mejores-practicas" title="Link to this heading"></a></h2>
+<section id="mantenimiento-regular">
+<h3>Mantenimiento Regular<a class="headerlink" href="#mantenimiento-regular" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Mantener Actualizado</strong>: Instalar actualizaciones regularmente</p></li>
+<li><p><strong>Backup de Datos</strong>: Mantener backups de archivos importantes</p></li>
+<li><p><strong>Monitorear Recursos</strong>: Observar uso de recursos del sistema</p></li>
+<li><p><strong>Limpiar Archivos Temp</strong>: Remover archivos temporales periódicamente</p></li>
+</ul>
+</section>
+<section id="gestion-de-datos">
+<h3>Gestión de Datos<a class="headerlink" href="#gestion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Validar Entrada</strong>: Verificar datos antes de cargar</p></li>
+<li><p><strong>Usar Formatos Consistentes</strong>: Estandarizar formatos de datos</p></li>
+<li><p><strong>Documentar Procesos</strong>: Registrar flujos de trabajo exitosos</p></li>
+<li><p><strong>Probar con Muestras</strong>: Validar con datasets pequeños primero</p></li>
+</ul>
+</section>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="getting_started.html"><span class="doc">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</span></a> - Regresar a uso básico</p></li>
+<li><p><a class="reference internal" href="advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Funcionalidad avanzada</p></li>
+<li><p><a class="reference internal" href="../developer_guide/contributing.html"><span class="doc">Guía para Contribuidores - Exportación Separada</span></a> - Contribuyendo al proyecto</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="advanced_features.html" class="btn btn-neutral float-left" title="Guía de Características Avanzadas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../developer_guide/architecture.html" class="btn btn-neutral float-right" title="Sistema de Arquitectura de Flash Sheet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

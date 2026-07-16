@@ -4,9 +4,9 @@ Widget for previewing and manually aligning columns from multiple Excel files
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-                               QPushButton, QTableWidget, QTableWidgetItem,
-                               QHeaderView, QAbstractItemView, QMenu,
-                               QLineEdit, QMessageBox, QCheckBox)
+                                QPushButton, QTableWidget, QTableWidgetItem,
+                                QHeaderView, QAbstractItemView, QMenu,
+                                QLineEdit, QMessageBox, QCheckBox)
 from PySide6.QtCore import Qt, QPoint, QMimeData, QTimer
 from PySide6.QtGui import QDrag, QPixmap, QPainter, QColor
 from typing import List, Dict, Any, Optional
@@ -18,19 +18,19 @@ class ColumnAlignmentPreview(QWidget):
     Widget for previewing column alignment and manual realignment
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.file_metadata = []
-        self.alignment_data = []
-        self.column_mappings = {}
-        self.dragged_item = None
-        self.drag_start_pos = None
-        self.included_positions = set()  # Set of positions (0-based) to include
+        self.file_metadata: List[Dict[str, Any]] = []
+        self.alignment_data: List[Dict[str, Any]] = []
+        self.column_mappings: Dict[str, str] = {}
+        self.dragged_item: QTableWidgetItem | None = None
+        self.drag_start_pos: QPoint | None = None
+        self.included_positions: set[int] = set()
 
         self.setup_ui()
         self.connect_signals()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Setup the user interface"""
         layout = QVBoxLayout(self)
 
@@ -74,12 +74,12 @@ class ColumnAlignmentPreview(QWidget):
         self.status_label.setStyleSheet("color: #666; font-size: 12px;")
         layout.addWidget(self.status_label)
 
-    def connect_signals(self):
+    def connect_signals(self) -> None:
         """Connect widget signals"""
         self.alignment_table.itemDoubleClicked.connect(self.edit_column_name)
         self.alignment_table.itemChanged.connect(self.on_item_changed)
 
-    def set_file_metadata(self, metadata: List[Dict[str, Any]]):
+    def set_file_metadata(self, metadata: List[Dict[str, Any]]) -> None:
         """
         Set the file metadata for alignment preview
 
@@ -89,7 +89,7 @@ class ColumnAlignmentPreview(QWidget):
         self.file_metadata = metadata
         self.update_preview()
 
-    def update_preview(self):
+    def update_preview(self) -> None:
         """Update the alignment preview table"""
         if not self.file_metadata:
             self.alignment_table.setRowCount(0)
@@ -146,18 +146,18 @@ class ColumnAlignmentPreview(QWidget):
 
         self.status_label.setText(f"{len(self.file_metadata)} archivos, {max_cols} posiciones de columna")
 
-    def align_by_position(self):
+    def align_by_position(self) -> None:
         """Auto-align columns by position"""
         self.update_preview()
         QMessageBox.information(self, "Alineación", "Columnas alineadas por posición")
 
-    def align_by_name(self):
+    def align_by_name(self) -> None:
         """Auto-align columns by name (attempt to match similar names)"""
         if not self.file_metadata:
             return
 
         # Simple name-based alignment - find common column names
-        all_columns = []
+        all_columns: List[str] = []
         for meta in self.file_metadata:
             all_columns.extend(meta.get('columns', []))
 
@@ -170,7 +170,7 @@ class ColumnAlignmentPreview(QWidget):
                                "Alineación por nombre no implementada aún.\n"
                                f"Columnas comunes encontradas: {dict(column_counts.most_common(5))}")
 
-    def edit_column_name(self, item: QTableWidgetItem):
+    def edit_column_name(self, item: QTableWidgetItem) -> None:
         """
         Handle double-click to edit column name
 
@@ -187,7 +187,7 @@ class ColumnAlignmentPreview(QWidget):
         editor.setFocus()
         editor.show()
 
-        def save_edit():
+        def save_edit() -> None:
             new_name = editor.text().strip()
             if new_name:
                 item.setText(new_name)
@@ -203,19 +203,19 @@ class ColumnAlignmentPreview(QWidget):
         editor.returnPressed.connect(save_edit)
         editor.editingFinished.connect(save_edit)
 
-    def on_item_changed(self, item: QTableWidgetItem):
+    def on_item_changed(self, item: QTableWidgetItem) -> None:
         """Handle item changes"""
         # Could update mappings here
         pass
 
-    def on_include_changed(self, position: int, state: int):
+    def on_include_changed(self, position: int, state: int) -> None:
         """Handle include checkbox state change"""
         if state == 2:  # Checked
             self.included_positions.add(position)
         else:  # Unchecked
             self.included_positions.discard(position)
 
-    def show_context_menu(self, position: QPoint):
+    def show_context_menu(self, position: QPoint) -> None:
         """Show context menu for table"""
         menu = QMenu(self)
 
@@ -224,7 +224,7 @@ class ColumnAlignmentPreview(QWidget):
 
         menu.exec(self.alignment_table.mapToGlobal(position))
 
-    def rename_selected_column(self):
+    def rename_selected_column(self) -> None:
         """Rename the selected column"""
         current_item = self.alignment_table.currentItem()
         if current_item:
@@ -246,9 +246,9 @@ class ColumnAlignmentPreview(QWidget):
         Returns:
             List of alignment information
         """
-        alignment = []
+        alignment: List[Dict[str, Any]] = []
         for row in range(self.alignment_table.rowCount()):
-            row_data = {'position': row + 1, 'columns': {}}
+            row_data: Dict[str, Any] = {'position': row + 1, 'columns': {}}
 
             for col in range(2, self.alignment_table.columnCount()):  # Skip position and include columns
                 item = self.alignment_table.item(row, col)
@@ -270,7 +270,7 @@ class ColumnAlignmentPreview(QWidget):
         if not self.file_metadata:
             return []
 
-        included_columns = []
+        included_columns: List[str] = []
         first_file_columns = self.file_metadata[0].get('columns', [])
 
         for pos in sorted(self.included_positions):
@@ -282,50 +282,59 @@ class ColumnAlignmentPreview(QWidget):
         return included_columns
 
     # Drag and drop methods (basic implementation)
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: object) -> None:
         """Handle mouse press for drag start"""
-        if event.button() == Qt.LeftButton:
-            item = self.alignment_table.itemAt(event.pos())
-            if item and item.column() > 1:  # Not position or include columns
-                self.dragged_item = item
-                self.drag_start_pos = event.pos()
+        if hasattr(event, 'button') and hasattr(event, 'pos'):
+            from PySide6.QtGui import QMouseEvent
+            assert isinstance(event, QMouseEvent)
+            if event.button() == Qt.LeftButton:
+                item = self.alignment_table.itemAt(event.pos())
+                if item and item.column() > 1:  # Not position or include columns
+                    self.dragged_item = item
+                    self.drag_start_pos = event.pos()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: object) -> None:
         """Handle mouse move for drag"""
-        if self.dragged_item and (event.pos() - self.drag_start_pos).manhattanLength() > 10:
-            # Start drag
-            drag = QDrag(self)
-            mime_data = QMimeData()
-            mime_data.setText(self.dragged_item.text())
-            drag.setMimeData(mime_data)
+        if self.dragged_item and self.drag_start_pos and hasattr(event, 'pos'):
+            from PySide6.QtGui import QMouseEvent
+            assert isinstance(event, QMouseEvent)
+            if (event.pos() - self.drag_start_pos).manhattanLength() > 10:
+                # Start drag
+                drag = QDrag(self)
+                mime_data = QMimeData()
+                mime_data.setText(self.dragged_item.text())
+                drag.setMimeData(mime_data)
 
-            # Create pixmap for drag
-            pixmap = QPixmap(self.dragged_item.sizeHint())
-            pixmap.fill(QColor('lightblue'))
-            painter = QPainter(pixmap)
-            painter.drawText(pixmap.rect(), Qt.AlignCenter, self.dragged_item.text())
-            painter.end()
-            drag.setPixmap(pixmap)
+                # Create pixmap for drag
+                pixmap = QPixmap(self.dragged_item.sizeHint())
+                pixmap.fill(QColor('lightblue'))
+                painter = QPainter(pixmap)
+                painter.drawText(pixmap.rect(), Qt.AlignCenter, self.dragged_item.text())
+                painter.end()
+                drag.setPixmap(pixmap)
 
-            drag.exec(Qt.MoveAction)
+                drag.exec(Qt.MoveAction)
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: object) -> None:
         """Handle drop event"""
-        if event.mimeData().hasText():
-            target_item = self.alignment_table.itemAt(event.pos())
-            if target_item and target_item != self.dragged_item:
-                # Swap the text
-                temp_text = target_item.text()
-                target_item.setText(self.dragged_item.text())
-                self.dragged_item.setText(temp_text)
+        if hasattr(event, 'mimeData') and hasattr(event, 'pos'):
+            from PySide6.QtGui import QDropEvent
+            assert isinstance(event, QDropEvent)
+            if event.mimeData().hasText():
+                target_item = self.alignment_table.itemAt(event.pos())
+                if target_item and target_item != self.dragged_item and self.dragged_item is not None:
+                    # Swap the text
+                    temp_text = target_item.text()
+                    target_item.setText(self.dragged_item.text())
+                    self.dragged_item.setText(temp_text)
 
-                # Update metadata
-                self.update_metadata_from_table()
+                    # Update metadata
+                    self.update_metadata_from_table()
 
-        self.dragged_item = None
-        event.accept()
+            self.dragged_item = None
+            event.accept()
 
-    def update_metadata_from_table(self):
+    def update_metadata_from_table(self) -> None:
         """Update file metadata based on current table state"""
         # This would update the internal metadata to reflect manual changes
         # For now, just a placeholder

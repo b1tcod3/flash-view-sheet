@@ -3,7 +3,7 @@
 Test para verificar que los controladores de la barra de herramientas están corregidos
 """
 
-def test_toolbar_indices():
+def test_toolbar_indices() -> None:
     """Test para verificar los índices correctos de la barra de herramientas"""
     
     print("🔍 TEST: Verificando configuración de índices en la barra de herramientas...")
@@ -80,7 +80,7 @@ def test_toolbar_indices():
     
     return all_correct
 
-def test_view_mapping():
+def test_view_mapping() -> None:
     """Test para verificar el mapeo de vistas"""
     print("\n🔍 Verificando mapeo de vistas...")
     

@@ -4,12 +4,12 @@ Permite configurar columna de separación, plantilla Excel, mapeo de columnas y 
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-                               QPushButton, QGroupBox, QFormLayout, 
-                               QDialogButtonBox, QComboBox, QLineEdit, QSpinBox,
-                               QTextEdit, QProgressBar, QMessageBox, QListWidget,
-                               QListWidgetItem, QCheckBox, QTabWidget, QWidget,
-                               QTableWidget, QTableWidgetItem, QHeaderView,
-                               QFileDialog, QStatusBar, QFrame, QSizePolicy)
+                                QPushButton, QGroupBox, QFormLayout, 
+                                QDialogButtonBox, QComboBox, QLineEdit, QSpinBox,
+                                QTextEdit, QProgressBar, QMessageBox, QListWidget,
+                                QListWidgetItem, QCheckBox, QTabWidget, QWidget,
+                                QTableWidget, QTableWidgetItem, QHeaderView,
+                                QFileDialog, QStatusBar, QFrame, QSizePolicy)
 from PySide6.QtCore import Qt, Signal, QThread, QTimer
 from PySide6.QtGui import QFont, QIcon, QPixmap
 import pandas as pd
@@ -32,14 +32,14 @@ from core.data_handler import (
 class ColumnMappingWidget(QWidget):
     """Widget para gestionar mapeo de columnas DataFrame ↔ Excel"""
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self.df_columns = []
-        self.excel_columns = []
-        self.mapping = {}
+        self.df_columns: List[str] = []
+        self.excel_columns: List[str] = []
+        self.mapping: Dict[str, str] = {}
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar interfaz de mapeo de columnas"""
         layout = QVBoxLayout(self)
         
@@ -75,12 +75,12 @@ class ColumnMappingWidget(QWidget):
         button_layout.addStretch()
         layout.addLayout(button_layout)
     
-    def set_dataframe_columns(self, columns: List[str]):
+    def set_dataframe_columns(self, columns: List[str]) -> None:
         """Establecer columnas del DataFrame"""
         self.df_columns = columns
         self.refresh_mapping_table()
     
-    def set_excel_columns(self, columns: List[str]):
+    def set_excel_columns(self, columns: List[str]) -> None:
         """Establecer columnas disponibles en Excel"""
         self.excel_columns = columns
         
@@ -91,7 +91,7 @@ class ColumnMappingWidget(QWidget):
                 combo.clear()
                 combo.addItems(self.excel_columns)
     
-    def refresh_mapping_table(self):
+    def refresh_mapping_table(self) -> None:
         """Actualizar tabla de mapeo con columnas del DataFrame"""
         self.mapping_table.setRowCount(len(self.df_columns))
         
@@ -117,14 +117,14 @@ class ColumnMappingWidget(QWidget):
             preview_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             self.mapping_table.setItem(row, 3, preview_item)
     
-    def auto_map_positional(self):
+    def auto_map_positional(self) -> None:
         """Mapear automáticamente por posición"""
         for row in range(min(len(self.df_columns), len(self.excel_columns))):
             combo = self.mapping_table.cellWidget(row, 2)
             if combo:
                 combo.setCurrentIndex(row)
     
-    def add_mapping_row(self):
+    def add_mapping_row(self) -> None:
         """Añadir nueva fila de mapeo"""
         row = self.mapping_table.rowCount()
         self.mapping_table.insertRow(row)
@@ -148,7 +148,7 @@ class ColumnMappingWidget(QWidget):
         preview_item = QTableWidgetItem("")
         self.mapping_table.setItem(row, 3, preview_item)
     
-    def remove_selected_rows(self):
+    def remove_selected_rows(self) -> None:
         """Eliminar filas seleccionadas"""
         selected_rows = sorted([item.row() for item in self.mapping_table.selectedIndexes()], reverse=True)
         for row in selected_rows:
@@ -170,7 +170,7 @@ class ColumnMappingWidget(QWidget):
         
         return mapping
     
-    def update_preview(self, sample_data: pd.DataFrame):
+    def update_preview(self, sample_data: pd.DataFrame) -> None:
         """Actualizar vista previa con datos de ejemplo"""
         mapping = self.get_mapping()
         
@@ -193,16 +193,16 @@ class ColumnMappingWidget(QWidget):
 class ExcelTemplateDialog(QDialog):
     """Diálogo para seleccionar y validar plantilla Excel"""
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self.template_path = ""
-        self.selected_sheet = ""
-        self.available_sheets = []
+        self.template_path: str = ""
+        self.selected_sheet: str = ""
+        self.available_sheets: List[str] = []
         self.setWindowTitle("Seleccionar Plantilla Excel")
         self.resize(700, 500)
         self.setup_ui()
     
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar interfaz del diálogo"""
         layout = QVBoxLayout(self)
         
@@ -255,7 +255,7 @@ class ExcelTemplateDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
     
-    def browse_for_template(self):
+    def browse_for_template(self) -> None:
         """Explorar archivo de plantilla"""
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Seleccionar Plantilla Excel", "", 
@@ -265,7 +265,7 @@ class ExcelTemplateDialog(QDialog):
         if file_path:
             self.load_template(file_path)
     
-    def load_template(self, file_path: str):
+    def load_template(self, file_path: str) -> None:
         """Cargar y validar plantilla"""
         try:
             # Validar que es archivo Excel
@@ -282,7 +282,7 @@ class ExcelTemplateDialog(QDialog):
             self.file_path_edit.setText(file_path)
             
             # Actualizar información
-            file_size = os.path.getsize(file_path)
+            file_size = Path(file_path).stat().st_size
             self.info_label.setText(f"✓ Archivo válido - Tamaño: {file_size/1024:.1f}KB - Hojas: {len(self.available_sheets)}")
             
             # Actualizar selector de hojas
@@ -302,7 +302,7 @@ class ExcelTemplateDialog(QDialog):
             self.preview_table.setRowCount(0)
             self.preview_table.setColumnCount(0)
     
-    def show_preview(self):
+    def show_preview(self) -> None:
         """Mostrar vista previa de la plantilla"""
         try:
             if not self.template_path:
@@ -331,7 +331,7 @@ class ExcelTemplateDialog(QDialog):
         except Exception as e:
             print(f"Error mostrando preview: {e}")
     
-    def on_sheet_changed(self, sheet_name: str):
+    def on_sheet_changed(self, sheet_name: str) -> None:
         """Manejar cambio de hoja seleccionada"""
         self.selected_sheet = sheet_name
         if self.template_path:
@@ -345,14 +345,14 @@ class ExcelTemplateDialog(QDialog):
 class FilePreviewDialog(QDialog):
     """Diálogo para vista previa de archivos a generar"""
     
-    def __init__(self, files_info: List[Dict], parent=None):
+    def __init__(self, files_info: List[Dict[str, Any]], parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.files_info = files_info
         self.setWindowTitle("Vista Previa de Archivos")
         self.resize(800, 400)
         self.setup_ui()
     
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar interfaz del diálogo"""
         layout = QVBoxLayout(self)
         
@@ -392,7 +392,7 @@ class FilePreviewDialog(QDialog):
         
         self.refresh_table()
     
-    def refresh_table(self):
+    def refresh_table(self) -> None:
         """Actualizar tabla con información de archivos"""
         filtered_files = self.get_filtered_files()
         
@@ -427,7 +427,7 @@ class FilePreviewDialog(QDialog):
         
         self.update_summary(filtered_files)
     
-    def get_filtered_files(self) -> List[Dict]:
+    def get_filtered_files(self) -> List[Dict[str, Any]]:
         """Obtener archivos filtrados por estado"""
         filter_text = self.status_filter.currentText()
         
@@ -436,7 +436,7 @@ class FilePreviewDialog(QDialog):
         else:
             return [f for f in self.files_info if f.get('status') == filter_text]
     
-    def update_summary(self, files: List[Dict]):
+    def update_summary(self, files: List[Dict[str, Any]]) -> None:
         """Actualizar resumen"""
         total_files = len(files)
         total_rows = sum(f.get('rows', 0) for f in files)
@@ -446,7 +446,7 @@ class FilePreviewDialog(QDialog):
             f"Espacio disponible suficiente"
         )
     
-    def filter_files(self):
+    def filter_files(self) -> None:
         """Filtrar archivos por estado"""
         self.refresh_table()
 
@@ -460,11 +460,11 @@ class ExportSeparatedDialog(QDialog):
     configuration_changed = Signal()
     validation_updated = Signal(bool, str)  # is_valid, message
     
-    def __init__(self, dataframe: pd.DataFrame, parent=None):
+    def __init__(self, dataframe: pd.DataFrame, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.df = dataframe
-        self.config = None
-        self.validation_result = None
+        self.config: Optional[ExportSeparatedConfig] = None
+        self.validation_result: Optional[ValidationResult] = None
         self.setup_ui()
         self.setup_connections()
         self.setup_validation()
@@ -476,7 +476,7 @@ class ExportSeparatedDialog(QDialog):
         # Inicializar datos
         self.initialize_data()
     
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar interfaz completa del diálogo"""
         main_layout = QVBoxLayout(self)
         
@@ -666,21 +666,21 @@ class ExportSeparatedDialog(QDialog):
         
         main_layout.addLayout(buttons_layout)
     
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         self.column_combo.currentTextChanged.connect(self.on_column_changed)
         self.filename_template_edit.textChanged.connect(self.on_template_changed)
         self.start_cell_combo.currentTextChanged.connect(self.on_start_cell_changed)
         self.sheet_combo.currentTextChanged.connect(self.on_sheet_changed)
     
-    def setup_validation(self):
+    def setup_validation(self) -> None:
         """Configurar sistema de validación"""
         self.validation_timer = QTimer()
         self.validation_timer.timeout.connect(self.validate_configuration)
         self.validation_timer.setSingleShot(True)
         self.validation_timer.setInterval(1000)  # Validar 1 segundo después del último cambio
     
-    def initialize_data(self):
+    def initialize_data(self) -> None:
         """Inicializar datos del diálogo"""
         if self.df is not None and not self.df.empty:
             # Llenar combo de columnas
@@ -697,7 +697,7 @@ class ExportSeparatedDialog(QDialog):
             # Validación inicial
             self.validate_configuration()
     
-    def select_template(self):
+    def select_template(self) -> None:
         """Seleccionar plantilla Excel"""
         dialog = ExcelTemplateDialog(self)
         if dialog.exec():
@@ -707,7 +707,7 @@ class ExportSeparatedDialog(QDialog):
                 # Almacenar la ruta de plantilla para uso posterior
                 self._template_path = template_path
                 
-                self.template_path_label.setText(f"📄 {os.path.basename(template_path)}")
+                self.template_path_label.setText(f"📄 {Path(template_path).name}")
                 self.template_path_label.setToolTip(template_path)
                 
                 # Actualizar selector de hojas
@@ -720,7 +720,7 @@ class ExportSeparatedDialog(QDialog):
                 
                 self.validate_configuration()
     
-    def select_destination_folder(self):
+    def select_destination_folder(self) -> None:
         """Seleccionar carpeta de destino"""
         folder = QFileDialog.getExistingDirectory(
             self, "Seleccionar Carpeta de Destino"
@@ -740,13 +740,13 @@ class ExportSeparatedDialog(QDialog):
             
             self.validate_configuration()
     
-    def on_column_changed(self, column_name: str):
+    def on_column_changed(self, column_name: str) -> None:
         """Manejar cambio de columna de separación"""
         self.update_values_preview()
         self.update_filename_preview()
         self.validation_timer.start()
     
-    def update_values_preview(self):
+    def update_values_preview(self) -> None:
         """Actualizar preview de valores únicos"""
         column_name = self.column_combo.currentText()
         self.values_preview.clear()
@@ -765,12 +765,12 @@ class ExportSeparatedDialog(QDialog):
             if null_count > 0:
                 self.values_preview.addItem(f"• [VALORES NULOS] ({null_count:,} filas)")
     
-    def on_template_changed(self):
+    def on_template_changed(self) -> None:
         """Manejar cambio en plantilla de nombre"""
         self.update_filename_preview()
         self.validation_timer.start()
     
-    def update_filename_preview(self):
+    def update_filename_preview(self) -> None:
         """Actualizar preview de nombres de archivos"""
         column_name = self.column_combo.currentText()
         template = self.filename_template_edit.text()
@@ -797,15 +797,15 @@ class ExportSeparatedDialog(QDialog):
                 except Exception as e:
                     self.filenames_preview.addItem(f"• Error en plantilla: {str(e)}")
     
-    def on_start_cell_changed(self):
+    def on_start_cell_changed(self) -> None:
         """Manejar cambio de celda inicial"""
         self.validation_timer.start()
     
-    def on_sheet_changed(self):
+    def on_sheet_changed(self) -> None:
         """Manejar cambio de hoja"""
         self.validation_timer.start()
     
-    def validate_configuration(self):
+    def validate_configuration(self) -> None:
         """Validar configuración completa"""
         try:
             # Crear configuración temporal para validación
@@ -830,7 +830,7 @@ class ExportSeparatedDialog(QDialog):
         except Exception as e:
             self.update_validation_display(None, str(e))
     
-    def update_validation_display(self, validation_result: Optional[ValidationResult], error_msg: str = ""):
+    def update_validation_display(self, validation_result: Optional[ValidationResult], error_msg: str = "") -> None:
         """Actualizar display de validación"""
         if error_msg:
             self.validation_label.setText(f"❌ Error: {error_msg}")
@@ -873,7 +873,7 @@ class ExportSeparatedDialog(QDialog):
             self.preview_btn.setEnabled(True)
             self.status_bar.showMessage("Configuración válida", 3000)
     
-    def show_file_preview(self):
+    def show_file_preview(self) -> None:
         """Mostrar vista previa de archivos a generar"""
         try:
             if not self.validation_result or self.validation_result.errors:
@@ -964,7 +964,7 @@ class ExportSeparatedDialog(QDialog):
             print(f"Error obteniendo configuración: {e}")
             return None
     
-    def accept(self):
+    def accept(self) -> None:
         """Aceptar diálogo y validar configuración"""
         config = self.get_configuration()
         

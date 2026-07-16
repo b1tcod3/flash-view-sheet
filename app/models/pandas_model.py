@@ -7,10 +7,11 @@ import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex, QThread, Signal
 import math
 import sys
-import os
+from pathlib import Path
+from typing import Optional, Any, Dict, List
 
 # Añadir directorio raíz para importar config
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import optimization_config
 
 
@@ -20,24 +21,24 @@ class VirtualizedPandasModel(QAbstractTableModel):
     Implementa paginación virtual para manejar datasets grandes eficientemente
     """
 
-    def __init__(self, df: pd.DataFrame = None, chunk_size: int = None):
+    def __init__(self, df: Optional[pd.DataFrame] = None, chunk_size: Optional[int] = None) -> None:
         super().__init__()
-        self.full_df = df if df is not None else pd.DataFrame()
+        self.full_df: pd.DataFrame = df if df is not None else pd.DataFrame()
 
         # Usar configuración si no se especifica chunk_size
         if chunk_size is None:
             chunk_size = optimization_config.DEFAULT_CHUNK_SIZE
 
-        self.chunk_size = chunk_size
-        self.total_rows = len(self.full_df)
-        self.total_cols = len(self.full_df.columns) if self.total_rows > 0 else 0
+        self.chunk_size: int = chunk_size
+        self.total_rows: int = len(self.full_df)
+        self.total_cols: int = len(self.full_df.columns) if self.total_rows > 0 else 0
 
         # Cache para chunks de datos
-        self.data_cache = {}
-        self.cache_size = optimization_config.MAX_CACHE_CHUNKS
+        self.data_cache: Dict[int, pd.DataFrame] = {}
+        self.cache_size: int = optimization_config.MAX_CACHE_CHUNKS
 
         # Configuración de virtualización usando configuración global
-        self.enable_virtualization = optimization_config.should_use_virtualization(self.total_rows)
+        self.enable_virtualization: bool = optimization_config.should_use_virtualization(self.total_rows)
 
         if self.enable_virtualization:
             print(f"Virtualización activada para dataset de {self.total_rows} filas (chunk size: {self.chunk_size})")
@@ -73,7 +74,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
             return 0
         return self.total_cols
     
-    def data(self, index: QModelIndex, role: int = Qt.DisplayRole):
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Optional[str]:
         """
         Retornar datos para la celda especificada con carga bajo demanda
 
@@ -107,7 +108,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
 
         return None
 
-    def flags(self, index: QModelIndex):
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """
         Retornar flags para la celda especificada
 
@@ -122,7 +123,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
         
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
 
-    def sort(self, column: int, order: Qt.SortOrder):
+    def sort(self, column: int, order: Qt.SortOrder) -> None:
         """
         Ordenar datos por la columna especificada
 
@@ -207,7 +208,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
 
         return chunk_df
 
-    def _manage_cache(self, current_chunk: int):
+    def _manage_cache(self, current_chunk: int) -> None:
         """
         Gestionar el cache de chunks para evitar usar demasiada memoria
 
@@ -225,7 +226,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
             for chunk_idx in chunks_to_remove:
                 del self.data_cache[chunk_idx]
     
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole):
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole) -> Optional[str]:
         """
         Retornar datos para los encabezados
 
@@ -313,7 +314,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
         """Obtener el tamaño de chunk actual"""
         return self.chunk_size
 
-    def set_chunk_size(self, size: int):
+    def set_chunk_size(self, size: int) -> None:
         """Establecer nuevo tamaño de chunk"""
         self.chunk_size = size
         # Limpiar cache y recalcular

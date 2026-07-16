@@ -12,10 +12,10 @@ import copy
 class SimpleExcelFormatPreserver:
     """Versión simplificada para preservar formato sin problemas de recursión"""
     
-    def __init__(self):
-        self.saved_cell_data = {}
+    def __init__(self) -> None:
+        self.saved_cell_data: Dict[str, Any] = {}
     
-    def save_cell_format(self, cell) -> Dict[str, Any]:
+    def save_cell_format(self, cell: Any) -> Dict[str, Any]:
         """
         Guardar formato de una celda sin usar deepcopy
         
@@ -54,14 +54,14 @@ class SimpleExcelFormatPreserver:
         
         return format_info
     
-    def _serialize_border(self, side) -> Dict[str, Any]:
+    def _serialize_border(self, side: Any) -> Dict[str, Any]:
         """Serializar border side"""
         return {
             'style': side.style,
             'color': side.color.rgb if side.color else None
         }
     
-    def restore_cell_format(self, cell, format_info: Dict[str, Any]) -> None:
+    def restore_cell_format(self, cell: Any, format_info: Dict[str, Any]) -> None:
         """
         Restaurar formato de una celda
         
@@ -138,7 +138,7 @@ class SimpleExcelFormatPreserver:
             if 'value' in format_info:
                 cell.value = format_info['value']
     
-    def backup_area_formatting(self, worksheet, start_cell: str, area_size: Tuple[int, int]) -> Dict[str, Any]:
+    def backup_area_formatting(self, worksheet: Any, start_cell: str, area_size: Tuple[int, int]) -> Dict[str, Any]:
         """
         Backup del formato en un área específica
         
@@ -168,7 +168,7 @@ class SimpleExcelFormatPreserver:
         
         return backup
     
-    def insert_data_simple_preservation(self, worksheet, data: Dict[str, Any], 
+    def insert_data_simple_preservation(self, worksheet: Any, data: Dict[str, Any], 
                                       column_mapping: Dict[str, str], start_cell: str) -> None:
         """
         Insertar datos preservando formato de manera simple

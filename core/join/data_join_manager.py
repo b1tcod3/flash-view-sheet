@@ -7,7 +7,6 @@ import time
 from datetime import datetime
 from typing import List, Optional
 import psutil
-import os
 
 from .models import JoinConfig, JoinResult, JoinMetadata, ValidationResult, JoinType
 from .exceptions import JoinValidationError, JoinExecutionError, MemoryLimitExceededError, UnsupportedJoinError
@@ -16,7 +15,7 @@ from .exceptions import JoinValidationError, JoinExecutionError, MemoryLimitExce
 class DataJoinManager:
     """Clase principal responsable de ejecutar operaciones de cruce entre datasets"""
 
-    def __init__(self, left_df: pd.DataFrame, right_df: pd.DataFrame):
+    def __init__(self, left_df: pd.DataFrame, right_df: pd.DataFrame) -> None:
         """
         Inicializar DataJoinManager con los datasets
 

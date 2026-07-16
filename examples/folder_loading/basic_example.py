@@ -7,23 +7,23 @@ para consolidar múltiples archivos Excel de forma programática.
 """
 
 import sys
-import os
+from pathlib import Path
 import pandas as pd
 
 # Añadir el directorio raíz del proyecto al path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from core.loaders.folder_loader import FolderLoader
 from core.consolidation.excel_consolidator import ExcelConsolidator
 
-def basic_folder_loading():
+def basic_folder_loading() -> None:
     """Ejemplo básico de carga de carpeta"""
 
     print("🚀 Flash Sheet - Ejemplo Básico de Carga de Carpeta")
     print("=" * 60)
 
     # Ruta a la carpeta con archivos de ejemplo
-    folder_path = os.path.join(os.path.dirname(__file__), 'sample_data')
+    folder_path = str(Path(__file__).parent / 'sample_data')
 
     print(f"📁 Cargando carpeta: {folder_path}")
     print()
@@ -38,7 +38,7 @@ def basic_folder_loading():
         # 2. Mostrar archivos encontrados
         print("2️⃣ Archivos Excel encontrados:")
         for i, file_path in enumerate(loader.get_excel_files(), 1):
-            filename = os.path.basename(file_path)
+            filename = Path(file_path).name
             print(f"   {i}. {filename}")
         print()
 

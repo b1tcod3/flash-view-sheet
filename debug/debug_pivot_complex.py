@@ -7,10 +7,10 @@ import pandas as pd
 import numpy as np
 import logging
 import sys
-import os
+from pathlib import Path
 
 # Añadir el directorio raíz al path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Importar módulos pivot
 from core.pivot import CombinedPivotTable
@@ -37,7 +37,7 @@ def create_test_data() -> pd.DataFrame:
     
     return pd.DataFrame(data)
 
-def debug_complex_pivot():
+def debug_complex_pivot() -> None:
     """Debug del pivote complejo paso a paso"""
     logger.info("=== DEBUG: PIVOTE COMPLEJO ===")
     
@@ -103,7 +103,7 @@ def debug_complex_pivot():
         import traceback
         traceback.print_exc()
 
-def test_simpler_cases():
+def test_simpler_cases() -> None:
     """Probar casos más simples para identificar el problema"""
     logger.info("=== TEST CASOS SIMPLES ===")
     

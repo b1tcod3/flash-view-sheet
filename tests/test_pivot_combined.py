@@ -9,10 +9,10 @@ import numpy as np
 import unittest
 import logging
 import sys
-import os
+from pathlib import Path
 
 # Añadir el directorio raíz al path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Importar módulos pivot
 from core.pivot import CombinedPivotTable, PivotFilterManager, PivotAggregationManager
@@ -23,7 +23,7 @@ from core.pivot.pivot_aggregations import PivotAggregation
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def create_test_data() -> pd.DataFrame:
+def create_test_data()-> pd.DataFrame:
     """Crear datos de prueba para testing de combined pivot"""
     np.random.seed(42)
     
@@ -44,13 +44,13 @@ def create_test_data() -> pd.DataFrame:
 class TestCombinedPivotTable(unittest.TestCase):
     """Test para Combined Pivot Table"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar test"""
         self.df = create_test_data()
         self.pivot_table = CombinedPivotTable()
         logger.info(f"Dataset creado: {self.df.shape}")
         
-    def test_basic_combined_pivot(self):
+    def test_basic_combined_pivot(self) -> None:
         """Test de pivoteo combinado básico"""
         logger.info("Test: Pivoteo combinado básico")
         
@@ -80,7 +80,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             logger.error(f"Error en test básico: {str(e)}")
             self.fail(f"Fallo en pivoteo básico: {str(e)}")
             
-    def test_multiple_index_columns(self):
+    def test_multiple_index_columns(self) -> None:
         """Test con múltiples índices y columnas"""
         logger.info("Test: Múltiples índices y columnas")
         
@@ -108,7 +108,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             logger.error(f"Error en test múltiples índices: {str(e)}")
             self.fail(f"Fallo en múltiples índices: {str(e)}")
             
-    def test_advanced_filters(self):
+    def test_advanced_filters(self) -> None:
         """Test con filtros avanzados"""
         logger.info("Test: Filtros avanzados")
         
@@ -158,7 +158,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             logger.error(f"Error en test filtros: {str(e)}")
             self.fail(f"Fallo en filtros avanzados: {str(e)}")
             
-    def test_complex_parameters(self):
+    def test_complex_parameters(self) -> None:
         """Test con parámetros complejos"""
         logger.info("Test: Parámetros complejos")
         
@@ -187,7 +187,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             logger.error(f"Error en test complejo: {str(e)}")
             self.fail(f"Fallo en parámetros complejos: {str(e)}")
             
-    def test_pivot_filter_manager_integration(self):
+    def test_pivot_filter_manager_integration(self) -> None:
         """Test de integración con PivotFilterManager"""
         logger.info("Test: Integración PivotFilterManager")
         
@@ -211,7 +211,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             self.assertTrue((filtered_df['ventas'] > 900).all())
             self.assertTrue((filtered_df['categoria'] == 'A').all())
             
-    def test_pivot_aggregation_manager_integration(self):
+    def test_pivot_aggregation_manager_integration(self) -> None:
         """Test de integración con PivotAggregationManager"""
         logger.info("Test: Integración PivotAggregationManager")
         
@@ -233,7 +233,7 @@ class TestCombinedPivotTable(unittest.TestCase):
         
         self.assertEqual(summary['total_aggregations'], 3)
         
-    def test_error_handling(self):
+    def test_error_handling(self) -> None:
         """Test de manejo de errores"""
         logger.info("Test: Manejo de errores")
         
@@ -264,7 +264,7 @@ class TestCombinedPivotTable(unittest.TestCase):
                 'aggfuncs': ['funcion_invalida']
             })
             
-    def test_performance_with_large_data(self):
+    def test_performance_with_large_data(self) -> None:
         """Test de rendimiento con datos grandes"""
         logger.info("Test: Rendimiento con datos grandes")
         
@@ -302,7 +302,7 @@ class TestCombinedPivotTable(unittest.TestCase):
             logger.error(f"Error en test de rendimiento: {str(e)}")
             self.fail(f"Fallo en test de rendimiento: {str(e)}")
 
-def run_comprehensive_tests():
+def run_comprehensive_tests() -> bool:
     """Ejecutar todos los tests de manera comprehensiva"""
     logger.info("=== INICIANDO TESTS DE COMBINED PIVOT TABLE ===")
     

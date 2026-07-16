@@ -5,13 +5,13 @@ Simula el flujo completo de usuario desde la carga hasta el resultado final
 
 import unittest
 import sys
-import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from unittest.mock import Mock, patch, MagicMock
 
 # Add the project root to the Python path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.pivot import SimplePivotTable, CombinedPivotTable
 from core.pivot import PivotFilterManager, PivotAggregationManager
@@ -20,7 +20,7 @@ from core.pivot import PivotFilterManager, PivotAggregationManager
 class TestEndToEndWorkflow(unittest.TestCase):
     """Test del flujo completo end-to-end"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba para simular escenario real"""
         # Simular datos de ventas empresariales
         np.random.seed(42)
@@ -58,7 +58,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
         self.sales_data['trimestre'] = self.sales_data['fecha_venta'].dt.quarter
         self.sales_data['dia_semana'] = self.sales_data['fecha_venta'].dt.dayofweek
         
-    def test_complete_sales_analysis_workflow(self):
+    def test_complete_sales_analysis_workflow(self) -> None:
         """Test del flujo completo de análisis de ventas"""
         print("=== INICIANDO FLUJO COMPLETO DE ANÁLISIS DE VENTAS ===")
         
@@ -143,7 +143,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
         
         print("\n✅ FLUJO COMPLETO EJECUTADO EXITOSAMENTE")
         
-    def test_pivot_table_advanced_scenarios(self):
+    def test_pivot_table_advanced_scenarios(self) -> None:
         """Test de escenarios avanzados de tabla pivote"""
         print("=== ESCENARIOS AVANZADOS ===")
         
@@ -194,7 +194,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
         
         print("\n✅ ESCENARIOS AVANZADOS COMPLETADOS")
         
-    def test_error_handling_and_edge_cases(self):
+    def test_error_handling_and_edge_cases(self) -> None:
         """Test de manejo de errores y casos extremos"""
         print("=== MANEJO DE ERRORES Y CASOS EXTREMOS ===")
         
@@ -255,7 +255,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
         
         print("\n✅ MANEJO DE ERRORES VALIDADO")
         
-    def test_performance_with_large_datasets(self):
+    def test_performance_with_large_datasets(self) -> None:
         """Test de rendimiento con datasets grandes"""
         print("=== RENDIMIENTO CON DATASETS GRANDES ===")
         
@@ -317,7 +317,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
         
         print("\n✅ RENDIMIENTO VALIDADO")
         
-    def create_large_dataset(self, n_records):
+    def create_large_dataset(self, n_records: int) -> pd.DataFrame:
         """Helper para crear dataset grande para tests de rendimiento"""
         np.random.seed(42)
         
@@ -339,7 +339,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
             )
         )
         
-    def test_integration_with_filter_and_aggregation_managers(self):
+    def test_integration_with_filter_and_aggregation_managers(self) -> None:
         """Test de integración con managers de filtros y agregaciones"""
         print("=== INTEGRACIÓN CON MANAGERS ESPECIALIZADOS ===")
         

@@ -4,7 +4,6 @@ Test específico para verificar la corrección del bug de página en blanco
 """
 
 import sys
-import os
 import pandas as pd
 
 # Añadir el directorio actual al path para importar módulos
@@ -12,7 +11,7 @@ sys.path.insert(0, '/var/www/html/proyectos/flash-sheet')
 
 from paginacion.pagination_manager import PaginationManager
 
-def test_pagination_bug():
+def test_pagination_bug() -> None:
     """Test específico para verificar que todas las páginas muestren datos correctamente"""
     print("\n=== Test de Bug de Paginación ===")
     
@@ -88,7 +87,7 @@ def test_pagination_bug():
     
     return True
 
-def main():
+def main() -> int:
     """Función principal de test"""
     print("Iniciando test de corrección del bug de paginación...")
     

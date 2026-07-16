@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication
 from app.widgets.simple_pivot_dialog import SimplePivotDialog
 
 
-def test_numeric_validation_by_function():
+def test_numeric_validation_by_function() -> None:
     """Test que verifica la validación de tipos según función de agregación"""
     print("🧪 TEST: Validación de tipos según función de agregación")
     print("=" * 60)
@@ -125,7 +125,7 @@ def test_numeric_validation_by_function():
     return True
 
 
-def test_actual_execution():
+def test_actual_execution() -> None:
     """Test de ejecución real para confirmar funcionalidad"""
     print("\n🚀 TEST: Ejecución real de pivot con diferentes tipos")
     print("=" * 60)

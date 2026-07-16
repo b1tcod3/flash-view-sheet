@@ -6,7 +6,7 @@ Test de integración para reproducir exactamente el escenario de main.py
 import pandas as pd
 import sys
 import tempfile
-import os
+from pathlib import Path
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QStackedWidget
 from PySide6.QtCore import QThread, Signal
 
@@ -19,13 +19,13 @@ class DataLoaderThread(QThread):
     data_loaded = Signal(object)
     error_occurred = Signal(str)
 
-    def __init__(self, filepath, skip_rows=0, column_names=None):
+    def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict = None) -> None:
         super().__init__()
         self.filepath = filepath
         self.skip_rows = skip_rows
         self.column_names = column_names if column_names else {}
 
-    def run(self):
+    def run(self) -> None:
         """Ejecutar la carga de datos"""
         try:
             df = cargar_datos_con_opciones(self.filepath, self.skip_rows, self.column_names)
@@ -33,7 +33,7 @@ class DataLoaderThread(QThread):
         except Exception as e:
             self.error_occurred.emit(str(e))
 
-def create_test_csv():
+def create_test_csv() -> pd.DataFrame:
     """Crear archivo CSV de prueba"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -52,7 +52,7 @@ def create_test_csv():
     return temp_file.name
 
 class IntegrationTestWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Test de Integración - main.py simulation")
         self.setGeometry(200, 200, 1000, 700)
@@ -72,7 +72,7 @@ class IntegrationTestWindow(QMainWindow):
         self.filepath = create_test_csv()
         self.load_data_async()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz idéntica a main.py"""
         # Widget central con stacked widget (igual que main.py)
         self.stacked_widget = QStackedWidget()
@@ -91,14 +91,14 @@ class IntegrationTestWindow(QMainWindow):
         # Establecer vista inicial (igual que main.py)
         self.stacked_widget.setCurrentIndex(0)
         
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales idénticas a main.py"""
         if self.data_view:
             self.data_view.filter_applied.connect(self.on_filter_applied)
             self.data_view.filter_cleared.connect(self.on_filter_cleared)
             self.data_view.data_updated.connect(self.on_data_updated)
             
-    def load_data_async(self):
+    def load_data_async(self) -> None:
         """Cargar datos asincrónicamente - idéntico a main.py"""
         print("🔍 TEST: Iniciando carga asíncrona de datos...")
         
@@ -108,7 +108,7 @@ class IntegrationTestWindow(QMainWindow):
         self.loading_thread.error_occurred.connect(self.on_error_carga)
         self.loading_thread.start()
         
-    def on_datos_cargados(self, df):
+    def on_datos_cargados(self, df: pd.DataFrame) -> None:
         """Slot para manejar datos cargados exitosamente - idéntico a main.py"""
         print(f"✅ TEST: Datos cargados: {len(df)} filas")
         self.df_original = df
@@ -126,30 +126,30 @@ class IntegrationTestWindow(QMainWindow):
         # Verificar estado después de cargar
         self.verify_integration_state()
         
-    def on_error_carga(self, error_message):
+    def on_error_carga(self, error_message: str) -> None:
         """Slot para manejar errores de carga"""
         print(f"❌ ERROR: {error_message}")
         
-    def switch_view(self, index):
+    def switch_view(self, index: int) -> None:
         """Cambiar a la vista especificada - idéntico a main.py"""
         print(f"🔍 TEST: Cambiando a vista {index}")
         self.stacked_widget.setCurrentIndex(index)
         
-    def on_filter_applied(self, column, term):
+    def on_filter_applied(self, column: str, term) -> None:
         """Slot para manejar filtro aplicado"""
         print(f"🔍 TEST: Filtro aplicado: {column} = {term}")
         
-    def on_filter_cleared(self):
+    def on_filter_cleared(self) -> None:
         """Slot para manejar filtro limpiado"""
         print("🔍 TEST: Filtro limpiado")
         
-    def on_data_updated(self):
+    def on_data_updated(self) -> None:
         """Slot para manejar datos actualizados"""
         print("🔍 TEST: Datos actualizados")
         # Verificar estado después de actualizar
         self.verify_current_page_data()
         
-    def verify_integration_state(self):
+    def verify_integration_state(self) -> None:
         """Verificar estado después de la integración"""
         print("\n=== VERIFICACIÓN DESPUÉS DE INTEGRACIÓN ===")
         
@@ -194,7 +194,7 @@ class IntegrationTestWindow(QMainWindow):
             
         print("=== FIN VERIFICACIÓN ===\n")
         
-    def verify_current_page_data(self):
+    def verify_current_page_data(self) -> None:
         """Verificar datos de página actual después de actualización"""
         if self.data_view and hasattr(self.data_view, 'pagination_manager'):
             pm = self.data_view.pagination_manager
@@ -205,13 +205,13 @@ class IntegrationTestWindow(QMainWindow):
         else:
             print("❌ No se puede verificar página actual")
             
-    def closeEvent(self, event):
+    def closeEvent(self, event) -> None:
         """Limpiar archivo temporal al cerrar"""
-        if hasattr(self, 'filepath') and os.path.exists(self.filepath):
-            os.unlink(self.filepath)
+        if hasattr(self, 'filepath') and Path(self.filepath).exists():
+            Path(self.filepath).unlink()
         event.accept()
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

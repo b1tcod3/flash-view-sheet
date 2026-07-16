@@ -7,7 +7,7 @@ import pandas as pd
 from paginacion.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
-def test_core_pagination():
+def test_core_pagination() -> None:
     """Test de la funcionalidad core de paginación"""
     print("=== TEST CORE DE PAGINACIÓN ===\n")
     
@@ -51,7 +51,7 @@ def test_core_pagination():
     
     return all_pages_ok
 
-def test_edge_cases():
+def test_edge_cases() -> None:
     """Test de casos extremos"""
     print("\n=== TEST DE CASOS EXTREMOS ===\n")
     
@@ -88,7 +88,7 @@ def test_edge_cases():
     
     return True
 
-def test_virtualization():
+def test_virtualization() -> None:
     """Test específico para virtualización"""
     print("\n=== TEST DE VIRTUALIZACIÓN ===\n")
     
@@ -119,7 +119,7 @@ def test_virtualization():
     
     return True
 
-def main():
+def main() -> int:
     """Función principal"""
     print("🔍 TEST COMPLETO POST-CORRECCIÓN (SIN GUI)")
     print("=" * 55)

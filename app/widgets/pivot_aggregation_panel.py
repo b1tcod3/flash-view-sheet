@@ -4,9 +4,9 @@ Proporciona interfaz para seleccionar y configurar funciones de agregación
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-                               QGroupBox, QComboBox, QPushButton, QListWidget,
-                               QListWidgetItem, QTableWidget, QTableWidgetItem,
-                               QCheckBox, QSpinBox, QLineEdit, QFrame, QMessageBox, QTabWidget)
+                                QGroupBox, QComboBox, QPushButton, QListWidget,
+                                QListWidgetItem, QTableWidget, QTableWidgetItem,
+                                QCheckBox, QSpinBox, QLineEdit, QFrame, QMessageBox, QTabWidget)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
@@ -22,14 +22,14 @@ class AggregationFunctionWidget(QWidget):
     
     function_changed = Signal(dict)  # Configuración de la función
     
-    def __init__(self, function_data=None, parent=None):
+    def __init__(self, function_data: Dict[str, Any] | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.function_data = function_data or {}
+        self.function_data: Dict[str, Any] = function_data or {}
         self.setup_ui()
         if function_data:
             self.load_function_data()
             
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del widget"""
         layout = QHBoxLayout(self)
         layout.setContentsMargins(5, 5, 5, 5)
@@ -69,7 +69,7 @@ class AggregationFunctionWidget(QWidget):
         self.active_check.toggled.connect(self.emit_function_changed)
         layout.addWidget(self.active_check)
         
-    def setup_aggregation_functions(self):
+    def setup_aggregation_functions(self) -> None:
         """Configurar funciones de agregación disponibles"""
         functions = [
             ("sum", "Suma"),
@@ -93,14 +93,14 @@ class AggregationFunctionWidget(QWidget):
         for value, text in functions:
             self.agg_function_combo.addItem(text, value)
             
-    def set_available_columns(self, columns):
+    def set_available_columns(self, columns: List[str]) -> None:
         """Establecer columnas disponibles"""
         self.target_column_combo.clear()
         self.target_column_combo.addItem("Todas las columnas de valores", None)
         for col in columns:
             self.target_column_combo.addItem(col, col)
             
-    def load_function_data(self):
+    def load_function_data(self) -> None:
         """Cargar datos de función existente"""
         if 'name' in self.function_data:
             self.name_edit.setText(self.function_data['name'])
@@ -119,14 +119,14 @@ class AggregationFunctionWidget(QWidget):
         if 'active' in self.function_data:
             self.active_check.setChecked(self.function_data['active'])
             
-    def emit_function_changed(self):
+    def emit_function_changed(self) -> None:
         """Emitir señal con datos actualizados"""
         data = self.get_function_data()
         self.function_changed.emit(data)
         
-    def get_function_data(self):
+    def get_function_data(self) -> Dict[str, Any]:
         """Obtener datos de la función"""
-        data = {
+        data: Dict[str, Any] = {
             'name': self.name_edit.text().strip(),
             'function': self.agg_function_combo.currentData(),
             'function_text': self.agg_function_combo.currentText(),
@@ -142,7 +142,7 @@ class AggregationFunctionWidget(QWidget):
             
         return data
         
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Validar si la función está configurada correctamente"""
         return bool(self.get_function_data()['function'])
 
@@ -157,15 +157,15 @@ class PivotAggregationPanel(QWidget):
     aggregations_changed = Signal(list)  # Lista de funciones de agregación
     preview_requested = Signal()         # Solicitud de preview
     
-    def __init__(self, df_original=None, values_columns=None, parent=None):
+    def __init__(self, df_original: pd.DataFrame | None = None, values_columns: List[str] | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
-        self.values_columns = values_columns or []
-        self.aggregation_functions = []  # Lista de funciones configuradas
+        self.values_columns: List[str] = values_columns or []
+        self.aggregation_functions: List[Dict[str, Any]] = []
         self.setup_ui()
         self.setup_connections()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del panel"""
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)
@@ -205,7 +205,7 @@ class PivotAggregationPanel(QWidget):
         # Panel de información
         self.create_info_panel(main_layout)
         
-    def create_manual_config_tab(self):
+    def create_manual_config_tab(self) -> None:
         """Crear tab para configuración manual de funciones"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -305,14 +305,14 @@ class PivotAggregationPanel(QWidget):
         self.config_layout = QVBoxLayout(config_group)
         
         # Widget de función (se crea dinámicamente)
-        self.function_widget = None
+        self.function_widget: AggregationFunctionWidget | None = None
         self.create_function_widget()
         
         layout.addWidget(config_group)
         
         self.agg_tabs.addTab(tab, "Configuración Manual")
         
-    def create_quick_config_tab(self):
+    def create_quick_config_tab(self) -> None:
         """Crear tab para configuración rápida"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -396,7 +396,7 @@ class PivotAggregationPanel(QWidget):
         
         self.agg_tabs.addTab(tab, "Configuración Rápida")
         
-    def create_presets_tab(self):
+    def create_presets_tab(self) -> None:
         """Crear tab con presets predefinidos"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -495,7 +495,7 @@ class PivotAggregationPanel(QWidget):
         
         self.agg_tabs.addTab(tab, "Plantillas")
         
-    def create_preview_tab(self):
+    def create_preview_tab(self) -> None:
         """Crear tab de vista previa"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -568,7 +568,7 @@ class PivotAggregationPanel(QWidget):
         
         self.agg_tabs.addTab(tab, "Vista Previa")
         
-    def create_info_panel(self, main_layout):
+    def create_info_panel(self, main_layout: QVBoxLayout) -> None:
         """Crear panel de información"""
         info_frame = QFrame()
         info_frame.setStyleSheet("""
@@ -587,7 +587,7 @@ class PivotAggregationPanel(QWidget):
         
         main_layout.addWidget(info_frame)
         
-    def create_function_widget(self):
+    def create_function_widget(self) -> None:
         """Crear widget de configuración de función"""
         if self.function_widget:
             self.config_layout.removeWidget(self.function_widget)
@@ -601,7 +601,7 @@ class PivotAggregationPanel(QWidget):
         if self.values_columns:
             self.function_widget.set_available_columns(self.values_columns)
             
-    def setup_aggregation_functions(self):
+    def setup_aggregation_functions(self) -> None:
         """Configurar funciones de agregación disponibles"""
         functions = [
             "sum", "mean", "median", "count", "min", "max", "std", "var",
@@ -621,12 +621,12 @@ class PivotAggregationPanel(QWidget):
             item.setCheckState(Qt.Checked)
             self.quick_mode2_functions.addItem(item)
             
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         self.functions_list.itemSelectionChanged.connect(self.on_function_selection_changed)
         self.agg_tabs.currentChanged.connect(self.on_tab_changed)
         
-    def set_data(self, df, values_columns=None):
+    def set_data(self, df: pd.DataFrame | None, values_columns: List[str] | None = None) -> None:
         """Establecer datos y columnas de valores"""
         self.df_original = df
         if values_columns:
@@ -638,7 +638,7 @@ class PivotAggregationPanel(QWidget):
             
         self.update_info_label()
         
-    def update_info_label(self):
+    def update_info_label(self) -> None:
         """Actualizar label de información"""
         if self.values_columns:
             self.info_label.setText(
@@ -647,13 +647,13 @@ class PivotAggregationPanel(QWidget):
         else:
             self.info_label.setText("Seleccione columnas de valores para configurar agregaciones.")
             
-    def on_function_changed(self, function_data):
+    def on_function_changed(self, function_data: Dict[str, Any]) -> None:
         """Manejar cambio en función de agregación"""
         # Actualizar lista si es una función válida
         if function_data.get('function'):
             self.update_functions_list()
             
-    def on_function_selection_changed(self):
+    def on_function_selection_changed(self) -> None:
         """Manejar selección de función en lista"""
         current_item = self.functions_list.currentItem()
         if current_item and self.function_widget:
@@ -664,12 +664,12 @@ class PivotAggregationPanel(QWidget):
                     self.aggregation_functions[function_index]
                 )
                 
-    def on_tab_changed(self, index):
+    def on_tab_changed(self, index: int) -> None:
         """Manejar cambio de tabs"""
         if index == 3:  # Tab de preview
             self.update_configuration_preview()
             
-    def add_aggregation_function(self):
+    def add_aggregation_function(self) -> None:
         """Agregar nueva función de agregación"""
         if not self.values_columns:
             QMessageBox.warning(self, "Advertencia", 
@@ -677,7 +677,7 @@ class PivotAggregationPanel(QWidget):
             return
             
         # Crear función por defecto
-        default_function = {
+        default_function: Dict[str, Any] = {
             'name': f"Función {len(self.aggregation_functions) + 1}",
             'function': 'mean',
             'function_text': 'mean',
@@ -693,7 +693,7 @@ class PivotAggregationPanel(QWidget):
         
         self.info_label.setText(f"Función agregada: {default_function['name']}")
         
-    def edit_aggregation_function(self):
+    def edit_aggregation_function(self) -> None:
         """Editar función seleccionada"""
         current_item = self.functions_list.currentItem()
         if current_item and self.function_widget:
@@ -706,7 +706,7 @@ class PivotAggregationPanel(QWidget):
                     self.update_functions_list()
                     self.emit_aggregations_changed()
                     
-    def remove_aggregation_function(self):
+    def remove_aggregation_function(self) -> None:
         """Eliminar función seleccionada"""
         current_item = self.functions_list.currentItem()
         if current_item:
@@ -719,7 +719,7 @@ class PivotAggregationPanel(QWidget):
                 
                 self.info_label.setText(f"Función eliminada: {removed_function['name']}")
                 
-    def duplicate_aggregation_function(self):
+    def duplicate_aggregation_function(self) -> None:
         """Duplicar función seleccionada"""
         current_item = self.functions_list.currentItem()
         if current_item:
@@ -732,7 +732,7 @@ class PivotAggregationPanel(QWidget):
                 self.update_functions_list()
                 self.emit_aggregations_changed()
                 
-    def update_functions_list(self):
+    def update_functions_list(self) -> None:
         """Actualizar lista de funciones"""
         self.functions_list.clear()
         
@@ -754,13 +754,13 @@ class PivotAggregationPanel(QWidget):
                 item.setForeground(Qt.gray)
                 self.functions_list.addItem(item)
                 
-    def apply_quick_configuration(self):
+    def apply_quick_configuration(self) -> None:
         """Aplicar configuración rápida"""
         # Implementar según los modos seleccionados
         QMessageBox.information(self, "Configuración Rápida", 
                               "Funcionalidad de configuración rápida en desarrollo.")
                               
-    def apply_preset(self, preset_name):
+    def apply_preset(self, preset_name: str) -> None:
         """Aplicar preset predefinido"""
         if not self.values_columns:
             QMessageBox.warning(self, "Advertencia", 
@@ -785,7 +785,7 @@ class PivotAggregationPanel(QWidget):
         # Crear funciones para cada columna de valores
         for column in self.values_columns:
             for func in functions:
-                function_data = {
+                function_data: Dict[str, Any] = {
                     'name': f"{func.title()} de {column}",
                     'function': func,
                     'function_text': func.title(),
@@ -802,7 +802,7 @@ class PivotAggregationPanel(QWidget):
         QMessageBox.information(self, "Preset Aplicado", 
                               f"Preset '{preset_name}' aplicado con {len(self.aggregation_functions)} funciones.")
                               
-    def update_configuration_preview(self):
+    def update_configuration_preview(self) -> None:
         """Actualizar vista previa de configuración"""
         self.config_preview_text.clear()
         
@@ -828,7 +828,7 @@ class PivotAggregationPanel(QWidget):
         
         self.config_stats_label.setText(stats_text)
         
-    def test_configuration(self):
+    def test_configuration(self) -> None:
         """Probar configuración actual"""
         active_functions = [f for f in self.aggregation_functions if f['active']]
         
@@ -852,16 +852,16 @@ Estimación de rendimiento: {'Buena' if len(active_functions) <= 5 else 'Regular
         
         QMessageBox.information(self, "Resultado de Prueba", test_result.strip())
         
-    def emit_aggregations_changed(self):
+    def emit_aggregations_changed(self) -> None:
         """Emitir señal de cambio de agregaciones"""
         self.aggregations_changed.emit(self.aggregation_functions.copy())
         self.update_configuration_preview()
         
-    def get_aggregation_functions(self):
+    def get_aggregation_functions(self) -> List[Dict[str, Any]]:
         """Obtener funciones de agregación activas"""
         return [f for f in self.aggregation_functions if f['active']]
         
-    def set_aggregation_functions(self, functions):
+    def set_aggregation_functions(self, functions: List[Dict[str, Any]]) -> None:
         """Establecer funciones de agregación"""
         self.aggregation_functions = functions.copy()
         self.update_functions_list()

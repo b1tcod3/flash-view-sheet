@@ -8,11 +8,12 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                   QRadioButton, QButtonGroup, QCheckBox, QLineEdit,
                                   QFileDialog, QProgressBar, QTableWidget, QTableWidgetItem,
                                   QHeaderView, QProgressDialog, QTabWidget, QListWidget,
-                                  QListWidgetItem, QSplitter, QHBoxLayout)
+                                  QListWidgetItem, QSplitter, QHBoxLayout, QAbstractButton)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
-import os
+from pathlib import Path
+from typing import Optional, Dict, Any, List, Tuple
 
 from core.data_handler import cargar_datos
 from core.join.models import JoinConfig, JoinType
@@ -29,16 +30,16 @@ class JoinDialog(QDialog):
     join_completed = Signal(object, str)  # JoinResult, right_file_path
     join_cancelled = Signal()
 
-    def __init__(self, left_df: pd.DataFrame, parent=None):
+    def __init__(self, left_df: pd.DataFrame, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.left_df = left_df
-        self.right_df = None
-        self.right_file_path = None
-        self.join_manager = None
+        self.right_df: Optional[pd.DataFrame] = None
+        self.right_file_path: Optional[str] = None
+        self.join_manager: Optional[DataJoinManager] = None
         self.setup_ui()
         self.setup_connections()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del diálogo"""
         self.setWindowTitle("Configurar Cruce de Datos")
         self.resize(900, 700)
@@ -71,7 +72,7 @@ class JoinDialog(QDialog):
         # Pestaña de vista previa
         self.create_preview_tab()
 
-    def create_configuration_tab(self):
+    def create_configuration_tab(self) -> None:
         """Crear pestaña de configuración"""
         config_widget = QWidget()
         config_layout = QVBoxLayout(config_widget)
@@ -90,7 +91,7 @@ class JoinDialog(QDialog):
 
         self.tab_widget.addTab(config_widget, "⚙️ Configuración")
 
-    def create_preview_tab(self):
+    def create_preview_tab(self) -> None:
         """Crear pestaña de vista previa"""
         preview_widget = QWidget()
         preview_layout = QVBoxLayout(preview_widget)
@@ -106,7 +107,7 @@ class JoinDialog(QDialog):
 
         self.tab_widget.addTab(preview_widget, "👁️ Vista Previa")
 
-    def create_left_dataset_group(self, layout):
+    def create_left_dataset_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo para dataset izquierdo"""
         group = QGroupBox("Dataset Izquierdo")
         group_layout = QVBoxLayout(group)
@@ -118,7 +119,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_right_dataset_group(self, layout):
+    def create_right_dataset_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo para dataset derecho"""
         group = QGroupBox("Dataset Derecho")
         group_layout = QVBoxLayout(group)
@@ -148,7 +149,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_join_config_group(self, layout):
+    def create_join_config_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo de configuración del join"""
         group = QGroupBox("Configuración del Join")
         group_layout = QVBoxLayout(group)
@@ -197,7 +198,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_advanced_options_group(self, layout):
+    def create_advanced_options_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo de opciones avanzadas"""
         group = QGroupBox("Opciones Avanzadas")
         group_layout = QFormLayout(group)
@@ -226,7 +227,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_column_selection_group(self, layout):
+    def create_column_selection_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo de selección de columnas"""
         group = QGroupBox("Selección de Columnas (Opcional)")
         group_layout = QVBoxLayout(group)
@@ -296,7 +297,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_preview_group(self, layout):
+    def create_preview_group(self, layout: QVBoxLayout) -> None:
         """Crear grupo de preview"""
         group = QGroupBox("Preview de Resultados")
         group_layout = QVBoxLayout(group)
@@ -320,7 +321,7 @@ class JoinDialog(QDialog):
 
         layout.addWidget(group)
 
-    def create_button_panel(self, layout):
+    def create_button_panel(self, layout: QVBoxLayout) -> None:
         """Crear panel de botones"""
         button_layout = QHBoxLayout()
 
@@ -342,7 +343,7 @@ class JoinDialog(QDialog):
 
         layout.addLayout(button_layout)
 
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         # Actualizar UI cuando cambie el tipo de join
         self.join_type_group.buttonClicked.connect(self.on_join_type_changed)
@@ -354,7 +355,7 @@ class JoinDialog(QDialog):
         # Actualizar columnas disponibles cuando se cambie a la pestaña de preview
         self.tab_widget.currentChanged.connect(self.on_tab_changed)
 
-    def load_right_dataset(self):
+    def load_right_dataset(self) -> None:
         """Cargar dataset derecho"""
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -368,7 +369,7 @@ class JoinDialog(QDialog):
                 self.right_df = cargar_datos(file_path)
                 self.right_file_path = file_path
                 self.right_info_label.setText(
-                    f"📄 {os.path.basename(file_path)}\n{self.right_df.shape[0]} filas × {self.right_df.shape[1]} columnas"
+                    f"📄 {Path(file_path).name}\n{self.right_df.shape[0]} filas × {self.right_df.shape[1]} columnas"
                 )
                 self.right_info_label.setStyleSheet("color: #2c3e50; font-weight: bold;")
 
@@ -391,7 +392,7 @@ class JoinDialog(QDialog):
         self.execute_btn.setEnabled(enabled)
         self.update_preview_btn.setEnabled(enabled)
 
-    def update_column_combos(self):
+    def update_column_combos(self) -> None:
         """Actualizar combos de columnas y sugerir matches automáticos"""
         if self.right_df is not None:
             # Columnas del izquierdo
@@ -407,7 +408,7 @@ class JoinDialog(QDialog):
             # Buscar columnas con nombres similares para sugerir automáticamente
             self._suggest_matching_columns(left_columns, right_columns)
 
-    def _suggest_matching_columns(self, left_columns, right_columns):
+    def _suggest_matching_columns(self, left_columns: List[str], right_columns: List[str]) -> None:
         """Sugerir automáticamente columnas que podrían hacer match"""
         # Buscar columnas con el mismo nombre (case insensitive)
         suggested_left = None
@@ -436,7 +437,7 @@ class JoinDialog(QDialog):
             self.left_key_combo.setCurrentText(suggested_left)
             self.right_key_combo.setCurrentText(suggested_right)
 
-    def on_join_type_changed(self, button):
+    def on_join_type_changed(self, button: QAbstractButton) -> None:
         """Manejar cambio de tipo de join"""
         join_type = button.property("join_type")
 
@@ -450,7 +451,7 @@ class JoinDialog(QDialog):
 
         self.update_preview()
 
-    def on_column_selection_changed(self, state):
+    def on_column_selection_changed(self, state: int) -> None:
         """Manejar cambio en selección de columnas"""
         enabled = state == 2  # Qt.CheckState.Checked
 
@@ -469,13 +470,13 @@ class JoinDialog(QDialog):
 
         self.update_preview()
 
-    def on_tab_changed(self, index):
+    def on_tab_changed(self, index: int) -> None:
         """Manejar cambio de pestaña"""
         # Si se cambia a la pestaña de preview (índice 1) y hay dataset derecho cargado
         if index == 1 and self.right_df is not None and self.select_columns_check.isChecked():
             self.update_available_columns()
 
-    def update_available_columns(self):
+    def update_available_columns(self) -> None:
         """Actualizar lista de columnas disponibles"""
         if self.right_df is None:
             return
@@ -501,7 +502,7 @@ class JoinDialog(QDialog):
             item = QListWidgetItem(col)
             self.available_columns_list.addItem(item)
 
-    def add_selected_columns(self):
+    def add_selected_columns(self) -> None:
         """Añadir columnas seleccionadas a la lista de seleccionadas"""
         selected_items = self.available_columns_list.selectedItems()
         for item in selected_items:
@@ -514,7 +515,7 @@ class JoinDialog(QDialog):
 
         self.update_preview()
 
-    def remove_selected_columns(self):
+    def remove_selected_columns(self) -> None:
         """Quitar columnas seleccionadas de la lista de seleccionadas"""
         selected_items = self.selected_columns_list.selectedItems()
         for item in selected_items:
@@ -523,7 +524,7 @@ class JoinDialog(QDialog):
 
         self.update_preview()
 
-    def select_all_columns(self):
+    def select_all_columns(self) -> None:
         """Seleccionar todas las columnas disponibles"""
         self.selected_columns_list.clear()
         for i in range(self.available_columns_list.count()):
@@ -533,17 +534,17 @@ class JoinDialog(QDialog):
 
         self.update_preview()
 
-    def clear_column_selection(self):
+    def clear_column_selection(self) -> None:
         """Limpiar selección de columnas"""
         self.selected_columns_list.clear()
         self.update_preview()
 
-    def add_join_column(self):
+    def add_join_column(self) -> None:
         """Añadir columna adicional para join múltiple"""
         # TODO: Implementar joins múltiples
         QMessageBox.information(self, "Información", "Joins múltiples no implementados aún")
 
-    def update_preview(self):
+    def update_preview(self) -> None:
         """Actualizar preview de resultados"""
         if self.right_df is None:
             return
@@ -628,7 +629,7 @@ class JoinDialog(QDialog):
             include_columns=include_columns
         )
 
-    def validate_config(self):
+    def validate_config(self) -> None:
         """Validar configuración"""
         if self.right_df is None:
             QMessageBox.warning(self, "Error", "Debe cargar un dataset derecho primero")
@@ -661,7 +662,7 @@ class JoinDialog(QDialog):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error inesperado: {str(e)}")
 
-    def execute_join(self):
+    def execute_join(self) -> None:
         """Ejecutar el join"""
         if self.right_df is None:
             QMessageBox.warning(self, "Error", "Debe cargar un dataset derecho primero")
@@ -786,7 +787,7 @@ class JoinDialog(QDialog):
         # Mínimo 0.5 segundos, máximo 30 segundos para estimación
         return max(0.5, min(base_time, 30.0))
 
-    def reject(self):
+    def reject(self) -> None:
         """Cancelar operación"""
         self.join_cancelled.emit()
         super().reject()

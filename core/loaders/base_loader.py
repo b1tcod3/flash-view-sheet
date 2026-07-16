@@ -4,9 +4,9 @@ Abstract base class for all file format loaders
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import pandas as pd
-import os
+from pathlib import Path
 
 
 class FileLoader(ABC):
@@ -15,16 +15,17 @@ class FileLoader(ABC):
     All specific file loaders should inherit from this class
     """
 
-    def __init__(self, filepath: str):
+    def __init__(self, filepath: str) -> None:
         self.filepath = filepath
         self._validate_file()
 
-    def _validate_file(self):
+    def _validate_file(self) -> None:
         """Validate that the file exists and has the correct format"""
-        if not os.path.exists(self.filepath):
+        p = Path(self.filepath)
+        if not p.exists():
             raise FileNotFoundError(f"File not found: {self.filepath}")
         
-        extension = os.path.splitext(self.filepath)[1].lower()
+        extension = p.suffix.lower()
         if extension not in self.get_supported_extensions():
             raise ValueError(
                 f"File format '{extension}' not supported by {self.__class__.__name__}. "
@@ -32,7 +33,7 @@ class FileLoader(ABC):
             )
 
     @abstractmethod
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         """
         Get list of supported file extensions
         
@@ -96,7 +97,7 @@ class FileLoader(ABC):
             Dictionary with memory usage details
         """
         try:
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             return {
                 'file_size_bytes': file_size,
                 'file_size_mb': file_size / (1024 * 1024),
@@ -113,10 +114,9 @@ class FileLoader(ABC):
         Returns:
             Estimated number of rows
         """
-        # This is a rough estimation, can be overridden by specific loaders
         try:
             with open(self.filepath, 'r', encoding='utf-8') as f:
-                file_size = os.path.getsize(self.filepath)
+                file_size = Path(self.filepath).stat().st_size
                 line_length = 100  # Rough estimate
                 return file_size // line_length
         except:

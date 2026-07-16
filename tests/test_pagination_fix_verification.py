@@ -12,7 +12,7 @@ from PySide6.QtCore import Qt
 # Importar componentes del proyecto
 from paginacion.data_view import DataView
 
-def test_sorting_preserves_pagination():
+def test_sorting_preserves_pagination() -> None:
     """Test que verifica específicamente la preservación de paginación al ordenar"""
     
     print("🧪 TEST: Preservación de paginación al ordenar")
@@ -170,7 +170,7 @@ def test_sorting_preserves_pagination():
     
     return page_preserved and navigation_ok and multiple_sorting_ok
 
-def test_different_column_types():
+def test_different_column_types() -> None:
     """Test ordenamiento en diferentes tipos de columnas"""
     
     print("🧪 TEST: Diferentes tipos de columnas")

@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>} &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Flash Sheet Quick Start Guide (10-Minute Tutorial)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Data Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Graphics and Charts Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Basic Export Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Advanced Features Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#detailed-examples-and-business-use-cases">Detailed Examples and Business Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Main Window Architecture - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Data Handler System - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Views System Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Development Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">}</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/advanced_configuration.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Manual de Configuración Avanzada</p>
+<p>## 📋 Índice</p>
+<ol class="arabic simple">
+<li><p>[Introducción](#introducción)</p></li>
+<li><p>[Configuración de Rendimiento](#configuración-de-rendimiento)</p></li>
+<li><p>[Opciones de Memoria y Chunking](#opciones-de-memoria-y-chunking)</p></li>
+<li><p>[Plantillas de Nombres Avanzadas](#plantillas-de-nombres-avanzadas)</p></li>
+<li><p>[Mapeo de Columnas Detallado](#mapeo-de-columnas-detallado)</p></li>
+<li><p>[Manejo de Casos Especiales](#manejo-de-casos-especiales)</p></li>
+<li><p>[Configuración de Logging](#configuración-de-logging)</p></li>
+<li><p>[Optimizaciones por Tipo de Datos](#optimizaciones-por-tipo-de-datos)</p></li>
+<li><p>[Configuración para Entornos Corporativos](#configuración-para-entornos-corporativos)</p></li>
+</ol>
+<p>## Introducción</p>
+<p>Este manual está dirigido a <strong>usuarios avanzados</strong> que necesitan personalizar la funcionalidad de exportación separada para casos específicos, optimizar rendimiento en entornos corporativos, o resolver situaciones complejas de datos.</p>
+<p>### Perfil de Usuario Avanzado</p>
+<ul class="simple">
+<li><p>Administradores de datos</p></li>
+<li><p>Desarrolladores que integran la funcionalidad</p></li>
+<li><p>Usuarios en entornos con datasets grandes</p></li>
+<li><p>Administradores de sistemas que optimizan para múltiples usuarios</p></li>
+</ul>
+<p>## Configuración de Rendimiento</p>
+<p>### Optimización de Velocidad</p>
+<p><strong>Configuración Recomendada por Tamaño de Dataset:</strong></p>
+<div class="line-block">
+<div class="line">Tamaño Dataset | Estrategia | Tamaño Chunk | RAM Requerida |</div>
+</div>
+<p><a href="#id144"><span class="problematic" id="id145">|---------------|</span></a>————<a href="#id146"><span class="problematic" id="id147">|--------------|</span></a>—————|
+| <strong>Pequeño</strong> (&lt; 10K filas) | Directo | N/A | &lt; 200MB |
+| <strong>Mediano</strong> (10K-100K) | Moderado | 10,000 | 500MB |
+| <strong>Grande</strong> (100K-1M) | Agresivo | 5,000 | 1GB |
+| <strong>Muy Grande</strong> (&gt; 1M) | Conservador | 1,000 | 2GB+ |</p>
+<p><strong>Parámetros de Optimización:</strong></p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+config.optimization_config = {</p>
+<blockquote>
+<div><p>‘enable_chunking’: True,
+‘chunk_size’: 5000,
+‘memory_limit_mb’: 2048,
+‘parallel_processing’: False,
+‘progressive_output’: True,
+‘temp_cleanup’: True</p>
+</div></blockquote>
+<section id="id5">
+<h1>}<a class="headerlink" href="#id5" title="Link to this heading"></a></h1>
+<p>### Configuración de Multihilo</p>
+<p><strong>Para Datasets Extremadamente Grandes:</strong></p>
+<p><a href="#id6"><span class="problematic" id="id7">``</span></a><a href="#id8"><span class="problematic" id="id9">`</span></a>python
+config.parallel_config = {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘max_workers’: 4,  # No exceder número de CPUs
+‘chunk_size’: 2500,  # Chunks más pequeños para paralelización
+‘memory_per_thread’: 512  # MB por hilo</p>
+</div></blockquote>
+</section>
+<section id="id10">
+<h1>}<a class="headerlink" href="#id10" title="Link to this heading"></a></h1>
+<p><strong>⚠️ Precauciones:</strong>
+- Solo habilitar en sistemas con 8GB+ RAM
+- Monitorear uso de memoria durante ejecución
+- Desactivar si hay problemas de estabilidad</p>
+<p>### Optimización de I/O</p>
+<p><strong>Para Entornos con Almacenamiento Lento:</strong></p>
+<p><a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a>python
+config.io_config = {</p>
+<blockquote>
+<div><p>‘use_temp_files’: True,
+‘temp_directory’: ‘/tmp/flash_sheet_exports’,
+‘compress_temp’: True,
+‘buffer_size_kb’: 512,
+‘async_writing’: False  # Mantener sincrónico para mejor control</p>
+</div></blockquote>
+</section>
+<section id="id15">
+<h1>}<a class="headerlink" href="#id15" title="Link to this heading"></a></h1>
+<p>## Opciones de Memoria y Chunking</p>
+<p>### Gestión Automática de Memoria</p>
+<p><strong>Configuración de Thresholds:</strong></p>
+<p><a href="#id16"><span class="problematic" id="id17">``</span></a><a href="#id18"><span class="problematic" id="id19">`</span></a>python
+config.memory_config = {</p>
+<blockquote>
+<div><p>‘auto_threshold’: True,  # Detecta automáticamente límites del sistema
+‘system_memory_percent’: 70,  # Usar máximo 70% de RAM disponible
+‘gc_frequency’: 100,  # Garbage collection cada 100 operaciones
+‘memory_leak_detection’: True,
+‘max_chunk_memory_mb’: 512  # Límite por chunk individual</p>
+</div></blockquote>
+</section>
+<section id="id20">
+<h1>}<a class="headerlink" href="#id20" title="Link to this heading"></a></h1>
+<p>### Chunking Inteligente</p>
+<p><strong>Configuración Adaptativa:</strong></p>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a>python
+config.chunking_strategy = {</p>
+<blockquote>
+<div><p>‘adaptive_sizing’: True,  # Ajusta tamaño según datos
+‘data_size_analysis’: True,  # Analiza distribución de datos
+‘balance_memory_speed’: True,  # Equilibra velocidad vs memoria
+‘predictive_sizing’: True  # Predice tamaño óptimo basado en patrón de datos</p>
+</div></blockquote>
+</section>
+<section id="id25">
+<h1>}<a class="headerlink" href="#id25" title="Link to this heading"></a></h1>
+<p><strong>Configuración Manual por Escenario:</strong></p>
+<p><a href="#id26"><span class="problematic" id="id27">``</span></a><a href="#id28"><span class="problematic" id="id29">`</span></a>python
+# Escenario 1: Muchos grupos pequeños
+scenarios.many_small_groups = {</p>
+<blockquote>
+<div><p>‘chunk_size’: 1000,
+‘group_threshold’: 1000,
+‘memory_per_group’: ‘auto’</p>
+</div></blockquote>
+<p>}</p>
+<p># Escenario 2: Pocos grupos grandes
+scenarios.few_large_groups = {</p>
+<blockquote>
+<div><p>‘chunk_size’: 5000,
+‘group_threshold’: 10,
+‘memory_per_group’: 100  # MB</p>
+</div></blockquote>
+<p>}</p>
+<p># Escenario 3: Distribución uniforme
+scenarios.uniform_distribution = {</p>
+<blockquote>
+<div><p>‘chunk_size’: 10000,
+‘group_threshold’: ‘auto’,
+‘memory_per_group’: ‘adaptive’</p>
+</div></blockquote>
+</section>
+<section id="id30">
+<h1>}<a class="headerlink" href="#id30" title="Link to this heading"></a></h1>
+<p>### Monitoreo de Memoria</p>
+<p><strong>Configuración de Alertas:</strong></p>
+<p><a href="#id31"><span class="problematic" id="id32">``</span></a><a href="#id33"><span class="problematic" id="id34">`</span></a>python
+config.memory_monitoring = {</p>
+<blockquote>
+<div><p>‘enable_alerts’: True,
+‘warning_threshold_mb’: 1500,  # Alerta al 75% del límite
+‘critical_threshold_mb’: 1800,  # Crítico al 90% del límite
+‘alert_callback’: ‘custom_memory_handler’,
+‘auto_reduce_chunking’: True,
+‘emergency_stop_mb’: 2048  # Parar automáticamente si excede</p>
+</div></blockquote>
+</section>
+<section id="id35">
+<h1>}<a class="headerlink" href="#id35" title="Link to this heading"></a></h1>
+<p>## Plantillas de Nombres Avanzadas</p>
+<p>### Sistema de Placeholders Extendido</p>
+<p><strong>Placeholders Básicos:</strong>
+- <cite>{valor}</cite> - Valor de columna de separación
+- <cite>{fecha}</cite> - Fecha actual (YYYY-MM-DD)
+- <cite>{hora}</cite> - Hora actual (HHMMSS)
+- <cite>{contador}</cite> - Número secuencial
+- <cite>{columna_nombre}</cite> - Nombre de columna</p>
+<p><strong>Placeholders Avanzados:</strong></p>
+<p><a href="#id36"><span class="problematic" id="id37">``</span></a><a href="#id38"><span class="problematic" id="id39">`</span></a>python
+advanced_placeholders = {</p>
+<blockquote>
+<div><p>‘{timestamp}’: ‘Timestamp Unix en segundos’,
+‘{uuid}’: ‘UUID único corto (8 caracteres)’,
+‘{hash_md5}’: ‘Hash MD5 de contenido (primeros 8 chars)’,
+‘{filas}’: ‘Número de filas en el grupo’,
+‘{columnas}’: ‘Número de columnas en el grupo’,
+‘{tamaño_kb}’: ‘Tamaño estimado del archivo en KB’,
+‘{usuario}’: ‘Nombre de usuario actual’,
+‘{maquina}’: ‘Nombre de máquina’,
+‘{version_datos}’: ‘Versión o hash de los datos’,
+‘{sesion_id}’: ‘ID único de sesión de exportación’</p>
+</div></blockquote>
+</section>
+<section id="id40">
+<h1>}<a class="headerlink" href="#id40" title="Link to this heading"></a></h1>
+<p>### Funciones de Procesamiento de Nombres</p>
+<p><strong>Filtros y Transformaciones:</strong></p>
+<p><a href="#id41"><span class="problematic" id="id42">``</span></a><a href="#id43"><span class="problematic" id="id44">`</span></a>python
+# Formato: {valor|FILTRO|PARAMETRO}
+filters = {</p>
+<blockquote>
+<div><p>‘upper’: ‘{valor|upper}’,  # MAYÚSCULAS
+‘lower’: ‘{valor|lower}’,  # minúsculas
+‘title’: ‘{valor|title}’,  # Título Caso
+‘slug’: ‘{valor|slug}’,    # slug-case
+‘date’: ‘{fecha|date|YYYY_MM}’,  # Fecha personalizada
+‘sanitize’: ‘{valor|sanitize}’,  # Sin caracteres especiales
+‘length’: ‘{valor|length|10}’,   # Máximo 10 caracteres
+‘prefix’: ‘{valor|prefix|PRE_}’, # Agregar prefijo
+‘suffix’: ‘{valor|suffix|_SUF}’, # Agregar sufijo</p>
+</div></blockquote>
+</section>
+<section id="id45">
+<h1>}<a class="headerlink" href="#id45" title="Link to this heading"></a></h1>
+<p><strong>Ejemplos de Uso:</strong></p>
+<p><a href="#id46"><span class="problematic" id="id47">``</span></a><a href="#id48"><span class="problematic" id="id49">`</span></a>python
+# Ejemplo 1: Nombres corporativos
+plantilla_corporativa = “{valor|upper}_{fecha|date|YYYY}_{contador|03d}.xlsx”
+# Resultado: NORTE_2025_001.xlsx</p>
+<p># Ejemplo 2: Nombres seguros para sistemas
+plantilla_sistema = “{valor|sanitize}_{timestamp}.xlsx”
+# Resultado: norte_sur_1733487234.xlsx</p>
+<p># Ejemplo 3: Nombres descriptivos
+plantilla_descriptiva = “Reporte_{valor|title}_{fecha|date|MM_YYYY}_({filas}_filas).xlsx”
+# Resultado: Reporte_Norte_11_2025_(1250_filas).xlsx
+<a href="#id50"><span class="problematic" id="id51">``</span></a><a href="#id52"><span class="problematic" id="id53">`</span></a></p>
+<p>### Configuración de Conflictos</p>
+<p><strong>Resolución Automática de Duplicados:</strong></p>
+<p><a href="#id54"><span class="problematic" id="id55">``</span></a><a href="#id56"><span class="problematic" id="id57">`</span></a>python
+config.filename_conflicts = {</p>
+<blockquote>
+<div><p>‘strategy’: ‘timestamp_suffix’,  # auto_number, timestamp_suffix, hash_suffix
+‘max_attempts’: 999,
+‘fallback_strategy’: ‘uuid_suffix’,
+‘preserve_extension’: True,
+‘case_sensitive’: False,  # Manejar diferencias case-insensitive
+‘special_chars’: ‘remove’  # remove, replace_with_underscore, keep</p>
+</div></blockquote>
+</section>
+<section id="id58">
+<h1>}<a class="headerlink" href="#id58" title="Link to this heading"></a></h1>
+<p>## Mapeo de Columnas Detallado</p>
+<p>### Tipos de Mapeo Avanzados</p>
+<p><strong>1. Mapeo por Patrones:</strong></p>
+<p><a href="#id59"><span class="problematic" id="id60">``</span></a><a href="#id61"><span class="problematic" id="id62">`</span></a>python
+config.mapping_patterns = {</p>
+<blockquote>
+<div><p>‘auto_pattern_matching’: True,
+‘pattern_config’: {</p>
+<blockquote>
+<div><p>‘date_columns’: [‘fecha’, ‘date’, ‘tiempo’, ‘time’],
+‘amount_columns’: [‘total’, ‘cantidad’, ‘amount’, ‘sum’],
+‘name_columns’: [‘nombre’, ‘name’, ‘producto’, ‘item’],
+‘id_columns’: [‘id’, ‘codigo’, ‘code’, ‘identifier’]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id63">
+<h1>}<a class="headerlink" href="#id63" title="Link to this heading"></a></h1>
+<p><strong>2. Mapeo con Transformaciones:</strong></p>
+<p><a href="#id64"><span class="problematic" id="id65">``</span></a><a href="#id66"><span class="problematic" id="id67">`</span></a>python
+config.column_transformations = {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘transformations’: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘date_format’: {</dt><dd><p>‘enabled’: True,
+‘input_format’: ‘YYYY-MM-DD’,
+‘output_format’: ‘DD/MM/YYYY’,
+‘columns’: [‘fecha_ingreso’, ‘fecha_nacimiento’]</p>
+</dd>
+</dl>
+<p>},
+‘number_format’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘decimal_places’: 2,
+‘thousands_separator’: ‘,’,
+‘columns’: [‘precio’, ‘total’, ‘cantidad’]</p>
+</div></blockquote>
+<p>},
+‘text_cleaning’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘trim_whitespace’: True,
+‘remove_special_chars’: False,
+‘columns’: [‘comentarios’, ‘descripcion’]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id68">
+<h1>}<a class="headerlink" href="#id68" title="Link to this heading"></a></h1>
+<p><strong>3. Mapeo Condicional:</strong></p>
+<p><a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a>python
+config.conditional_mapping = {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘rules’: [</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>‘condition’: ‘column.type == “numeric”’,
+‘mapping’: ‘auto_by_position’,
+‘skip_formatting’: True</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>‘condition’: ‘column.name.contains(“fecha”)’,
+‘mapping’: ‘A’,  # Siempre a columna A
+‘date_format’: ‘YYYY-MM-DD’</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>‘condition’: ‘column.values.max() &gt; 1000000’,
+‘mapping’: ‘last_available_column’,
+‘number_format’: ‘#,##0’</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+</section>
+<section id="id73">
+<h1>}<a class="headerlink" href="#id73" title="Link to this heading"></a></h1>
+<p>### Validación de Mapeo</p>
+<p><strong>Configuración de Validación:</strong></p>
+<p><a href="#id74"><span class="problematic" id="id75">``</span></a><a href="#id76"><span class="problematic" id="id77">`</span></a>python
+config.mapping_validation = {</p>
+<blockquote>
+<div><p>‘strict_mode’: False,
+‘validation_rules’: {</p>
+<blockquote>
+<div><p>‘required_columns’: [],  # Columnas que DEBEN estar mapeadas
+‘forbidden_columns’: [‘password’, ‘secret’],  # Columnas que NO se pueden mapear
+‘max_columns_per_excel’: 16384,  # Límite Excel
+‘column_order_strict’: False  # Permitir reordenamiento automático</p>
+</div></blockquote>
+<p>},
+‘auto_correction’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘suggest_alternatives’: True,
+‘auto_resolve_conflicts’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id78">
+<h1>}<a class="headerlink" href="#id78" title="Link to this heading"></a></h1>
+<p>## Manejo de Casos Especiales</p>
+<p>### Configuración para Valores Nulos</p>
+<p><strong>Estrategias Avanzadas:</strong></p>
+<p><a href="#id79"><span class="problematic" id="id80">``</span></a><a href="#id81"><span class="problematic" id="id82">`</span></a>python
+config.null_handling = {</p>
+<blockquote>
+<div><p>‘default_strategy’: ‘group_together’,
+‘strategies’: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘group_together’: {</dt><dd><p>‘null_group_name’: ‘Valores_Nulos’,
+‘create_file’: True</p>
+</dd>
+</dl>
+<p>},
+‘separate_file’: {</p>
+<blockquote>
+<div><p>‘null_file_name’: ‘Sin_Valores_{fecha}.xlsx’,
+‘include_in_summary’: True</p>
+</div></blockquote>
+<p>},
+‘exclude’: {</p>
+<blockquote>
+<div><p>‘log_excluded_count’: True,
+‘summary_file’: True</p>
+</div></blockquote>
+<p>},
+‘custom_value’: {</p>
+<blockquote>
+<div><p>‘custom_null_value’: ‘NO_VALOR’,
+‘preserved_types’: [‘numeric’, ‘date’]  # Solo aplicar a estos tipos</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+‘detection_sensitivity’: ‘medium’  # low, medium, high</p>
+</div></blockquote>
+</section>
+<section id="id83">
+<h1>}<a class="headerlink" href="#id83" title="Link to this heading"></a></h1>
+<p>### Configuración para Caracteres Especiales</p>
+<p><strong>Sanitización Avanzada:</strong></p>
+<p><a href="#id84"><span class="problematic" id="id85">``</span></a><a href="#id86"><span class="problematic" id="id87">`</span></a>python
+config.character_handling = {</p>
+<blockquote>
+<div><p>‘excel_invalid_chars’: ‘remove’,  # remove, replace, escape
+‘replacement_char’: ‘_’,
+‘max_filename_length’: 255,
+‘preserve_accents’: True,
+‘normalize_unicode’: True,
+‘platform_specific’: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘windows’: {</dt><dd><p>‘reserved_names’: True,  # CON, PRN, AUX, etc.
+‘case_preservation’: True</p>
+</dd>
+</dl>
+<p>},
+‘unix’: {</p>
+<blockquote>
+<div><p>‘path_separator_handling’: ‘escape’</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id88">
+<h1>}<a class="headerlink" href="#id88" title="Link to this heading"></a></h1>
+<p>### Configuración de Recovery</p>
+<p><strong>Manejo de Errores y Recovery:</strong></p>
+<p><a href="#id89"><span class="problematic" id="id90">``</span></a><a href="#id91"><span class="problematic" id="id92">`</span></a>python
+config.recovery_config = {</p>
+<blockquote>
+<div><p>‘enable_automatic_recovery’: True,
+‘recovery_strategies’: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘template_corruption’: {</dt><dd><p>‘try_backup’: True,
+‘create_default’: True,
+‘notification_level’: ‘warning’</p>
+</dd>
+</dl>
+<p>},
+‘disk_space’: {</p>
+<blockquote>
+<div><p>‘cleanup_temp_files’: True,
+‘reduce_chunk_size’: True,
+‘emergency_location’: None  # Usar ubicación temporal</p>
+</div></blockquote>
+<p>},
+‘memory_exhaustion’: {</p>
+<blockquote>
+<div><p>‘reduce_chunk_size’: True,
+‘pause_and_resume’: True,
+‘gc_frequency’: 50</p>
+</div></blockquote>
+<p>},
+‘partial_failure’: {</p>
+<blockquote>
+<div><p>‘continue_with_remaining’: True,
+‘retry_failed_groups’: 3,
+‘progress_persistence’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id93">
+<h1>}<a class="headerlink" href="#id93" title="Link to this heading"></a></h1>
+<p>## Configuración de Logging</p>
+<p>### Niveles de Logging Detallados</p>
+<p><strong>Configuración de Logs:</strong></p>
+<p><a href="#id94"><span class="problematic" id="id95">``</span></a><a href="#id96"><span class="problematic" id="id97">`</span></a>python
+config.logging_config = {</p>
+<blockquote>
+<div><p>‘level’: ‘INFO’,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+‘file_logging’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘path’: ‘logs/separacion_datos.log’,
+‘max_size_mb’: 100,
+‘backup_count’: 5,
+‘format’: ‘%(asctime)s | %(levelname)s | %(funcName)s:%(lineno)d | %(message)s’</p>
+</div></blockquote>
+<p>},
+‘console_logging’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘level’: ‘INFO’,
+‘color_output’: True</p>
+</div></blockquote>
+<p>},
+‘log_categories’: {</p>
+<blockquote>
+<div><p>‘performance’: True,
+‘errors’: True,
+‘user_actions’: True,
+‘memory_usage’: True,
+‘file_operations’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id98">
+<h1>}<a class="headerlink" href="#id98" title="Link to this heading"></a></h1>
+<p>### Métricas y Monitoreo</p>
+<p><strong>Configuración de Métricas:</strong></p>
+<p><a href="#id99"><span class="problematic" id="id100">``</span></a><a href="#id101"><span class="problematic" id="id102">`</span></a>python
+config.metrics_config = {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘collection_points’: {</p>
+<blockquote>
+<div><p>‘memory_usage’: ‘per_chunk’,
+‘processing_time’: ‘per_group’,
+‘file_sizes’: ‘per_file’,
+‘error_rates’: ‘per_operation’</p>
+</div></blockquote>
+<p>},
+‘export_metrics’: {</p>
+<blockquote>
+<div><p>‘format’: ‘json’,  # json, csv, excel
+‘path’: ‘metrics/separacion_metrics.json’,
+‘include_sample_data’: False</p>
+</div></blockquote>
+<p>},
+‘real_time_monitoring’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘update_frequency_seconds’: 5,
+‘webhook_url’: None,  # Para notificaciones
+‘alert_thresholds’: {</p>
+<blockquote>
+<div><p>‘processing_time_minutes’: 60,
+‘memory_usage_percent’: 85,
+‘error_rate_percent’: 5</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id103">
+<h1>}<a class="headerlink" href="#id103" title="Link to this heading"></a></h1>
+<p>## Optimizaciones por Tipo de Datos</p>
+<p>### Optimización para Datos Numéricos</p>
+<p><a href="#id104"><span class="problematic" id="id105">``</span></a><a href="#id106"><span class="problematic" id="id107">`</span></a>python
+config.numeric_optimization = {</p>
+<blockquote>
+<div><p>‘enable_compression’: True,
+‘float_precision’: 2,  # Reducir precisión para archivos más pequeños
+‘zero_handling’: {</p>
+<blockquote>
+<div><p>‘convert_to_null’: False,
+‘format_as_integer’: False</p>
+</div></blockquote>
+<p>},
+‘large_number_handling’: {</p>
+<blockquote>
+<div><p>‘use_scientific_notation’: True,
+‘preserve_significant_digits’: 6</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id108">
+<h1>}<a class="headerlink" href="#id108" title="Link to this heading"></a></h1>
+<p>### Optimización para Texto</p>
+<p><a href="#id109"><span class="problematic" id="id110">``</span></a><a href="#id111"><span class="problematic" id="id112">`</span></a>python
+config.text_optimization = {</p>
+<blockquote>
+<div><p>‘encoding’: ‘utf-8’,
+‘trim_whitespace’: True,
+‘normalize_unicode’: True,
+‘compress_repeated_spaces’: True,
+‘max_length_per_cell’: 32767,  # Límite Excel
+‘truncation_strategy’: ‘ellipsis’,  # truncate, ellipsis, error
+‘multiline_handling’: ‘preserve’  # preserve, flatten, escape</p>
+</div></blockquote>
+</section>
+<section id="id113">
+<h1>}<a class="headerlink" href="#id113" title="Link to this heading"></a></h1>
+<p>### Optimización para Fechas</p>
+<p><a href="#id114"><span class="problematic" id="id115">``</span></a><a href="#id116"><span class="problematic" id="id117">`</span></a>python
+config.date_optimization = {</p>
+<blockquote>
+<div><p>‘preserve_timezone’: True,
+‘format_conversion’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘standard_format’: ‘YYYY-MM-DD HH:MM:SS’,
+‘local_timezone’: True</p>
+</div></blockquote>
+<p>},
+‘serialization’: {</p>
+<blockquote>
+<div><p>‘as_excel_serial’: False,  # O como string ISO
+‘excel_date_format’: ‘DD/MM/YYYY’</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id118">
+<h1>}<a class="headerlink" href="#id118" title="Link to this heading"></a></h1>
+<p>## Configuración para Entornos Corporativos</p>
+<p>### Configuración Multi-Usuario</p>
+<p><a href="#id119"><span class="problematic" id="id120">``</span></a><a href="#id121"><span class="problematic" id="id122">`</span></a>python
+config.corporate_config = {</p>
+<blockquote>
+<div><dl>
+<dt>‘multi_user_support’: {</dt><dd><p>‘enabled’: True,
+‘max_concurrent_exports’: 4,
+‘user_quotas’: {</p>
+<blockquote>
+<div><p>‘max_files_per_user’: 1000,
+‘max_disk_space_mb’: 5000,
+‘max_concurrent_jobs’: 2</p>
+</div></blockquote>
+<p>},
+‘resource_allocation’: {</p>
+<blockquote>
+<div><p>‘cpu_cores_per_job’: 2,
+‘memory_per_job_mb’: 1024,
+‘io_priority’: ‘normal’  # low, normal, high</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id123">
+<h1>}<a class="headerlink" href="#id123" title="Link to this heading"></a></h1>
+<p>### Configuración de Seguridad</p>
+<p><a href="#id124"><span class="problematic" id="id125">``</span></a><a href="#id126"><span class="problematic" id="id127">`</span></a>python
+config.security_config = {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘data_encryption’: {</dt><dd><p>‘temp_files’: False,  # Solo para datos sensibles
+‘output_files’: False,
+‘encryption_algorithm’: ‘AES-256’</p>
+</dd>
+</dl>
+<p>},
+‘access_control’: {</p>
+<blockquote>
+<div><p>‘user_permissions’: True,
+‘column_restrictions’: {</p>
+<blockquote>
+<div><p>‘sensitive_columns’: [‘salario’, ‘ssn’, ‘cedula’],
+‘mask_in_logs’: True,
+‘require_confirmation’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+‘audit_logging’: {</p>
+<blockquote>
+<div><p>‘enabled’: True,
+‘log_user_actions’: True,
+‘log_data_access’: True,
+‘retention_days’: 365</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id128">
+<h1>}<a class="headerlink" href="#id128" title="Link to this heading"></a></h1>
+<p>### Configuración de Integración</p>
+<p><a href="#id129"><span class="problematic" id="id130">``</span></a><a href="#id131"><span class="problematic" id="id132">`</span></a>python
+config.integration_config = {</p>
+<blockquote>
+<div><dl>
+<dt>‘api_endpoints’: {</dt><dd><p>‘enabled’: False,
+‘authentication’: ‘api_key’,
+‘rate_limiting’: {</p>
+<blockquote>
+<div><p>‘requests_per_hour’: 100,
+‘burst_limit’: 10</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>},
+‘database_integration’: {</p>
+<blockquote>
+<div><p>‘enabled’: False,
+‘connection_string’: None,
+‘metadata_storage’: {</p>
+<blockquote>
+<div><p>‘export_history’: True,
+‘user_preferences’: True,
+‘performance_metrics’: True</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+‘notification_system’: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘email_notifications’: {</dt><dd><p>‘enabled’: False,
+‘smtp_server’: None,
+‘admin_email’: None</p>
+</dd>
+</dl>
+<p>},
+‘webhook_notifications’: {</p>
+<blockquote>
+<div><p>‘enabled’: False,
+‘endpoints’: []</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id133">
+<h1>}<a class="headerlink" href="#id133" title="Link to this heading"></a></h1>
+<p>## Configuración Avanzada del Sistema</p>
+<p>### Configuración de Performance Tuning</p>
+<p><a href="#id134"><span class="problematic" id="id135">``</span></a><a href="#id136"><span class="problematic" id="id137">`</span></a>python
+config.performance_tuning = {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>‘excel_optimization’: {</dt><dd><p>‘disable_calculation_on_load’: True,
+‘preserve_formulas’: True,
+‘optimize_file_size’: True,
+‘compatibility_mode’: ‘excel_2016’</p>
+</dd>
+</dl>
+<p>},
+‘memory_tuning’: {</p>
+<blockquote>
+<div><p>‘initial_chunk_size’: ‘auto’,
+‘growth_factor’: 1.5,
+‘max_growth_attempts’: 10,
+‘memory_mapping’: True</p>
+</div></blockquote>
+<p>},
+‘io_tuning’: {</p>
+<blockquote>
+<div><p>‘buffer_size_kb’: 1024,
+‘async_io’: False,
+‘compression_level’: 6,
+‘temp_file_cleanup’: ‘immediate’</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id138">
+<h1>}<a class="headerlink" href="#id138" title="Link to this heading"></a></h1>
+<p>### Configuración de Desarrollo y Debug</p>
+<p><a href="#id139"><span class="problematic" id="id140">``</span></a><a href="#id141"><span class="problematic" id="id142">`</span></a>python
+config.development_config = {</p>
+<blockquote>
+<div><p>‘debug_mode’: False,
+‘profile_performance’: False,
+‘memory_profiling’: False,
+‘detailed_logging’: False,
+‘test_data_generation’: {</p>
+<blockquote>
+<div><p>‘enabled’: False,
+‘data_size_limit’: 1000,
+‘preserve_original_data’: True</p>
+</div></blockquote>
+<p>},
+‘api_simulation’: {</p>
+<blockquote>
+<div><p>‘enabled’: False,
+‘delay_responses’: False,
+‘error_simulation’: False</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</section>
+<section id="id143">
+<h1>}<a class="headerlink" href="#id143" title="Link to this heading"></a></h1>
+<p>—</p>
+<p><strong>Nota Importante</strong>: Esta configuración avanzada requiere conocimientos técnicos. Para la mayoría de usuarios, la configuración por defecto es suficiente y recomendada. Solo modificar estos parámetros si hay necesidades específicas o problemas de rendimiento documentados.</p>
+<p><strong>Consultar Soporte Técnico</strong> para implementaciones complejas o integraciones corporativas.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

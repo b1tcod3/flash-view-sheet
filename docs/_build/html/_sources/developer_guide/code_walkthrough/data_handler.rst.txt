@@ -1,0 +1,747 @@
+Sistema de Data Handler - Recorrido Detallado del Código
+===========================================================
+
+La clase DataHandler es el componente central responsable de carga de datos, procesamiento, validación y gestión en Flash Sheet. Este recorrido proporciona análisis detallado de secciones críticas de código y decisiones de diseño.
+
+Resumen de Arquitectura
+-----------------------
+
+DataHandler sirve como hub central de gestión de datos, implementando patrón facade sobre varias fuentes y formatos de datos.
+
+Componentes Clave
+~~~~~~~~~~~~~~~~~
+
+- **Detectores de Formato**: Reconocimiento automático de formato
+- **Parsers**: Parsing específico de formato de datos
+- **Validadores**: Verificación de integridad y tipo de datos
+- **Transformadores**: Manipulación y limpieza de datos
+- **Exportadores**: Exportación multi-formato de datos
+- **Administrador de Cache**: Optimización de performance a través de cache
+
+Responsabilidades Core
+~~~~~~~~~~~~~~~~~~~~~~
+
+- **Carga de Datos**: Soporte para múltiples formatos y fuentes de archivos
+- **Inferencia de Tipos**: Detección automática de tipos de datos
+- **Validación de Datos**: Verificación de integridad y manejo de errores
+- **Gestión de Memoria**: Manejo eficiente de datasets grandes
+- **Conversión de Formato**: Transformación de datos entre formatos
+- **Coordinación de Exportación**: Interfaz unificada de exportación
+
+Análisis Detallado del Código
+-----------------------------
+
+**Función Principal de Carga** (core/data_handler.py líneas 16-55):
+
+.. code-block:: python
+   :linenos:
+
+   def cargar_datos(filepath: str, chunk_size: int = None) -> pd.DataFrame:
+       """
+       Cargar datos desde un archivo usando el nuevo sistema de loaders
+       """
+       from core.loaders import get_file_loader
+
+       # Usar el factory pattern para cargar el archivo
+       loader = get_file_loader(filepath)
+
+       # Aplicar optimización para archivos grandes
+       if chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100):
+           if chunk_size is None:
+               # Usar configuración de optimización
+               file_info = loader.get_memory_usage_info()
+               estimated_rows = file_info.get('estimated_data_rows', 1000)
+               if estimated_rows > optimization_config.VIRTUALIZATION_THRESHOLD:
+                   chunk_size = 1000
+               else:
+                   chunk_size = 10000
+
+           try:
+               return loader.load_in_chunks(chunk_size)
+           except Exception as e:
+               # Si falla el chunk loading, usar carga normal
+               print(f"Chunk loading falló, usando carga normal: {str(e)}")
+               return loader.load()
+
+       return loader.load()
+
+**Análisis crítico línea por línea:**
+
+- **Línea 22**: Import función factory para creación de loader - **decisión de diseño**: Sistema extensible de loader
+- **Línea 25**: Patrón factory usado - permite nuevos formatos sin cambiar código core
+- **Línea 28**: Decisión inteligente de chunking basada en tamaño de archivo
+- **Líneas 29-37**: Cálculo dinámico de tamaño de chunk usando configuración de optimización
+- **Líneas 39-43**: Mecanismo de fallback - **robustez de diseño**: Si chunking falla, usar carga normal
+- **Línea 45**: Carga estándar para archivos más pequeños
+
+**Decisión de Diseño**: Mejora progresiva - intentar carga optimizada primero, fallback graceful.
+
+**Carga Avanzada con Opciones** (core/data_handler.py líneas 58-97):
+
+.. code-block:: python
+   :linenos:
+
+   def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict = None, chunk_size: int = None) -> pd.DataFrame:
+       """
+       Cargar datos desde un archivo con opciones adicionales
+       """
+       from core.loaders import get_file_loader
+
+       # Usar el factory pattern para cargar el archivo
+       loader = get_file_loader(filepath)
+
+       # Aplicar optimización para archivos grandes
+       if chunk_size or (loader.can_load_chunks() and loader.get_memory_usage_info().get('file_size_mb', 0) > 100):
+           # ... lógica de chunking (similar a arriba)
+
+           try:
+               df = loader.load_in_chunks(chunk_size)
+           except Exception as e:
+               print(f"Chunk loading falló, usando carga normal: {str(e)}")
+               df = loader.load(skip_rows, column_names)
+       else:
+           # Carga normal con opciones
+           df = loader.load(skip_rows, column_names)
+
+       return df
+
+**Mejora clave sobre carga básica:**
+
+- **Línea 64**: Parámetro ``skip_rows`` para saltar encabezados
+- **Línea 65**: Dict ``column_names`` para renombrar columnas
+- **Líneas 94-95**: Pasar opciones a loader para parsing flexible
+
+**Decisión de Diseño**: Opciones pasadas a través para mantener abstracción de loader.
+
+**Implementación de Filtrado** (core/data_handler.py líneas 224-247):
+
+.. code-block:: python
+   :linenos:
+
+   def aplicar_filtro(df: pd.DataFrame, columna: str, termino: str, use_index: bool = True) -> pd.DataFrame:
+       """
+       Aplicar filtro a los datos con optimización para datasets grandes
+       """
+       if columna not in df.columns:
+           raise ValueError(f"Columna no encontrada: {columna}")
+
+       if len(df) == 0:
+           return df
+
+       # Para datasets muy grandes, usar optimizaciones
+       if optimization_config.should_optimize_filtering(len(df)) and use_index:
+           return _aplicar_filtro_indexado(df, columna, termino)
+       else:
+           return _aplicar_filtro_simple(df, columna, termino)
+
+**Detalles críticos de implementación:**
+
+- **Líneas 227-228**: Validación temprana previene errores de runtime
+- **Líneas 230-231**: Manejar caso edge de dataframes vacíos
+- **Líneas 234-238**: Decisión inteligente de optimización basada en tamaño de dataset
+- **Línea 235**: Umbral configurable de optimización
+
+**Decisión de Diseño**: Performance adaptativa - filtrado simple para datasets pequeños, optimizado para grandes.
+
+**Algoritmo de Filtrado Optimizado** (core/data_handler.py líneas 267-304):
+
+.. code-block:: python
+   :linenos:
+
+   def _aplicar_filtro_indexado(df: pd.DataFrame, columna: str, termino: str) -> pd.DataFrame:
+       """
+       Aplicar filtro optimizado usando indexación para datasets grandes
+       """
+       try:
+           # Convertir columna a string para búsqueda de texto
+           columna_str = df[columna].astype(str)
+
+           # Crear una serie booleana para el filtro
+           if termino.startswith('^') and termino.endswith('$'):
+               # Búsqueda exacta (regex)
+               pattern = termino[1:-1]
+               mask = columna_str.str.match(pattern, case=False, na=False)
+           elif termino.startswith('*') or termino.endswith('*'):
+               # Búsqueda con wildcards
+               pattern = termino.replace('*', '.*')
+               mask = columna_str.str.contains(pattern, case=False, na=False, regex=True)
+           else:
+               # Búsqueda normal
+               mask = columna_str.str.contains(termino, case=False, na=False)
+
+           # Aplicar filtro
+           df_filtrado = df[mask]
+
+           print(f"Filtro aplicado: {len(df_filtrado)} de {len(df)} filas encontradas")
+           return df_filtrado
+
+       except Exception as e:
+           print(f"Error en filtrado indexado, usando método simple: {str(e)}")
+           return _aplicar_filtro_simple(df, columna, termino)
+
+**Lógica avanzada de filtrado:**
+
+- **Línea 272**: Conversión a string para operaciones de texto
+- **Líneas 275-281**: Detección de patrón regex y manejo
+- **Líneas 282-286**: Conversión de patrón wildcard a regex
+- **Líneas 287-289**: Búsqueda case-insensitive estándar
+- **Línea 295**: Logging para monitoreo de performance
+- **Líneas 297-299**: Fallback graceful en errores
+
+**Decisión de Diseño**: Múltiples estrategias de búsqueda con fallback automático para robustez.
+
+**Optimización de Memoria** (core/data_handler.py líneas 243-256):
+
+.. code-block:: python
+   :linenos:
+
+   def optimize_memory(df: pd.DataFrame) -> pd.DataFrame:
+       """
+       Optimize memory usage of DataFrame
+       """
+       # Downcast numeric types
+       for col in df.select_dtypes(include=['int64']):
+           df[col] = pd.to_numeric(df[col], downcast='integer')
+
+       for col in df.select_dtypes(include=['float64']):
+           df[col] = pd.to_numeric(df[col], downcast='float')
+
+       # Convert object columns to category if appropriate
+       for col in df.select_dtypes(include=['object']):
+           if df[col].nunique() / len(df) < 0.5:  # Less than 50% unique
+           df[col] = df[col].astype('category')
+
+       return df
+
+**Estrategias de optimización de memoria:**
+
+- **Líneas 247-249**: Downcast enteros a tipo más pequeño posible
+- **Líneas 251-253**: Downcast floats para eficiencia de memoria
+- **Líneas 256-258**: Convertir strings repetitivos a categorías
+
+**Decisión de Diseño**: Optimización automática sin pérdida de datos, ahorros significativos de memoria para datasets grandes.
+
+**Diseño de Sistema de Exportación** (core/data_handler.py líneas 307-346):
+
+.. code-block:: python
+   :linenos:
+
+   def exportar_a_pdf(df: pd.DataFrame, filepath: str) -> bool:
+       """
+       Exportar DataFrame a archivo PDF
+       """
+       try:
+           from reportlab.lib.pagesizes import letter
+           from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+           from reportlab.lib import colors
+
+           # Crear documento
+           doc = SimpleDocTemplate(filepath, pagesize=letter)
+
+           # Convertir DataFrame a lista de listas
+           data = [df.columns.tolist()] + df.values.tolist()
+
+           # Crear tabla
+           tabla = Table(data)
+           estilo = TableStyle([
+               ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+               ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+               ('FONTSIZE', (0, 0), (-1, 0), 12),
+               ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+               ('GRID', (0, 0), (-1, -1), 1, colors.black)
+           ])
+           tabla.setStyle(estilo)
+
+           # Construir documento
+           doc.build([tabla])
+           return True
+
+       except Exception as e:
+           print(f"Error al exportar a PDF: {str(e)}")
+           return False
+
+**Implementación de exportación PDF:**
+
+- **Línea 312**: Import ReportLab para generación PDF
+- **Línea 317**: Crear documento PDF con tamaño carta
+- **Línea 320**: Convertir DataFrame a formato tabla (encabezados + datos)
+- **Líneas 323-335**: Definir estilo de tabla (encabezados, grid, colores)
+- **Línea 340**: Construir y guardar documento PDF
+
+**Decisión de Diseño**: Output PDF profesional con formato claro y grid layout.
+
+Integración y Comunicación de Módulos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Comunicación Basada en Señales**:
+
+El DataHandler se integra con aplicación a través de señales Qt:
+
+.. code-block:: python
+
+   # En MainWindow
+   self.data_handler.data_loaded.connect(self.on_data_loaded)
+   self.data_handler.progress_updated.connect(self.update_progress)
+
+**Hilos para Performance**:
+
+Procesamiento en segundo plano previene bloqueo UI:
+
+.. code-block:: python
+
+   def load_file_async(self, file_path):
+       self.thread_pool.start(lambda: self._load_file_background(file_path))
+
+**Patrones de Recuperación de Errores**:
+
+Múltiples estrategias de fallback aseguran robustez:
+
+1. **Fallback de Detección de Formato**: Probar múltiples encodings
+2. **Fallback de Método de Carga**: Chunked → Carga normal
+3. **Fallback de Filtrado**: Optimizado → Simple
+4. **Fallback de Exportación**: Probar métodos alternativos de exportación
+
+**Monitoreo de Performance**:
+
+Tracking de performance integrado:
+
+.. code-block:: python
+
+   print(f"Filtro aplicado: {len(df_filtrado)} de {len(df)} filas encontradas")
+
+**Diseño de Extensibilidad**:
+
+- **Factory de Loader**: Adición fácil de nuevos formatos de archivo
+- **Interfaz de Exportador**: API consistente de exportación
+- **Config de Optimización**: Parámetros de performance tuneables
+- **Arquitectura de Plugin**: Soporte para extensiones de terceros
+
+Pipeline de Carga de Datos
+--------------------------
+
+Detección de Formato de Archivo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Detección automática de formato basada en extensiones de archivo y análisis de contenido:
+
+.. code-block:: python
+
+   def detect_format(self, file_path):
+       extension = Path(file_path).suffix.lower()
+
+       format_map = {
+           '.csv': 'csv',
+           '.xlsx': '.xls': 'excel',
+           '.json': 'json',
+           '.parquet': 'parquet',
+           '.h5': '.hdf5': 'hdf5',
+           '.sql': 'sql'
+       }
+
+       return format_map.get(extension, 'unknown')
+
+Selección y Ejecución de Parser
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Selección dinámica de parser basada en formato detectado:
+
+.. code-block:: python
+
+   def load_file(self, file_path, **options):
+       format_type = self.detect_format(file_path)
+
+       parser = self.get_parser(format_type)
+       if not parser:
+           raise UnsupportedFormatError(f"Unsupported format: {format_type}")
+
+       try:
+           data = parser.parse(file_path, **options)
+           validated_data = self.validate_data(data)
+           return self.optimize_data(validated_data)
+       except Exception as e:
+           self.logger.error(f"Failed to load {file_path}: {str(e)}")
+           raise
+
+Formatos Soportados Implementación
+----------------------------------
+
+Manejo de Formato CSV
+~~~~~~~~~~~~~~~~~~~~~
+
+Parsing comprehensivo CSV con detección de encoding:
+
+.. code-block:: python
+
+   class CSVParser:
+       def parse(self, file_path, encoding=None, delimiter=None):
+           encodings_to_try = [encoding, 'utf-8', 'iso-8859-1', 'cp1252']
+
+           for enc in encodings_to_try:
+               try:
+                   with open(file_path, 'r', encoding=enc) as f:
+                       sample = f.read(1024)
+                       detected_delim = self.detect_delimiter(sample)
+
+                       df = pd.read_csv(
+                           file_path,
+                           encoding=enc,
+                           delimiter=delimiter or detected_delim,
+                           na_values=['', 'NA', 'N/A', 'null']
+                       )
+                       return df
+               except UnicodeDecodeError:
+                   continue
+
+           raise EncodingError("Could not determine file encoding")
+
+Manejo de Formato Excel
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Soporte de archivos Excel multi-hoja con selección de hoja:
+
+.. code-block:: python
+
+   class ExcelParser:
+       def parse(self, file_path, sheet_name=None, header_row=0):
+           xl = pd.ExcelFile(file_path)
+
+           if sheet_name:
+               df = xl.parse(sheet_name, header=header_row)
+           else:
+               # Usar primera hoja o prompt usuario
+               df = xl.parse(xl.sheet_names[0], header=header_row)
+
+           # Limpiar nombres de columna
+           df.columns = df.columns.str.strip()
+
+           return df
+
+JSON y Datos Estructurados
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Parsing flexible JSON con múltiples estructuras:
+
+.. code-block:: python
+
+   class JSONParser:
+       def parse(self, file_path, orient=None):
+           with open(file_path, 'r', encoding='utf-8') as f:
+               data = json.load(f)
+
+           if isinstance(data, list):
+               df = pd.DataFrame(data)
+           elif isinstance(data, dict):
+               if orient == 'records':
+                   df = pd.DataFrame(data)
+               elif orient == 'index':
+                   df = pd.DataFrame.from_dict(data, orient='index')
+               else:
+                   # Intentar inferir estructura
+                   df = pd.json_normalize(data)
+           else:
+               raise ValueError("Unsupported JSON structure")
+
+           return df
+
+Conectividad de Base de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Integración de base de datos SQL con pooling de conexiones:
+
+.. code-block:: python
+
+   class SQLParser:
+       def parse(self, connection_string, query):
+           engine = create_engine(connection_string)
+
+           try:
+               df = pd.read_sql(query, engine)
+               return df
+           finally:
+               engine.dispose()
+
+Validación y Limpieza de Datos
+------------------------------
+
+Motor de Inferencia de Tipos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Detección automática de tipos de datos y conversión:
+
+.. code-block:: python
+
+   def infer_types(self, df):
+       for col in df.columns:
+           # Intentar convertir a numérico
+           try:
+               pd.to_numeric(df[col])
+               df[col] = df[col].astype('float64')
+               continue
+           except (ValueError, TypeError):
+               pass
+
+           # Intentar convertir a datetime
+           try:
+               pd.to_datetime(df[col])
+               df[col] = pd.to_datetime(df[col])
+               continue
+           except (ValueError, TypeError):
+               pass
+
+           # Default a string
+           df[col] = df[col].astype('string')
+
+       return df
+
+Validación de Calidad de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Chequeos comprehensivos de calidad de datos:
+
+.. code-block:: python
+
+   def validate_data(self, df):
+       validation_results = {
+           'total_rows': len(df),
+           'total_columns': len(df.columns),
+           'null_counts': df.isnull().sum().to_dict(),
+           'duplicate_rows': df.duplicated().sum(),
+           'data_types': df.dtypes.to_dict()
+       }
+
+       # Chequear issues críticos
+       if df.empty:
+           raise ValidationError("Dataset is empty")
+
+       if df.columns.duplicated().any():
+           raise ValidationError("Duplicate column names found")
+
+       return df, validation_results
+
+Optimización de Memoria
+-----------------------
+
+Manejo de Datasets Grandes
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Procesamiento eficiente de memoria para big data:
+
+.. code-block:: python
+
+   def optimize_memory(self, df):
+       # Downcast tipos numéricos
+       for col in df.select_dtypes(include=['int64']):
+           df[col] = pd.to_numeric(df[col], downcast='integer')
+
+       for col in df.select_dtypes(include=['float64']):
+           df[col] = pd.to_numeric(df[col], downcast='float')
+
+       # Convertir columnas object a category si apropiado
+       for col in df.select_dtypes(include=['object']):
+           if df[col].nunique() / len(df) < 0.5:  # Menos de 50% único
+               df[col] = df[col].astype('category')
+
+       return df
+
+Procesamiento por Chunks
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Procesar archivos grandes en chunks para gestionar memoria:
+
+.. code-block:: python
+
+   def load_large_file(self, file_path, chunk_size=10000):
+       chunks = []
+       for chunk in pd.read_csv(file_path, chunksize=chunk_size):
+           processed_chunk = self.process_chunk(chunk)
+           chunks.append(processed_chunk)
+
+       return pd.concat(chunks, ignore_index=True)
+
+Sistema de Exportación
+----------------------
+
+Interfaz Unificada de Exportación
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+API consistente de exportación a través de todos los formatos:
+
+.. code-block:: python
+
+   def export_data(self, df, format_type, destination, **options):
+       exporter = self.get_exporter(format_type)
+       return exporter.export(df, destination, **options)
+
+Clases de Exportador Específicas de Formato
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Clases especializadas de exportador para cada formato:
+
+.. code-block:: python
+
+   class CSVExporter:
+       def export(self, df, destination, **options):
+           df.to_csv(
+               destination,
+               index=options.get('index', False),
+               encoding=options.get('encoding', 'utf-8'),
+               sep=options.get('delimiter', ',')
+           )
+
+   class ExcelExporter:
+       def export(self, df, destination, **options):
+           with pd.ExcelWriter(destination, engine='openpyxl') as writer:
+               df.to_excel(writer, sheet_name=options.get('sheet_name', 'Sheet1'), index=False)
+
+Cache y Performance
+-------------------
+
+Estrategia de Cache de Datos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Cache inteligente para performance mejorada:
+
+.. code-block:: python
+
+   class DataCache:
+       def __init__(self, max_size=100):
+           self.cache = {}
+           self.access_order = []
+           self.max_size = max_size
+
+       def get(self, key):
+           if key in self.cache:
+               self.access_order.remove(key)
+               self.access_order.append(key)
+               return self.cache[key]
+           return None
+
+       def put(self, key, data):
+           if key in self.cache:
+               self.access_order.remove(key)
+           elif len(self.cache) >= self.max_size:
+               # Remover least recently used
+               lru_key = self.access_order.pop(0)
+               del self.cache[lru_key]
+
+           self.cache[key] = data
+           self.access_order.append(key)
+
+Manejo de Errores y Recuperación
+--------------------------------
+
+Gestión Comprehensiva de Errores
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Manejo robusto de errores con opciones de recuperación:
+
+.. code-block:: python
+
+   class DataHandlerError(Exception):
+       pass
+
+   class UnsupportedFormatError(DataHandlerError):
+       pass
+
+   class ValidationError(DataHandlerError):
+       pass
+
+   def handle_error(self, error, context):
+       self.logger.error(f"DataHandler error in {context}: {str(error)}")
+
+       # Intentar estrategias de recuperación
+       if isinstance(error, MemoryError):
+           self.free_memory()
+           # Reintentar con chunk size más pequeño
+       elif isinstance(error, ValidationError):
+           # Intentar limpieza automática de datos
+           pass
+
+Integración con Aplicación
+---------------------------
+
+Comunicación Basada en Señales
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Integración con aplicación principal a través de señales:
+
+.. code-block:: python
+
+   # Señales emitidas por DataHandler
+   data_loaded = Signal(DataFrame)  # Emitido cuando datos son cargados exitosamente
+   progress_updated = Signal(int)   # Porcentaje de progreso para operaciones largas
+   error_occurred = Signal(str)     # Mensajes de error con contexto
+
+Hilos y Concurrencia
+~~~~~~~~~~~~~~~~~~~~
+
+Procesamiento en segundo plano para operaciones no bloqueantes:
+
+.. code-block:: python
+
+   def load_file_async(self, file_path):
+       self.thread_pool.start(lambda: self._load_file_background(file_path))
+
+   def _load_file_background(self, file_path):
+       try:
+           data = self.load_file(file_path)
+           self.data_loaded.emit(data)
+       except Exception as e:
+           self.error_occurred.emit(str(e))
+
+Testing y Calidad Assurance
+---------------------------
+
+Framework de Testing Unitario
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Cobertura comprehensiva de testing:
+
+.. code-block:: python
+
+   def test_csv_parsing(self):
+       # Test varios formatos CSV
+       test_files = [
+           'simple.csv',
+           'quoted.csv',
+           'multiline.csv',
+           'encoding_test.csv'
+       ]
+
+       for test_file in test_files:
+           df = self.load_file(f'test_data/{test_file}')
+           self.assertIsInstance(df, pd.DataFrame)
+           self.assertGreater(len(df), 0)
+
+Benchmarking de Performance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Testing y optimización de performance:
+
+.. code-block:: python
+
+   def benchmark_loading(self, file_path, iterations=5):
+       times = []
+       for _ in range(iterations):
+           start_time = time.time()
+           df = self.load_file(file_path)
+           end_time = time.time()
+           times.append(end_time - start_time)
+
+       avg_time = sum(times) / len(times)
+       self.logger.info(f"Tiempo promedio de carga para {file_path}: {avg_time:.2f}s")
+       return avg_time
+
+Mejoras Futuras
+---------------
+
+Mejoras Planificadas
+~~~~~~~~~~~~~~~~~~~~
+
+- **Procesamiento Streaming**: Procesamiento de datos en tiempo real
+- **Integración Cloud**: Carga directa desde almacenamiento cloud
+- **Parsing Avanzado**: Soporte para formatos de archivo complejos
+- **Machine Learning**: Mejora automática de calidad de datos
+- **Arquitectura Plugin**: Extensiones de parser de terceros

@@ -5,6 +5,7 @@ Servicio centralizado para operaciones de filtrado de datos
 en Flash View Sheet.
 """
 
+from typing import Any, Dict, List, Optional
 import pandas as pd
 from PySide6.QtWidgets import QMessageBox
 
@@ -19,11 +20,11 @@ class FilterService:
     - Gestión de estados de filtro
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Inicializar el servicio de filtros"""
-        self.filter_history = []
+        self.filter_history: List[Dict[str, Any]] = []
     
-    def apply_filter(self, df, column, term, case_sensitive=False):
+    def apply_filter(self, df: pd.DataFrame, column: str, term: str, case_sensitive: bool = False) -> Optional[pd.DataFrame]:
         """
         Aplicar filtro a un DataFrame.
         
@@ -67,7 +68,7 @@ class FilterService:
         except Exception as e:
             raise Exception(f"Error aplicando filtro: {str(e)}")
     
-    def apply_regex_filter(self, df, column, pattern):
+    def apply_regex_filter(self, df: pd.DataFrame, column: str, pattern: str) -> Optional[pd.DataFrame]:
         """
         Aplicar filtro con expresión regular.
         
@@ -102,7 +103,7 @@ class FilterService:
         except Exception as e:
             raise Exception(f"Error aplicando filtro regex: {str(e)}")
     
-    def apply_numeric_filter(self, df, column, operator, value):
+    def apply_numeric_filter(self, df: pd.DataFrame, column: str, operator: str, value: float) -> Optional[pd.DataFrame]:
         """
         Aplicar filtro numérico.
         
@@ -155,7 +156,7 @@ class FilterService:
         except Exception as e:
             raise Exception(f"Error aplicando filtro numérico: {str(e)}")
     
-    def apply_date_filter(self, df, column, start_date=None, end_date=None):
+    def apply_date_filter(self, df: pd.DataFrame, column: str, start_date: Optional[str] = None, end_date: Optional[str] = None) -> Optional[pd.DataFrame]:
         """
         Aplicar filtro por rango de fechas.
         
@@ -205,7 +206,7 @@ class FilterService:
         except Exception as e:
             raise Exception(f"Error aplicando filtro de fecha: {str(e)}")
     
-    def apply_value_filter(self, df, column, values, exclude=False):
+    def apply_value_filter(self, df: pd.DataFrame, column: str, values: List[Any], exclude: bool = False) -> Optional[pd.DataFrame]:
         """
         Filtrar por valores específicos en una columna.
         
@@ -246,17 +247,17 @@ class FilterService:
         except Exception as e:
             raise Exception(f"Error aplicando filtro de valores: {str(e)}")
     
-    def clear_filters(self):
+    def clear_filters(self) -> None:
         """Limpiar el historial de filtros"""
         self.filter_history = []
     
-    def get_filter_info(self):
+    def get_filter_info(self) -> Optional[Dict[str, Any]]:
         """Obtener información sobre el último filtro aplicado"""
         if self.filter_history:
             return self.filter_history[-1]
         return None
     
-    def get_filter_summary(self):
+    def get_filter_summary(self) -> str:
         """Obtener resumen de todos los filtros aplicados"""
         if not self.filter_history:
             return "No hay filtros aplicados."
@@ -276,7 +277,7 @@ class FilterService:
         
         return "\n".join(summary)
     
-    def get_unique_values(self, df, column, limit=100):
+    def get_unique_values(self, df: pd.DataFrame, column: str, limit: int = 100) -> List[Any]:
         """Obtener valores únicos de una columna"""
         if df is None or column not in df.columns:
             return []
@@ -289,7 +290,7 @@ class FilterService:
         except Exception:
             return []
     
-    def get_column_stats(self, df, column):
+    def get_column_stats(self, df: pd.DataFrame, column: str) -> Optional[Dict[str, Any]]:
         """Obtener estadísticas de una columna para ayudar en filtrado"""
         if df is None or column not in df.columns:
             return None

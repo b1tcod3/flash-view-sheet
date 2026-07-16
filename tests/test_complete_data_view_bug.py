@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, Q
 from paginacion.data_view import DataView
 from paginacion.pagination_manager import PaginationManager
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -21,7 +21,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class TestWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Test Bug Páginas en Blanco - DataView")
         self.setGeometry(100, 100, 1200, 800)
@@ -54,7 +54,7 @@ class TestWindow(QMainWindow):
         # Mostrar ventana
         self.show()
         
-    def on_page_changed(self, page):
+    def on_page_changed(self, page: int) -> None:
         """Debug cuando cambia la página"""
         print(f"\n🔄 CAMBIO DE PÁGINA A: {page}")
         
@@ -84,7 +84,7 @@ class TestWindow(QMainWindow):
         else:
             print(f"   ❌ PandasModel: None")
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

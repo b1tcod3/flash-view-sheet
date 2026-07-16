@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Flash Sheet Quick Start Guide (10-Minute Tutorial)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Basic Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Data Visualization Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Graphics and Charts Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Basic Export Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Advanced Features Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#detailed-examples-and-business-use-cases">Detailed Examples and Business Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Main Window Architecture - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Data Handler System - Detailed Code Walkthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Views System Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Development Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Releases:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p># Guía de Usuario - Flash View Sheet</p>
+<p>## 📋 Índice</p>
+<ol class="arabic simple">
+<li><p>[Introducción](#introducción)</p></li>
+<li><p>[Funcionalidades Principales](#funcionalidades-principales)
+- [Carga de Carpeta](#carga-de-carpeta)
+- [Cruce de Datos (Joins)](#cruce-de-datos-joins)
+- [Exportación Separada](#exportación-separada)</p></li>
+<li><p>[Carga de Carpeta - Tutorial](#carga-de-carpeta—tutorial)</p></li>
+<li><p>[Cruce de Datos - Tutorial](#cruce-de-datos—tutorial)</p></li>
+<li><p>[Exportación Separada - Tutorial](#exportación-separada—tutorial)</p></li>
+<li><p>[Guía Detallada](#guía-detallada)</p></li>
+<li><p>[Configuración Avanzada](#configuración-avanzada)</p></li>
+<li><p>[Ejemplos Prácticos](#ejemplos-prácticos)</p></li>
+<li><p>[Solución de Problemas](#solución-de-problemas)</p></li>
+<li><p>[Preguntas Frecuentes](#preguntas-frecuentes)</p></li>
+</ol>
+<p>## Introducción</p>
+<p><strong>Flash View Sheet</strong> es una herramienta poderosa para análisis y manipulación de datos que incluye múltiples funcionalidades avanzadas:</p>
+<ul class="simple">
+<li><p><strong>Carga de Carpeta</strong>: Consolidar múltiples archivos Excel de una carpeta en un único dataset</p></li>
+<li><p><strong>Cruce de Datos (Joins)</strong>: Combinar datasets mediante operaciones de join</p></li>
+<li><p><strong>Exportación Separada</strong>: Dividir datos en múltiples archivos Excel personalizados</p></li>
+<li><p><strong>Visualización Interactiva</strong>: Tablas dinámicas, gráficos y análisis</p></li>
+<li><p><strong>Soporte Multi-Formato</strong>: CSV, Excel, JSON, SQL y más</p></li>
+</ul>
+<p>## Funcionalidades Principales</p>
+<p>### Carga de Carpeta</p>
+<p>La funcionalidad de <strong>Carga de Carpeta</strong> permite cargar múltiples archivos Excel desde una carpeta y consolidarlos en un único dataset. Esta herramienta es especialmente útil para:</p>
+<ul class="simple">
+<li><p><strong>Consolidación de Datos</strong>: Unir datos de múltiples archivos Excel en uno solo</p></li>
+<li><p><strong>Análisis Agregado</strong>: Combinar reportes mensuales, regionales o departamentales</p></li>
+<li><p><strong>Procesamiento por Lotes</strong>: Manejar grandes volúmenes de datos distribuidos en archivos</p></li>
+<li><p><strong>Alineación Inteligente</strong>: Alinear columnas automáticamente por posición o manualmente</p></li>
+</ul>
+<p>#### Características</p>
+<p>✅ <strong>Escaneo Automático</strong>: Detecta automáticamente archivos Excel (.xlsx, .xls) en la carpeta
+✅ <strong>Selección Flexible</strong>: Elige qué archivos incluir/excluir de la consolidación
+✅ <strong>Alineación de Columnas</strong>: Alinea columnas por posición o manualmente con drag-and-drop
+✅ <strong>Vista Previa</strong>: Visualiza cómo se alinearán las columnas antes de consolidar
+✅ <strong>Renombrado de Columnas</strong>: Personaliza los nombres de las columnas consolidadas
+✅ <strong>Manejo de Diferencias</strong>: Gestiona archivos con diferente número de columnas
+✅ <strong>Optimización de Rendimiento</strong>: Procesamiento eficiente para carpetas grandes</p>
+<p>### Cruce de Datos (Joins)</p>
+<p>La funcionalidad de <strong>Cruce de Datos</strong> permite combinar dos datasets mediante operaciones de join directamente desde la interfaz, similar a las consultas SQL. Es ideal para:</p>
+<ul class="simple">
+<li><p><strong>Enriquecimiento de Datos</strong>: Añadir información de clientes a ventas</p></li>
+<li><p><strong>Análisis Combinado</strong>: Unir datos de múltiples fuentes</p></li>
+<li><p><strong>Consolidación</strong>: Merge de datasets relacionados</p></li>
+<li><p><strong>Limpieza de Datos</strong>: Identificar coincidencias y diferencias</p></li>
+</ul>
+<p>#### Tipos de Join Soportados</p>
+<ul class="simple">
+<li><p><strong>Inner Join</strong>: Solo filas con coincidencias en ambas tablas</p></li>
+<li><p><strong>Left Join</strong>: Todas las filas del primer dataset + coincidencias del segundo</p></li>
+<li><p><strong>Right Join</strong>: Todas las filas del segundo dataset + coincidencias del primero</p></li>
+<li><p><strong>Cross Join</strong>: Producto cartesiano de ambas tablas</p></li>
+</ul>
+<p>#### Características</p>
+<p>✅ <strong>Interfaz Intuitiva</strong>: Configuración visual paso a paso
+✅ <strong>Preview en Tiempo Real</strong>: Ver resultados antes de ejecutar
+✅ <strong>Validación Automática</strong>: Detección de errores y sugerencias
+✅ <strong>Optimización de Rendimiento</strong>: Manejo eficiente de datasets grandes
+✅ <strong>Historial Completo</strong>: Re-ejecución de operaciones previas
+✅ <strong>Exportación</strong>: Resultados en múltiples formatos</p>
+<p>### Exportación Separada</p>
+<p>La <strong>Exportación de Datos Separados</strong> permite dividir un conjunto de datos en múltiples archivos Excel personalizados usando plantillas predefinidas. Esta herramienta es especialmente útil para:</p>
+<ul class="simple">
+<li><p><strong>Reportes Empresariales</strong>: Separar datos por región, departamento, período</p></li>
+<li><p><strong>Análisis por Categorías</strong>: Dividir datos por tipos de productos, clientes, etc.</p></li>
+<li><p><strong>Distribuciones Automatizadas</strong>: Generar reportes individuales para diferentes entidades</p></li>
+<li><p><strong>Plantillas Personalizadas</strong>: Mantener formato corporativo consistente</p></li>
+</ul>
+<p>## Carga de Carpeta - Tutorial</p>
+<p>### Concepto Básico</p>
+<p>Imagina que tienes una carpeta con múltiples archivos Excel de ventas mensuales:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">📁</span> <span class="pre">Ventas_2025/</span>
+<span class="pre">├──</span> <span class="pre">Enero.xlsx</span>&#160;&#160;&#160; <span class="pre">(Producto,</span> <span class="pre">Ventas,</span> <span class="pre">Región)</span>
+<span class="pre">├──</span> <span class="pre">Febrero.xlsx</span>&#160; <span class="pre">(Producto,</span> <span class="pre">Ventas,</span> <span class="pre">Región)</span>
+<span class="pre">├──</span> <span class="pre">Marzo.xlsx</span>&#160;&#160;&#160; <span class="pre">(Producto,</span> <span class="pre">Ventas,</span> <span class="pre">Región)</span>
+<span class="pre">└──</span> <span class="pre">Abril.xlsx</span>&#160;&#160;&#160; <span class="pre">(Producto,</span> <span class="pre">Ventas,</span> <span class="pre">Región)</span>
+<span class="pre">`</span></code></p>
+<p>La <strong>Carga de Carpeta</strong> te permite:</p>
+<ol class="arabic simple">
+<li><p><strong>Seleccionar la carpeta</strong> con todos los archivos</p></li>
+<li><p><strong>Elegir qué archivos incluir</strong> en la consolidación</p></li>
+<li><p><strong>Alinear las columnas</strong> automáticamente por posición</p></li>
+<li><p><strong>Generar un único dataset</strong> con todos los datos consolidados</p></li>
+</ol>
+<p>### Características Principales</p>
+<p>✅ <strong>Detección Automática</strong>: Encuentra todos los archivos Excel en la carpeta
+✅ <strong>Selección Interactiva</strong>: Elige qué archivos procesar con checkboxes
+✅ <strong>Vista Previa de Alineación</strong>: Ve cómo se alinearán las columnas antes de consolidar
+✅ <strong>Drag &amp; Drop Manual</strong>: Realinea columnas arrastrando y soltando
+✅ <strong>Renombrado de Columnas</strong>: Personaliza los nombres de las columnas finales
+✅ <strong>Manejo Inteligente</strong>: Gestiona diferencias en estructura entre archivos</p>
+<p>## Tutorial Rápido</p>
+<p>### Paso 1: Preparar tus Archivos
+1. Organiza tus archivos Excel en una carpeta dedicada
+2. Asegúrate de que todos los archivos tengan estructura similar
+3. Verifica que las columnas estén en orden consistente</p>
+<p>### Paso 2: Acceder a la Función
+1. En el menú <strong>Archivo</strong>, selecciona <strong>“Cargar Carpeta…”</strong>
+2. Se abre el diálogo de configuración de carga de carpeta</p>
+<p>### Paso 3: Seleccionar Carpeta
+1. <strong>Haz clic en “Seleccionar Carpeta…”</strong>
+2. <strong>Navega</strong> hasta la carpeta con tus archivos Excel
+3. El sistema <strong>escanea automáticamente</strong> y muestra los archivos encontrados</p>
+<p>### Paso 4: Configurar Archivos
+1. <strong>Revisa la lista</strong> de archivos Excel encontrados
+2. <strong>Desmarca archivos</strong> que no quieras incluir (opcional)
+3. El sistema carga <strong>metadata</strong> de cada archivo seleccionado</p>
+<p>### Paso 5: Vista Previa de Alineación
+1. <strong>Observa la tabla</strong> que muestra cómo se alinearán las columnas
+2. Cada columna muestra los nombres de las columnas correspondientes de cada archivo
+3. <strong>Arrastra y suelta</strong> columnas para realinearlas manualmente si es necesario
+4. <strong>Haz doble clic</strong> en nombres de columna para renombrarlas</p>
+<p>### Paso 6: Configuración Final
+1. <strong>Revisa los nombres</strong> de las columnas consolidadas
+2. <strong>Añade renombrados</strong> si deseas cambiar los nombres finales
+3. <strong>Configura opciones</strong> adicionales si es necesario</p>
+<p>### Paso 7: Consolidación
+1. <strong>Haz clic en “Aceptar”</strong> para iniciar la consolidación
+2. El sistema <strong>procesa todos los archivos</strong> según tu configuración
+3. Los datos consolidados se <strong>cargan en la aplicación principal</strong></p>
+<p>¡Listo! Ahora tienes un único dataset con todos tus datos consolidados.</p>
+<p>## Guía Detallada - Carga de Carpeta</p>
+<p>### Selección de Carpeta</p>
+<p><strong>¿Cómo elegir la carpeta correcta?</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Organización lógica</strong>: Agrupa archivos relacionados en la misma carpeta</p></li>
+<li><p><strong>Estructura consistente</strong>: Asegúrate de que los archivos tengan columnas similares</p></li>
+<li><p><strong>Acceso permitido</strong>: Verifica que tengas permisos de lectura en la carpeta</p></li>
+</ol>
+<p>### Selección de Archivos</p>
+<p><strong>Opciones disponibles:</strong>
+- ✅ <strong>Incluir todos</strong>: Por defecto, todos los archivos Excel se incluyen
+- ✅ <strong>Selección manual</strong>: Desmarca archivos específicos que no quieras procesar
+- ✅ <strong>Filtros automáticos</strong>: El sistema excluye archivos que no se puedan leer</p>
+<p>### Alineación de Columnas</p>
+<p><strong>Métodos de alineación:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Por Posición (Predeterminado)</strong>
+- Las columnas se alinean por su orden en cada archivo
+- Columna 1 del Archivo A ↔ Columna 1 del Archivo B
+- Ideal cuando los archivos tienen estructura idéntica</p></li>
+<li><p><strong>Por Nombre (Futuro)</strong>
+- Las columnas se alinean por nombres coincidentes
+- Requiere nombres de columna consistentes</p></li>
+<li><p><strong>Manual con Drag &amp; Drop</strong>
+- Arrastra columnas para realinearlas
+- Control total sobre la alineación final</p></li>
+</ol>
+<p>### Manejo de Diferencias</p>
+<p><strong>Cuando los archivos tienen diferente número de columnas:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Columnas faltantes</strong>: Se rellenan con valores nulos (NaN)</p></li>
+<li><p><strong>Columnas adicionales</strong>: Se incluyen como columnas extra</p></li>
+<li><p><strong>Vista previa clara</strong>: La tabla muestra exactamente qué sucederá</p></li>
+</ol>
+<p>### Renombrado de Columnas</p>
+<p><strong>Opciones de personalización:</strong>
+- <strong>Renombrado individual</strong>: Doble clic en la tabla de vista previa
+- <strong>Renombrado masivo</strong>: Usar la tabla de renombrado en la parte inferior
+- <strong>Nombres finales</strong>: Los nombres que aparecerán en el dataset consolidado</p>
+<p>### Ejemplo Práctico</p>
+<p><strong>Archivos de entrada:</strong></p>
+<p><em>ventas_enero.xlsx:</em>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Producto</span> <span class="pre">|</span> <span class="pre">Ventas</span> <span class="pre">|</span> <span class="pre">Región</span>
+<span class="pre">Laptop</span>&#160;&#160; <span class="pre">|</span> <span class="pre">1000</span>&#160;&#160; <span class="pre">|</span> <span class="pre">Norte</span>
+<span class="pre">Mouse</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">200</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Norte</span>
+<span class="pre">`</span></code></p>
+<p><em>ventas_febrero.xlsx:</em>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Producto</span> <span class="pre">|</span> <span class="pre">Ventas</span> <span class="pre">|</span> <span class="pre">Región</span>
+<span class="pre">Teclado</span>&#160; <span class="pre">|</span> <span class="pre">300</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Sur</span>
+<span class="pre">Monitor</span>&#160; <span class="pre">|</span> <span class="pre">500</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Sur</span>
+<span class="pre">`</span></code></p>
+<p><strong>Resultado consolidado:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Producto</span> <span class="pre">|</span> <span class="pre">Ventas</span> <span class="pre">|</span> <span class="pre">Región</span> <span class="pre">|</span> <span class="pre">__source__</span>
+<span class="pre">Laptop</span>&#160;&#160; <span class="pre">|</span> <span class="pre">1000</span>&#160;&#160; <span class="pre">|</span> <span class="pre">Norte</span>&#160; <span class="pre">|</span> <span class="pre">ventas_enero.xlsx</span>
+<span class="pre">Mouse</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">200</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Norte</span>&#160; <span class="pre">|</span> <span class="pre">ventas_enero.xlsx</span>
+<span class="pre">Teclado</span>&#160; <span class="pre">|</span> <span class="pre">300</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Sur</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">ventas_febrero.xlsx</span>
+<span class="pre">Monitor</span>&#160; <span class="pre">|</span> <span class="pre">500</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Sur</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">ventas_febrero.xlsx</span>
+<span class="pre">`</span></code></p>
+<p>## Cruce de Datos - Tutorial</p>
+<p>### Paso 1: Preparar tus Datos</p>
+<ol class="arabic simple">
+<li><p><strong>Carga el dataset principal</strong> en Flash Sheet (ventas, transacciones, etc.)</p></li>
+<li><p><strong>Identifica qué información adicional</strong> necesitas añadir</p></li>
+<li><p><strong>Prepara el dataset secundario</strong> con los datos complementarios</p></li>
+</ol>
+<p>### Paso 2: Acceder a la Función</p>
+<ol class="arabic simple">
+<li><p>En el menú <strong>Datos</strong>, selecciona <strong>“Cruzar Datos…”</strong></p></li>
+<li><p>Se abre el diálogo de configuración de cruce</p></li>
+</ol>
+<p>### Paso 3: Configuración Básica</p>
+<ol class="arabic simple">
+<li><p><strong>Carga el dataset derecho</strong> usando “Cargar Dataset Derecho”</p></li>
+<li><p><strong>Selecciona el tipo de join</strong> apropiado para tu caso:
+- Inner Join: Solo datos que existen en ambas tablas
+- Left Join: Todos los datos principales + matches del secundario
+- Right Join: Todos los datos secundarios + matches del principal
+- Cross Join: Combinación completa (usar con cuidado)</p></li>
+<li><p><strong>Selecciona las columnas de join</strong>:
+- Columna del dataset izquierdo
+- Columna del dataset derecho
+- Deben tener tipos de datos compatibles</p></li>
+</ol>
+<p>### Paso 4: Opciones Avanzadas (Opcional)</p>
+<ul class="simple">
+<li><p><strong>Sufijos para columnas duplicadas</strong>: Personaliza <cite>_left</cite> y <cite>_right</cite></p></li>
+<li><p><strong>Validación de integridad</strong>: Verifica consistencia de datos</p></li>
+<li><p><strong>Columna indicador</strong>: Añade <cite>_merge</cite> para ver origen de datos</p></li>
+<li><p><strong>Ordenar resultados</strong>: Ordena por columna de join</p></li>
+</ul>
+<p>### Paso 5: Preview y Ejecución</p>
+<ol class="arabic simple">
+<li><p><strong>Haz clic en “Actualizar Preview”</strong> para ver resultados</p></li>
+<li><p><strong>Revisa las estadísticas</strong>: filas resultantes, tiempo estimado</p></li>
+<li><p><strong>Ejecuta el join</strong> con “🚀 Ejecutar Join”</p></li>
+</ol>
+<p>### Paso 6: Visualizar Resultados</p>
+<ul class="simple">
+<li><p>Los resultados se muestran en una vista especializada</p></li>
+<li><p><strong>Metadatos del cruce</strong>: estadísticas detalladas</p></li>
+<li><p><strong>Opciones de filtrado</strong>: búsqueda y filtrado específico</p></li>
+<li><p><strong>Exportación</strong>: guarda resultados en Excel, CSV, PDF</p></li>
+</ul>
+<p>### Ejemplo Práctico</p>
+<p><strong>Dataset Ventas:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">cliente_id</span> <span class="pre">|</span> <span class="pre">producto</span> <span class="pre">|</span> <span class="pre">cantidad</span>
+<span class="pre">1</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Laptop</span>&#160;&#160; <span class="pre">|</span> <span class="pre">2</span>
+<span class="pre">2</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Mouse</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">1</span>
+<span class="pre">`</span></code></p>
+<p><strong>Dataset Clientes:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">id</span> <span class="pre">|</span> <span class="pre">nombre</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">ciudad</span>
+<span class="pre">1</span>&#160; <span class="pre">|</span> <span class="pre">Juan</span> <span class="pre">Pérez</span>&#160; <span class="pre">|</span> <span class="pre">Madrid</span>
+<span class="pre">2</span>&#160; <span class="pre">|</span> <span class="pre">Ana</span> <span class="pre">García</span>&#160; <span class="pre">|</span> <span class="pre">Barcelona</span>
+<span class="pre">`</span></code></p>
+<p><strong>Resultado Left Join (cliente_id = id):</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">cliente_id</span> <span class="pre">|</span> <span class="pre">producto</span> <span class="pre">|</span> <span class="pre">cantidad</span> <span class="pre">|</span> <span class="pre">id</span> <span class="pre">|</span> <span class="pre">nombre</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">ciudad</span>
+<span class="pre">1</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Laptop</span>&#160;&#160; <span class="pre">|</span> <span class="pre">2</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">1</span>&#160; <span class="pre">|</span> <span class="pre">Juan</span> <span class="pre">Pérez</span>&#160; <span class="pre">|</span> <span class="pre">Madrid</span>
+<span class="pre">2</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Mouse</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">1</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">2</span>&#160; <span class="pre">|</span> <span class="pre">Ana</span> <span class="pre">García</span>&#160; <span class="pre">|</span> <span class="pre">Barcelona</span>
+<span class="pre">`</span></code></p>
+<p>## Exportación Separada - Tutorial</p>
+<p>### Concepto Básico</p>
+<p>Imagina que tienes un DataFrame con datos de ventas de múltiples regiones:</p>
+<div class="line-block">
+<div class="line">Región | Vendedor | Producto | Ventas |</div>
+</div>
+<p><a href="#id7"><span class="problematic" id="id8">|--------|</span></a>———-<a href="#id9"><span class="problematic" id="id10">|----------|</span></a>——–|
+| Norte  | Juan     | Laptop   | 1500   |
+| Sur    | María    | Mouse    | 200    |
+| Norte  | Carlos   | Teclado  | 300    |
+| Sur    | Ana      | Monitor  | 800    |</p>
+<p>La <strong>Exportación Separada</strong> te permite:</p>
+<ol class="arabic simple">
+<li><p><strong>Seleccionar la columna de separación</strong> (ej: “Región”)</p></li>
+<li><p><strong>Definir una plantilla Excel</strong> con tu formato corporativo</p></li>
+<li><p><strong>Generar automáticamente</strong>:
+- <cite>Norte_2025-11-05.xlsx</cite> (datos de región Norte)
+- <cite>Sur_2025-11-05.xlsx</cite> (datos de región Sur)</p></li>
+</ol>
+<p>### Características Principales</p>
+<p>✅ <strong>Plantillas Excel Personalizadas</strong>: Preserva formato, colores, fórmulas
+✅ <strong>Mapeo Inteligente</strong>: Conversión automática de columnas
+✅ <strong>Optimización Automática</strong>: Maneja datasets grandes sin problemas
+✅ <strong>Interfaz Visual</strong>: Configuración intuitiva paso a paso
+✅ <strong>Preview en Tiempo Real</strong>: Ve qué archivos se crearán antes de exportar
+✅ <strong>Validación Completa</strong>: Verifica configuración antes de procesar</p>
+<p>## Requisitos Previos</p>
+<p>### Datos Requeridos
+- <strong>DataFrame cargado</strong> en Flash Sheet
+- <strong>Columna de separación</strong> con valores categóricos (texto, números)
+- <strong>Datos consistentes</strong> en formato tabular</p>
+<p>### Archivos de Plantilla
+- <strong>Archivo Excel</strong> (.xlsx) con formato deseado
+- <strong>Encabezados</strong> en primera fila (recomendado)
+- <strong>Formato corporativo</strong> (colores, fuentes, logos)</p>
+<p>### Espacio en Disco
+- <strong>Mínimo</strong>: 2x el tamaño de datos originales
+- <strong>Recomendado</strong>: 3x para datasets grandes con plantillas complejas</p>
+<p>## Tutorial Rápido</p>
+<p>### Paso 1: Preparar Datos
+1. Carga tu archivo en Flash Sheet (CSV, Excel, etc.)
+2. Verifica que los datos se muestran correctamente
+3. Identifica la columna que usarás para separar</p>
+<p>### Paso 2: Acceder a la Función
+1. En el menú principal, busca <strong>“Separar”</strong>
+2. Selecciona <strong>“Exportar Datos Separados…”</strong>
+3. Se abre el diálogo de configuración</p>
+<p>### Paso 3: Configuración Básica
+1. <strong>Selecciona columna</strong> de separación del dropdown
+2. <strong>Selecciona plantilla Excel</strong> usando el botón “Seleccionar”
+3. <strong>Define carpeta destino</strong> para los archivos
+4. <strong>Configura nombres</strong> de archivos con templates</p>
+<p>### Paso 4: Verificar y Exportar
+1. Haz clic en <strong>“Vista Previa”</strong> para ver archivos a generar
+2. <strong>Revisa la validación</strong> (debe aparecer ✅ verde)
+3. Haz clic en <strong>“Exportar”</strong> para procesar</p>
+<p>¡Listo! Tus archivos Excel separados se han generado automáticamente.</p>
+<p>## Guía Detallada</p>
+<p>### Sección 1: Selección de Columna de Separación</p>
+<p><strong>¿Cómo elegir la columna correcta?</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Identifica la categorización deseada</strong>:
+- Por región geográfica
+- Por departamento
+- Por período de tiempo
+- Por categoría de producto
+- Por cliente/empresa</p></li>
+<li><p><strong>Verifica la calidad de la columna</strong>:
+- Valores consistentes (evita variaciones de texto)
+- Número razonable de categorías (2-100 ideal)
+- Sin demasiados valores nulos</p></li>
+</ol>
+<p><strong>Ejemplo de Preview:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">✅</span> <span class="pre">Buena</span> <span class="pre">columna:</span> <span class="pre">&quot;Región&quot;</span> <span class="pre">con</span> <span class="pre">valores:</span> <span class="pre">Norte,</span> <span class="pre">Sur,</span> <span class="pre">Este,</span> <span class="pre">Oeste</span>
+<span class="pre">❌</span> <span class="pre">Problema:</span> <span class="pre">&quot;Comentarios&quot;</span> <span class="pre">con</span> <span class="pre">500+</span> <span class="pre">valores</span> <span class="pre">únicos</span>
+<span class="pre">`</span></code></p>
+<p>### Sección 2: Configuración de Plantilla Excel</p>
+<p><strong>Pasos para seleccionar plantilla:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Haz clic en “Seleccionar Plantilla Excel”</strong></p></li>
+<li><p><strong>Navega</strong> hasta tu archivo de plantilla</p></li>
+<li><p><strong>Selecciona la hoja</strong> si el archivo tiene múltiples hojas</p></li>
+<li><p><strong>Configura celda inicial</strong> donde insertar datos</p></li>
+</ol>
+<p><strong>Características de una buena plantilla:</strong>
+- ✅ Encabezados en primera fila
+- ✅ Formato corporativo aplicado
+- ✅ Celdas vacías suficientes para datos
+- ✅ Fórmulas preservadas donde sea necesario</p>
+<p>### Sección 3: Mapeo de Columnas</p>
+<p><strong>El sistema mapea automáticamente</strong>:
+- Columna DataFrame → Columna Excel (A, B, C…)
+- Mantiene orden por defecto
+- Permite ajuste manual si es necesario</p>
+<p><strong>Ajuste manual de mapeo:</strong>
+1. Ve a la pestaña <strong>“Mapeo de Columnas”</strong>
+2. <strong>Modifica asignaciones</strong> usando dropdowns
+3. <strong>Vista previa</strong> muestra cómo se verá en Excel</p>
+<p>### Sección 4: Plantillas de Nombres de Archivo</p>
+<p><strong>Placeholders disponibles:</strong></p>
+<ul class="simple">
+<li><p><cite>{valor}</cite> - Valor de la columna de separación</p></li>
+<li><p><cite>{fecha}</cite> - Fecha actual (YYYY-MM-DD)</p></li>
+<li><p><cite>{hora}</cite> - Hora actual (HHMMSS)</p></li>
+<li><p><cite>{contador}</cite> - Número secuencial (01, 02, 03…)</p></li>
+<li><p><cite>{columna_nombre}</cite> - Nombre de columna de separación</p></li>
+<li><p><cite>{total_filas}</cite> - Número de filas en el grupo</p></li>
+</ul>
+<p><strong>Ejemplos útiles:</strong>
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+Reporte_{valor}_{fecha}.xlsx
+→ Norte_2025-11-05.xlsx</p>
+<p>{valor}_Ventas_Q4.xlsx
+→ ProductoA_Ventas_Q4.xlsx</p>
+<p>Reporte_{valor}_{contador}.xlsx
+→ Norte_01.xlsx, Sur_02.xlsx
+<a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>## Configuración Avanzada</p>
+<p>### Opciones de Rendimiento</p>
+<p><strong>Chunking Automático:</strong>
+- <strong>Habilitado por defecto</strong> para datasets &gt; 10K filas
+- <strong>Optimiza memoria</strong> sin afectar calidad
+- <strong>Recomendado</strong> para datasets grandes</p>
+<p><strong>Tamaño de Chunk:</strong>
+- <strong>Conservador</strong>: 1,000 filas (seguro)
+- <strong>Moderado</strong>: 10,000 filas (equilibrado)
+- <strong>Agresivo</strong>: 100,000+ filas (solo expertos)</p>
+<p>### Manejo de Duplicados</p>
+<p><strong>Opciones disponibles:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Sobrescribir archivos existentes</strong>
+- Más rápido, pero puede perder datos
+- Recomendado para procesamiento inicial</p></li>
+<li><p><strong>Numerar automáticamente</strong>
+- Crea archivos: archivo_01.xlsx, archivo_02.xlsx
+- Preserva todos los datos</p></li>
+<li><p><strong>Evitar sobrescritura</strong>
+- Solo crea si no existe el archivo
+- Más seguro, puede fallar si hay duplicados</p></li>
+</ol>
+<p>### Configuración de Celda Inicial</p>
+<p><strong>Opciones predefinidas:</strong>
+- A1 (inicio normal)
+- A2 (deja espacio para títulos)
+- A5 (deja espacio para logos/headers)</p>
+<p><strong>Coordenadas personalizadas:</strong>
+- Formato: C10, B15, etc.
+- Útil para plantillas complejas</p>
+<p>## Ejemplos Prácticos</p>
+<p>### Ejemplo 1: Reporte de Ventas por Región</p>
+<p><strong>Datos de entrada:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">|</span> <span class="pre">Región</span> <span class="pre">|</span> <span class="pre">Vendedor</span> <span class="pre">|</span> <span class="pre">Producto</span> <span class="pre">|</span> <span class="pre">Ventas</span> <span class="pre">|</span> <span class="pre">Fecha</span>&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">|--------|----------|----------|--------|----------|</span>
+<span class="pre">|</span> <span class="pre">Norte</span>&#160; <span class="pre">|</span> <span class="pre">Juan</span>&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Laptop</span>&#160;&#160; <span class="pre">|</span> <span class="pre">1500</span>&#160;&#160; <span class="pre">|</span> <span class="pre">2025-11-01|</span>
+<span class="pre">|</span> <span class="pre">Sur</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">María</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Mouse</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">200</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">2025-11-01|</span>
+<span class="pre">|</span> <span class="pre">Norte</span>&#160; <span class="pre">|</span> <span class="pre">Carlos</span>&#160;&#160; <span class="pre">|</span> <span class="pre">Teclado</span>&#160; <span class="pre">|</span> <span class="pre">300</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">2025-11-01|</span>
+<span class="pre">|</span> <span class="pre">Sur</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Ana</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Monitor</span>&#160; <span class="pre">|</span> <span class="pre">800</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">2025-11-01|</span>
+<span class="pre">`</span></code></p>
+<p><strong>Configuración:</strong>
+- <strong>Columna</strong>: Región
+- <strong>Plantilla</strong>: <cite>template_ventas.xlsx</cite>
+- <strong>Nombre</strong>: <cite>Reporte_{valor}_Nov2025.xlsx</cite></p>
+<p><strong>Resultado:</strong>
+- <cite>Reporte_Norte_Nov2025.xlsx</cite> (2 filas)
+- <cite>Reporte_Sur_Nov2025.xlsx</cite> (2 filas)</p>
+<p>### Ejemplo 2: Análisis por Período</p>
+<p><strong>Datos de entrada:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">|</span> <span class="pre">Mes</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Categoría</span> <span class="pre">|</span> <span class="pre">Ventas</span> <span class="pre">|</span>
+<span class="pre">|--------|-----------|--------|</span>
+<span class="pre">|</span> <span class="pre">Enero</span>&#160; <span class="pre">|</span> <span class="pre">A</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">1000</span>&#160;&#160; <span class="pre">|</span>
+<span class="pre">|</span> <span class="pre">Febrero|</span> <span class="pre">A</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">1200</span>&#160;&#160; <span class="pre">|</span>
+<span class="pre">|</span> <span class="pre">Enero</span>&#160; <span class="pre">|</span> <span class="pre">B</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">800</span>&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">|</span> <span class="pre">Febrero|</span> <span class="pre">B</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">900</span>&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">`</span></code></p>
+<p><strong>Configuración:</strong>
+- <strong>Columna</strong>: Mes
+- <strong>Plantilla</strong>: <cite>template_mensual.xlsx</cite>
+- <strong>Nombre</strong>: <cite>{valor}_Analisis.xlsx</cite></p>
+<p><strong>Resultado:</strong>
+- <cite>Enero_Analisis.xlsx</cite> (2 filas - categorías A y B)
+- <cite>Febrero_Analisis.xlsx</cite> (2 filas - categorías A y B)</p>
+<p>### Ejemplo 3: Exportación con Múltiples Plantillas</p>
+<p><strong>Para diferentes tipos de reportes:</strong>
+1. <strong>Plantilla de Ventas</strong> → Reportes comerciales
+2. <strong>Plantilla de Inventario</strong> → Reportes de stock
+3. <strong>Plantilla Financiera</strong> → Reportes contables</p>
+<p>## Solución de Problemas</p>
+<p>### Problemas con Carga de Carpeta</p>
+<p>#### Problema: “No se encontraron archivos Excel en la carpeta”</p>
+<p><strong>Posibles causas y soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Archivos en subcarpetas</strong>
+- ✅ El sistema busca recursivamente en subcarpetas
+- ✅ Verifica que los archivos estén en subcarpetas accesibles</p></li>
+<li><p><strong>Extensiones no reconocidas</strong>
+- ✅ Solo se detectan .xlsx y .xls
+- ✅ Renombra archivos con extensiones correctas
+- ✅ Verifica que no sean archivos ocultos</p></li>
+<li><p><strong>Permisos de carpeta</strong>
+- ✅ Asegúrate de tener permisos de lectura
+- ✅ Prueba con una carpeta diferente</p></li>
+</ol>
+<p>#### Problema: “Error al cargar archivo específico”</p>
+<p><strong>Soluciones por tipo de error:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Archivo corrupto</strong>
+- ✅ Salta automáticamente al siguiente archivo
+- ✅ Revisa el archivo en Excel antes de cargarlo
+- ✅ Usa “Reparar” en Excel si está disponible</p></li>
+<li><p><strong>Contraseña protegido</strong>
+- ❌ Actualmente no soporta archivos con contraseña
+- ✅ Remueve la protección antes de cargar</p></li>
+<li><p><strong>Archivo muy grande</strong>
+- ✅ Optimización automática para archivos grandes
+- ✅ Divide archivos muy grandes si es posible</p></li>
+</ol>
+<p>#### Problema: “Columnas no se alinean correctamente”</p>
+<p><strong>Ajustes de alineación:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Vista previa no coincide</strong>
+- ✅ Revisa la tabla de vista previa antes de consolidar
+- ✅ Usa drag &amp; drop para realinear manualmente</p></li>
+<li><p><strong>Nombres de columna diferentes</strong>
+- ✅ Renombra columnas en la vista previa
+- ✅ Usa la tabla de renombrado para cambios masivos</p></li>
+<li><p><strong>Estructuras muy diferentes</strong>
+- ✅ Considera procesar archivos por separado
+- ✅ Revisa si los archivos son realmente compatibles</p></li>
+</ol>
+<p>#### Problema: “Procesamiento muy lento”</p>
+<p><strong>Optimizaciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Demasiados archivos</strong>
+- ✅ Reduce el número de archivos por carga
+- ✅ Procesa en lotes más pequeños</p></li>
+<li><p><strong>Archivos muy grandes</strong>
+- ✅ Verifica el tamaño total de los archivos
+- ✅ Cierra otras aplicaciones para liberar memoria</p></li>
+<li><p><strong>Disco duro lento</strong>
+- ✅ Usa SSD si es posible
+- ✅ Libera espacio en disco</p></li>
+</ol>
+<p>### Problema: “Configuración inválida”</p>
+<p><strong>Posibles causas y soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Columna de separación vacía</strong>
+- ✅ Selecciona una columna válida
+- ✅ Verifica que tenga datos</p></li>
+<li><p><strong>Plantilla Excel no encontrada</strong>
+- ✅ Verifica que el archivo existe
+- ✅ Confirma que tiene extensión .xlsx
+- ✅ Asegúrate de tener permisos de lectura</p></li>
+<li><p><strong>Carpeta destino sin permisos</strong>
+- ✅ Selecciona una carpeta donde tengas permisos de escritura
+- ✅ Evita rutas del sistema (C:Windows, etc.)</p></li>
+</ol>
+<p>### Problema: “Archivos duplicados”</p>
+<p><strong>Soluciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Cambiar estrategia de duplicados</strong>
+- Selecciona “Numerar automáticamente”
+- O cambia la plantilla de nombres</p></li>
+<li><p><strong>Limpiar carpeta destino</strong>
+- Elimina archivos conflictivos
+- Usa carpeta vacía para nueva exportación</p></li>
+</ol>
+<p>### Problema: “Procesamiento muy lento”</p>
+<p><strong>Optimizaciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Habilitar chunking</strong>
+- Activa “Optimización automática”
+- Reduce tamaño de chunk si es necesario</p></li>
+<li><p><strong>Simplificar plantilla</strong>
+- Usa plantilla más simple
+- Evita fórmulas complejas</p></li>
+<li><p><strong>Cerrar otros programas</strong>
+- Libera memoria para el procesamiento</p></li>
+</ol>
+<p>### Problema: “Formato no preservado”</p>
+<p><strong>Verificaciones:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Plantilla compatible</strong>
+- Usa archivos .xlsx (no .xls)
+- Verifica que el formato se vea bien en Excel</p></li>
+<li><p><strong>Celdas no ocupadas</strong>
+- Configura celda inicial correcta
+- Verifica que no hay datos que interfieran</p></li>
+</ol>
+<p>## Preguntas Frecuentes</p>
+<p>### Preguntas sobre Carga de Carpeta</p>
+<p>#### ¿Qué tipos de archivos Excel soporta?</p>
+<ul class="simple">
+<li><p>✅ <strong>Formatos soportados</strong>: .xlsx y .xls</p></li>
+<li><p>✅ <strong>Versiones</strong>: Compatible con Excel 2007 y superiores</p></li>
+<li><p>✅ <strong>Compresión</strong>: Maneja archivos comprimidos</p></li>
+<li><p>❌ <strong>No soportados</strong>: .xlsb, .xlsm con macros complejas</p></li>
+</ul>
+<p>#### ¿Cuántos archivos puedo cargar de una carpeta?</p>
+<ul class="simple">
+<li><p><strong>Sin límite técnico</strong> (depende de memoria disponible)</p></li>
+<li><p><strong>Recomendado</strong>: Hasta 100 archivos para buen rendimiento</p></li>
+<li><p><strong>Límite práctico</strong>: ~500 archivos dependiendo del sistema y tamaño</p></li>
+</ul>
+<p>#### ¿Qué pasa si los archivos tienen estructuras diferentes?</p>
+<p><strong>Manejo inteligente de diferencias:</strong>
+- <strong>Columnas desiguales</strong>: Se alinean por posición, rellenando con nulos
+- <strong>Nombres diferentes</strong>: Se preservan los nombres originales
+- <strong>Tipos de datos</strong>: Se convierten automáticamente cuando es posible
+- <strong>Vista previa</strong>: Siempre puedes ver exactamente qué sucederá</p>
+<p>#### ¿Se puede cancelar una carga en progreso?</p>
+<p>✅ <strong>Sí</strong>. La carga incluye:
+- Barra de progreso con botón “Cancelar”
+- Procesamiento por lotes para recuperación
+- Estado guardado para continuar después</p>
+<p>#### ¿Cómo funciona la alineación de columnas?</p>
+<p><strong>Tres métodos disponibles:</strong>
+1. <strong>Automática por posición</strong>: Las columnas se alinean por orden (1↔1, 2↔2, etc.)
+2. <strong>Manual con drag &amp; drop</strong>: Arrastra columnas para realinear
+3. <strong>Renombrado</strong>: Cambia nombres de columnas consolidadas</p>
+<p>#### ¿Se preservan los datos originales?</p>
+<p>✅ <strong>Sí, completamente</strong>. Los archivos originales no se modifican. Los datos consolidados se cargan como un nuevo dataset en la aplicación.</p>
+<p>#### ¿Hay límite en el tamaño de los archivos?</p>
+<ul class="simple">
+<li><p><strong>Sin límite técnico</strong> por archivo (depende de memoria)</p></li>
+<li><p><strong>Optimización automática</strong>: Archivos grandes se procesan eficientemente</p></li>
+<li><p><strong>Recomendado</strong>: Hasta 50MB por archivo para buen rendimiento</p></li>
+</ul>
+<p>#### ¿Puedo excluir archivos específicos?</p>
+<p>✅ <strong>Sí, completamente</strong>:
+- <strong>Selección visual</strong>: Desmarca archivos en la lista
+- <strong>Filtros por nombre</strong>: Excluye archivos que contengan ciertas palabras
+- <strong>Selección múltiple</strong>: Mantén Ctrl para seleccionar varios</p>
+<p>#### ¿Qué pasa con archivos corruptos o ilegibles?</p>
+<p><strong>Manejo robusto de errores:</strong>
+- <strong>Archivos corruptos</strong>: Se saltan automáticamente con advertencia
+- <strong>Permisos insuficientes</strong>: Se reporta el error específico
+- <strong>Formato incompatible</strong>: Se intenta recuperar datos cuando es posible</p>
+<p>#### ¿Se puede automatizar la carga de carpetas?</p>
+<ul class="simple">
+<li><p><strong>Configuración guardada</strong>: Las configuraciones se pueden reutilizar</p></li>
+<li><p><strong>Línea de comandos</strong>: Soporte futuro para automatización</p></li>
+<li><p><strong>APIs programáticas</strong>: Disponible para desarrolladores</p></li>
+</ul>
+<p>### Preguntas sobre Cruce de Datos (Joins)</p>
+<p>#### ¿Qué tipos de join están disponibles?</p>
+<ul class="simple">
+<li><p><strong>Inner Join</strong>: Solo filas con coincidencias en ambas tablas</p></li>
+<li><p><strong>Left Join</strong>: Todas las filas de la tabla izquierda + coincidencias de la derecha</p></li>
+<li><p><strong>Right Join</strong>: Todas las filas de la tabla derecha + coincidencias de la izquierda</p></li>
+<li><p><strong>Cross Join</strong>: Producto cartesiano (todas las combinaciones posibles)</p></li>
+</ul>
+<p>#### ¿Cuántos datasets puedo cruzar a la vez?</p>
+<p>Actualmente, se soporta el cruce entre <strong>2 datasets</strong>:
+- Un dataset principal (izquierdo)
+- Un dataset adicional (derecho)</p>
+<p>Para cruces más complejos, puedes encadenar operaciones de join.</p>
+<p>#### ¿Qué pasa si las columnas de join tienen tipos diferentes?</p>
+<p>El sistema <strong>advierte automáticamente</strong> sobre incompatibilidades de tipos:
+- <cite>cliente_id (str) ≠ id (int)</cite> → Sugiere conversión
+- Puedes elegir columnas diferentes o convertir tipos manualmente</p>
+<p>#### ¿Se preservan los datos originales?</p>
+<p>✅ <strong>Sí, completamente</strong>. Los datasets originales no se modifican. Los resultados del cruce se almacenan en una vista separada.</p>
+<p>#### ¿Cómo funciona el preview?</p>
+<ul class="simple">
+<li><p><strong>Muestreo inteligente</strong>: Para cross joins grandes, usa subconjuntos</p></li>
+<li><p><strong>Estimación rápida</strong>: Calcula filas y columnas resultantes</p></li>
+<li><p><strong>Validación en tiempo real</strong>: Detecta errores antes de ejecutar</p></li>
+</ul>
+<p>#### ¿Hay límite en el tamaño de los datasets?</p>
+<ul class="simple">
+<li><p><strong>Sin límite técnico</strong> (depende de memoria disponible)</p></li>
+<li><p><strong>Optimización automática</strong>: Chunking para datasets grandes</p></li>
+<li><p><strong>Recomendado</strong>: Hasta 1M filas por dataset para buen rendimiento</p></li>
+</ul>
+<p>#### ¿Se puede deshacer un join?</p>
+<ul class="simple">
+<li><p>Los datos originales <strong>siempre se preservan</strong></p></li>
+<li><p>Puedes <strong>volver a la vista anterior</strong> sin perder información</p></li>
+<li><p>El <strong>historial</strong> permite re-ejecutar joins previos</p></li>
+</ul>
+<p>### Preguntas sobre Exportación Separada</p>
+<p>#### ¿Qué formatos de archivo soporta?</p>
+<ul class="simple">
+<li><p>✅ <strong>Entrada</strong>: CSV, Excel (.xlsx), JSON, Parquet, HDF5</p></li>
+<li><p>✅ <strong>Plantillas</strong>: Solo Excel (.xlsx, .xlsm)</p></li>
+<li><p>✅ <strong>Salida</strong>: Excel (.xlsx) únicamente</p></li>
+</ul>
+<p>### ¿Cuántos archivos puedo generar?</p>
+<ul class="simple">
+<li><p><strong>Sin límite técnico</strong> (solo espacio en disco)</p></li>
+<li><p><strong>Recomendado</strong>: Máximo 1,000 archivos para mejor rendimiento</p></li>
+<li><p><strong>Límite práctico</strong>: ~10,000 archivos dependiendo del sistema</p></li>
+</ul>
+<p>### ¿Se preservan las fórmulas Excel?</p>
+<p>✅ <strong>Sí, completamente</strong>. La funcionalidad usa openpyxl que preserva:
+- Fórmulas existentes
+- Formato de celdas
+- Colores y estilos
+- Validaciones de datos
+- Gráficos (si están en área no afectada)</p>
+<p>### ¿Qué pasa con valores nulos en la columna de separación?</p>
+<p><strong>Opciones disponibles:</strong>
+1. <strong>Agrupar juntos</strong> → Un archivo “Valores_Nulos.xlsx”
+2. <strong>Archivo separado</strong> → “Con_Valores.xlsx” y “Sin_Valores.xlsx”
+3. <strong>Excluir</strong> → Solo exportar filas con valores válidos
+4. <strong>Valor personalizado</strong> → Reemplazar nulos con “N/A”</p>
+<p>### ¿Puedo cancelar un procesamiento en curso?</p>
+<p>✅ <strong>Sí</strong>. El procesamiento incluye:
+- Barra de progreso con botón “Cancelar”
+- Recovery automático si se interrumpe
+- Continúa desde el punto de interrupción</p>
+<p>### ¿Funciona con datasets muy grandes?</p>
+<p>✅ <strong>Optimizado para datasets grandes</strong>:
+- <strong>&lt; 10K filas</strong>: Procesamiento directo
+- <strong>10K-100K filas</strong>: Chunking moderado
+- <strong>100K+ filas</strong>: Chunking agresivo con monitoreo</p>
+<p>### ¿Se mantiene la compatibilidad con otras funciones?</p>
+<p>✅ <strong>100% compatible</strong>:
+- No afecta otras funcionalidades
+- Preserva transformaciones existentes
+- Compatible con sistema de loaders</p>
+<p>### ¿Hay límite en el tamaño de plantilla?</p>
+<ul class="simple">
+<li><p><strong>Recomendado</strong>: &lt; 50MB por plantilla</p></li>
+<li><p><strong>Límite práctico</strong>: Dependiente de memoria disponible</p></li>
+<li><p><strong>Optimización</strong>: Plantillas grandes se procesan de forma optimizada</p></li>
+</ul>
+<p>### ¿Puedo usar múltiples hojas en plantillas?</p>
+<p>✅ <strong>Sí, completamente soportado</strong>:
+- Selección de hoja específica
+- Cada archivo usa la misma hoja seleccionada
+- Preservación completa del formato de la hoja</p>
+<p>### ¿Qué pasa si se interrumpe la alimentación eléctrica?</p>
+<p>✅ <strong>Recovery automático</strong>:
+- Progreso se guarda automáticamente
+- Al reiniciar, continúa desde donde se detuvo
+- Archivos corruptos se recuperan automáticamente</p>
+<p>## Soporte y Recursos</p>
+<p>### Documentación Adicional
+- <strong>Guía Técnica</strong>: Para desarrolladores
+- <strong>API Reference</strong>: Para programación
+- <strong>Testing Documentation</strong>: Para validaciones</p>
+<p>### Ejemplos y Plantillas
+- Plantillas de ejemplo incluidas en <cite>/examples/</cite>
+- Casos de uso empresariales documentados
+- Scripts de ejemplo para automatización</p>
+<p>### Resolución de Problemas
+- Logs detallados en archivo de aplicación
+- Herramientas de diagnóstico incluidas
+- Modo debug para problemas complejos</p>
+<p>—</p>
+<p><strong>¡Gracias por usar Flash Sheet - Exportación Separada!</strong></p>
+<p>Esta funcionalidad está diseñada para simplificar tus tareas de análisis y distribución de datos. Si tienes preguntas adicionales o encuentras problemas, consulta la documentación técnica o revisa los ejemplos incluidos.</p>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

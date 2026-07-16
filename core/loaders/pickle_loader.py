@@ -4,8 +4,8 @@ Handles Python Pickle format
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,7 +14,7 @@ class PickleLoader(FileLoader):
     File loader for Pickle format
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.pkl', '.pickle']
 
     def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
@@ -54,8 +54,8 @@ class PickleLoader(FileLoader):
         Get information about the Pickle file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
-            extension = os.path.splitext(self.filepath)[1].lower()
+            file_size = Path(self.filepath).stat().st_size
+            extension = Path(self.filepath).suffix.lower()
             
             return {
                 'format': 'Pickle',

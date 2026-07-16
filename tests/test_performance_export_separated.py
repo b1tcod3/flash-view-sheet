@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch, MagicMock
 import pandas as pd
 import numpy as np
 import tempfile
-import os
+from pathlib import Path
 import shutil
 import sys
 import time
@@ -24,7 +24,7 @@ try:
 except ImportError:
     print("Warning: psutil no está disponible. Usando medición alternativa de memoria.")
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.data_handler import (
     ExcelTemplateSplitter,
@@ -37,7 +37,7 @@ from core.performance_optimizer import PerformanceOptimizer, ChunkingStrategy
 
 class PerformanceMetrics:
     """Clase para almacenar y analizar métricas de rendimiento"""
-    def __init__(self):
+    def __init__(self) -> None:
         self.measurements = []
         
     def add_measurement(self, name: str, duration: float, memory_peak_mb: float, 
@@ -57,7 +57,7 @@ class PerformanceMetrics:
             'timestamp': datetime.now()
         })
     
-    def get_summary(self) -> dict:
+    def get_summary(self)-> dict:
         """Obtener resumen de todas las mediciones"""
         if not self.measurements:
             return {}
@@ -77,7 +77,7 @@ class PerformanceMetrics:
             'max_throughput_rows_per_second': max([m['throughput_rows_per_second'] for m in successful]) if successful else 0
         }
     
-    def generate_report(self) -> str:
+    def generate_report(self)-> str:
         """Generar reporte de rendimiento en texto"""
         summary = self.get_summary()
         
@@ -119,7 +119,7 @@ class MemoryMonitor:
     """Monitor de memoria que funciona con o sin psutil"""
     
     @staticmethod
-    def get_memory_mb():
+    def get_memory_mb() -> dict:
         """Obtener uso actual de memoria en MB"""
         if PSUTIL_AVAILABLE:
             return psutil.Process().memory_info().rss / 1024 / 1024
@@ -134,7 +134,7 @@ class MemoryMonitor:
                 return 0.0
     
     @staticmethod
-    def get_peak_memory_mb():
+    def get_peak_memory_mb() -> dict:
         """Obtener memoria pico usando tracemalloc"""
         if tracemalloc.is_tracing():
             current, peak = tracemalloc.get_traced_memory()
@@ -143,7 +143,7 @@ class MemoryMonitor:
 
 
 @contextmanager
-def measure_performance(test_name: str, metrics: PerformanceMetrics):
+def measure_performance(test_name: str, metrics: PerformanceMetrics) -> None:
     """Context manager para medir rendimiento de una operación"""
     # Iniciar medición de memoria
     tracemalloc.start()
@@ -185,12 +185,12 @@ class TestExportSeparatedPerformance(unittest.TestCase):
     Incluye benchmarks, medición de memoria, tests de optimización y stress testing
     """
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar entorno de pruebas de rendimiento"""
         # Crear directorio temporal para pruebas
         self.temp_dir = tempfile.mkdtemp(prefix='performance_test_')
-        self.output_dir = os.path.join(self.temp_dir, 'output')
-        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir = str(Path(self.temp_dir) / 'output')
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
         
         # Crear plantilla base para pruebas
         self.template_path = self.create_performance_template()
@@ -219,9 +219,9 @@ class TestExportSeparatedPerformance(unittest.TestCase):
             'max_memory_mb': 256  # Límite bajo para forzar optimización
         }
     
-    def create_performance_template(self) -> str:
+    def create_performance_template(self)-> str:
         """Crear plantilla optimizada para pruebas de rendimiento"""
-        template_path = os.path.join(self.temp_dir, 'performance_template.xlsx')
+        template_path = str(Path(self.temp_dir) / 'performance_template.xlsx')
         
         # Importar openpyxl aquí para evitar problemas de dependencias
         try:
@@ -281,8 +281,8 @@ class TestExportSeparatedPerformance(unittest.TestCase):
                 total_file_size = 0
                 if result['success'] and result['files_created']:
                     for file_path in result['files_created']:
-                        if os.path.exists(file_path):
-                            total_file_size += os.path.getsize(file_path) / 1024 / 1024  # MB
+                        if Path(file_path).exists():
+                            total_file_size += Path(file_path).stat().st_size / 1024 / 1024  # MB
                 
                 # Actualizar la última medición con datos completos
                 if self.metrics.measurements:
@@ -311,7 +311,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
                     self.metrics.measurements[-1]['success'] = False
                 raise
     
-    def test_small_dataset_performance(self):
+    def test_small_dataset_performance(self) -> None:
         """Test de rendimiento con dataset pequeño (< 1K filas)"""
         print("\n=== Test Dataset Pequeño ===")
         
@@ -332,7 +332,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         print(f"✓ Pequeño dataset: {latest['duration_seconds']:.2f}s, "
               f"{latest['throughput_rows_per_second']:.0f} filas/s")
     
-    def test_medium_dataset_performance(self):
+    def test_medium_dataset_performance(self) -> None:
         """Test de rendimiento con dataset mediano (1K-50K filas)"""
         print("\n=== Test Dataset Mediano ===")
         
@@ -353,7 +353,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         print(f"✓ Dataset mediano: {latest['duration_seconds']:.2f}s, "
               f"{latest['throughput_rows_per_second']:.0f} filas/s")
     
-    def test_memory_usage_optimization(self):
+    def test_memory_usage_optimization(self) -> None:
         """Test de optimización de uso de memoria"""
         print("\n=== Test Optimización de Memoria ===")
         
@@ -381,7 +381,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         print(f"✓ Uso de memoria: {latest['memory_peak_mb']:.1f}MB pico, "
               f"{memory_increase:.1f}MB aumento")
     
-    def test_chunking_performance_impact(self):
+    def test_chunking_performance_impact(self) -> None:
         """Test del impacto del chunking en el rendimiento"""
         print("\n=== Test Impacto del Chunking ===")
         
@@ -419,7 +419,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         self.assertLess(with_chunk_metrics['memory_peak_mb'], 
                        no_chunk_metrics['memory_peak_mb'] * 1.2)  # Max 20% más memoria
     
-    def test_stress_test_extreme_conditions(self):
+    def test_stress_test_extreme_conditions(self) -> None:
         """Test de stress con condiciones extremas"""
         print("\n=== Test de Stress - Condiciones Extremas ===")
         
@@ -450,18 +450,17 @@ class TestExportSeparatedPerformance(unittest.TestCase):
             # Aún así, debería haber procesado algunos grupos
             self.assertGreater(result.get('groups_processed', 0), 0)
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar después de las pruebas"""
         # Limpiar archivos generados
         try:
-            if os.path.exists(self.output_dir):
-                for file in os.listdir(self.output_dir):
-                    file_path = os.path.join(self.output_dir, file)
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
+            if Path(self.output_dir).exists():
+                for file in Path(self.output_dir).iterdir():
+                    if file.is_file():
+                        file.unlink()
             
             # Limpiar directorio temporal
-            if os.path.exists(self.temp_dir):
+            if Path(self.temp_dir).exists():
                 shutil.rmtree(self.temp_dir)
         except Exception as e:
             print(f"Error limpiando archivos temporales: {str(e)}")
@@ -475,14 +474,14 @@ class TestPerformanceBenchmarks(unittest.TestCase):
     Tests de benchmark específicos para validar rendimiento contra estándares
     """
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de benchmark"""
         self.temp_dir = tempfile.mkdtemp(prefix='benchmark_test_')
-        self.output_dir = os.path.join(self.temp_dir, 'output')
-        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir = str(Path(self.temp_dir) / 'output')
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
         
         # Crear plantilla simple para benchmarks
-        self.template_path = os.path.join(self.temp_dir, 'benchmark_template.xlsx')
+        self.template_path = str(Path(self.temp_dir) / 'benchmark_template.xlsx')
         try:
             import openpyxl
             workbook = openpyxl.Workbook()
@@ -497,7 +496,7 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         except ImportError:
             self.skipTest("openpyxl no disponible para benchmarks")
     
-    def test_benchmark_small_dataset(self):
+    def test_benchmark_small_dataset(self) -> None:
         """Benchmark para dataset pequeño (referencia estándar)"""
         # Crear dataset pequeño estándar
         df = pd.DataFrame({
@@ -524,7 +523,7 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         
         print(f"✓ Benchmark pequeño: {elapsed_time:.2f}s (objetivo: < 5s)")
     
-    def test_benchmark_memory_efficiency(self):
+    def test_benchmark_memory_efficiency(self) -> None:
         """Benchmark de eficiencia de memoria"""
         # Dataset mediano
         df = pd.DataFrame({
@@ -557,10 +556,10 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         
         print(f"✓ Benchmark memoria: {memory_increase:.1f}MB aumento (objetivo: < 100MB)")
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar después de benchmarks"""
         try:
-            if os.path.exists(self.temp_dir):
+            if Path(self.temp_dir).exists():
                 shutil.rmtree(self.temp_dir)
         except Exception as e:
             print(f"Error limpiando benchmark: {str(e)}")

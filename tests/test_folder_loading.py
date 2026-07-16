@@ -5,7 +5,6 @@ Tests the folder loader, consolidator, and dialog components
 
 import pytest
 import pandas as pd
-import os
 import tempfile
 from pathlib import Path
 from core.loaders.folder_loader import FolderLoader
@@ -17,7 +16,7 @@ from core.models.file_metadata import FileMetadata
 class TestFolderLoader:
     """Test the FolderLoader class"""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test data"""
         self.temp_dir = tempfile.mkdtemp()
 
@@ -27,35 +26,35 @@ class TestFolderLoader:
         self.create_test_excel_file("file3.xlsx", [["Name", "Score"], ["Eve", 95], ["Frank", 87]])
 
         # Create a non-Excel file
-        self.non_excel_file = os.path.join(self.temp_dir, "notes.txt")
+        self.non_excel_file = str(Path(self.temp_dir) / "notes.txt")
         with open(self.non_excel_file, 'w') as f:
             f.write("This is not an Excel file")
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test files"""
         import shutil
         shutil.rmtree(self.temp_dir)
 
-    def create_test_excel_file(self, filename, data):
+    def create_test_excel_file(self, filename: str, data: dict) -> pd.DataFrame:
         """Create a test Excel file"""
         df = pd.DataFrame(data[1:], columns=data[0])
-        filepath = os.path.join(self.temp_dir, filename)
+        filepath = str(Path(self.temp_dir) / filename)
         df.to_excel(filepath, index=False)
 
-    def test_folder_loader_creation(self):
+    def test_folder_loader_creation(self) -> None:
         """Test FolderLoader initialization"""
         loader = FolderLoader(self.temp_dir)
         assert loader.folder_path == Path(self.temp_dir)
         assert len(loader.excel_files) == 3  # Should find 3 Excel files
 
-    def test_scan_excel_files(self):
+    def test_scan_excel_files(self) -> None:
         """Test scanning for Excel files"""
         loader = FolderLoader(self.temp_dir)
         excel_files = loader.get_excel_files()
         assert len(excel_files) == 3
         assert all(f.endswith('.xlsx') for f in excel_files)
 
-    def test_get_file_metadata(self):
+    def test_get_file_metadata(self) -> None:
         """Test getting metadata for a file"""
         loader = FolderLoader(self.temp_dir)
         first_file = loader.get_excel_files()[0]
@@ -67,7 +66,7 @@ class TestFolderLoader:
         assert metadata['num_rows'] > 0
         assert metadata['file_size_mb'] >= 0
 
-    def test_get_all_metadata(self):
+    def test_get_all_metadata(self) -> None:
         """Test getting metadata for all files"""
         loader = FolderLoader(self.temp_dir)
         all_metadata = loader.get_all_metadata()
@@ -76,7 +75,7 @@ class TestFolderLoader:
             assert 'filename' in meta
             assert meta['filename'].endswith('.xlsx')
 
-    def test_invalid_folder(self):
+    def test_invalid_folder(self) -> None:
         """Test error handling for invalid folder"""
         with pytest.raises(FileNotFoundError):
             FolderLoader("/nonexistent/folder")
@@ -85,7 +84,7 @@ class TestFolderLoader:
 class TestExcelConsolidator:
     """Test the ExcelConsolidator class"""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test data"""
         self.consolidator = ExcelConsolidator()
 
@@ -105,13 +104,13 @@ class TestExcelConsolidator:
             'Score': [95, 87]
         })
 
-    def test_add_dataframe(self):
+    def test_add_dataframe(self) -> None:
         """Test adding DataFrames to consolidator"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         assert len(self.consolidator.dataframes) == 1
         assert self.consolidator.dataframes[0]['source'] == "file1.xlsx"
 
-    def test_align_by_position(self):
+    def test_align_by_position(self) -> None:
         """Test alignment by position"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         self.consolidator.add_dataframe(self.df2, "file2.xlsx")
@@ -122,7 +121,7 @@ class TestExcelConsolidator:
         assert len(result) == 6  # 2 + 2 + 2 rows
         assert '__source__' in result.columns
 
-    def test_column_mappings(self):
+    def test_column_mappings(self) -> None:
         """Test column renaming"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         self.consolidator.set_column_mappings({'Name': 'Full_Name', 'Age': 'Years'})
@@ -133,7 +132,7 @@ class TestExcelConsolidator:
         assert 'Name' not in result.columns
         assert 'Age' not in result.columns
 
-    def test_get_column_alignment_preview(self):
+    def test_get_column_alignment_preview(self) -> None:
         """Test column alignment preview"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         self.consolidator.add_dataframe(self.df2, "file2.xlsx")
@@ -142,14 +141,14 @@ class TestExcelConsolidator:
         assert isinstance(preview, list)
         assert len(preview) == 2  # Max columns between the two DataFrames
 
-    def test_consolidate_method(self):
+    def test_consolidate_method(self) -> None:
         """Test consolidate method"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         result = self.consolidator.consolidate('position')
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 2
 
-    def test_clear_method(self):
+    def test_clear_method(self) -> None:
         """Test clearing consolidator"""
         self.consolidator.add_dataframe(self.df1, "file1.xlsx")
         self.consolidator.clear()
@@ -160,7 +159,7 @@ class TestExcelConsolidator:
 class TestFolderLoadConfig:
     """Test the FolderLoadConfig model"""
 
-    def test_config_creation(self):
+    def test_config_creation(self) -> None:
         """Test creating a folder load config"""
         config = FolderLoadConfig(
             folder_path="/test/path",
@@ -177,7 +176,7 @@ class TestFolderLoadConfig:
         assert len(config.excluded_files) == 1
         assert config.alignment_strategy == ColumnAlignmentStrategy.BY_POSITION
 
-    def test_should_include_file(self):
+    def test_should_include_file(self) -> None:
         """Test file inclusion logic"""
         config = FolderLoadConfig(
             folder_path="/test/path",
@@ -197,7 +196,7 @@ class TestFolderLoadConfig:
         config2 = FolderLoadConfig(folder_path="/test/path")
         assert config2.should_include_file("any.xlsx") == True
 
-    def test_config_to_dict(self):
+    def test_config_to_dict(self) -> None:
         """Test converting config to dict"""
         config = FolderLoadConfig(folder_path="/test/path")
         config_dict = config.to_dict()
@@ -208,7 +207,7 @@ class TestFolderLoadConfig:
 class TestFileMetadata:
     """Test the FileMetadata model"""
 
-    def test_metadata_creation(self):
+    def test_metadata_creation(self) -> None:
         """Test creating file metadata"""
         metadata = FileMetadata(
             filename="test.xlsx",
@@ -226,7 +225,7 @@ class TestFileMetadata:
         assert metadata.num_columns == 2
         assert metadata.has_error == False
 
-    def test_metadata_with_error(self):
+    def test_metadata_with_error(self) -> None:
         """Test metadata with error"""
         metadata = FileMetadata(
             filename="test.xlsx",
@@ -244,7 +243,7 @@ class TestFileMetadata:
         assert metadata.has_error == True
         assert metadata.error == "File corrupted"
 
-    def test_metadata_to_dict(self):
+    def test_metadata_to_dict(self) -> None:
         """Test converting metadata to dict"""
         metadata = FileMetadata(
             filename="test.xlsx",
@@ -267,7 +266,7 @@ class TestFileMetadata:
 class TestIntegration:
     """Test integration of folder loading components"""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test data"""
         self.temp_dir = tempfile.mkdtemp()
 
@@ -276,18 +275,18 @@ class TestIntegration:
         self.create_test_excel_file("sales_q2.xlsx", [["Product", "Q2_Sales"], ["A", 150], ["B", 250]])
         self.create_test_excel_file("inventory.xlsx", [["Product", "Stock"], ["A", 50], ["B", 75]])
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test files"""
         import shutil
         shutil.rmtree(self.temp_dir)
 
-    def create_test_excel_file(self, filename, data):
+    def create_test_excel_file(self, filename: str, data: dict) -> pd.DataFrame:
         """Create a test Excel file"""
         df = pd.DataFrame(data[1:], columns=data[0])
-        filepath = os.path.join(self.temp_dir, filename)
+        filepath = str(Path(self.temp_dir) / filename)
         df.to_excel(filepath, index=False)
 
-    def test_full_folder_loading_workflow(self):
+    def test_full_folder_loading_workflow(self) -> None:
         """Test complete folder loading workflow"""
         # Create config
         config = FolderLoadConfig(
@@ -305,7 +304,7 @@ class TestIntegration:
         consolidator = ExcelConsolidator()
         for file_path in files:
             df = pd.read_excel(file_path)
-            consolidator.add_dataframe(df, os.path.basename(file_path))
+            consolidator.add_dataframe(df, Path(file_path).name)
 
         consolidator.set_column_mappings(config.column_rename_mapping)
         result = consolidator.consolidate()

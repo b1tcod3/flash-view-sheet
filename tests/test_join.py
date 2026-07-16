@@ -14,7 +14,7 @@ class TestDataJoinManager:
     """Pruebas para DataJoinManager"""
 
     @pytest.fixture
-    def sample_dataframes(self):
+    def sample_dataframes(self) -> tuple:
         """Crear DataFrames de prueba"""
         left_df = pd.DataFrame({
             'id': [1, 2, 3, 4],
@@ -30,7 +30,7 @@ class TestDataJoinManager:
 
         return left_df, right_df
 
-    def test_inner_join(self, sample_dataframes):
+    def test_inner_join(self, sample_dataframes) -> None:
         """Probar join interno"""
         left_df, right_df = sample_dataframes
 
@@ -48,7 +48,7 @@ class TestDataJoinManager:
         assert 'name' in result.data.columns
         assert 'department' in result.data.columns
 
-    def test_left_join(self, sample_dataframes):
+    def test_left_join(self, sample_dataframes) -> None:
         """Probar left join"""
         left_df, right_df = sample_dataframes
 
@@ -65,7 +65,7 @@ class TestDataJoinManager:
         assert len(result.data) == 4  # todos los del izquierdo
         assert result.data['department'].isnull().sum() == 1  # id 4 no tiene match
 
-    def test_cross_join(self, sample_dataframes):
+    def test_cross_join(self, sample_dataframes) -> None:
         """Probar cross join"""
         left_df, right_df = sample_dataframes
 
@@ -80,7 +80,7 @@ class TestDataJoinManager:
         assert len(result.data) == 16  # 4 * 4
         assert len(result.data.columns) == 6  # id, name, value, id, department, salary
 
-    def test_validation_missing_columns(self, sample_dataframes):
+    def test_validation_missing_columns(self, sample_dataframes) -> None:
         """Probar validación de columnas faltantes"""
         left_df, right_df = sample_dataframes
 
@@ -96,7 +96,7 @@ class TestDataJoinManager:
         assert not validation.is_valid
         assert "nonexistent" in str(validation.errors)
 
-    def test_validation_different_key_counts(self, sample_dataframes):
+    def test_validation_different_key_counts(self, sample_dataframes) -> None:
         """Probar validación de número diferente de keys"""
         left_df, right_df = sample_dataframes
 
@@ -112,7 +112,7 @@ class TestDataJoinManager:
         assert not validation.is_valid
         assert "igual" in str(validation.errors).lower()
 
-    def test_unsupported_join_type(self, sample_dataframes):
+    def test_unsupported_join_type(self, sample_dataframes) -> None:
         """Probar tipo de join no soportado"""
         left_df, right_df = sample_dataframes
 
@@ -128,7 +128,7 @@ class TestDataJoinManager:
         with pytest.raises(UnsupportedJoinError):
             manager.validate_join(config)
 
-    def test_preview_functionality(self, sample_dataframes):
+    def test_preview_functionality(self, sample_dataframes) -> None:
         """Probar funcionalidad de preview"""
         left_df, right_df = sample_dataframes
 
@@ -144,7 +144,7 @@ class TestDataJoinManager:
         assert len(preview) <= 2
         assert not preview.empty
 
-    def test_chunking_large_cross_join(self):
+    def test_chunking_large_cross_join(self) -> None:
         """Probar chunking para cross joins grandes"""
         # Crear datasets más grandes para forzar chunking
         left_df = pd.DataFrame({
@@ -166,7 +166,7 @@ class TestDataJoinManager:
         assert len(result.data) == 5000  # 100 * 50
         assert len(result.data.columns) == 4  # id_left, value, id_right, data
 
-    def test_chunking_detection(self):
+    def test_chunking_detection(self) -> None:
         """Probar que el sistema detecta cuando usar chunking"""
         # Crear datasets que deberían activar chunking
         left_df = pd.DataFrame({
@@ -203,7 +203,7 @@ class TestDataJoinManager:
         )
         assert not should_chunk_inner  # Datasets pequeños no activan chunking
 
-    def test_column_suppression(self, sample_dataframes):
+    def test_column_suppression(self, sample_dataframes) -> None:
         """Probar supresión de columnas en resultados"""
         left_df, right_df = sample_dataframes
 
@@ -235,7 +235,7 @@ class TestDataJoinManager:
         assert set(result_filtered.data.columns) == {'name', 'department', 'salary'}
         assert len(result_filtered.data) == 3  # Mismos registros
 
-    def test_column_suppression_empty_list(self, sample_dataframes):
+    def test_column_suppression_empty_list(self, sample_dataframes) -> None:
         """Probar que lista vacía de columnas incluye todas"""
         left_df, right_df = sample_dataframes
 
@@ -253,7 +253,7 @@ class TestDataJoinManager:
         expected_columns = {'id', 'name', 'value', 'department', 'salary'}
         assert set(result.data.columns) == expected_columns
 
-    def test_column_suppression_invalid_columns(self, sample_dataframes):
+    def test_column_suppression_invalid_columns(self, sample_dataframes) -> None:
         """Probar manejo de columnas inexistentes en include_columns"""
         left_df, right_df = sample_dataframes
 
@@ -275,7 +275,7 @@ class TestDataJoinManager:
 class TestJoinConfig:
     """Pruebas para JoinConfig"""
 
-    def test_config_creation(self):
+    def test_config_creation(self) -> None:
         """Probar creación de configuración"""
         config = JoinConfig(
             left_keys=['id'],

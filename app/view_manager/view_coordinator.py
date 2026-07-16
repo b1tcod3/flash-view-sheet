@@ -6,9 +6,10 @@ Maneja la creación, actualización y coordinación de todas las vistas de la ap
 """
 
 from PySide6.QtCore import Signal, QObject
-from PySide6.QtWidgets import QStackedWidget
+from PySide6.QtWidgets import QStackedWidget, QWidget
 from .view_registry import ViewRegistry
 from .view_switcher import ViewSwitcher
+from typing import Optional, Dict, Any
 
 
 class ViewCoordinator(QObject):
@@ -20,7 +21,7 @@ class ViewCoordinator(QObject):
     filter_applied = Signal(str, str)  # (columna, termino)
     filter_cleared = Signal()
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """Inicializar el coordinador de vistas
         
         Args:
@@ -28,20 +29,21 @@ class ViewCoordinator(QObject):
         """
         super().__init__(parent)
         self._parent = parent
-        self._stacked_widget = None
-        self._view_switcher = ViewSwitcher()
+        self._stacked_widget: Optional[QStackedWidget] = None
+        self._view_switcher: ViewSwitcher = ViewSwitcher()
         
         # Referencias a las vistas
-        self._views = {}
+        self._views: Dict[int, Any] = {}
         
         # Referencias para coordinación de estado
-        self._main_view = None
-        self._data_view = None
-        self._info_modal = None
-        self._graphics_view = None
-        self._joined_data_view = None
+        self._main_view: Optional[Any] = None
+        self._data_view: Optional[Any] = None
+        self._info_modal: Optional[Any] = None
+        self._graphics_view: Optional[Any] = None
+        self._joined_data_view: Optional[Any] = None
+        self._original_data: Optional[Any] = None
     
-    def create_views(self, parent_widget) -> dict:
+    def create_views(self, parent_widget: QWidget) -> Dict[int, Any]:
         """Crear todas las vistas y añadirlas al stacked widget
         
         Args:
@@ -86,25 +88,25 @@ class ViewCoordinator(QObject):
         
         return self._views
     
-    def _create_main_view(self, parent):
+    def _create_main_view(self, parent: QWidget) -> Any:
         """Crear la vista principal"""
         from app.widgets.main_view import MainView
         view = MainView()
         return view
     
-    def _create_data_view(self, parent):
+    def _create_data_view(self, parent: QWidget) -> Any:
         """Crear la vista de datos con paginación"""
         from paginacion.data_view import DataView
         view = DataView()
         return view
     
-    def _create_graphics_view(self, parent):
+    def _create_graphics_view(self, parent: QWidget) -> Any:
         """Crear la vista de gráficos"""
         from app.widgets.graphics_view import GraphicsView
         view = GraphicsView()
         return view
     
-    def _create_joined_data_view(self, parent):
+    def _create_joined_data_view(self, parent: QWidget) -> Any:
         """Crear la vista de datos cruzados (join)"""
         from app.widgets.join.joined_data_view import JoinedDataView
         view = JoinedDataView()
@@ -114,7 +116,7 @@ class ViewCoordinator(QObject):
         """Obtener el widget stacked"""
         return self._stacked_widget
     
-    def get_view(self, view_id: int):
+    def get_view(self, view_id: int) -> Optional[Any]:
         """Obtener referencia a una vista específica
         
         Args:
@@ -125,19 +127,19 @@ class ViewCoordinator(QObject):
         """
         return self._views.get(view_id)
     
-    def get_main_view(self):
+    def get_main_view(self) -> Optional[Any]:
         """Obtener referencia a la vista principal"""
         return self._main_view
     
-    def get_data_view(self):
+    def get_data_view(self) -> Optional[Any]:
         """Obtener referencia a la vista de datos"""
         return self._data_view
     
-    def get_graphics_view(self):
+    def get_graphics_view(self) -> Optional[Any]:
         """Obtener referencia a la vista de gráficos"""
         return self._graphics_view
     
-    def get_joined_data_view(self):
+    def get_joined_data_view(self) -> Optional[Any]:
         """Obtener referencia a la vista de join"""
         return self._joined_data_view
     
@@ -169,7 +171,7 @@ class ViewCoordinator(QObject):
         """Obtener índice de la vista actual"""
         return self._view_switcher.get_current_view()
     
-    def update_data_view(self, df):
+    def update_data_view(self, df: Any) -> None:
         """Actualizar la vista de datos con nuevos datos
         
         Args:
@@ -178,7 +180,7 @@ class ViewCoordinator(QObject):
         if self._data_view:
             self._data_view.set_data(df)
     
-    def update_graphics_view(self, df):
+    def update_graphics_view(self, df: Any) -> None:
         """Actualizar la vista de gráficos con nuevos datos
         
         Args:
@@ -187,7 +189,7 @@ class ViewCoordinator(QObject):
         if self._graphics_view:
             self._graphics_view.update_data(df)
     
-    def update_main_view(self, filepath):
+    def update_main_view(self, filepath: str) -> None:
         """Actualizar la vista principal con información del archivo
         
         Args:
@@ -197,7 +199,7 @@ class ViewCoordinator(QObject):
             self._main_view.set_file_info(filepath)
             self._main_view.show_options_button()
     
-    def show_info_modal(self, df, filename):
+    def show_info_modal(self, df: Any, filename: str) -> None:
         """Mostrar el modal de información
         
         Args:
@@ -211,7 +213,7 @@ class ViewCoordinator(QObject):
             self._info_modal.update_info(df, filename)
             self._info_modal.exec()
     
-    def set_join_result(self, result, left_name, right_name):
+    def set_join_result(self, result: Any, left_name: str, right_name: str) -> None:
         """Establecer el resultado de un join en la vista correspondiente
         
         Args:
@@ -221,6 +223,50 @@ class ViewCoordinator(QObject):
         """
         if self._joined_data_view:
             self._joined_data_view.set_join_result(result, left_name, right_name)
+    
+    def on_datos_originales_cargados(self, df: Any) -> None:
+        """Slot para reaccionar a la carga de datos originales
+        
+        Almacena los datos originales y actualiza MainView con los nombres de columnas.
+        """
+        self._original_data = df
+        if df is not None and self._main_view:
+            self._main_view.set_original_columns(df.columns.tolist())
+    
+    def on_datos_actualizados(self, df: Any) -> None:
+        """Slot para reaccionar a la actualización de datos actuales
+        
+        Actualiza la vista de datos y la vista de gráficos con los nuevos datos.
+        """
+        if df is not None:
+            self.update_data_view(df)
+            self.update_graphics_view(df)
+
+    def toggle_visualization(self, enabled: bool) -> None:
+        """Habilitar o deshabilitar el panel de gráficos/visualización"""
+        graphics = self.get_graphics_view()
+        if graphics is not None and hasattr(graphics, 'setVisible'):
+            graphics.setVisible(enabled)
+
+    def set_column_visibility_enabled(self, enabled: bool) -> None:
+        """Habilitar o deshabilitar la sección de visibilidad de columnas en DataView"""
+        data_view = self.get_data_view()
+        if data_view is not None and hasattr(data_view, 'column_visibility_group'):
+            data_view.column_visibility_group.setVisible(enabled)
+    
+    def get_original_data(self) -> Optional[Any]:
+        """Obtener los datos originales"""
+        return self._original_data
+    
+    def cleanup(self) -> None:
+        """Liberar referencias a vistas y datos."""
+        self._original_data = None
+        self._main_view = None
+        self._data_view = None
+        self._info_modal = None
+        self._graphics_view = None
+        self._joined_data_view = None
+        self._views.clear()
     
     def get_current_view_name(self) -> str:
         """Obtener nombre de la vista actual"""

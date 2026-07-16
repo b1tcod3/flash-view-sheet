@@ -5,7 +5,7 @@ Prueba la integración entre UI, core logic y flujo end-to-end
 
 import unittest
 import sys
-import os
+from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 import pandas as pd
 import numpy as np
@@ -14,7 +14,7 @@ from PySide6.QtTest import QTest
 from PySide6.QtCore import Qt
 
 # Add the project root to the Python path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Importar clases a probar
 from core.pivot import SimplePivotTable, CombinedPivotTable
@@ -27,14 +27,14 @@ class TestPivotTableIntegration(unittest.TestCase):
     """Tests de integración para Tabla Pivote"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configurar QApplication para tests de UI"""
         if not QApplication.instance():
             cls.app = QApplication([])
         else:
             cls.app = QApplication.instance()
             
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba para cada test"""
         # Datos de prueba básicos
         self.test_data = pd.DataFrame({
@@ -47,7 +47,7 @@ class TestPivotTableIntegration(unittest.TestCase):
             'descuento': [5, 8, 12, 6, 10, 4, 7, 9]
         })
         
-    def test_core_logic_integration(self):
+    def test_core_logic_integration(self) -> None:
         """Test de integración entre Simple y Combined Pivot"""
         # Crear instancias
         simple_pivot = SimplePivotTable()
@@ -78,7 +78,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         self.assertFalse(simple_result.empty)
         self.assertFalse(combined_result.empty)
         
-    def test_filter_integration(self):
+    def test_filter_integration(self) -> None:
         """Test de integración con sistema de filtros"""
         from core.pivot import PivotFilterManager
         
@@ -110,7 +110,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         result = pivot.execute(filtered_data, params)
         self.assertIsInstance(result, pd.DataFrame)
         
-    def test_aggregation_integration(self):
+    def test_aggregation_integration(self) -> None:
         """Test de integración con sistema de agregaciones"""
         from core.pivot import PivotAggregationManager
         
@@ -137,7 +137,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         self.assertIn('ventas', agg_dict)
         self.assertIn('unidades', agg_dict)
         
-    def test_end_to_end_workflow(self):
+    def test_end_to_end_workflow(self) -> None:
         """Test de flujo completo end-to-end"""
         # 1. Crear datos
         self.assertFalse(self.test_data.empty)
@@ -164,7 +164,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         # 5. Aplicar transformaciones adicionales si es necesario
         # (esto sería parte del flujo completo)
         
-    def apply_filters_to_data(self, df, filters):
+    def apply_filters_to_data(self, df: pd.DataFrame, filters: dict) -> None:
         """Helper para aplicar filtros en tests"""
         filtered_df = df.copy()
         
@@ -183,7 +183,7 @@ class TestPivotTableIntegration(unittest.TestCase):
                     
         return filtered_df
         
-    def test_performance_integration(self):
+    def test_performance_integration(self) -> None:
         """Test de rendimiento en integración"""
         import time
         
@@ -210,7 +210,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         self.assertLess(execution_time, 10.0, "Tiempo de ejecución excesivo")
         self.assertIsInstance(result, pd.DataFrame)
         
-    def create_large_dataset(self, n_records):
+    def create_large_dataset(self, n_records: int) -> pd.DataFrame:
         """Helper para crear dataset grande para tests"""
         np.random.seed(42)
         
@@ -229,14 +229,14 @@ class TestPivotTableUIIntegration(unittest.TestCase):
     """Tests de integración de UI para Tabla Pivote"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configurar QApplication para tests de UI"""
         if not QApplication.instance():
             cls.app = QApplication([])
         else:
             cls.app = QApplication.instance()
             
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.test_data = pd.DataFrame({
             'region': ['Norte', 'Sur', 'Norte', 'Sur'],
@@ -245,7 +245,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
             'unidades': [10, 15, 20, 12]
         })
         
-    def test_pivot_table_widget_initialization(self):
+    def test_pivot_table_widget_initialization(self) -> None:
         """Test de inicialización del widget principal"""
         widget = PivotTableWidget()
         
@@ -253,7 +253,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
         self.assertIsNotNone(widget)
         self.assertIsNone(widget.df_original)
         
-    def test_pivot_table_widget_data_setting(self):
+    def test_pivot_table_widget_data_setting(self) -> None:
         """Test de establecimiento de datos en el widget"""
         widget = PivotTableWidget()
         widget.set_data(self.test_data)
@@ -262,7 +262,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
         self.assertIsNotNone(widget.df_original)
         self.assertEqual(len(widget.df_original), 4)
         
-    def test_pivot_worker_thread_integration(self):
+    def test_pivot_worker_thread_integration(self) -> None:
         """Test de integración del worker thread"""
         # Crear worker thread
         worker = PivotWorkerThread(
@@ -279,7 +279,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
         self.assertEqual(worker.pivot_type, 'combined')
         self.assertIsNotNone(worker.parameters)
         
-    def test_filter_panel_integration(self):
+    def test_filter_panel_integration(self) -> None:
         """Test de integración del panel de filtros"""
         panel = PivotFilterPanel(self.test_data)
         
@@ -287,7 +287,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
         self.assertIsNotNone(panel.df_original)
         self.assertEqual(len(panel.df_original), 4)
         
-    def test_aggregation_panel_integration(self):
+    def test_aggregation_panel_integration(self) -> None:
         """Test de integración del panel de agregaciones"""
         values_columns = ['ventas', 'unidades']
         panel = PivotAggregationPanel(self.test_data, values_columns)
@@ -296,7 +296,7 @@ class TestPivotTableUIIntegration(unittest.TestCase):
         self.assertIsNotNone(panel.df_original)
         self.assertEqual(panel.values_columns, values_columns)
         
-    def test_signal_integration(self):
+    def test_signal_integration(self) -> None:
         """Test de integración de señales entre componentes"""
         widget = PivotTableWidget()
         widget.set_data(self.test_data)
@@ -317,14 +317,14 @@ class TestPivotTableUIIntegration(unittest.TestCase):
 class TestPivotTableErrorHandling(unittest.TestCase):
     """Tests de manejo de errores en integración"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.test_data = pd.DataFrame({
             'region': ['Norte', 'Sur'],
             'ventas': [100, 150]
         })
         
-    def test_invalid_data_handling(self):
+    def test_invalid_data_handling(self) -> None:
         """Test de manejo de datos inválidos"""
         pivot = CombinedPivotTable()
         
@@ -336,7 +336,7 @@ class TestPivotTableErrorHandling(unittest.TestCase):
         with self.assertRaises(ValueError):
             pivot.execute(None, {'index': ['region']})
             
-    def test_invalid_parameters_handling(self):
+    def test_invalid_parameters_handling(self) -> None:
         """Test de manejo de parámetros inválidos"""
         pivot = CombinedPivotTable()
         
@@ -349,7 +349,7 @@ class TestPivotTableErrorHandling(unittest.TestCase):
                 'aggfuncs': ['sum']
             })
             
-    def test_filter_error_handling(self):
+    def test_filter_error_handling(self) -> None:
         """Test de manejo de errores en filtros"""
         from core.pivot import PivotFilterManager
         
@@ -366,7 +366,7 @@ class TestPivotTableErrorHandling(unittest.TestCase):
 class TestPivotTableRealWorldScenarios(unittest.TestCase):
     """Tests de escenarios del mundo real"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de ejemplo realista"""
         # Simular datos de ventas
         np.random.seed(42)
@@ -390,7 +390,7 @@ class TestPivotTableRealWorldScenarios(unittest.TestCase):
             (1 - self.sales_data['descuento_aplicado'])
         )
         
-    def test_sales_analysis_scenario(self):
+    def test_sales_analysis_scenario(self) -> None:
         """Test de escenario de análisis de ventas"""
         pivot = CombinedPivotTable()
         
@@ -415,7 +415,7 @@ class TestPivotTableRealWorldScenarios(unittest.TestCase):
         min_sales = self.sales_data[self.sales_data['ventas_totales'] > 1000]['ventas_totales'].min()
         self.assertGreater(min_sales, 1000)
         
-    def test_time_series_pivot_scenario(self):
+    def test_time_series_pivot_scenario(self) -> None:
         """Test de escenario de análisis temporal"""
         pivot = CombinedPivotTable()
         
@@ -434,7 +434,7 @@ class TestPivotTableRealWorldScenarios(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
         self.assertFalse(result.empty)
         
-    def test_performance_optimization_scenario(self):
+    def test_performance_optimization_scenario(self) -> None:
         """Test de optimización de rendimiento en escenario real"""
         import time
         
@@ -460,7 +460,7 @@ class TestPivotTableRealWorldScenarios(unittest.TestCase):
         self.assertLess(execution_time, 15.0, "Tiempo de ejecución inaceptable para dataset grande")
         self.assertIsInstance(result, pd.DataFrame)
         
-    def create_large_sales_data(self, n_records):
+    def create_large_sales_data(self, n_records: int) -> pd.DataFrame:
         """Helper para crear datos de ventas grandes"""
         np.random.seed(42)
         

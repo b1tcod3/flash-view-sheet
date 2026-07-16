@@ -22,7 +22,7 @@ class PivotAggregation:
     """
     
     def __init__(self, function: Union[str, Callable], column: str, 
-                 new_column_name: str = None, parameters: Dict[str, Any] = None):
+                 new_column_name: Optional[str] = None, parameters: Optional[Dict[str, Any]] = None) -> None:
         """
         Inicializar agregación
         
@@ -135,7 +135,7 @@ class PivotAggregationManager:
     Maneja múltiples funciones de agregación y tipos de datos
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Inicializar gestor de agregaciones"""
         self.aggregations: List[PivotAggregation] = []
         self.aggregation_types = {
@@ -166,7 +166,7 @@ class PivotAggregationManager:
         }
         
     def add_aggregation(self, function: Union[str, Callable], column: str, 
-                       new_column_name: str = None, parameters: Dict[str, Any] = None) -> 'PivotAggregationManager':
+                       new_column_name: Optional[str] = None, parameters: Optional[Dict[str, Any]] = None) -> 'PivotAggregationManager':
         """
         Añadir agregación al gestor
         
@@ -184,7 +184,7 @@ class PivotAggregationManager:
         return self
         
     def add_multiple_aggregations(self, functions: List[str], column: str, 
-                                 prefix: str = None) -> 'PivotAggregationManager':
+                                 prefix: Optional[str] = None) -> 'PivotAggregationManager':
         """
         Añadir múltiples agregaciones para una columna
         
@@ -340,8 +340,8 @@ class PivotAggregationManager:
         return info
         
     def create_custom_aggregation(self, custom_function: Callable, 
-                                 column: str, new_column_name: str = None,
-                                 parameters: Dict[str, Any] = None) -> 'PivotAggregationManager':
+                                 column: str, new_column_name: Optional[str] = None,
+                                 parameters: Optional[Dict[str, Any]] = None) -> 'PivotAggregationManager':
         """
         Crear agregación con función personalizada
         

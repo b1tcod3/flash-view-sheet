@@ -5,6 +5,7 @@ Este módulo define la creación y configuración del submenú Exportar.
 """
 
 from PySide6.QtWidgets import QMenu
+from typing import Any, List, Optional
 
 
 class ExportarMenu:
@@ -13,7 +14,7 @@ class ExportarMenu:
     """
     
     @staticmethod
-    def create(parent_menu, actions) -> QMenu:
+    def create(parent_menu: Any, actions: List[Optional[Any]]) -> QMenu:
         """
         Crear el submenú Exportar.
         

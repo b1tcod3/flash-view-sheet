@@ -22,7 +22,7 @@ class PivotFilter:
     """
     
     def __init__(self, column: str, filter_type: str, value: Any = None, 
-                 operator: str = 'and', parameters: Dict[str, Any] = None):
+                 operator: str = 'and', parameters: Optional[Dict[str, Any]] = None) -> None:
         """
         Inicializar filtro
         
@@ -173,13 +173,13 @@ class PivotFilterManager:
     Maneja múltiples filtros con lógica AND/OR
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Inicializar gestor de filtros"""
         self.filters: List[PivotFilter] = []
         self.logic_operator = 'and'  # 'and' o 'or'
         
     def add_filter(self, column: str, filter_type: str, value: Any = None, 
-                   operator: str = 'and', parameters: Dict[str, Any] = None) -> 'PivotFilterManager':
+                   operator: str = 'and', parameters: Optional[Dict[str, Any]] = None) -> 'PivotFilterManager':
         """
         Añadir filtro al gestor
         

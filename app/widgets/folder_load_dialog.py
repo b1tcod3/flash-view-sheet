@@ -9,8 +9,8 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QTableWidget, QTableWidgetItem, QHeaderView,
                                QFileDialog, QMessageBox, QSplitter, QFrame)
 from PySide6.QtCore import Qt
-from typing import List, Dict, Any
-import os
+from typing import List, Dict, Any, Optional
+from pathlib import Path
 
 from core.loaders.folder_loader import FolderLoader
 from core.models.folder_load_config import FolderLoadConfig, ColumnAlignmentStrategy
@@ -22,19 +22,19 @@ class FolderLoadDialog(QDialog):
     Dialog for configuring folder loading operations
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Cargar Carpeta con Archivos Excel")
         self.resize(800, 600)
 
-        self.folder_loader = None
-        self.config = FolderLoadConfig(folder_path="")
-        self.file_checkboxes = {}
+        self.folder_loader: Optional[FolderLoader] = None
+        self.config: FolderLoadConfig = FolderLoadConfig(folder_path="")
+        self.file_checkboxes: Dict[str, QCheckBox] = {}
 
         self.setup_ui()
         self.connect_signals()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Setup the user interface"""
         main_layout = QVBoxLayout(self)
 
@@ -98,16 +98,16 @@ class FolderLoadDialog(QDialog):
         buttons.rejected.connect(self.reject)
         main_layout.addWidget(buttons)
 
-    def connect_signals(self):
+    def connect_signals(self) -> None:
         """Connect widget signals"""
         # File selection changes should update preview
         for checkbox in self.file_checkboxes.values():
             checkbox.stateChanged.connect(self.update_alignment_preview)
 
-    def select_folder(self):
+    def select_folder(self) -> None:
         """Open folder selection dialog"""
         folder_path = QFileDialog.getExistingDirectory(
-            self, "Seleccionar Carpeta", os.getcwd()
+            self, "Seleccionar Carpeta", str(Path.cwd())
         )
 
         if folder_path:
@@ -115,7 +115,7 @@ class FolderLoadDialog(QDialog):
             self.folder_path_label.setText(folder_path)
             self.scan_folder()
 
-    def scan_folder(self):
+    def scan_folder(self) -> None:
         """Scan the selected folder for Excel files"""
         try:
             self.folder_loader = FolderLoader(self.config.folder_path)
@@ -124,7 +124,7 @@ class FolderLoadDialog(QDialog):
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Error al escanear carpeta: {str(e)}")
 
-    def update_file_list(self):
+    def update_file_list(self) -> None:
         """Update the file list with checkboxes"""
         self.file_list.clear()
         self.file_checkboxes.clear()
@@ -133,7 +133,7 @@ class FolderLoadDialog(QDialog):
             return
 
         for file_path in self.folder_loader.get_excel_files():
-            filename = os.path.basename(file_path)
+            filename = Path(file_path).name
 
             # Create list item with checkbox
             item = QListWidgetItem(self.file_list)
@@ -144,7 +144,7 @@ class FolderLoadDialog(QDialog):
 
             self.file_checkboxes[filename] = checkbox
 
-    def update_alignment_preview(self):
+    def update_alignment_preview(self) -> None:
         """Update the column alignment preview"""
         if not self.folder_loader:
             return
@@ -155,7 +155,7 @@ class FolderLoadDialog(QDialog):
             if checkbox.isChecked():
                 # Find the full path for this filename
                 for file_path in self.folder_loader.get_excel_files():
-                    if os.path.basename(file_path) == filename:
+                    if Path(file_path).name == filename:
                         selected_files.append(file_path)
                         break
 
@@ -172,7 +172,7 @@ class FolderLoadDialog(QDialog):
 
         self.alignment_preview.set_file_metadata(selected_metadata)
 
-    def add_rename_row(self):
+    def add_rename_row(self) -> None:
         """Add a row to the rename table"""
         row = self.rename_table.rowCount()
         self.rename_table.insertRow(row)

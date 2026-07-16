@@ -9,10 +9,11 @@ import seaborn as sns
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QComboBox,
-                               QPushButton, QLabel, QGroupBox, QScrollArea,
-                               QFrame, QMessageBox, QProgressBar)
+                                QPushButton, QLabel, QGroupBox, QScrollArea,
+                                QFrame, QMessageBox, QProgressBar)
 from PySide6.QtCore import Qt, QThread, Signal
 import numpy as np
+from typing import List
 
 
 class VisualizationWorker(QThread):
@@ -21,13 +22,13 @@ class VisualizationWorker(QThread):
     finished = Signal(object)  # Signal para enviar el canvas de matplotlib
     error = Signal(str)
 
-    def __init__(self, df, plot_type, columns):
-        super().__init__()
+    def __init__(self, df: pd.DataFrame, plot_type: str, columns: List[str], parent: QThread | None = None) -> None:
+        super().__init__(parent)
         self.df = df
         self.plot_type = plot_type
         self.columns = columns
 
-    def run(self):
+    def run(self) -> None:
         """Generar la visualización"""
         try:
             fig = self._create_plot()
@@ -36,7 +37,7 @@ class VisualizationWorker(QThread):
         except Exception as e:
             self.error.emit(str(e))
 
-    def _create_plot(self):
+    def _create_plot(self) -> Figure:
         """Crear el gráfico basado en el tipo"""
         fig = Figure(figsize=(10, 6))
         ax = fig.add_subplot(111)
@@ -58,7 +59,7 @@ class VisualizationWorker(QThread):
         fig.tight_layout()
         return fig
 
-    def _create_histogram(self, ax):
+    def _create_histogram(self, ax: plt.Axes) -> None:
         """Crear histograma"""
         col = self.columns[0]
         data = self.df[col].dropna()
@@ -74,7 +75,7 @@ class VisualizationWorker(QThread):
             ax.set_xlabel(col)
             ax.set_ylabel('Frecuencia')
 
-    def _create_scatter(self, ax):
+    def _create_scatter(self, ax: plt.Axes) -> None:
         """Crear scatter plot"""
         if len(self.columns) >= 2:
             x_col, y_col = self.columns[0], self.columns[1]
@@ -94,7 +95,7 @@ class VisualizationWorker(QThread):
             ax.text(0.5, 0.5, 'Selecciona dos columnas para scatter plot',
                     ha='center', va='center', transform=ax.transAxes)
 
-    def _create_boxplot(self, ax):
+    def _create_boxplot(self, ax: plt.Axes) -> None:
         """Crear box plot"""
         numeric_cols = self.df.select_dtypes(include=[np.number]).columns
         if len(numeric_cols) > 0:
@@ -107,7 +108,7 @@ class VisualizationWorker(QThread):
             ax.text(0.5, 0.5, 'No hay columnas numéricas para box plot',
                     ha='center', va='center', transform=ax.transAxes)
 
-    def _create_correlation(self, ax):
+    def _create_correlation(self, ax: plt.Axes) -> None:
         """Crear mapa de correlación"""
         numeric_df = self.df.select_dtypes(include=[np.number])
         if len(numeric_df.columns) > 1:
@@ -119,7 +120,7 @@ class VisualizationWorker(QThread):
             ax.text(0.5, 0.5, 'Necesitas al menos 2 columnas numéricas',
                     ha='center', va='center', transform=ax.transAxes)
 
-    def _create_line(self, ax):
+    def _create_line(self, ax: plt.Axes) -> None:
         """Crear gráfico de línea"""
         if len(self.columns) >= 2:
             x_col, y_col = self.columns[0], self.columns[1]
@@ -145,14 +146,14 @@ class VisualizationPanel(QWidget):
     Panel para mostrar visualizaciones de datos
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.df = None
-        self.current_canvas = None
-        self.worker = None
+        self.df: pd.DataFrame | None = None
+        self.current_canvas: FigureCanvas | None = None
+        self.worker: VisualizationWorker | None = None
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz del panel de visualizaciones"""
         main_layout = QVBoxLayout(self)
 
@@ -210,7 +211,7 @@ class VisualizationPanel(QWidget):
         # Conectar cambios en el tipo de gráfico
         self.plot_type_combo.currentTextChanged.connect(self.update_column_selectors)
 
-    def update_data(self, df: pd.DataFrame):
+    def update_data(self, df: pd.DataFrame) -> None:
         """
         Actualizar los datos para visualización
 
@@ -229,7 +230,7 @@ class VisualizationPanel(QWidget):
 
         self.update_column_selectors()
 
-    def update_column_selectors(self):
+    def update_column_selectors(self) -> None:
         """Actualizar la visibilidad de selectores de columnas basado en el tipo de gráfico"""
         plot_type = self.plot_type_combo.currentText()
 
@@ -246,14 +247,14 @@ class VisualizationPanel(QWidget):
             self.x_column_combo.setVisible(True)
             self.y_column_combo.setVisible(False)
 
-    def generate_plot(self):
+    def generate_plot(self) -> None:
         """Generar el gráfico seleccionado"""
         if self.df is None or self.df.empty:
             QMessageBox.warning(self, "Advertencia", "No hay datos para visualizar.")
             return
 
         plot_type = self.plot_type_combo.currentText()
-        columns = []
+        columns: List[str] = []
 
         if plot_type in ['Histograma', 'Box Plot']:
             if not self.x_column_combo.currentText():
@@ -277,7 +278,7 @@ class VisualizationPanel(QWidget):
         self.worker.error.connect(self.on_plot_error)
         self.worker.start()
 
-    def on_plot_finished(self, canvas):
+    def on_plot_finished(self, canvas: FigureCanvas) -> None:
         """Manejar la finalización de la generación del gráfico"""
         # Ocultar barra de progreso
         self.progress_bar.setVisible(False)
@@ -296,7 +297,7 @@ class VisualizationPanel(QWidget):
         # Ajustar tamaño
         canvas.setMinimumSize(800, 500)
 
-    def on_plot_error(self, error_msg):
+    def on_plot_error(self, error_msg: str) -> None:
         """Manejar errores en la generación del gráfico"""
         self.progress_bar.setVisible(False)
         self.generate_btn.setEnabled(True)

@@ -12,7 +12,7 @@ from core.pivot import SimplePivotTable, CombinedPivotTable
 class TestSimplePivotTable(unittest.TestCase):
     """Tests para la clase SimplePivotTable"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.pivot_table = SimplePivotTable()
         
@@ -24,23 +24,23 @@ class TestSimplePivotTable(unittest.TestCase):
             'unidades': [10, 15, 20, 12, 18, 9]
         })
         
-    def test_initialization(self):
+    def test_initialization(self) -> None:
         """Test de inicialización"""
         self.assertEqual(self.pivot_table.name, "simple_pivot")
         self.assertIn("pivoteo simple", self.pivot_table.description.lower())
         
-    def test_validation_data_empty(self):
+    def test_validation_data_empty(self) -> None:
         """Test de validación con DataFrame vacío"""
         empty_df = pd.DataFrame()
         with self.assertRaises(ValueError):
             self.pivot_table.validate_data(empty_df)
             
-    def test_validation_data_none(self):
+    def test_validation_data_none(self) -> None:
         """Test de validación con DataFrame None"""
         with self.assertRaises(ValueError):
             self.pivot_table.validate_data(None)
             
-    def test_validation_columns_exist(self):
+    def test_validation_columns_exist(self) -> None:
         """Test de validación de existencia de columnas"""
         # Columnas que existen
         self.assertTrue(self.pivot_table.validate_columns_exist(
@@ -51,7 +51,7 @@ class TestSimplePivotTable(unittest.TestCase):
             self.pivot_table.validate_columns_exist(
                 self.test_data, ['columna_inexistente'])
                 
-    def test_normalize_parameter(self):
+    def test_normalize_parameter(self) -> None:
         """Test de normalización de parámetros"""
         # String único
         result = self.pivot_table.normalize_parameter("columna")
@@ -61,7 +61,7 @@ class TestSimplePivotTable(unittest.TestCase):
         result = self.pivot_table.normalize_parameter(["col1", "col2"])
         self.assertEqual(result, ["col1", "col2"])
         
-    def test_apply_filters(self):
+    def test_apply_filters(self) -> None:
         """Test de aplicación de filtros"""
         # Filtro de igualdad
         filters = {'ventas': {'type': 'greater_than', 'value': 100}}
@@ -70,7 +70,7 @@ class TestSimplePivotTable(unittest.TestCase):
         # Verificar que se aplicó el filtro
         self.assertTrue(all(result['ventas'] > 100))
         
-    def test_simple_pivot_execution(self):
+    def test_simple_pivot_execution(self) -> None:
         """Test de ejecución de pivoteo simple"""
         parameters = {
             'index': 'region',
@@ -87,7 +87,7 @@ class TestSimplePivotTable(unittest.TestCase):
         # Verificar que tiene datos
         self.assertFalse(result.empty)
         
-    def test_simple_pivot_with_filters(self):
+    def test_simple_pivot_with_filters(self) -> None:
         """Test de pivoteo simple con filtros"""
         parameters = {
             'index': 'region',
@@ -100,14 +100,14 @@ class TestSimplePivotTable(unittest.TestCase):
         result = self.pivot_table.execute(self.test_data, parameters)
         self.assertIsInstance(result, pd.DataFrame)
         
-    def test_simple_pivot_missing_parameters(self):
+    def test_simple_pivot_missing_parameters(self) -> None:
         """Test de pivoteo simple con parámetros faltantes"""
         parameters = {}  # Parámetros mínimos
         
         with self.assertRaises(ValueError):
             self.pivot_table.execute(self.test_data, parameters)
             
-    def test_simple_pivot_margins(self):
+    def test_simple_pivot_margins(self) -> None:
         """Test de pivoteo simple con márgenes"""
         parameters = {
             'index': 'region',
@@ -125,7 +125,7 @@ class TestSimplePivotTable(unittest.TestCase):
 class TestCombinedPivotTable(unittest.TestCase):
     """Tests para la clase CombinedPivotTable"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.pivot_table = CombinedPivotTable()
         
@@ -140,12 +140,12 @@ class TestCombinedPivotTable(unittest.TestCase):
             'descuento': [5, 8, 12, 6, 10, 4, 7, 9]
         })
         
-    def test_initialization(self):
+    def test_initialization(self) -> None:
         """Test de inicialización"""
         self.assertEqual(self.pivot_table.name, "combined_pivot")
         self.assertIn("pivoteo combinado", self.pivot_table.description.lower())
         
-    def test_combined_pivot_multiple_indices(self):
+    def test_combined_pivot_multiple_indices(self) -> None:
         """Test de pivoteo con múltiples índices"""
         parameters = {
             'index': ['region', 'categoria'],
@@ -160,7 +160,7 @@ class TestCombinedPivotTable(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
         self.assertFalse(result.empty)
         
-    def test_combined_pivot_multiple_aggregations(self):
+    def test_combined_pivot_multiple_aggregations(self) -> None:
         """Test de pivoteo con múltiples agregaciones"""
         parameters = {
             'index': ['region'],
@@ -172,7 +172,7 @@ class TestCombinedPivotTable(unittest.TestCase):
         result = self.pivot_table.execute(self.test_data, parameters)
         self.assertIsInstance(result, pd.DataFrame)
         
-    def test_combined_pivot_with_filters(self):
+    def test_combined_pivot_with_filters(self) -> None:
         """Test de pivoteo combinado con filtros múltiples"""
         parameters = {
             'index': ['region'],
@@ -189,7 +189,7 @@ class TestCombinedPivotTable(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
         self.assertFalse(result.empty)
         
-    def test_combined_pivot_invalid_aggregation(self):
+    def test_combined_pivot_invalid_aggregation(self) -> None:
         """Test de pivoteo con función de agregación inválida"""
         parameters = {
             'index': ['region'],
@@ -201,14 +201,14 @@ class TestCombinedPivotTable(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.pivot_table.execute(self.test_data, parameters)
             
-    def test_combined_pivot_empty_configuration(self):
+    def test_combined_pivot_empty_configuration(self) -> None:
         """Test de pivoteo con configuración vacía"""
         parameters = {}  # Sin configuración
         
         with self.assertRaises(ValueError):
             self.pivot_table.execute(self.test_data, parameters)
             
-    def test_combined_pivot_margins(self):
+    def test_combined_pivot_margins(self) -> None:
         """Test de pivoteo combinado con márgenes"""
         parameters = {
             'index': ['region'],
@@ -222,7 +222,7 @@ class TestCombinedPivotTable(unittest.TestCase):
         result = self.pivot_table.execute(self.test_data, parameters)
         self.assertIsInstance(result, pd.DataFrame)
         
-    def test_complex_scenario(self):
+    def test_complex_scenario(self) -> None:
         """Test de escenario complejo con múltiples parámetros"""
         parameters = {
             'index': ['region', 'vendedor'],
@@ -245,7 +245,7 @@ class TestCombinedPivotTable(unittest.TestCase):
 class TestPivotTableIntegration(unittest.TestCase):
     """Tests de integración entre Simple y Combined Pivot"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.test_data = pd.DataFrame({
             'año': [2020, 2020, 2021, 2021, 2022, 2022],
@@ -255,7 +255,7 @@ class TestPivotTableIntegration(unittest.TestCase):
             'gastos': [800, 900, 850, 950, 820, 920]
         })
         
-    def test_simple_to_combined_compatibility(self):
+    def test_simple_to_combined_compatibility(self) -> None:
         """Test de compatibilidad entre Simple y Combined Pivot"""
         simple_pivot = SimplePivotTable()
         combined_pivot = CombinedPivotTable()
@@ -282,7 +282,7 @@ class TestPivotTableIntegration(unittest.TestCase):
         self.assertIsInstance(simple_result, pd.DataFrame)
         self.assertIsInstance(combined_result, pd.DataFrame)
         
-    def test_data_consistency(self):
+    def test_data_consistency(self) -> None:
         """Test de consistencia de datos entre diferentes configuraciones"""
         pivot = CombinedPivotTable()
         
@@ -316,7 +316,7 @@ class TestPivotTableIntegration(unittest.TestCase):
 class TestPivotTablePerformance(unittest.TestCase):
     """Tests de rendimiento para Tabla Pivote"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar dataset grande para tests de rendimiento"""
         # Crear dataset más grande
         np.random.seed(42)
@@ -332,7 +332,7 @@ class TestPivotTablePerformance(unittest.TestCase):
             'descuento': np.random.uniform(0, 20, n_records).round(2)
         })
         
-    def test_large_dataset_performance(self):
+    def test_large_dataset_performance(self) -> None:
         """Test de rendimiento con dataset grande"""
         import time
         
@@ -357,7 +357,7 @@ class TestPivotTablePerformance(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
         self.assertFalse(result.empty)
         
-    def test_memory_efficiency(self):
+    def test_memory_efficiency(self) -> None:
         """Test de eficiencia de memoria"""
         try:
             import psutil

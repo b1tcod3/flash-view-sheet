@@ -6,7 +6,6 @@ import unittest
 import pandas as pd
 from unittest.mock import patch, MagicMock, mock_open
 import tempfile
-import os
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QTimer
@@ -19,14 +18,14 @@ class TestExportSeparatedDialog(unittest.TestCase):
     """Tests para ExportSeparatedDialog"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configurar QApplication para tests de UI"""
         if not QApplication.instance():
             cls.app = QApplication([])
         else:
             cls.app = QApplication.instance()
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         # Crear DataFrame de prueba
         self.df_test = pd.DataFrame({
@@ -36,7 +35,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             'Fecha': pd.to_datetime(['2024-01-01', '2024-01-02', '2024-01-01', '2024-01-02', '2024-01-01'])
         })
     
-    def test_init_with_dataframe(self):
+    def test_init_with_dataframe(self) -> None:
         """Test inicialización con DataFrame"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -44,13 +43,13 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertEqual(list(dialog.df.columns), ['Region', 'Producto', 'Ventas', 'Fecha'])
         self.assertFalse(dialog.isVisible())  # Modal, no visible inicialmente
     
-    def test_init_without_dataframe(self):
+    def test_init_without_dataframe(self) -> None:
         """Test inicialización sin DataFrame"""
         dialog = ExportSeparatedDialog(None)
         
         self.assertIsNone(dialog.df)
     
-    def test_setup_ui_components(self):
+    def test_setup_ui_components(self) -> None:
         """Test configuración de componentes UI"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -64,7 +63,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertIsNotNone(dialog.cancel_btn)
         self.assertIsNotNone(dialog.export_btn)
     
-    def test_populate_separator_combo(self):
+    def test_populate_separator_combo(self) -> None:
         """Test población del combo de separación"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -79,7 +78,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         for col in expected_columns:
             self.assertIn(col, columns)
     
-    def test_populate_start_cell_combo(self):
+    def test_populate_start_cell_combo(self) -> None:
         """Test población del combo de celda inicial"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -93,7 +92,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertIn('A2', options)
         self.assertIn('B1', options)
     
-    def test_on_column_changed(self):
+    def test_on_column_changed(self) -> None:
         """Test cambio de columna (equivalente a separator_changed)"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -105,7 +104,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         # La implementación actual actualiza valores_preview automáticamente
         self.assertGreater(dialog.values_preview.count(), 0)
     
-    def test_select_template_functionality(self):
+    def test_select_template_functionality(self) -> None:
         """Test funcionalidad de selección de plantilla"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -121,7 +120,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             # Verificar que se actualiza el label
             self.assertIn('template.xlsx', dialog.template_path_label.text())
     
-    def test_select_destination_folder_functionality(self):
+    def test_select_destination_folder_functionality(self) -> None:
         """Test funcionalidad de selección de carpeta de destino"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -134,7 +133,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             # Verificar que se actualiza el label
             self.assertIn('/path/to/output', dialog.dest_folder_label.text())
     
-    def test_validate_configuration_valid(self):
+    def test_validate_configuration_valid(self) -> None:
         """Test validación con configuración válida"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -158,7 +157,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             # Verificar que se llama al validador
             mock_splitter.validate_configuration.assert_called_once()
     
-    def test_validate_configuration_invalid(self):
+    def test_validate_configuration_invalid(self) -> None:
         """Test validación con configuración inválida"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -180,7 +179,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             # Verificar que el botón se deshabilita
             self.assertFalse(dialog.export_btn.isEnabled())
     
-    def test_get_configuration_basic(self):
+    def test_get_configuration_basic(self) -> None:
         """Test obtención de configuración básica"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -202,7 +201,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertEqual(config.template_path, '/path/to/template.xlsx')
         self.assertEqual(config.output_folder, '/path/to/output')
     
-    def test_get_configuration_custom_start_cell(self):
+    def test_get_configuration_custom_start_cell(self) -> None:
         """Test obtención de configuración con celda inicial personalizada"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -221,7 +220,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertIsNotNone(config)
         self.assertEqual(config.start_cell, 'C5')
     
-    def test_cancel_functionality(self):
+    def test_cancel_functionality(self) -> None:
         """Test funcionalidad de cancelar"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -235,7 +234,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         dialog.reject()
         self.assertEqual(dialog.result(), QDialog.Rejected)
     
-    def test_accept_functionality_valid_config(self):
+    def test_accept_functionality_valid_config(self) -> None:
         """Test funcionalidad de aceptar con configuración válida"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -260,7 +259,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
                     dialog.accept()
                     mock_get_config.assert_called_once()
     
-    def test_accept_functionality_invalid_config(self):
+    def test_accept_functionality_invalid_config(self) -> None:
         """Test funcionalidad de aceptar con configuración inválida"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -281,7 +280,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
                 # Verificar que no se acepta el diálogo
                 self.assertEqual(dialog.result(), 0)
     
-    def test_update_values_preview(self):
+    def test_update_values_preview(self) -> None:
         """Test actualización de preview de valores"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -297,7 +296,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         self.assertTrue(any('Norte' in item for item in items_text))
         self.assertTrue(any('Sur' in item for item in items_text))
     
-    def test_update_filename_preview(self):
+    def test_update_filename_preview(self) -> None:
         """Test actualización de preview de nombres de archivos"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -311,7 +310,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         # Verificar que se generan nombres
         self.assertGreater(dialog.filenames_preview.count(), 0)
     
-    def test_file_preview_dialog(self):
+    def test_file_preview_dialog(self) -> None:
         """Test diálogo de vista previa de archivos"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -335,7 +334,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             # Verificar que se crea el diálogo
             mock_dialog_class.assert_called_once()
     
-    def test_handle_no_data(self):
+    def test_handle_no_data(self) -> None:
         """Test manejo cuando no hay datos"""
         dialog = ExportSeparatedDialog(None)
         
@@ -345,7 +344,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         # No deberíamos obtener errores al verificar componentes básicos
         self.assertIsNotNone(dialog.column_combo)
     
-    def test_error_handling_in_validation(self):
+    def test_error_handling_in_validation(self) -> None:
         """Test manejo de errores en validación"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -361,7 +360,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             except Exception:
                 self.fail("El diálogo debe manejar errores de validación gracefully")
     
-    def test_mapping_widget_functionality(self):
+    def test_mapping_widget_functionality(self) -> None:
         """Test funcionalidad del widget de mapeo"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -375,7 +374,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         mapping = dialog.mapping_widget.get_mapping()
         self.assertIsInstance(mapping, dict)
     
-    def test_specific_start_cell_custom(self):
+    def test_specific_start_cell_custom(self) -> None:
         """Test selección de celda inicial personalizada"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -392,14 +391,14 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
     """Tests de integración para ExportSeparatedDialog"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configurar QApplication para tests de UI"""
         if not QApplication.instance():
             cls.app = QApplication([])
         else:
             cls.app = QApplication.instance()
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.df_test = pd.DataFrame({
             'A': [1, 2, 3],
@@ -407,7 +406,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
             'C': [7, 8, 9]
         })
     
-    def test_full_workflow_simulation(self):
+    def test_full_workflow_simulation(self) -> None:
         """Test simulación de flujo completo"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -439,7 +438,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
         self.assertGreater(dialog.values_preview.count(), 0)
         self.assertGreater(dialog.filenames_preview.count(), 0)
     
-    def test_cancel_workflow_integration(self):
+    def test_cancel_workflow_integration(self) -> None:
         """Test flujo de cancelación en integración"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -449,7 +448,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
         # Verificar que se rechaza el diálogo
         self.assertEqual(dialog.result(), QDialog.Rejected)
     
-    def test_export_with_minimal_config_integration(self):
+    def test_export_with_minimal_config_integration(self) -> None:
         """Test exportación con configuración mínima en integración"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -466,7 +465,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
         self.assertEqual(config.file_template, 'Simple.xlsx')
         self.assertEqual(config.start_cell, 'A1')  # Default
     
-    def test_tab_functionality(self):
+    def test_tab_functionality(self) -> None:
         """Test funcionalidad de tabs"""
         dialog = ExportSeparatedDialog(self.df_test)
         
@@ -482,7 +481,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
         self.assertIn("Mapeo de Columnas", tab_titles)
         self.assertIn("Destino y Opciones", tab_titles)
     
-    def test_advanced_options_functionality(self):
+    def test_advanced_options_functionality(self) -> None:
         """Test funcionalidad de opciones avanzadas"""
         dialog = ExportSeparatedDialog(self.df_test)
         

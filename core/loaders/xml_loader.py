@@ -4,8 +4,8 @@ Handles eXtensible Markup Language format
 """
 
 import pandas as pd
-import os
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 from .base_loader import FileLoader
 
 
@@ -14,7 +14,7 @@ class XmlLoader(FileLoader):
     File loader for XML format
     """
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         return ['.xml']
 
     def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
@@ -70,7 +70,7 @@ class XmlLoader(FileLoader):
         Get information about the XML file
         """
         try:
-            file_size = os.path.getsize(self.filepath)
+            file_size = Path(self.filepath).stat().st_size
             
             # Get basic XML structure information
             try:

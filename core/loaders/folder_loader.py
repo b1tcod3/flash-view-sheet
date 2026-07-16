@@ -3,7 +3,6 @@ Folder Loader
 Handles loading and scanning of folders containing Excel files
 """
 
-import os
 from typing import List, Dict, Any
 from pathlib import Path
 import pandas as pd
@@ -16,7 +15,7 @@ class FolderLoader:
 
     SUPPORTED_EXTENSIONS = ['.xlsx', '.xls']
 
-    def __init__(self, folder_path: str):
+    def __init__(self, folder_path: str) -> None:
         """
         Initialize folder loader
 
@@ -28,7 +27,7 @@ class FolderLoader:
         self.excel_files = self._scan_excel_files()
         self._metadata_cache = {}  # Cache for file metadata
 
-    def _validate_folder(self):
+    def _validate_folder(self) -> None:
         """Validate that the folder exists"""
         if not self.folder_path.exists():
             raise FileNotFoundError(f"Folder not found: {self.folder_path}")
@@ -177,7 +176,7 @@ class FolderLoader:
             if len(df_sample) == 0:
                 return 0
 
-            file_size = os.path.getsize(file_path)
+            file_size = Path(file_path).stat().st_size
 
             # More accurate estimation based on file size and sample
             # Excel files have overhead, so we adjust the estimation
@@ -189,6 +188,6 @@ class FolderLoader:
         except:
             return 0
 
-    def clear_metadata_cache(self):
+    def clear_metadata_cache(self) -> None:
         """Clear the metadata cache to free memory"""
         self._metadata_cache.clear()

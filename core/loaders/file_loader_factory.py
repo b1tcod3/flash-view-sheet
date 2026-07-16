@@ -3,8 +3,8 @@ File Loader Factory
 Factory pattern for creating appropriate file loaders based on file extension
 """
 
-from typing import Dict, Type, Optional
-import os
+from typing import Dict, Type, Optional, List
+from pathlib import Path
 from .base_loader import FileLoader
 from .csv_loader import CsvLoader
 from .excel_loader import ExcelLoader
@@ -24,7 +24,7 @@ class FileLoaderFactory:
     Maps file extensions to their corresponding loader classes
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Map file extensions to loader classes
         self._loader_mapping: Dict[str, Type[FileLoader]] = {
             # Existing formats
@@ -60,10 +60,10 @@ class FileLoaderFactory:
         Raises:
             ValueError: If the file format is not supported
         """
-        if not os.path.exists(filepath):
+        if not Path(filepath).exists():
             raise FileNotFoundError(f"File not found: {filepath}")
         
-        extension = os.path.splitext(filepath)[1].lower()
+        extension = Path(filepath).suffix.lower()
         
         if extension not in self._loader_mapping:
             supported_formats = list(self._loader_mapping.keys())
@@ -85,10 +85,10 @@ class FileLoaderFactory:
         Returns:
             True if the file format is supported
         """
-        extension = os.path.splitext(filepath)[1].lower()
+        extension = Path(filepath).suffix.lower()
         return extension in self._loader_mapping
 
-    def get_supported_extensions(self) -> list:
+    def get_supported_extensions(self) -> List[str]:
         """
         Get list of all supported file extensions
         
@@ -110,7 +110,7 @@ class FileLoaderFactory:
         if not self.is_supported(filepath):
             return {"error": "Unsupported file format"}
         
-        extension = os.path.splitext(filepath)[1].lower()
+        extension = Path(filepath).suffix.lower()
         loader_class = self._loader_mapping[extension]
         loader = loader_class(filepath)
         
@@ -122,7 +122,7 @@ class FileLoaderFactory:
             "memory_info": loader.get_memory_usage_info()
         }
 
-    def register_loader(self, extension: str, loader_class: Type[FileLoader]):
+    def register_loader(self, extension: str, loader_class: Type[FileLoader]) -> None:
         """
         Register a new loader for a file extension (for extensibility)
         
@@ -196,7 +196,7 @@ def is_file_supported(filepath: str) -> bool:
     return _global_factory.is_supported(filepath)
 
 
-def get_supported_formats() -> list:
+def get_supported_formats() -> List[str]:
     """
     Get list of all supported file formats (convenience function)
     

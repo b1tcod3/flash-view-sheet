@@ -4,28 +4,30 @@ Muestra botón para cargar archivo, card con resumen e icono de spreadsheet
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                               QLabel, QGroupBox, QFrame, QFileDialog, QMessageBox)
+                                QLabel, QGroupBox, QFrame)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIcon, QPixmap
-import os
+from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 class MainView(QWidget):
     """
     Vista principal con elementos básicos para cargar datos
     """
 
-    file_loaded = Signal(str, int, dict)  # Signal para notificar carga de archivo con opciones
-    reload_with_options = Signal(str, int, dict)  # Signal para recargar archivo con nuevas opciones
+    load_file_clicked = Signal()
+    reload_with_options = Signal(str, int, dict, bool)
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self.current_file = None
-        self.skip_rows = 0
-        self.column_names = {}
-        self.options_visible = False
+        self.current_file: Optional[str] = None
+        self.skip_rows: int = 0
+        self.column_names: Dict[str, Any] = {}
+        self.options_visible: bool = False
+        self._original_columns: List[str] = []
         self.setup_ui()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz de la vista principal"""
         main_layout = QVBoxLayout(self)
         main_layout.setAlignment(Qt.AlignCenter)
@@ -47,9 +49,9 @@ class MainView(QWidget):
         # Logo de la aplicación
         icon_label = QLabel()
         # Cargar el logo desde assets
-        logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "assets", "logo.png")
-        if os.path.exists(logo_path):
-            pixmap = QPixmap(logo_path)
+        logo_path = Path(__file__).resolve().parent.parent.parent / "assets" / "logo.png"
+        if logo_path.exists():
+            pixmap = QPixmap(str(logo_path))
             # Escalar la imagen manteniendo la proporción - smaller for small screens
             scaled_pixmap = pixmap.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             icon_label.setPixmap(scaled_pixmap)
@@ -122,96 +124,49 @@ class MainView(QWidget):
         
         main_layout.addWidget(main_group)
         
-    def load_file(self):
-        """Abrir diálogo para seleccionar archivo"""
-        from core.data_handler import get_supported_file_formats
-        
-        # Obtener formatos soportados dinámicamente
-        supported_formats = get_supported_file_formats()
-        
-        # Crear filtro de archivos dinámico
-        format_filters = []
-        format_descriptions = {
-            '.xlsx': 'Archivos de Excel',
-            '.xls': 'Archivos de Excel Legacy',
-            '.csv': 'Archivos CSV',
-            '.tsv': 'Archivos TSV',
-            '.json': 'Archivos JSON',
-            '.xml': 'Archivos XML',
-            '.parquet': 'Archivos Parquet',
-            '.feather': 'Archivos Feather',
-            '.hdf5': 'Archivos HDF5',
-            '.h5': 'Archivos HDF5',
-            '.pkl': 'Archivos Pickle',
-            '.pickle': 'Archivos Pickle',
-            '.db': 'Bases de Datos SQLite',
-            '.sqlite': 'Bases de Datos SQLite',
-            '.sqlite3': 'Bases de Datos SQLite',
-            '.yaml': 'Archivos YAML',
-            '.yml': 'Archivos YAML',
-        }
-        
-        for ext in supported_formats:
-            if ext in format_descriptions:
-                format_filters.append(f"{format_descriptions[ext]} (*{ext})")
-        
-        # Añadir filtro de "Todos los soportados"
-        all_extensions = " ".join([f"*{ext}" for ext in supported_formats])
-        all_formats = f"Todos los archivos soportados ({all_extensions})"
-        format_filters.insert(0, all_formats)
-        
-        # Crear el filtro final
-        file_filter = ";;".join(format_filters)
-        
-        filepath, _ = QFileDialog.getOpenFileName(
-            self,
-            "Abrir archivo de datos",
-            "",
-            file_filter
-        )
-        
-        if filepath:
-            self.current_file = filepath
-            self.update_info()
-            self.file_loaded.emit(filepath, self.skip_rows, self.column_names)
+    def load_file(self) -> None:
+        """Emitir señal de intención de carga de archivo."""
+        self.load_file_clicked.emit()
             
-    def show_options(self):
+    def show_options(self) -> None:
         """Mostrar diálogo de opciones de carga"""
         from app.widgets.load_options_dialog import LoadOptionsDialog
         dialog = LoadOptionsDialog(self)
 
-        # Si hay datos cargados, mostrar las columnas actuales para renombrar
-        if hasattr(self.parent(), 'df_original') and self.parent().df_original is not None:
-            columns = self.parent().df_original.columns.tolist()
-            dialog.set_columns(columns)
+        if self._original_columns:
+            dialog.set_columns(self._original_columns)
 
         if dialog.exec():
             skip_rows, column_names, enable_column_visibility = dialog.get_options()
             # Emitir señal para recargar con las nuevas opciones
-            self.reload_with_options.emit(self.current_file, skip_rows, column_names)
+            self.reload_with_options.emit(self.current_file, skip_rows, column_names, enable_column_visibility)
             
-    def update_info(self):
+    def update_info(self) -> None:
         """Actualizar información en la card"""
         if self.current_file:
-            filename = os.path.basename(self.current_file)
+            filename = Path(self.current_file).name
             self.info_label.setText(f"Archivo cargado: {filename}\n\nHaz clic en 'Vista de Datos' o 'Vista de Gráficos' para explorar.")
             self.show_options_button()
         else:
             self.info_label.setText("No hay archivo cargado")
             self.hide_options_button()
             
-    def set_file_info(self, filepath):
+    def set_file_info(self, filepath: str) -> None:
         """Establecer información del archivo desde fuera"""
         self.current_file = filepath
         self.update_info()
+    
+    def set_original_columns(self, columns: List[str]) -> None:
+        """Establecer los nombres de columnas de los datos originales"""
+        self._original_columns = columns
 
-    def show_options_button(self):
+    def show_options_button(self) -> None:
         """Mostrar el botón de opciones"""
         if not self.options_visible:
             self.options_button.show()
             self.options_visible = True
 
-    def hide_options_button(self):
+    def hide_options_button(self) -> None:
         """Ocultar el botón de opciones"""
         if self.options_visible:
             self.options_button.hide()

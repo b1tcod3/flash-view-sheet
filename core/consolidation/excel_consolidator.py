@@ -4,7 +4,7 @@ Handles consolidation of multiple Excel DataFrames
 """
 
 import pandas as pd
-import os
+from pathlib import Path
 from typing import List, Dict, Any, Optional, Callable
 
 
@@ -13,13 +13,13 @@ class ExcelConsolidator:
     Class for consolidating multiple Excel DataFrames
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.dataframes = []
         self.column_mappings = {}
         self.included_columns = []  # If empty, include all
         self.excluded_columns = []
 
-    def add_dataframe(self, df: pd.DataFrame, source_name: str = ""):
+    def add_dataframe(self, df: pd.DataFrame, source_name: str = "") -> None:
         """
         Add a DataFrame to be consolidated
 
@@ -33,7 +33,7 @@ class ExcelConsolidator:
             'columns': df.columns.tolist()
         })
 
-    def set_column_mappings(self, mappings: Dict[str, str]):
+    def set_column_mappings(self, mappings: Dict[str, str]) -> None:
         """
         Set column renaming mappings
 
@@ -42,7 +42,7 @@ class ExcelConsolidator:
         """
         self.column_mappings = mappings
 
-    def set_column_selection(self, included_columns: List[str] = None, excluded_columns: List[str] = None):
+    def set_column_selection(self, included_columns: Optional[List[str]] = None, excluded_columns: Optional[List[str]] = None) -> None:
         """
         Set column selection for consolidation
 
@@ -162,7 +162,7 @@ class ExcelConsolidator:
             raise ValueError(f"Unsupported alignment method: {alignment_method}")
 
     def consolidate_chunked(self, file_paths: List[str], alignment_method: str = 'position',
-                           chunk_size: int = 10, progress_callback=None) -> pd.DataFrame:
+                           chunk_size: int = 10, progress_callback: Optional[Callable[[float], None]] = None) -> pd.DataFrame:
         """
         Consolidate DataFrames in chunks for better memory management
 
@@ -190,7 +190,7 @@ class ExcelConsolidator:
             for file_path in chunk_files:
                 try:
                     df = pd.read_excel(file_path)
-                    self.add_dataframe(df, os.path.basename(file_path))
+                    self.add_dataframe(df, Path(file_path).name)
                 except Exception as e:
                     # Log error but continue with other files
                     print(f"Error loading {file_path}: {e}")
@@ -232,7 +232,7 @@ class ExcelConsolidator:
         else:
             return pd.DataFrame()
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear all DataFrames"""
         self.dataframes = []
         self.column_mappings = {}

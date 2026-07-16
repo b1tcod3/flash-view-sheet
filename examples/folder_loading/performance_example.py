@@ -10,23 +10,23 @@ Este ejemplo demuestra optimizaciones para procesar grandes volúmenes de datos:
 """
 
 import sys
-import os
+from pathlib import Path
 import time
 import pandas as pd
 
 # Añadir el directorio raíz del proyecto al path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from core.loaders.folder_loader import FolderLoader
 from core.consolidation.excel_consolidator import ExcelConsolidator
 
-def performance_comparison():
+def performance_comparison() -> None:
     """Comparar métodos de procesamiento para demostrar optimizaciones"""
 
     print("🚀 Flash Sheet - Comparativa de Rendimiento")
     print("=" * 55)
 
-    folder_path = os.path.join(os.path.dirname(__file__), 'sample_data')
+    folder_path = str(Path(__file__).parent / 'sample_data')
 
     try:
         # Método 1: Procesamiento tradicional (uno por uno)
@@ -39,7 +39,7 @@ def performance_comparison():
         files = loader.get_excel_files()
         for file_path in files:
             df = pd.read_excel(file_path)
-            consolidator1.add_dataframe(df, os.path.basename(file_path))
+            consolidator1.add_dataframe(df, Path(file_path).name)
 
         result1 = consolidator1.consolidate()
         time1 = time.time() - start_time
@@ -55,7 +55,7 @@ def performance_comparison():
         consolidator2 = ExcelConsolidator()
 
         # Callback para mostrar progreso
-        def progress_callback(progress):
+        def progress_callback(progress: float) -> None:
             print(f"     Progreso: {progress:.1f}%")
 
         result2 = consolidator2.consolidate_chunked(
@@ -98,7 +98,7 @@ def performance_comparison():
         import traceback
         traceback.print_exc()
 
-def large_scale_simulation():
+def large_scale_simulation() -> None:
     """Simular procesamiento de un gran número de archivos"""
 
     print("5️⃣ Simulación de procesamiento a gran escala")
@@ -111,18 +111,18 @@ def large_scale_simulation():
     temp_dir = tempfile.mkdtemp()
     try:
         # Copiar archivos existentes y crear más
-        sample_dir = os.path.join(os.path.dirname(__file__), 'sample_data')
+        sample_dir = str(Path(__file__).parent / 'sample_data')
 
         # Copiar archivos existentes
-        for filename in os.listdir(sample_dir):
-            if filename.endswith('.xlsx'):
+        for filename in Path(sample_dir).iterdir():
+            if filename.suffix == '.xlsx':
                 shutil.copy2(
-                    os.path.join(sample_dir, filename),
-                    os.path.join(temp_dir, filename)
+                    str(filename),
+                    str(Path(temp_dir) / filename.name)
                 )
 
         # Crear archivos adicionales (simulando más datos)
-        base_df = pd.read_excel(os.path.join(sample_dir, 'ventas_q1.xlsx'))
+        base_df = pd.read_excel(str(Path(sample_dir) / 'ventas_q1.xlsx'))
 
         for i in range(6, 16):  # Crear archivos ventas_q6.xlsx hasta ventas_q15.xlsx
             # Modificar ligeramente los datos para simular diferentes períodos
@@ -130,9 +130,9 @@ def large_scale_simulation():
             modified_df['Total'] = modified_df['Total'] * (0.8 + i * 0.05)  # Variación en ventas
 
             filename = f'ventas_q{i}.xlsx'
-            modified_df.to_excel(os.path.join(temp_dir, filename), index=False)
+            modified_df.to_excel(str(Path(temp_dir) / filename), index=False)
 
-        print(f"   📁 Creados {len(os.listdir(temp_dir))} archivos de simulación en {temp_dir}")
+        print(f"   📁 Creados {len(list(Path(temp_dir).iterdir()))} archivos de simulación en {temp_dir}")
 
         # Procesar con método optimizado
         print("   ⚡ Procesando con método optimizado...")
@@ -145,7 +145,7 @@ def large_scale_simulation():
         print(f"   📊 Procesando {len(files)} archivos...")
 
         processed_count = 0
-        def progress_callback(progress):
+        def progress_callback(progress: float) -> None:
             nonlocal processed_count
             current_count = int(progress * len(files) / 100)
             if current_count > processed_count:
@@ -173,13 +173,13 @@ def large_scale_simulation():
         # Limpiar archivos temporales
         shutil.rmtree(temp_dir, ignore_errors=True)
 
-def memory_optimization_demo():
+def memory_optimization_demo() -> None:
     """Demostrar optimizaciones de memoria"""
 
     print("6️⃣ Optimizaciones de memoria")
     print("=" * 35)
 
-    folder_path = os.path.join(os.path.dirname(__file__), 'sample_data')
+    folder_path = str(Path(__file__).parent / 'sample_data')
     loader = FolderLoader(folder_path)
 
     print("   📊 Demostrando caché de metadatos:")
@@ -210,7 +210,7 @@ def memory_optimization_demo():
     print(f"   📊 Después de limpiar caché: {time3:.4f} segundos")
     print()
 
-def main():
+def main() -> None:
     """Función principal del ejemplo de rendimiento"""
 
     print("🎯 Flash Sheet - Ejemplo de Optimizaciones de Rendimiento")

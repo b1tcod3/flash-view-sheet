@@ -4,15 +4,15 @@ Prueba la funcionalidad core sin dependencias de GUI
 """
 
 import sys
-import os
+from pathlib import Path
 import unittest
 import pandas as pd
 
 # Agregar ruta del proyecto
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Test básico de funcionalidad core
-def test_core_functionality():
+def test_core_functionality() -> None:
     """Test básico de funcionalidad core"""
     print("🧪 Test Básico de Funcionalidad Core")
     
@@ -92,7 +92,7 @@ def test_core_functionality():
         traceback.print_exc()
         return False
 
-def test_widget_creation():
+def test_widget_creation() -> None:
     """Test básico de creación de widgets sin GUI"""
     print("\n🧪 Test de Creación de Widgets")
     
@@ -126,7 +126,7 @@ def test_widget_creation():
         print(f"   ❌ Error en test de widgets: {e}")
         return False
 
-def test_main_integration():
+def test_main_integration() -> None:
     """Test básico de integración con main.py"""
     print("\n🧪 Test de Integración con Main")
     
@@ -147,7 +147,7 @@ def test_main_integration():
         print(f"   ❌ Error en test de integración: {e}")
         return False
 
-def test_file_structure():
+def test_file_structure() -> None:
     """Test de estructura de archivos"""
     print("\n🧪 Test de Estructura de Archivos")
     
@@ -165,7 +165,7 @@ def test_file_structure():
     
     missing_files = []
     for file_path in required_files:
-        if not os.path.exists(file_path):
+        if not Path(file_path).exists():
             missing_files.append(file_path)
     
     if missing_files:
@@ -175,7 +175,7 @@ def test_file_structure():
         print("   ✅ Estructura de archivos - OK")
         return True
 
-def run_simplified_tests():
+def run_simplified_tests() -> None:
     """Ejecutar tests simplificados"""
     print("=" * 60)
     print("🧪 TESTS SIMPLIFICADOS - TABLA PIVOTE")

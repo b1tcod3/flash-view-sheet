@@ -5,7 +5,7 @@ Tests para la clase ExcelTemplateSplitter y funcionalidad de separación de dato
 import unittest
 import pandas as pd
 import tempfile
-import os
+from pathlib import Path
 import json
 from unittest.mock import patch, MagicMock, mock_open
 import openpyxl
@@ -16,7 +16,7 @@ from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig
 class TestExcelTemplateSplitter(unittest.TestCase):
     """Tests para ExcelTemplateSplitter"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         # Crear DataFrame de prueba
         self.df_test = pd.DataFrame({
@@ -45,7 +45,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         # Crear splitter de prueba
         self.splitter = ExcelTemplateSplitter(self.df_test, self.config)
     
-    def test_init(self):
+    def test_init(self) -> None:
         """Test inicialización del splitter"""
         self.assertEqual(self.splitter.df.shape, (7, 4))
         self.assertEqual(self.splitter.config.separator_column, 'Region')
@@ -53,7 +53,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertFalse(self.splitter.is_cancelled)
         self.assertIsNotNone(self.splitter.progress_callback)
     
-    def test_analyze_data(self):
+    def test_analyze_data(self) -> None:
         """Test análisis de datos"""
         result = self.splitter._analyze_data()
         
@@ -72,7 +72,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertIn('preview', group_info)
             self.assertGreater(group_info['count'], 0)
     
-    def test_generate_file_preview(self):
+    def test_generate_file_preview(self) -> None:
         """Test generación de preview de archivos"""
         # Crear template temporal para testing
         with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
@@ -94,14 +94,14 @@ class TestExcelTemplateSplitter(unittest.TestCase):
                 self.assertIn('estimated_size_kb', file_info)
                 self.assertTrue(file_info['filename'].endswith('.xlsx'))
     
-    def test_validate_configuration(self):
+    def test_validate_configuration(self) -> None:
         """Test validación de configuración"""
         # Test con configuración válida
         result = self.splitter._validate_configuration()
         self.assertTrue(result['valid'])
         self.assertEqual(len(result['errors']), 0)
     
-    def test_validate_configuration_invalid_column(self):
+    def test_validate_configuration_invalid_column(self) -> None:
         """Test validación con columna inexistente"""
         self.config.separator_column = 'ColumnaInexistente'
         self.splitter.config = self.config
@@ -110,7 +110,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
         self.assertFalse(result['valid'])
         self.assertGreater(len(result['errors']), 0)
     
-    def test_create_excel_files_success(self):
+    def test_create_excel_files_success(self) -> None:
         """Test creación exitosa de archivos Excel"""
         # Mock del método _create_excel_file
         with patch.object(self.splitter, '_create_excel_file') as mock_create:
@@ -131,7 +131,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertEqual(len(result['files_created']), 1)
             mock_create.assert_called_once()
     
-    def test_create_excel_files_failure(self):
+    def test_create_excel_files_failure(self) -> None:
         """Test fallo en creación de archivos Excel"""
         # Mock del método _create_excel_file para simular fallo
         with patch.object(self.splitter, '_create_excel_file') as mock_create:
@@ -152,14 +152,14 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertEqual(len(result['files_created']), 0)
             self.assertGreater(len(result['errors']), 0)
     
-    def test_create_excel_file_creates_workbook(self):
+    def test_create_excel_file_creates_workbook(self) -> None:
         """Test que se crea un workbook Excel correctamente"""
         with tempfile.TemporaryDirectory() as tmp_dir:
-            output_path = os.path.join(tmp_dir, 'test_output.xlsx')
+            output_path = str(Path(tmp_dir) / 'test_output.xlsx')
             group_data = self.df_test[self.df_test['Region'] == 'Norte']
             
             # Mock template creation
-            template_path = os.path.join(tmp_dir, 'template.xlsx')
+            template_path = str(Path(tmp_dir) / 'template.xlsx')
             wb = openpyxl.Workbook()
             ws = wb.active
             ws['A1'] = "Template"
@@ -174,7 +174,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             )
             
             self.assertTrue(success)
-            self.assertTrue(os.path.exists(output_path))
+            self.assertTrue(Path(output_path).exists())
             
             # Verify content
             result_wb = openpyxl.load_workbook(output_path)
@@ -183,7 +183,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             self.assertEqual(result_ws['B5'].value, 'A')
             result_wb.close()
     
-    def test_process_sequences(self):
+    def test_process_sequences(self) -> None:
         """Test procesamiento de secuencias"""
         # Test secuencia completa
         with patch.object(self.splitter, '_validate_configuration') as mock_validate, \
@@ -209,13 +209,13 @@ class TestExcelTemplateSplitter(unittest.TestCase):
             mock_preview.assert_called_once()
             mock_create.assert_called_once()
     
-    def test_cancel_operation(self):
+    def test_cancel_operation(self) -> None:
         """Test cancelación de operación"""
         self.splitter.is_cancelled = False
         self.splitter.cancel_operation()
         self.assertTrue(self.splitter.is_cancelled)
     
-    def test_to_excel_coordinates(self):
+    def test_to_excel_coordinates(self) -> None:
         """Test conversión a coordenadas Excel"""
         test_cases = [
             (0, 'A'),
@@ -235,7 +235,7 @@ class TestExcelTemplateSplitter(unittest.TestCase):
 class TestExportSeparatedConfig(unittest.TestCase):
     """Tests para ExportSeparatedConfig"""
     
-    def test_default_constructor(self):
+    def test_default_constructor(self) -> None:
         """Test constructor por defecto"""
         config = ExportSeparatedConfig()
         
@@ -249,7 +249,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertEqual(config.create_summary, True)
         self.assertEqual(config.preserve_format, True)
     
-    def test_custom_constructor(self):
+    def test_custom_constructor(self) -> None:
         """Test constructor con valores personalizados"""
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -271,7 +271,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertEqual(config.create_summary, False)
         self.assertEqual(config.preserve_format, False)
     
-    def test_validate_required_fields(self):
+    def test_validate_required_fields(self) -> None:
         """Test validación de campos requeridos"""
         # Configuración completa válida
         config = ExportSeparatedConfig(
@@ -284,7 +284,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         errors = config.validate_required_fields()
         self.assertEqual(len(errors), 0)
     
-    def test_validate_required_fields_missing(self):
+    def test_validate_required_fields_missing(self) -> None:
         """Test validación con campos faltantes"""
         config = ExportSeparatedConfig(
             separator_column='',
@@ -296,7 +296,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertTrue(any('separator_column' in error for error in errors))
         self.assertTrue(any('output_folder' in error for error in errors))
     
-    def test_get_default_mapping(self):
+    def test_get_default_mapping(self) -> None:
         """Test obtención de mapeo por defecto"""
         config = ExportSeparatedConfig()
         df = pd.DataFrame({'A': [1], 'B': [2], 'C': [3]})
@@ -308,7 +308,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertEqual(mapping['B'], 'B')
         self.assertEqual(mapping['C'], 'C')
     
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test conversión a diccionario"""
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -323,7 +323,7 @@ class TestExportSeparatedConfig(unittest.TestCase):
         self.assertEqual(config_dict['template_path'], 'template.xlsx')
         self.assertEqual(config_dict['output_folder'], '/output')
     
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         """Test creación desde diccionario"""
         data = {
             'separator_column': 'Region',

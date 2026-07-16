@@ -1,0 +1,1207 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.widgets.export_separated_dialog &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Developer Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/architecture.html">Sistema de Arquitectura - Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/contributing.html">Guía para Contribuidores - Exportación Separada</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/classes.html">API Reference - Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">app.widgets.export_separated_dialog</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for app.widgets.export_separated_dialog</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Diálogo de Configuración para Exportación Separada con Plantillas Excel</span>
+<span class="sd">Permite configurar columna de separación, plantilla Excel, mapeo de columnas y opciones de exportación</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> 
+                               <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QFormLayout</span><span class="p">,</span> 
+                               <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span>
+                               <span class="n">QTextEdit</span><span class="p">,</span> <span class="n">QProgressBar</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QListWidget</span><span class="p">,</span>
+                               <span class="n">QListWidgetItem</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span>
+                               <span class="n">QTableWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span>
+                               <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QStatusBar</span><span class="p">,</span> <span class="n">QFrame</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">QThread</span><span class="p">,</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QPixmap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Importar funcionalidad core</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.data_handler</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExcelTemplateSplitter</span><span class="p">,</span> <span class="n">ExportSeparatedConfig</span><span class="p">,</span> <span class="n">ValidationResult</span><span class="p">,</span> <span class="n">ExportResult</span><span class="p">,</span>
+    <span class="n">SeparationError</span><span class="p">,</span> <span class="n">TemplateError</span><span class="p">,</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="ne">MemoryError</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="ColumnMappingWidget">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ColumnMappingWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget para gestionar mapeo de columnas DataFrame ↔ Excel&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="ColumnMappingWidget.setup_ui">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar interfaz de mapeo de columnas&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c1"># Tabla de mapeo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">([</span>
+            <span class="s2">&quot;Columna DataFrame&quot;</span><span class="p">,</span> <span class="s2">&quot;→&quot;</span><span class="p">,</span> <span class="s2">&quot;Columna Excel&quot;</span><span class="p">,</span> <span class="s2">&quot;Vista Previa&quot;</span>
+        <span class="p">])</span>
+        
+        <span class="c1"># Configurar tabla</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="p">)</span>
+        
+        <span class="c1"># Botones de acción</span>
+        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_map_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Auto-mapear&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_map_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_map_positional</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_map_btn</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;+ Añadir Columna&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_mapping_row</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_column_btn</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;- Eliminar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_selected_rows</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_column_btn</span><span class="p">)</span>
+        
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">button_layout</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.set_dataframe_columns">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.set_dataframe_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_dataframe_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Establecer columnas del DataFrame&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_mapping_table</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.set_excel_columns">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.set_excel_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_excel_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Establecer columnas disponibles en Excel&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span> <span class="o">=</span> <span class="n">columns</span>
+        
+        <span class="c1"># Actualizar ComboBox en tabla</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
+            <span class="n">combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">combo</span><span class="p">:</span>
+                <span class="n">combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="n">combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.refresh_mapping_table">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.refresh_mapping_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh_mapping_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar tabla de mapeo con columnas del DataFrame&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_columns</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_columns</span><span class="p">):</span>
+            <span class="c1"># Columna DataFrame (readonly)</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            
+            <span class="c1"># Flecha (readonly)</span>
+            <span class="n">arrow_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s2">&quot;→&quot;</span><span class="p">)</span>
+            <span class="n">arrow_item</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span><span class="p">)</span>
+            <span class="n">arrow_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">arrow_item</span><span class="p">)</span>
+            
+            <span class="c1"># ComboBox para columna Excel</span>
+            <span class="n">combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+            <span class="n">combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">combo</span><span class="p">)</span>
+            
+            <span class="c1"># Vista previa</span>
+            <span class="n">preview_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s2">&quot;Sin datos&quot;</span><span class="p">)</span>
+            <span class="n">preview_item</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">preview_item</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.auto_map_positional">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.auto_map_positional">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">auto_map_positional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mapear automáticamente por posición&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_columns</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span><span class="p">))):</span>
+            <span class="n">combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">combo</span><span class="p">:</span>
+                <span class="n">combo</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.add_mapping_row">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.add_mapping_row">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_mapping_row</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añadir nueva fila de mapeo&quot;&quot;&quot;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">insertRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        
+        <span class="c1"># Columna DataFrame</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        
+        <span class="c1"># Flecha</span>
+        <span class="n">arrow_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s2">&quot;→&quot;</span><span class="p">)</span>
+        <span class="n">arrow_item</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span><span class="p">)</span>
+        <span class="n">arrow_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">arrow_item</span><span class="p">)</span>
+        
+        <span class="c1"># ComboBox</span>
+        <span class="n">combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excel_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">combo</span><span class="p">)</span>
+        
+        <span class="c1"># Vista previa</span>
+        <span class="n">preview_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">preview_item</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.remove_selected_rows">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.remove_selected_rows">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_selected_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Eliminar filas seleccionadas&quot;&quot;&quot;</span>
+        <span class="n">selected_rows</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">item</span><span class="o">.</span><span class="n">row</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">selectedIndexes</span><span class="p">()],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">selected_rows</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">removeRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.get_mapping">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.get_mapping">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener mapeo actual&quot;&quot;&quot;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
+            <span class="n">df_col_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">df_col_item</span> <span class="ow">and</span> <span class="n">combo</span><span class="p">:</span>
+                <span class="n">df_col</span> <span class="o">=</span> <span class="n">df_col_item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">excel_col</span> <span class="o">=</span> <span class="n">combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="n">df_col</span> <span class="ow">and</span> <span class="n">excel_col</span><span class="p">:</span>
+                    <span class="n">mapping</span><span class="p">[</span><span class="n">df_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">excel_col</span>
+        
+        <span class="k">return</span> <span class="n">mapping</span></div>
+
+    
+<div class="viewcode-block" id="ColumnMappingWidget.update_preview">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ColumnMappingWidget.update_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar vista previa con datos de ejemplo&quot;&quot;&quot;</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
+            <span class="n">df_col_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">preview_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_table</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">df_col_item</span> <span class="ow">and</span> <span class="n">preview_item</span><span class="p">:</span>
+                <span class="n">df_col</span> <span class="o">=</span> <span class="n">df_col_item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="n">df_col</span> <span class="ow">in</span> <span class="n">sample_data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sample_data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="c1"># Mostrar primeras 3 filas de ejemplo</span>
+                    <span class="n">preview_data</span> <span class="o">=</span> <span class="n">sample_data</span><span class="p">[</span><span class="n">df_col</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="n">preview_text</span> <span class="o">=</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">preview_data</span><span class="p">])</span>
+                    <span class="n">preview_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">preview_text</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">preview_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Sin datos&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExcelTemplateDialog">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExcelTemplateDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Diálogo para seleccionar y validar plantilla Excel&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Seleccionar Plantilla Excel&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.setup_ui">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar interfaz del diálogo&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c1"># Selección de archivo</span>
+        <span class="n">file_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Archivo de Plantilla&quot;</span><span class="p">)</span>
+        <span class="n">file_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">file_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path_edit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">file_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Ruta:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path_edit</span><span class="p">)</span>
+        
+        <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Explorar...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_for_template</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_btn</span><span class="p">)</span>
+        <span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">file_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">button_layout</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">file_group</span><span class="p">)</span>
+        
+        <span class="c1"># Información del archivo</span>
+        <span class="n">info_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Información del Archivo&quot;</span><span class="p">)</span>
+        <span class="n">info_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">info_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;No hay archivo seleccionado&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">info_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Estado:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sheet_changed</span><span class="p">)</span>
+        <span class="n">info_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Hoja:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">info_group</span><span class="p">)</span>
+        
+        <span class="c1"># Vista previa</span>
+        <span class="n">preview_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Vista Previa de la Plantilla&quot;</span><span class="p">)</span>
+        <span class="n">preview_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">preview_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">preview_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">preview_group</span><span class="p">)</span>
+        
+        <span class="c1"># Botones</span>
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">QDialogButtonBox</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.browse_for_template">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.browse_for_template">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">browse_for_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Explorar archivo de plantilla&quot;&quot;&quot;</span>
+        <span class="n">file_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Seleccionar Plantilla Excel&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;Excel Files (*.xlsx *.xlsm);;All Files (*)&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_template</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.load_template">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.load_template">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cargar y validar plantilla&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Validar que es archivo Excel</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;.xlsm&#39;</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Error: El archivo debe ser .xlsx o .xlsm&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="c1"># Intentar cargar con openpyxl</span>
+            <span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">data_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span> <span class="o">=</span> <span class="n">workbook</span><span class="o">.</span><span class="n">sheetnames</span>
+            <span class="n">workbook</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="n">file_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_path_edit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            
+            <span class="c1"># Actualizar información</span>
+            <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Archivo válido - Tamaño: </span><span class="si">{</span><span class="n">file_size</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">KB - Hojas: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Actualizar selector de hojas</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            
+            <span class="c1"># Mostrar vista previa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_preview</span><span class="p">()</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error al cargar plantilla: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_path_edit</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.show_preview">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.show_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mostrar vista previa de la plantilla&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">:</span>
+                <span class="k">return</span>
+                
+            <span class="n">workbook</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">,</span> <span class="n">data_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sheet</span> <span class="o">=</span> <span class="n">workbook</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span> <span class="k">else</span> <span class="n">workbook</span><span class="o">.</span><span class="n">active</span>
+            
+            <span class="c1"># Obtener datos (máximo 10 filas)</span>
+            <span class="n">max_rows</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_row</span><span class="p">)</span>
+            <span class="n">max_cols</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">sheet</span><span class="o">.</span><span class="n">max_column</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="n">max_rows</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="n">max_cols</span><span class="p">)</span>
+            
+            <span class="c1"># Llenar tabla</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_rows</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_cols</span><span class="p">):</span>
+                    <span class="n">cell_value</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+                    <span class="k">if</span> <span class="n">cell_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell_value</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">preview_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            
+            <span class="n">workbook</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error mostrando preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.on_sheet_changed">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.on_sheet_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_sheet_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de hoja seleccionada&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span> <span class="o">=</span> <span class="n">sheet_name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">show_preview</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExcelTemplateDialog.get_template_info">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExcelTemplateDialog.get_template_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_template_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener información de plantilla seleccionada&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_sheet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_sheets</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FilePreviewDialog">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FilePreviewDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Diálogo para vista previa de archivos a generar&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files_info</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files_info</span> <span class="o">=</span> <span class="n">files_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Vista Previa de Archivos&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="FilePreviewDialog.setup_ui">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar interfaz del diálogo&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c1"># Filtros</span>
+        <span class="n">filter_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">filter_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Filtros:&quot;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_filter</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_filter</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;Todos&quot;</span><span class="p">,</span> <span class="s2">&quot;Listos&quot;</span><span class="p">,</span> <span class="s2">&quot;Advertencias&quot;</span><span class="p">,</span> <span class="s2">&quot;Errores&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_filter</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_files</span><span class="p">)</span>
+        <span class="n">filter_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_filter</span><span class="p">)</span>
+        
+        <span class="n">filter_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">filter_layout</span><span class="p">)</span>
+        
+        <span class="c1"># Tabla de archivos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">([</span>
+            <span class="s2">&quot;Nombre de Archivo&quot;</span><span class="p">,</span> <span class="s2">&quot;Grupo&quot;</span><span class="p">,</span> <span class="s2">&quot;Filas&quot;</span><span class="p">,</span> <span class="s2">&quot;Tamaño&quot;</span><span class="p">,</span> <span class="s2">&quot;Estado&quot;</span>
+        <span class="p">])</span>
+        
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="p">)</span>
+        
+        <span class="c1"># Resumen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_label</span><span class="p">)</span>
+        
+        <span class="c1"># Botones</span>
+        <span class="n">buttons</span> <span class="o">=</span> <span class="n">QDialogButtonBox</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_table</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="FilePreviewDialog.refresh_table">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog.refresh_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar tabla con información de archivos&quot;&quot;&quot;</span>
+        <span class="n">filtered_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_files</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_files</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filtered_files</span><span class="p">):</span>
+            <span class="c1"># Nombre de archivo</span>
+            <span class="n">name_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name_item</span><span class="p">)</span>
+            
+            <span class="c1"># Grupo</span>
+            <span class="n">group_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">group_item</span><span class="p">)</span>
+            
+            <span class="c1"># Filas</span>
+            <span class="n">rows_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rows&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rows_item</span><span class="p">)</span>
+            
+            <span class="c1"># Tamaño</span>
+            <span class="n">size_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size_item</span><span class="p">)</span>
+            
+            <span class="c1"># Estado</span>
+            <span class="n">status_item</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Listo&#39;</span><span class="p">:</span>
+                <span class="n">status_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">green</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Advertencia&#39;</span><span class="p">:</span>
+                <span class="n">status_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">yellow</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Error&#39;</span><span class="p">:</span>
+                <span class="n">status_item</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files_table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">status_item</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_summary</span><span class="p">(</span><span class="n">filtered_files</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="FilePreviewDialog.get_filtered_files">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog.get_filtered_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener archivos filtrados por estado&quot;&quot;&quot;</span>
+        <span class="n">filter_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_filter</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">filter_text</span> <span class="o">==</span> <span class="s2">&quot;Todos&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">files_info</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files_info</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">filter_text</span><span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="FilePreviewDialog.update_summary">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog.update_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar resumen&quot;&quot;&quot;</span>
+        <span class="n">total_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rows&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Resumen: </span><span class="si">{</span><span class="n">total_files</span><span class="si">}</span><span class="s2"> archivos • </span><span class="si">{</span><span class="n">total_rows</span><span class="si">}</span><span class="s2"> filas totales • &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Espacio disponible suficiente&quot;</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="FilePreviewDialog.filter_files">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.FilePreviewDialog.filter_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filtrar archivos por estado&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_table</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExportSeparatedDialog">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExportSeparatedDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Diálogo principal para configuración de exportación separada con plantillas Excel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Señales</span>
+    <span class="n">configuration_changed</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">validation_updated</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c1"># is_valid, message</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">dataframe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_connections</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_validation</span><span class="p">()</span>
+        
+        <span class="c1"># Configurar diálogo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;💾 Configurar Exportación Separada con Plantillas Excel&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+        
+        <span class="c1"># Inicializar datos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.setup_ui">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar interfaz completa del diálogo&quot;&quot;&quot;</span>
+        <span class="n">main_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c1"># Crear tabs para mejor organización</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">()</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="p">)</span>
+        
+        <span class="c1"># Tab 1: Configuración Básica</span>
+        <span class="n">basic_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">basic_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">basic_tab</span><span class="p">)</span>
+        
+        <span class="c1"># Sección 1: Datos (Columna de Separación)</span>
+        <span class="n">data_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;1. Datos&quot;</span><span class="p">)</span>
+        <span class="n">data_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">data_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Seleccionar columna para separar&quot;</span><span class="p">)</span>
+        <span class="n">data_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Columna de Separación:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">data_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Preview de Valores:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_nulls_check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Incluir valores nulos como grupo separado&quot;</span><span class="p">)</span>
+        <span class="n">data_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_nulls_check</span><span class="p">)</span>
+        
+        <span class="n">basic_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">data_group</span><span class="p">)</span>
+        
+        <span class="c1"># Sección 2: Plantilla Excel</span>
+        <span class="n">template_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;2. Plantilla Excel&quot;</span><span class="p">)</span>
+        <span class="n">template_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">template_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_path_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;No hay plantilla seleccionada&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_path_label</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">template_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Archivo:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_path_label</span><span class="p">)</span>
+        
+        <span class="n">template_btn_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_template_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Seleccionar Plantilla Excel&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_template_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_template</span><span class="p">)</span>
+        <span class="n">template_btn_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_template_btn</span><span class="p">)</span>
+        <span class="n">template_btn_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">template_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">template_btn_layout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">template_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Hoja:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="p">)</span>
+        
+        <span class="c1"># Celda inicial</span>
+        <span class="n">cell_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;A1&quot;</span><span class="p">,</span> <span class="s2">&quot;A2&quot;</span><span class="p">,</span> <span class="s2">&quot;A5&quot;</span><span class="p">,</span> <span class="s2">&quot;B1&quot;</span><span class="p">,</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span> <span class="s2">&quot;Personalizado&quot;</span><span class="p">])</span>
+        <span class="n">cell_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_edit</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Ej: C10&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_edit</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="n">cell_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_cell_edit</span><span class="p">)</span>
+        <span class="n">cell_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">template_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Celda Inicial:&quot;</span><span class="p">,</span> <span class="n">cell_layout</span><span class="p">)</span>
+        
+        <span class="n">basic_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">template_group</span><span class="p">)</span>
+        
+        <span class="c1"># Sección 3: Nombres de Archivos</span>
+        <span class="n">naming_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;3. Nombres de Archivos&quot;</span><span class="p">)</span>
+        <span class="n">naming_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">naming_group</span><span class="p">)</span>
+        
+        <span class="c1"># Campo de plantilla</span>
+        <span class="n">name_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Ej: </span><span class="si">{valor}</span><span class="s2">_</span><span class="si">{fecha}</span><span class="s2">.xlsx&quot;</span><span class="p">)</span>
+        <span class="n">name_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Plantilla:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span><span class="p">)</span>
+        <span class="n">naming_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">name_layout</span><span class="p">)</span>
+        
+        <span class="c1"># Lista de placeholders</span>
+        <span class="n">placeholders_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">placeholders_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Placeholders disponibles:&quot;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeholders_list</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeholders_list</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span>
+            <span class="s2">&quot;</span><span class="si">{valor}</span><span class="s2"> - Valor de la columna de separación&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{fecha}</span><span class="s2"> - Fecha actual (YYYY-MM-DD)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{hora}</span><span class="s2"> - Hora actual (HHMMSS)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{contador}</span><span class="s2"> - Número secuencial (01, 02, 03...)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{columna_nombre}</span><span class="s2"> - Nombre de columna&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{total_filas}</span><span class="s2"> - Número de filas en el grupo&quot;</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">placeholders_list</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="n">placeholders_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholders_list</span><span class="p">)</span>
+        <span class="n">naming_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">placeholders_layout</span><span class="p">)</span>
+        
+        <span class="c1"># Preview de nombres</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">naming_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Preview:&quot;</span><span class="p">))</span>
+        <span class="n">naming_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="p">)</span>
+        
+        <span class="n">basic_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">naming_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">basic_tab</span><span class="p">,</span> <span class="s2">&quot;Configuración Básica&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Tab 2: Mapeo de Columnas</span>
+        <span class="n">mapping_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">mapping_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">mapping_tab</span><span class="p">)</span>
+        
+        <span class="n">mapping_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Mapeo de Columnas DataFrame → Excel&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span> <span class="o">=</span> <span class="n">ColumnMappingWidget</span><span class="p">()</span>
+        <span class="n">mapping_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">mapping_tab</span><span class="p">,</span> <span class="s2">&quot;Mapeo de Columnas&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Tab 3: Destino y Opciones</span>
+        <span class="n">dest_tab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">dest_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">dest_tab</span><span class="p">)</span>
+        
+        <span class="c1"># Carpeta de destino</span>
+        <span class="n">dest_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;4. Carpeta de Destino&quot;</span><span class="p">)</span>
+        <span class="n">dest_path_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_folder_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;No se ha seleccionado carpeta&quot;</span><span class="p">)</span>
+        <span class="n">dest_path_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_folder_label</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_folder_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cambiar...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_folder_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_destination_folder</span><span class="p">)</span>
+        <span class="n">dest_path_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_folder_btn</span><span class="p">)</span>
+        
+        <span class="n">dest_group</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">dest_path_layout</span><span class="p">)</span>
+        <span class="n">dest_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">dest_group</span><span class="p">)</span>
+        
+        <span class="c1"># Estado de permisos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">dest_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span><span class="p">)</span>
+        
+        <span class="c1"># Opciones avanzadas</span>
+        <span class="n">advanced_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Opciones Avanzadas&quot;</span><span class="p">)</span>
+        <span class="n">advanced_layout</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">(</span><span class="n">advanced_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_duplicates_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_duplicates_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span>
+            <span class="s2">&quot;Sobrescribir archivos existentes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Numerar automáticamente&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Evitar sobrescritura&quot;</span>
+        <span class="p">])</span>
+        <span class="n">advanced_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Manejo de Duplicados:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_duplicates_combo</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot; filas&quot;</span><span class="p">)</span>
+        <span class="n">advanced_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Tamaño de Chunk:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="p">)</span>
+        
+        <span class="n">dest_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">advanced_group</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">dest_tab</span><span class="p">,</span> <span class="s2">&quot;Destino y Opciones&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Barra de estado</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span> <span class="o">=</span> <span class="n">QStatusBar</span><span class="p">()</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="p">)</span>
+        
+        <span class="c1"># Indicador de validación</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;⚠️ Configuración incompleta&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: red; font-weight: bold;&quot;</span><span class="p">)</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="p">)</span>
+        
+        <span class="c1"># Botones</span>
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Vista Previa&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_file_preview</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="p">)</span>
+        
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Validar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_btn</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cancelar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_btn</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Exportar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="p">)</span>
+        
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.setup_connections">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.setup_connections">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar conexiones de señales&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_column_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_template_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_start_cell_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sheet_changed</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.setup_validation">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.setup_validation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_validation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configurar sistema de validación&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">setInterval</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># Validar 1 segundo después del último cambio</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.initialize_data">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.initialize_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inicializar datos del diálogo&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="c1"># Llenar combo de columnas</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            
+            <span class="c1"># Configurar mapeo de columnas</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span><span class="o">.</span><span class="n">set_dataframe_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span><span class="o">.</span><span class="n">set_excel_columns</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="mi">65</span><span class="o">+</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">)])</span>  <span class="c1"># A-Z</span>
+            
+            <span class="c1"># Actualizar vista previa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_values_preview</span><span class="p">()</span>
+            
+            <span class="c1"># Validación inicial</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.select_template">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.select_template">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Seleccionar plantilla Excel&quot;&quot;&quot;</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">ExcelTemplateDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">():</span>
+            <span class="n">template_path</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">,</span> <span class="n">available_sheets</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">get_template_info</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">template_path</span><span class="p">:</span>
+                <span class="c1"># Almacenar la ruta de plantilla para uso posterior</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_template_path</span> <span class="o">=</span> <span class="n">template_path</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">template_path_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📄 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">template_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">template_path_label</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">template_path</span><span class="p">)</span>
+                
+                <span class="c1"># Actualizar selector de hojas</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">available_sheets</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">sheet_name</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">)</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.select_destination_folder">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.select_destination_folder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_destination_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Seleccionar carpeta de destino&quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Seleccionar Carpeta de Destino&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">folder</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dest_folder_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📁 </span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dest_folder_label</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+            
+            <span class="c1"># Verificar permisos</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;✅ Permisos de escritura OK&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: green;&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;❌ Sin permisos de escritura&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">permissions_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: red;&quot;</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.on_column_changed">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.on_column_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_column_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de columna de separación&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_values_preview</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_filename_preview</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.update_values_preview">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.update_values_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_values_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar preview de valores únicos&quot;&quot;&quot;</span>
+        <span class="n">column_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">column_name</span> <span class="ow">and</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># Obtener valores únicos (máximo 10)</span>
+            <span class="n">unique_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">unique_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="n">item_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;• </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">count</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> filas)&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">item_text</span><span class="p">)</span>
+            
+            <span class="c1"># Verificar nulos</span>
+            <span class="n">null_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">null_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">values_preview</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• [VALORES NULOS] (</span><span class="si">{</span><span class="n">null_count</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> filas)&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.on_template_changed">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.on_template_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_template_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio en plantilla de nombre&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_filename_preview</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.update_filename_preview">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.update_filename_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_filename_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar preview de nombres de archivos&quot;&quot;&quot;</span>
+        <span class="n">column_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">column_name</span> <span class="ow">and</span> <span class="n">template</span><span class="p">:</span>
+            <span class="c1"># Obtener valores únicos para preview</span>
+            <span class="n">unique_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># Primeros 5</span>
+            
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_values</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Simular procesamiento de plantilla</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{valor}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{fecha}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{contador}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{columna_nombre}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column_name</span><span class="p">)</span>
+                    
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">):</span>
+                        <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;.xlsx&#39;</span>
+                    
+                    <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• Error en plantilla: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.on_start_cell_changed">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.on_start_cell_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_start_cell_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de celda inicial&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.on_sheet_changed">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.on_sheet_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_sheet_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manejar cambio de hoja&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.validate_configuration">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.validate_configuration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validar configuración completa&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Crear configuración temporal para validación</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">(</span><span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+                <span class="c1"># Validar usando ExcelTemplateSplitter</span>
+                <span class="n">splitter</span> <span class="o">=</span> <span class="n">ExcelTemplateSplitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+                <span class="n">validation_result</span> <span class="o">=</span> <span class="n">splitter</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">()</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">validation_result</span> <span class="o">=</span> <span class="n">validation_result</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_validation_display</span><span class="p">(</span><span class="n">validation_result</span><span class="p">)</span>
+                
+                <span class="c1"># Actualizar mapeo de columnas con datos de ejemplo</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="n">sample_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span><span class="o">.</span><span class="n">update_preview</span><span class="p">(</span><span class="n">sample_data</span><span class="p">)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_validation_display</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_validation_display</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.update_validation_display">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.update_validation_display">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_validation_display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ValidationResult</span><span class="p">],</span> <span class="n">error_msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Actualizar display de validación&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">error_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: red; font-weight: bold;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error de validación: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="n">validation_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;⚠️ Configuración incompleta&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: red; font-weight: bold;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Contar errores y warnings</span>
+        <span class="n">error_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">validation_result</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+        <span class="n">warning_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">validation_result</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">error_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ </span><span class="si">{</span><span class="n">error_count</span><span class="si">}</span><span class="s2"> error(es) encontrado(s)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: red; font-weight: bold;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="c1"># Mostrar primer error en status bar</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">validation_result</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="n">warning_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️ </span><span class="si">{</span><span class="n">warning_count</span><span class="si">}</span><span class="s2"> advertencias&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: orange; font-weight: bold;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Permitir exportar con advertencias</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;✅ Configuración válida&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validation_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: green; font-weight: bold;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preview_btn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s2">&quot;Configuración válida&quot;</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.show_file_preview">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.show_file_preview">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_file_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mostrar vista previa de archivos a generar&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_result</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_result</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;La configuración tiene errores. Corrija antes de continuar.&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="c1"># Simular información de archivos</span>
+            <span class="n">files_info</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">column_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">column_name</span> <span class="ow">and</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">unique_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+                
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_values</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">group_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
+                        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;• &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames_preview</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;archivo_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.xlsx&quot;</span>
+                        
+                        <span class="n">files_info</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+                            <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                            <span class="s1">&#39;rows&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_data</span><span class="p">),</span>
+                            <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;~</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">KB&quot;</span><span class="p">,</span>
+                            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Listo&#39;</span>
+                        <span class="p">})</span>
+            
+            <span class="n">dialog</span> <span class="o">=</span> <span class="n">FilePreviewDialog</span><span class="p">(</span><span class="n">files_info</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error mostrando vista previa: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.get_configuration">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.get_configuration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ExportSeparatedConfig</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtener configuración actual&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Recopilar datos básicos</span>
+            <span class="n">separator_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="n">template_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_template_path&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">start_cell</span> <span class="o">=</span> <span class="s2">&quot;A1&quot;</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Personalizado&quot;</span><span class="p">:</span>
+                <span class="n">start_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;A1&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_cell_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            
+            <span class="n">sheet_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="n">output_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_folder_label</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;📁 &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">file_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_template_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            
+            <span class="c1"># Validar extensión de archivo de exportación</span>
+            <span class="k">if</span> <span class="n">file_template</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">file_template</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">,</span> <span class="s1">&#39;.xlsm&#39;</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s2">&quot;Error: El nombre de archivo debe terminar en .xlsx o .xlsm&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            
+            <span class="c1"># Obtener mapeo de columnas</span>
+            <span class="n">column_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping_widget</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
+            
+            <span class="c1"># Opciones avanzadas</span>
+            <span class="n">handle_duplicates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_duplicates_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="n">chunk_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size_spin</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            
+            <span class="c1"># Crear configuración</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">ExportSeparatedConfig</span><span class="p">(</span>
+                <span class="n">separator_column</span><span class="o">=</span><span class="n">separator_column</span><span class="p">,</span>
+                <span class="n">template_path</span><span class="o">=</span><span class="n">template_path</span><span class="p">,</span>
+                <span class="n">start_cell</span><span class="o">=</span><span class="n">start_cell</span><span class="p">,</span>
+                <span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span>
+                <span class="n">file_template</span><span class="o">=</span><span class="n">file_template</span><span class="p">,</span>
+                <span class="n">column_mapping</span><span class="o">=</span><span class="n">column_mapping</span><span class="p">,</span>
+                <span class="n">handle_duplicates</span><span class="o">=</span><span class="n">handle_duplicates</span><span class="p">,</span>
+                <span class="n">enable_chunking</span><span class="o">=</span><span class="n">chunk_size</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">,</span>
+                <span class="n">max_memory_mb</span><span class="o">=</span><span class="mi">2048</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Guardar ruta de plantilla</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_template_path</span> <span class="o">=</span> <span class="n">template_path</span>
+            
+            <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+                <span class="n">splitter</span> <span class="o">=</span> <span class="n">ExcelTemplateSplitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+                <span class="n">validation_result</span> <span class="o">=</span> <span class="n">splitter</span><span class="o">.</span><span class="n">validate_configuration</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">validation_result</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+            
+            <span class="k">return</span> <span class="n">config</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error obteniendo configuración: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+    
+<div class="viewcode-block" id="ExportSeparatedDialog.accept">
+<a class="viewcode-back" href="../../../api/classes.html#app.widgets.export_separated_dialog.ExportSeparatedDialog.accept">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Aceptar diálogo y validar configuración&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Configuración Inválida&quot;</span><span class="p">,</span> 
+                <span class="s2">&quot;La configuración actual no es válida. Revise los errores marcados.&quot;</span>
+            <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

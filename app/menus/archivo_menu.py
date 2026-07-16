@@ -4,7 +4,8 @@ Menú Archivo para Flash View Sheet.
 Este módulo define la creación y configuración del menú Archivo.
 """
 
-from PySide6.QtWidgets import QMenu
+from PySide6.QtWidgets import QMenu, QMenuBar
+from typing import Any, List, Optional
 
 
 class ArchivoMenu:
@@ -13,7 +14,7 @@ class ArchivoMenu:
     """
     
     @staticmethod
-    def create(menu_bar, actions, parent_window) -> QMenu:
+    def create(menu_bar: QMenuBar, actions: List[Optional[Any]], parent_window: Any) -> QMenu:
         """
         Crear el menú Archivo.
         

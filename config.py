@@ -91,7 +91,7 @@ class OptimizationConfig:
 
 
 # Variables de entorno para configuración
-def get_config_from_env():
+def get_config_from_env() -> OptimizationConfig:
     """Obtener configuración desde variables de entorno"""
     config = OptimizationConfig()
 

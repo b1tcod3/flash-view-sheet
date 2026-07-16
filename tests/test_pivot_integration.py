@@ -4,13 +4,13 @@ Prueba la integración completa del sistema de Tabla Pivote con la aplicación p
 """
 
 import sys
-import os
+from pathlib import Path
 import unittest
 from unittest.mock import Mock, patch
 import pandas as pd
 
 # Agregar ruta del proyecto
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Imports del sistema
 try:
@@ -30,7 +30,7 @@ class TestPivotIntegration(unittest.TestCase):
     """Clase principal de testing de integración"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configuración inicial para todos los tests"""
         if not IMPORTS_SUCCESSFUL:
             cls.skipTest(cls, "Imports fallidos")
@@ -45,7 +45,7 @@ class TestPivotIntegration(unittest.TestCase):
             'vendedor': ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Carmen'] * 5
         })
     
-    def test_01_core_pivot_functionality(self):
+    def test_01_core_pivot_functionality(self) -> None:
         """Test 1: Verificar funcionalidad core de pivoteo"""
         print("🧪 Test 1: Funcionalidad Core de Pivoteo")
         
@@ -76,7 +76,7 @@ class TestPivotIntegration(unittest.TestCase):
         self.assertFalse(result.empty)
         print("   ✅ Combined Pivot - OK")
     
-    def test_02_filter_manager_functionality(self):
+    def test_02_filter_manager_functionality(self) -> None:
         """Test 2: Verificar funcionalidad del gestor de filtros"""
         print("🧪 Test 2: Gestor de Filtros")
         
@@ -96,7 +96,7 @@ class TestPivotIntegration(unittest.TestCase):
         self.assertTrue(all(filtered_df['ventas'] > 150))
         print("   ✅ Filtros - OK")
     
-    def test_03_widget_creation(self):
+    def test_03_widget_creation(self) -> None:
         """Test 3: Verificar creación de widgets"""
         print("🧪 Test 3: Creación de Widgets")
         
@@ -127,7 +127,7 @@ class TestPivotIntegration(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error creando widgets: {e}")
     
-    def test_04_widget_integration(self):
+    def test_04_widget_integration(self) -> None:
         """Test 4: Verificar integración entre widgets"""
         print("🧪 Test 4: Integración de Widgets")
         
@@ -157,7 +157,7 @@ class TestPivotIntegration(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error en integración de widgets: {e}")
     
-    def test_05_worker_thread_functionality(self):
+    def test_05_worker_thread_functionality(self) -> None:
         """Test 5: Verificar funcionalidad del worker thread"""
         print("🧪 Test 5: Worker Thread")
         
@@ -184,7 +184,7 @@ class TestPivotIntegration(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error en worker thread: {e}")
     
-    def test_06_main_window_integration(self):
+    def test_06_main_window_integration(self) -> None:
         """Test 6: Verificar integración con MainWindow"""
         print("🧪 Test 6: Integración con MainWindow")
         
@@ -193,23 +193,25 @@ class TestPivotIntegration(unittest.TestCase):
             with patch('PySide6.QtWidgets.QApplication'):
                 main_window = MainWindow()
                 
-                # Verificar que se crearon los componentes
-                self.assertIsNotNone(main_window.pivot_table_view)
-                self.assertIsNotNone(main_window.view_pivot_table_btn)
+                # Verificar que se crearon los componentes core
+                self.assertIsNotNone(main_window.data_service)
+                self.assertIsNotNone(main_window.coordinator)
+                self.assertIsNotNone(main_window.view_coordinator)
                 
-                # Simular carga de datos
-                main_window.on_datos_cargados(self.test_data)
+                # Simular carga de datos via data_service
+                main_window.data_service.set_original_data(self.test_data)
+                main_window.data_service.set_current_data(self.test_data)
                 
                 # Verificar que los datos se establecieron
-                self.assertIsNotNone(main_window.df_original)
-                self.assertEqual(len(main_window.df_original), len(self.test_data))
+                self.assertIsNotNone(main_window.data_service.df_original)
+                self.assertEqual(len(main_window.data_service.df_original), len(self.test_data))
                 
                 print("   ✅ MainWindow Integration - OK")
                 
         except Exception as e:
             self.fail(f"Error en integración con MainWindow: {e}")
     
-    def test_07_complete_workflow(self):
+    def test_07_complete_workflow(self) -> None:
         """Test 7: Verificar flujo completo de trabajo"""
         print("🧪 Test 7: Flujo Completo de Trabajo")
         
@@ -246,7 +248,7 @@ class TestPivotIntegration(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error en flujo completo: {e}")
     
-    def test_08_error_handling(self):
+    def test_08_error_handling(self) -> None:
         """Test 8: Verificar manejo de errores"""
         print("🧪 Test 8: Manejo de Errores")
         
@@ -279,7 +281,7 @@ class TestPivotIntegration(unittest.TestCase):
             self.fail(f"Error en manejo de errores: {e}")
 
 
-def run_integration_tests():
+def run_integration_tests() -> bool:
     """Ejecutar todos los tests de integración"""
     print("=" * 60)
     print("🧪 INICIANDO TESTS DE INTEGRACIÓN - TABLA PIVOTE")
@@ -291,7 +293,7 @@ def run_integration_tests():
     
     # Crear suite de tests
     suite = unittest.TestLoader().loadTestsFromTestCase(TestPivotIntegration)
-    runner = unittest.TextTestRunner(verbosity=0, stream=open(os.devnull, 'w'))
+    runner = unittest.TextTestRunner(verbosity=0, stream=open('/dev/null', 'w'))
     
     # Ejecutar tests
     result = runner.run(suite)

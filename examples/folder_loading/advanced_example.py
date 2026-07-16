@@ -10,25 +10,25 @@ Este ejemplo muestra funcionalidades avanzadas como:
 """
 
 import sys
-import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
 
 # Añadir el directorio raíz del proyecto al path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from core.loaders.folder_loader import FolderLoader
 from core.consolidation.excel_consolidator import ExcelConsolidator
 from core.models.folder_load_config import FolderLoadConfig, ColumnAlignmentStrategy
 
-def advanced_folder_loading():
+def advanced_folder_loading() -> None:
     """Ejemplo avanzado de carga de carpeta con configuración personalizada"""
 
     print("🚀 Flash Sheet - Ejemplo Avanzado de Carga de Carpeta")
     print("=" * 65)
 
     # Ruta a la carpeta con archivos de ejemplo
-    folder_path = os.path.join(os.path.dirname(__file__), 'sample_data')
+    folder_path = str(Path(__file__).parent / 'sample_data')
 
     print(f"📁 Cargando carpeta: {folder_path}")
     print()
@@ -67,7 +67,7 @@ def advanced_folder_loading():
         print("3️⃣ Aplicando filtros de archivos...")
         filtered_files = []
         for file_path in loader.get_excel_files():
-            filename = os.path.basename(file_path)
+            filename = Path(file_path).name
             if config.should_include_file(filename):
                 filtered_files.append(file_path)
                 print(f"   ✓ Incluyendo: {filename}")
@@ -113,7 +113,7 @@ def advanced_folder_loading():
         loaded_dataframes = []
 
         for i, file_path in enumerate(filtered_files, 1):
-            filename = os.path.basename(file_path)
+            filename = Path(file_path).name
             print(f"   Cargando {i}/{len(filtered_files)}: {filename}")
 
             try:

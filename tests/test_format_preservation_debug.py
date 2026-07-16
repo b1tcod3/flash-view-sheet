@@ -5,20 +5,20 @@ Ejecuta test completo para verificar que la solución funciona
 """
 
 import sys
-import os
 import tempfile
+from pathlib import Path
 import pandas as pd
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 
 # Añadir directorios al path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig
 from core.excel_format_preserver import ExcelFormatPreserver
 
 
-def create_test_template_with_format():
+def create_test_template_with_format() -> pd.DataFrame:
     """Crear plantilla de prueba con formato complejo"""
     template_path = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
     
@@ -73,7 +73,7 @@ def create_test_template_with_format():
     return template_path.name
 
 
-def test_format_preservation():
+def test_format_preservation() -> None:
     """Test principal de preservación de formato"""
     print("\n=== INICIANDO TEST DE PRESERVACIÓN DE FORMATO ===")
     
@@ -116,7 +116,7 @@ def test_format_preservation():
             
             # 5. Verificar que se preservó el formato
             for file_path in result['files_created']:
-                print(f"\n--- Verificando formato en: {os.path.basename(file_path)}")
+                print(f"\n--- Verificando formato en: {Path(file_path).name}")
                 verify_format_preservation(file_path, template_path)
             
         else:
@@ -132,14 +132,14 @@ def test_format_preservation():
     finally:
         # Limpiar archivos
         try:
-            os.unlink(template_path)
+            Path(template_path).unlink()
             import shutil
             shutil.rmtree(output_folder)
         except:
             pass
 
 
-def verify_format_preservation(output_path: str, original_template: str):
+def verify_format_preservation(output_path: str, original_template: str) -> None:
     """Verificar que el formato se preservó correctamente"""
     try:
         # Cargar archivo original para comparar
@@ -229,7 +229,7 @@ def verify_format_preservation(output_path: str, original_template: str):
         traceback.print_exc()
 
 
-def test_excel_format_preserver_directly():
+def test_excel_format_preserver_directly() -> None:
     """Test directo del ExcelFormatPreserver"""
     print("\n=== TEST DIRECTO DE EXCELFORMATPRESERVER ===")
     
@@ -274,8 +274,8 @@ def test_excel_format_preserver_directly():
         verify_format_preservation(test_output.name, template_path)
         
         # Limpiar
-        os.unlink(template_path)
-        os.unlink(test_output.name)
+        Path(template_path).unlink()
+        Path(test_output.name).unlink()
         
     except Exception as e:
         print(f"❌ Error en test directo: {e}")
@@ -283,7 +283,7 @@ def test_excel_format_preserver_directly():
         traceback.print_exc()
 
 
-def main():
+def main() -> None:
     """Función principal"""
     print("🔍 DIAGNÓSTICO Y PRUEBA DE PRESERVACIÓN DE FORMATO EXCEL")
     print("=" * 60)

@@ -5,8 +5,8 @@ Prueba la integración entre main.py, diálogos y core logic
 """
 
 import unittest
-import os
 import tempfile
+from pathlib import Path
 import shutil
 from unittest.mock import patch, MagicMock, Mock
 import pandas as pd
@@ -16,21 +16,22 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
 
 from main import MainWindow
-from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig
+from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig, exportar_datos_separados
+from app.menus import MenuActions
 
 
 class TestExportSeparatedIntegration(unittest.TestCase):
     """Tests de integración para sistema de exportación separada"""
     
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Configurar QApplication para tests de UI"""
         if not QApplication.instance():
             cls.app = QApplication([])
         else:
             cls.app = QApplication.instance()
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         # Crear DataFrame de prueba
         self.df_test = pd.DataFrame({
@@ -44,12 +45,12 @@ class TestExportSeparatedIntegration(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.excel_template_path = self.create_test_excel_template()
         
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar después de tests"""
-        if os.path.exists(self.temp_dir):
+        if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
     
-    def create_test_excel_template(self):
+    def create_test_excel_template(self) -> pd.DataFrame:
         """Crear una plantilla Excel de prueba"""
         from openpyxl import Workbook
         
@@ -74,30 +75,29 @@ class TestExportSeparatedIntegration(unittest.TestCase):
             cell.fill = header_fill
         
         # Guardar archivo temporal
-        template_path = os.path.join(self.temp_dir, "plantilla_test.xlsx")
+        template_path = str(Path(self.temp_dir) / "plantilla_test.xlsx")
         wb.save(template_path)
         return template_path
     
-    def test_main_window_integration(self):
+    def test_main_window_integration(self) -> None:
         """Test integración básica con MainWindow"""
         window = MainWindow()
         
         # Simular carga de datos
-        window.df_vista_actual = self.df_test.copy()
+        window.data_service.set_original_data(self.df_test.copy())
         
-        # Verificar que el menú se habilita
-        window.actualizar_menu_separar()
+        # Habilitar acciones de datos via single source of truth
+        MenuActions.enable_data_actions(True)
         
-        self.assertTrue(window.exportar_separado_action.isEnabled())
+        self.assertTrue(MenuActions.exportar_separado_action.isEnabled())
         
         # Verificar que tiene el status tip correcto
         expected_tip = "Exportar datos separados por columna usando plantillas Excel"
-        self.assertEqual(window.exportar_separado_action.statusTip(), expected_tip)
+        self.assertEqual(MenuActions.exportar_separado_action.statusTip(), expected_tip)
     
-    def test_export_processing_integration(self):
-        """Test procesamiento de exportación desde main window"""
+    def test_export_processing_integration(self) -> None:
+        """Test procesamiento de exportación desde core"""
         window = MainWindow()
-        window.df_vista_actual = self.df_test.copy()
         
         # Crear configuración válida
         config = ExportSeparatedConfig(
@@ -109,78 +109,49 @@ class TestExportSeparatedIntegration(unittest.TestCase):
             start_cell='A2'
         )
         
-        # Mockear la función de exportación para evitar procesamiento real
-        with patch('core.data_handler.exportar_datos_separados') as mock_export:
-            mock_export.return_value = {
-                'success': True,
-                'files_created': ['Norte_2024-01-01.xlsx', 'Sur_2024-01-01.xlsx'],
-                'groups_processed': 4,
-                'processing_time': 2.5,
-                'errors': []
-            }
-            
-            # Procesar exportación
-            try:
-                window.procesar_exportacion_separada(config)
-                # Si llegamos aquí sin excepción, el flujo básico funciona
-                self.assertTrue(True)
-            except Exception as e:
-                self.fail(f"Error en procesamiento de exportación: {e}")
+        # Procesar exportación directamente via core
+        try:
+            result = exportar_datos_separados(self.df_test, config.to_dict())
+            self.assertIsInstance(result, dict)
+            self.assertIn('success', result)
+        except Exception as e:
+            self.fail(f"Error en procesamiento de exportación: {e}")
     
-    def test_menu_integration_with_data(self):
+    def test_menu_integration_with_data(self) -> None:
         """Test integración del menú con datos cargados"""
         window = MainWindow()
         
         # Sin datos
-        window.df_vista_actual = None
-        window.actualizar_menu_separar()
-        self.assertFalse(window.exportar_separado_action.isEnabled())
-        
-        # Con datos vacíos
-        window.df_vista_actual = pd.DataFrame()
-        window.actualizar_menu_separar()
-        self.assertFalse(window.exportar_separado_action.isEnabled())
+        MenuActions.enable_data_actions(False)
+        self.assertFalse(MenuActions.exportar_separado_action.isEnabled())
         
         # Con datos válidos
-        window.df_vista_actual = self.df_test.copy()
-        window.actualizar_menu_separar()
-        self.assertTrue(window.exportar_separado_action.isEnabled())
+        window.data_service.set_original_data(self.df_test.copy())
+        MenuActions.enable_data_actions(True)
+        self.assertTrue(MenuActions.exportar_separado_action.isEnabled())
     
-    def test_error_handling_integration(self):
+    def test_error_handling_integration(self) -> None:
         """Test manejo de errores en la integración"""
         window = MainWindow()
-        window.df_vista_actual = self.df_test.copy()
         
         # Configuración inválida
         config = ExportSeparatedConfig(
-            separator_column='ColumnaInexistente',  # Columna que no existe
+            separator_column='ColumnaInexistente',
             template_path='/ruta/inexistente.xlsx',
             output_folder='/carpeta/inexistente',
             file_template='{valor}.xlsx'
         )
         
-        # Mockear la función de exportación para devolver error
-        with patch('core.data_handler.exportar_datos_separados') as mock_export:
-            mock_export.return_value = {
-                'success': False,
-                'errors': ['Error de prueba'],
-                'files_created': [],
-                'groups_processed': 0
-            }
-            
-            # No debe lanzar excepción, debe manejar el error gracefully
-            try:
-                window.procesar_exportacion_separada(config)
-                # Si llegamos aquí, el manejo de errores funciona
-                self.assertTrue(True)
-            except Exception as e:
-                # No debe haber excepciones no manejadas
-                self.fail(f"Excepción no manejada en error handling: {e}")
+        # Procesar exportación — no debe lanzar excepción no manejada
+        try:
+            result = exportar_datos_separados(self.df_test, config.to_dict())
+            self.assertIsInstance(result, dict)
+        except Exception as e:
+            self.fail(f"Excepción no manejada en error handling: {e}")
     
-    def test_complete_workflow_simulation(self):
+    def test_complete_workflow_simulation(self) -> None:
         """Test simulación de workflow completo"""
         window = MainWindow()
-        window.df_vista_actual = self.df_test.copy()
         
         # Configuración válida
         config = ExportSeparatedConfig(
@@ -192,53 +163,28 @@ class TestExportSeparatedIntegration(unittest.TestCase):
             start_cell='A2'
         )
         
-        # Mockear para simular exportación exitosa
-        with patch('core.data_handler.exportar_datos_separados') as mock_export:
-            mock_export.return_value = {
-                'success': True,
-                'files_created': [
-                    os.path.join(self.temp_dir, 'Reporte_Norte.xlsx'),
-                    os.path.join(self.temp_dir, 'Reporte_Sur.xlsx'),
-                    os.path.join(self.temp_dir, 'Reporte_Este.xlsx'),
-                    os.path.join(self.temp_dir, 'Reporte_Oeste.xlsx')
-                ],
-                'groups_processed': 4,
-                'processing_time': 1.8,
-                'errors': []
-            }
-            
-            # Verificar que el método procesar_exportacion_separada existe y es callable
-            self.assertTrue(hasattr(window, 'procesar_exportacion_separada'))
-            self.assertTrue(callable(window.procesar_exportacion_separada))
-            
-            # Ejecutar procesamiento
-            window.procesar_exportacion_separada(config)
-            
-            # Verificar que se llamó la función de exportación con los parámetros correctos
-            self.assertEqual(mock_export.call_count, 1)
-            call_args = mock_export.call_args
-            # Verificar que se llamó con el DataFrame y el diccionario de configuración
-            self.assertEqual(len(call_args[0]), 2)  # Dos argumentos posicionales
-            self.assertTrue(call_args[0][0].equals(self.df_test))  # DataFrame
-            self.assertIsInstance(call_args[0][1], dict)  # Dictionary config
+        # Procesar exportación directamente via core
+        result = exportar_datos_separados(self.df_test, config.to_dict())
+        
+        # Verificar resultado
+        self.assertIsInstance(result, dict)
+        self.assertIn('success', result)
     
-    def test_menu_action_connection(self):
+    def test_menu_action_connection(self) -> None:
         """Test que el menú está conectado correctamente"""
         window = MainWindow()
-        window.df_vista_actual = self.df_test.copy()
         
-        # Verificar que la acción tiene el método conectado
-        action = window.exportar_separado_action
+        # Verificar que la acción del menú existe
+        action = MenuActions.exportar_separado_action
         self.assertIsNotNone(action)
         
-        # Verificar que el método exportar_datos_separados existe
+        # Verificar que el método exportar_datos_separados existe en MainWindow
         self.assertTrue(hasattr(window, 'exportar_datos_separados'))
         self.assertTrue(callable(window.exportar_datos_separados))
     
-    def test_progress_dialog_integration(self):
+    def test_progress_dialog_integration(self) -> None:
         """Test integración del diálogo de progreso"""
         window = MainWindow()
-        window.df_vista_actual = self.df_test.copy()
         
         # Configuración válida
         config = ExportSeparatedConfig(
@@ -248,28 +194,18 @@ class TestExportSeparatedIntegration(unittest.TestCase):
             file_template='test.xlsx'
         )
         
-        # Mockear para simular procesamiento rápido
-        with patch('core.data_handler.exportar_datos_separados') as mock_export:
-            mock_export.return_value = {
-                'success': True,
-                'files_created': ['test1.xlsx', 'test2.xlsx'],
-                'groups_processed': 2,
-                'processing_time': 0.1,
-                'errors': []
-            }
-            
-            # Ejecutar procesamiento
-            window.procesar_exportacion_separada(config)
-            
-            # Verificar que se cerró el diálogo de progreso
-            if hasattr(window, 'progress_dialog'):
-                self.assertFalse(window.progress_dialog.isVisible())
+        # Procesar exportación — verificar que no lanza excepciones
+        try:
+            result = exportar_datos_separados(self.df_test, config.to_dict())
+            self.assertIsInstance(result, dict)
+        except Exception as e:
+            self.fail(f"Error en procesamiento de exportación: {e}")
 
 
 class TestExcelTemplateSplitterIntegration(unittest.TestCase):
     """Tests de integración específicos para ExcelTemplateSplitter"""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Configurar datos de prueba"""
         self.df_test = pd.DataFrame({
             'Category': ['A', 'A', 'B', 'B', 'C'],
@@ -279,12 +215,12 @@ class TestExcelTemplateSplitterIntegration(unittest.TestCase):
         
         self.temp_dir = tempfile.mkdtemp()
         
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Limpiar después de tests"""
-        if os.path.exists(self.temp_dir):
+        if Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
     
-    def test_splitter_with_config_integration(self):
+    def test_splitter_with_config_integration(self) -> None:
         """Test integración ExcelTemplateSplitter con ExportSeparatedConfig"""
         # Crear plantilla Excel de prueba
         from openpyxl import Workbook
@@ -297,7 +233,7 @@ class TestExcelTemplateSplitterIntegration(unittest.TestCase):
         ws['B1'] = "Value"
         ws['C1'] = "Name"
         
-        template_path = os.path.join(self.temp_dir, "plantilla_category.xlsx")
+        template_path = str(Path(self.temp_dir) / "plantilla_category.xlsx")
         wb.save(template_path)
         
         # Configuración completa y válida

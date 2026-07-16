@@ -4,7 +4,6 @@ Script de prueba para verificar la funcionalidad de paginación
 """
 
 import sys
-import os
 import pandas as pd
 
 # Añadir el directorio actual al path para importar módulos
@@ -14,7 +13,7 @@ from paginacion.pagination_manager import PaginationManager
 from paginacion.data_view import DataView
 import pandas as pd
 
-def crear_datos_prueba():
+def crear_datos_prueba() -> pd.DataFrame:
     """Crear DataFrame de prueba con datos suficientes para paginación"""
     # Crear dataset grande para probar paginación
     n_filas = 250
@@ -30,7 +29,7 @@ def crear_datos_prueba():
     print(f"DataFrame creado con {len(df)} filas y {len(df.columns)} columnas")
     return df
 
-def probar_pagination_manager():
+def probar_pagination_manager() -> bool:
     """Probar la funcionalidad del PaginationManager"""
     print("\n=== Probando PaginationManager ===")
     
@@ -73,7 +72,7 @@ def probar_pagination_manager():
     
     return True
 
-def probar_data_view():
+def probar_data_view() -> bool:
     """Probar la creación de DataView"""
     print("\n=== Probando DataView ===")
     
@@ -103,7 +102,7 @@ def probar_data_view():
         print(f"Error al probar DataView: {e}")
         return False
 
-def main():
+def main() -> int:
     """Función principal de prueba"""
     print("Iniciando pruebas de paginación...")
     

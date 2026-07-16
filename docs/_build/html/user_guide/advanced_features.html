@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Características Avanzadas &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Solución de Problemas" href="troubleshooting.html" />
+    <link rel="prev" title="Guía de Exportación Básica" href="basic_export.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graphics.html">Guía de Gráficos y Visualizaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Características Avanzadas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#carga-de-carpetas">Carga de Carpetas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#carga-de-multiples-archivos">Carga de Múltiples Archivos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-soportados">Formatos Soportados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alineacion-de-columnas">Alineación de Columnas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#uniones-de-datos-fusion">Uniones de Datos (Fusión)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operaciones-de-union">Operaciones de Unión</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tipos-de-uniones">Tipos de Uniones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuracion-de-union">Configuración de Unión</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opciones-avanzadas-de-union">Opciones Avanzadas de Unión</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exportaciones-separadas">Exportaciones Separadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exportaciones-basadas-en-plantillas">Exportaciones Basadas en Plantillas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requisitos-de-plantilla">Requisitos de Plantilla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-exportacion">Configuración de Exportación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tablas-pivote">Tablas Pivote</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creando-tablas-pivote">Creando Tablas Pivote</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-de-pivote">Componentes de Pivote</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#funciones-de-agregacion">Funciones de Agregación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caracteristicas-avanzadas-de-pivote">Características Avanzadas de Pivote</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#carga-de-carpetas-consolidando-reportes-mensuales">Carga de Carpetas: Consolidando Reportes Mensuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uniones-de-datos-analisis-de-clientes-con-historial-de-compras">Uniones de Datos: Análisis de Clientes con Historial de Compras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exportaciones-separadas-reportes-financieros-regionales">Exportaciones Separadas: Reportes Financieros Regionales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tablas-pivote-analisis-de-performance-de-ventas">Tablas Pivote: Análisis de Performance de Ventas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operaciones-combinadas-pipeline-de-business-intelligence-end-to-end">Operaciones Combinadas: Pipeline de Business Intelligence End-to-End</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizacion-de-rendimiento">Optimización de Rendimiento</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manejo-de-datasets-grandes">Manejo de Datasets Grandes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tecnicas-de-optimizacion">Técnicas de Optimización</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manejo-de-errores-y-recuperacion">Manejo de Errores y Recuperación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problemas-comunes">Problemas Comunes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opciones-de-recuperacion">Opciones de Recuperación</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mejores-practicas">Mejores Prácticas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparacion-de-datos">Preparación de Datos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#planificacion-de-flujos-de-trabajo">Planificación de Flujos de Trabajo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Implementación de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Características Avanzadas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/advanced_features.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-caracteristicas-avanzadas">
+<h1>Guía de Características Avanzadas<a class="headerlink" href="#guia-de-caracteristicas-avanzadas" title="Link to this heading"></a></h1>
+<p>Esta guía cubre la funcionalidad avanzada en Flash Sheet, incluyendo carga de carpetas, uniones de datos, exportaciones separadas y tablas pivote.</p>
+<section id="carga-de-carpetas">
+<h2>Carga de Carpetas<a class="headerlink" href="#carga-de-carpetas" title="Link to this heading"></a></h2>
+<section id="carga-de-multiples-archivos">
+<h3>Carga de Múltiples Archivos<a class="headerlink" href="#carga-de-multiples-archivos" title="Link to this heading"></a></h3>
+<p>La carga de carpetas permite consolidar datos de múltiples archivos Excel en un directorio:</p>
+<ol class="arabic">
+<li><p>Haz clic en <strong>“Archivo”</strong> → <strong>“Cargar Carpeta…”</strong></p></li>
+<li><p>Selecciona la carpeta que contiene tus archivos Excel</p></li>
+<li><p>Elige archivos a incluir en la consolidación</p></li>
+<li><p>Configura alineación de columnas (automática o manual)</p></li>
+<li><p>Revisa la preview y consolida</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_static/screenshots/folder_loading_dialog.png"><img alt="Diálogo de carga de carpeta" src="_static/screenshots/folder_loading_dialog.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Interfaz de carga de carpeta mostrando selección de archivos y alineación de columnas.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</li>
+</ol>
+</section>
+<section id="formatos-soportados">
+<h3>Formatos Soportados<a class="headerlink" href="#formatos-soportados" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Archivos Excel</strong>: formatos .xlsx y .xls</p></li>
+<li><p><strong>Búsqueda Recursiva</strong>: Incluir archivos en subdirectorios</p></li>
+<li><p><strong>Filtrado de Archivos</strong>: Seleccionar archivos específicos o patrones</p></li>
+<li><p><strong>Preview de Metadata</strong>: Ver información de archivos antes de cargar</p></li>
+</ul>
+</section>
+<section id="alineacion-de-columnas">
+<h3>Alineación de Columnas<a class="headerlink" href="#alineacion-de-columnas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Alineación Automática</strong>: Hacer coincidir columnas por posición o nombre</p></li>
+<li><p><strong>Alineación Manual</strong>: Arrastrar y soltar para realinear columnas</p></li>
+<li><p><strong>Renombrado de Columnas</strong>: Personalizar nombres de columnas consolidadas</p></li>
+<li><p><strong>Manejo de Tipos</strong>: Gestionar diferentes tipos de datos entre archivos</p></li>
+</ul>
+</section>
+</section>
+<section id="uniones-de-datos-fusion">
+<h2>Uniones de Datos (Fusión)<a class="headerlink" href="#uniones-de-datos-fusion" title="Link to this heading"></a></h2>
+<section id="operaciones-de-union">
+<h3>Operaciones de Unión<a class="headerlink" href="#operaciones-de-union" title="Link to this heading"></a></h3>
+<p>Flash Sheet soporta operaciones de unión tipo SQL para combinar datasets:</p>
+<section id="tipos-de-uniones">
+<h4>Tipos de Uniones<a class="headerlink" href="#tipos-de-uniones" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Unión Interna</strong>: Solo filas coincidentes de ambos datasets</p></li>
+<li><p><strong>Unión Izquierda</strong>: Todas las filas del dataset izquierdo + coincidencias del derecho</p></li>
+<li><p><strong>Unión Derecha</strong>: Todas las filas del dataset derecho + coincidencias del izquierdo</p></li>
+<li><p><strong>Unión Cruzada</strong>: Producto cartesiano de ambos datasets</p></li>
+</ul>
+</section>
+<section id="configuracion-de-union">
+<h4>Configuración de Unión<a class="headerlink" href="#configuracion-de-union" title="Link to this heading"></a></h4>
+<ol class="arabic">
+<li><p>Carga el dataset primario</p></li>
+<li><p>Haz clic en <strong>“Datos”</strong> → <strong>“Unir Datos…”</strong></p></li>
+<li><p>Carga el dataset secundario</p></li>
+<li><p>Selecciona tipo de unión y columnas coincidentes</p></li>
+<li><p>Configura opciones adicionales</p></li>
+<li><p>Preview y ejecuta la unión</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_static/screenshots/join_dialog.png"><img alt="Diálogo de configuración de unión de datos" src="_static/screenshots/join_dialog.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Diálogo de unión mostrando selección de dataset, tipo de unión y mapeo de columnas.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</li>
+</ol>
+</section>
+<section id="opciones-avanzadas-de-union">
+<h4>Opciones Avanzadas de Unión<a class="headerlink" href="#opciones-avanzadas-de-union" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Múltiples Claves de Unión</strong>: Unir en múltiples combinaciones de columnas</p></li>
+<li><p><strong>Condiciones de Unión</strong>: Lógica de unión más allá de igualdad</p></li>
+<li><p><strong>Manejo de Sufijos</strong>: Gestionar nombres de columna duplicados</p></li>
+<li><p><strong>Manejo de Nulos</strong>: Controlar cómo los valores nulos afectan las uniones</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="exportaciones-separadas">
+<h2>Exportaciones Separadas<a class="headerlink" href="#exportaciones-separadas" title="Link to this heading"></a></h2>
+<section id="exportaciones-basadas-en-plantillas">
+<h3>Exportaciones Basadas en Plantillas<a class="headerlink" href="#exportaciones-basadas-en-plantillas" title="Link to this heading"></a></h3>
+<p>Las exportaciones separadas permiten dividir datos en múltiples archivos Excel usando plantillas:</p>
+<ol class="arabic simple">
+<li><p>Prepara tu plantilla Excel con formato</p></li>
+<li><p>Carga el dataset con columna de separación</p></li>
+<li><p>Haz clic en <strong>“Separar”</strong> → <strong>“Exportar Datos Separados…”</strong></p></li>
+<li><p>Configura columna de separación y plantilla</p></li>
+<li><p>Establece opciones de salida y exporta</p></li>
+</ol>
+</section>
+<section id="requisitos-de-plantilla">
+<h3>Requisitos de Plantilla<a class="headerlink" href="#requisitos-de-plantilla" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Formato Excel</strong>: archivos .xlsx (no .xls)</p></li>
+<li><p><strong>Fila de Encabezado</strong>: Nombres de columna en primera fila</p></li>
+<li><p><strong>Área de Datos</strong>: Área designada para inserción de datos</p></li>
+<li><p><strong>Formato</strong>: Preservar fuentes, colores, fórmulas</p></li>
+</ul>
+</section>
+<section id="configuracion-de-exportacion">
+<h3>Configuración de Exportación<a class="headerlink" href="#configuracion-de-exportacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Columna de Separación</strong>: Columna que contiene identificadores de grupo</p></li>
+<li><p><strong>Nomenclatura de Archivos</strong>: Plantillas para nombres de archivos de salida</p></li>
+<li><p><strong>Carpeta de Destino</strong>: Carpeta destino para archivos generados</p></li>
+<li><p><strong>Mapeo de Columnas</strong>: Mapear columnas del dataset a columnas de plantilla</p></li>
+</ul>
+</section>
+</section>
+<section id="tablas-pivote">
+<h2>Tablas Pivote<a class="headerlink" href="#tablas-pivote" title="Link to this heading"></a></h2>
+<section id="creando-tablas-pivote">
+<h3>Creando Tablas Pivote<a class="headerlink" href="#creando-tablas-pivote" title="Link to this heading"></a></h3>
+<p>Las tablas pivote proporcionan resumen dinámico de datos:</p>
+<ol class="arabic">
+<li><p>Carga tu dataset</p></li>
+<li><p>Haz clic en <strong>“Datos”</strong> → <strong>“Tabla Pivote…”</strong></p></li>
+<li><p>Selecciona campos de fila, columna y valor</p></li>
+<li><p>Configura funciones de agregación</p></li>
+<li><p>Genera la tabla pivote</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_static/screenshots/pivot_table_dialog.png"><img alt="Diálogo de configuración de tabla pivote" src="_static/screenshots/pivot_table_dialog.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Configuración de tabla pivote mostrando selección de campos y opciones de agregación.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</li>
+</ol>
+</section>
+<section id="componentes-de-pivote">
+<h3>Componentes de Pivote<a class="headerlink" href="#componentes-de-pivote" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Campos de Fila</strong>: Categorías para agrupamiento de filas</p></li>
+<li><p><strong>Campos de Columna</strong>: Categorías para agrupamiento de columnas</p></li>
+<li><p><strong>Campos de Valor</strong>: Campos numéricos a agregar</p></li>
+<li><p><strong>Campos de Filtro</strong>: Campos para filtrar toda la tabla pivote</p></li>
+</ul>
+</section>
+<section id="funciones-de-agregacion">
+<h3>Funciones de Agregación<a class="headerlink" href="#funciones-de-agregacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Suma</strong>: Total de valores</p></li>
+<li><p><strong>Conteo</strong>: Número de elementos</p></li>
+<li><p><strong>Promedio</strong>: Media de valores</p></li>
+<li><p><strong>Mín/Máx</strong>: Valor mínimo o máximo</p></li>
+<li><p><strong>Desviación Estándar</strong>: Dispersión estadística</p></li>
+<li><p><strong>Funciones Personalizadas</strong>: Agregaciones definidas por usuario</p></li>
+</ul>
+</section>
+<section id="caracteristicas-avanzadas-de-pivote">
+<h3>Características Avanzadas de Pivote<a class="headerlink" href="#caracteristicas-avanzadas-de-pivote" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Consolidación Múltiple</strong>: Combinar múltiples campos de valor</p></li>
+<li><p><strong>Campos Calculados</strong>: Agregar columnas computadas</p></li>
+<li><p><strong>Agrupamiento</strong>: Agrupar fechas, números o valores de texto</p></li>
+<li><p><strong>Drill-down</strong>: Expandir detalles de pivote</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="ejemplos-detallados-y-casos-de-uso-empresariales">
+<h1>Ejemplos Detallados y Casos de Uso Empresariales<a class="headerlink" href="#ejemplos-detallados-y-casos-de-uso-empresariales" title="Link to this heading"></a></h1>
+<p>Esta sección proporciona ejemplos prácticos paso a paso y escenarios empresariales reales para implementar la exportación separada en diferentes situaciones. Cada ejemplo incluye:</p>
+<ul class="simple">
+<li><p><strong>Datos de muestra</strong> para practicar</p></li>
+<li><p><strong>Configuración específica</strong> recomendada</p></li>
+<li><p><strong>Plantillas Excel</strong> de ejemplo</p></li>
+<li><p><strong>Resultados esperados</strong> y métricas</p></li>
+<li><p><strong>Consejos prácticos</strong> y mejores prácticas</p></li>
+</ul>
+<section id="carga-de-carpetas-consolidando-reportes-mensuales">
+<h2>Carga de Carpetas: Consolidando Reportes Mensuales<a class="headerlink" href="#carga-de-carpetas-consolidando-reportes-mensuales" title="Link to this heading"></a></h2>
+<p><strong>Escenario Empresarial</strong>: Una empresa minorista recibe reportes de ventas mensuales de 12 tiendas regionales. Cada tienda envía un archivo Excel con la misma estructura pero datos diferentes.</p>
+<p><strong>Paso a Paso:</strong></p>
+<ol class="arabic">
+<li><p><strong>Prepara Tu Estructura de Datos</strong>
+- Crea una carpeta: <code class="docutils literal notranslate"><span class="pre">C:\Reportes\Ventas_Mensuales</span></code>
+- Cada archivo Excel tiene columnas: <code class="docutils literal notranslate"><span class="pre">Fecha,</span> <span class="pre">ID_Tienda,</span> <span class="pre">Producto,</span> <span class="pre">Ventas,</span> <span class="pre">Cantidad</span></code></p>
+<p><strong>Archivo de Muestra: tienda_norte_enero.xlsx</strong>
++————+———-+———+——-+———-+
+| Fecha      | ID_Tienda| Producto| Ventas| Cantidad |
++============+==========+=========+=======+==========+
+| 2024-01-01 | NORTE_01 | Laptop | 1200  | 5        |
+| 2024-01-02 | NORTE_01 | Mouse  | 50    | 10       |
++————+———-+———+——-+———-+</p>
+</li>
+<li><p><strong>Carga Múltiples Archivos</strong>
+- Haz clic en <strong>“Archivo”</strong> → <strong>“Cargar Carpeta…”</strong>
+- Selecciona la carpeta <code class="docutils literal notranslate"><span class="pre">Ventas_Mensuales</span></code>
+- Elige todos los archivos .xlsx
+- Configura alineación de columnas (automática)</p></li>
+<li><p><strong>Resultado</strong>: Dataset consolidado único con datos de 12 meses × todas las tiendas</p></li>
+</ol>
+<p><strong>Beneficios Empresariales</strong>:
+- Elimina trabajo manual de copiar y pegar
+- Reduce errores de consolidación manual
+- Habilita flujos de trabajo automatizados de reportes mensuales</p>
+</section>
+<section id="uniones-de-datos-analisis-de-clientes-con-historial-de-compras">
+<h2>Uniones de Datos: Análisis de Clientes con Historial de Compras<a class="headerlink" href="#uniones-de-datos-analisis-de-clientes-con-historial-de-compras" title="Link to this heading"></a></h2>
+<p><strong>Escenario Empresarial</strong>: El equipo de marketing necesita analizar comportamiento de clientes combinando demografía de clientes con historial de compras.</p>
+<p><strong>Datasets de Ejemplo:</strong></p>
+<p><strong>clientes.csv</strong>:
++————+————-+——–+
+| CustomerID | Name        | Region |
++============+=============+========+
+| C001       | John Doe    | North  |
+| C002       | Jane Smith  | South  |
++————+————-+——–+</p>
+<p><strong>compras.csv</strong>:
++————+———-+——-+————+
+| CustomerID | Product  | Amount| Date       |
++============+==========+=======+============+
+| C001       | Laptop   | 1200  | 2024-01-15 |
+| C002       | Mouse    | 50    | 2024-01-16 |
++————+———-+——-+————+</p>
+<p><strong>Proceso de Unión:</strong></p>
+<ol class="arabic simple">
+<li><p>Carga <code class="docutils literal notranslate"><span class="pre">clientes.csv</span></code> como dataset primario</p></li>
+<li><p>Haz clic en <strong>“Datos”</strong> → <strong>“Unir Datos…”</strong></p></li>
+<li><p>Carga <code class="docutils literal notranslate"><span class="pre">compras.csv</span></code> como dataset secundario</p></li>
+<li><p>Selecciona <strong>Unión Interna</strong> en <code class="docutils literal notranslate"><span class="pre">CustomerID</span></code></p></li>
+<li><p>Resultado muestra detalles de cliente con sus compras</p></li>
+</ol>
+<p><strong>Aplicaciones Empresariales</strong>:
+- Análisis de segmentación de clientes
+- Identificación de patrones de compra
+- Performance de ventas regional
+- Cálculos de valor de vida del cliente</p>
+</section>
+<section id="exportaciones-separadas-reportes-financieros-regionales">
+<h2>Exportaciones Separadas: Reportes Financieros Regionales<a class="headerlink" href="#exportaciones-separadas-reportes-financieros-regionales" title="Link to this heading"></a></h2>
+<p><strong>Escenario Empresarial</strong>: El departamento financiero necesita generar archivos Excel individuales para cada departamento usando una plantilla estandarizada.</p>
+<p><strong>Configuración de Plantilla</strong>:</p>
+<p>Crea <code class="docutils literal notranslate"><span class="pre">plantilla_departamento.xlsx</span></code> con:
+- Encabezado de compañía y formato
+- Placeholder de nombre de departamento
+- Tabla de comparación Presupuesto vs Actual
+- Gráficos para análisis visual</p>
+<p><strong>Estructura de Datos</strong>:
++————+————-+——–+——–+
+| Department | Category    | Budget | Actual |
++============+=============+========+=======+
+| Sales      | Revenue     | 50000  | 52000  |
+| Sales      | Expenses    | 15000  | 14800  |
+| Marketing  | Revenue     | 30000  | 28500  |
+| Marketing  | Expenses    | 12000  | 11800  |
++————+————-+——–+——–+</p>
+<p><strong>Proceso de Exportación:</strong></p>
+<ol class="arabic simple">
+<li><p>Carga datos financieros consolidados</p></li>
+<li><p>Prepara plantilla Excel con formato</p></li>
+<li><p>Haz clic en <strong>“Separar”</strong> → <strong>“Exportar Datos Separados…”</strong></p></li>
+<li><p>Selecciona <code class="docutils literal notranslate"><span class="pre">Department</span></code> como columna de separación</p></li>
+<li><p>Mapea columnas de datos a posiciones de plantilla</p></li>
+<li><p>Genera reportes individuales por departamento</p></li>
+</ol>
+<p><strong>Beneficios Empresariales</strong>:
+- Formato consistente de reportes entre departamentos
+- Distribución automatizada de reportes personalizados
+- Ahorro de tiempo en generación de reportes
+- Reducción de errores de formato</p>
+</section>
+<section id="tablas-pivote-analisis-de-performance-de-ventas">
+<h2>Tablas Pivote: Análisis de Performance de Ventas<a class="headerlink" href="#tablas-pivote-analisis-de-performance-de-ventas" title="Link to this heading"></a></h2>
+<p><strong>Escenario Empresarial</strong>: Gerente de ventas necesita analizar performance de productos entre regiones y períodos de tiempo.</p>
+<p><strong>Dataset</strong>: Datos de ventas mensuales con productos, regiones y períodos de tiempo.</p>
+<p><strong>Creando un Pivote Comprehensive:</strong></p>
+<ol class="arabic simple">
+<li><p>Carga dataset de ventas</p></li>
+<li><p>Haz clic en <strong>“Datos”</strong> → <strong>“Tabla Pivote…”</strong></p></li>
+<li><p>Configura estructura de pivote:</p>
+<ul class="simple">
+<li><p><strong>Filas</strong>: Región, Producto</p></li>
+<li><p><strong>Columnas</strong>: Mes</p></li>
+<li><p><strong>Valores</strong>: Suma de Ventas, Conteo de Transacciones</p></li>
+<li><p><strong>Filtros</strong>: Rango de Fechas</p></li>
+</ul>
+</li>
+<li><p>Agrega campos calculados (ej. Venta Promedio por Transacción)</p></li>
+</ol>
+<p><strong>Características Avanzadas de Pivote:</strong></p>
+<ul class="simple">
+<li><p><strong>Drill-down</strong>: Haz clic en celdas para ver transacciones detalladas</p></li>
+<li><p><strong>Agrupamiento</strong>: Agrupar fechas por mes/trimestre/año</p></li>
+<li><p><strong>Consolidación Múltiple</strong>: Mostrar suma y promedio</p></li>
+<li><p><strong>Formato Condicional</strong>: Resaltar mejores/peores performers</p></li>
+</ul>
+<p><strong>Información Empresarial Generada</strong>:
+- Mejores productos performing por región
+- Tendencias estacionales de ventas
+- Comparaciones de crecimiento regional
+- Análisis de rentabilidad de productos</p>
+</section>
+<section id="operaciones-combinadas-pipeline-de-business-intelligence-end-to-end">
+<h2>Operaciones Combinadas: Pipeline de Business Intelligence End-to-End<a class="headerlink" href="#operaciones-combinadas-pipeline-de-business-intelligence-end-to-end" title="Link to this heading"></a></h2>
+<p><strong>Escenario</strong>: Generación mensual de reportes de business intelligence para una compañía manufacturera.</p>
+<p><strong>Flujo Completo:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Recolección de Datos (Carga de Carpetas)</strong>
+- Cargar datos de producción de múltiples ubicaciones de planta
+- Consolidar métricas de control de calidad
+- Importar datos de ventas e inventario</p></li>
+<li><p><strong>Integración de Datos (Uniones)</strong>
+- Unir datos de producción con métricas de calidad
+- Combinar con performance de ventas
+- Vincular con niveles de inventario</p></li>
+<li><p><strong>Análisis (Tablas Pivote)</strong>
+- Crear pivote de eficiencia de producción por planta
+- Analizar métricas de calidad por línea de producto
+- Generar performance de ventas por región</p></li>
+<li><p><strong>Reportes (Exportaciones Separadas)</strong>
+- Exportar reportes de performance de planta individuales
+- Generar dashboards de resumen ejecutivo
+- Crear archivos de análisis específicos por departamento</p></li>
+</ol>
+<p><strong>Valor Empresarial</strong>:
+- Ciclo de reportes mensuales automatizado
+- Metodología de análisis consistente
+- Visibilidad en tiempo real en operaciones
+- Toma de decisiones basada en datos</p>
+</section>
+<section id="optimizacion-de-rendimiento">
+<h2>Optimización de Rendimiento<a class="headerlink" href="#optimizacion-de-rendimiento" title="Link to this heading"></a></h2>
+<section id="manejo-de-datasets-grandes">
+<h3>Manejo de Datasets Grandes<a class="headerlink" href="#manejo-de-datasets-grandes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Chunking</strong>: Procesar datos en chunks manejables</p></li>
+<li><p><strong>Gestión de Memoria</strong>: Uso eficiente de memoria</p></li>
+<li><p><strong>Indexación</strong>: Indexación automática para operaciones rápidas</p></li>
+<li><p><strong>Almacenamiento en Caché</strong>: Almacenar en caché resultados intermedios</p></li>
+</ul>
+</section>
+<section id="tecnicas-de-optimizacion">
+<h3>Técnicas de Optimización<a class="headerlink" href="#tecnicas-de-optimizacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Optimización de Tipos de Datos</strong>: Usar tipos de datos apropiados</p></li>
+<li><p><strong>Selección de Columnas</strong>: Trabajar solo con columnas necesarias</p></li>
+<li><p><strong>Filtrar Temprano</strong>: Aplicar filtros antes de operaciones complejas</p></li>
+<li><p><strong>Procesamiento Paralelo</strong>: Utilizar múltiples núcleos de CPU</p></li>
+</ul>
+</section>
+</section>
+<section id="manejo-de-errores-y-recuperacion">
+<h2>Manejo de Errores y Recuperación<a class="headerlink" href="#manejo-de-errores-y-recuperacion" title="Link to this heading"></a></h2>
+<section id="problemas-comunes">
+<h3>Problemas Comunes<a class="headerlink" href="#problemas-comunes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Errores de Memoria</strong>: Para datasets muy grandes</p></li>
+<li><p><strong>Problemas de Permisos de Archivo</strong>: Problemas de derechos de acceso</p></li>
+<li><p><strong>Conflictos de Tipos de Datos</strong>: Tipos de columna incompatibles</p></li>
+<li><p><strong>Problemas de Formato de Plantilla</strong>: Plantillas Excel inválidas</p></li>
+</ul>
+</section>
+<section id="opciones-de-recuperacion">
+<h3>Opciones de Recuperación<a class="headerlink" href="#opciones-de-recuperacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Recuperación Automática</strong>: Reanudar operaciones interrumpidas</p></li>
+<li><p><strong>Resultados Parciales</strong>: Guardar porciones completadas</p></li>
+<li><p><strong>Logging de Errores</strong>: Información detallada de errores</p></li>
+<li><p><strong>Rollback</strong>: Deshacer operaciones problemáticas</p></li>
+</ul>
+</section>
+</section>
+<section id="mejores-practicas">
+<h2>Mejores Prácticas<a class="headerlink" href="#mejores-practicas" title="Link to this heading"></a></h2>
+<section id="preparacion-de-datos">
+<h3>Preparación de Datos<a class="headerlink" href="#preparacion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Limpiar Datos</strong>: Manejar valores faltantes y valores atípicos</p></li>
+<li><p><strong>Formatos Consistentes</strong>: Estandarizar formatos de fecha y número</p></li>
+<li><p><strong>Validación</strong>: Verificar integridad de datos antes de operaciones</p></li>
+<li><p><strong>Backup</strong>: Mantener datos originales seguros</p></li>
+</ul>
+</section>
+<section id="planificacion-de-flujos-de-trabajo">
+<h3>Planificación de Flujos de Trabajo<a class="headerlink" href="#planificacion-de-flujos-de-trabajo" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Planificar Operaciones</strong>: Diseñar flujo de trabajo antes de ejecución</p></li>
+<li><p><strong>Probar con Muestras</strong>: Validar con muestras de datos pequeños</p></li>
+<li><p><strong>Monitorear Recursos</strong>: Observar uso de memoria y disco</p></li>
+<li><p><strong>Documentar Procesos</strong>: Registrar flujos de trabajo exitosos</p></li>
+</ul>
+</section>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="troubleshooting.html"><span class="doc">Guía de Solución de Problemas</span></a> - Soluciones para problemas de características avanzadas</p></li>
+<li><p><a class="reference internal" href="getting_started.html"><span class="doc">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</span></a> - Regresar a uso básico</p></li>
+<li><p><a class="reference internal" href="../developer_guide/architecture.html"><span class="doc">Sistema de Arquitectura de Flash Sheet</span></a> - Detalles de implementación técnica</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic_export.html" class="btn btn-neutral float-left" title="Guía de Exportación Básica" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Guía de Solución de Problemas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

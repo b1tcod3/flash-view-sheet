@@ -5,10 +5,10 @@ This module manages the main toolbar creation and coordination.
 """
 
 from PySide6.QtWidgets import QToolBar, QWidget
-from PySide6.QtCore import Signal
 
 from app.toolbar.view_switcher import ViewSwitcher
 from app.toolbar.filter_toolbar import FilterToolbar
+from typing import Optional, List
 
 
 class ToolbarManager:
@@ -22,14 +22,7 @@ class ToolbarManager:
     - Coordinate toolbar components
     """
     
-    # Signals for view switching
-    view_main_requested = Signal()
-    view_data_requested = Signal()
-    view_info_requested = Signal()
-    view_graphics_requested = Signal()
-    view_joined_requested = Signal()
-    
-    def __init__(self, main_window):
+    def __init__(self, main_window: QWidget) -> None:
         """
         Initialize the toolbar manager.
         
@@ -37,11 +30,11 @@ class ToolbarManager:
             main_window: Reference to the main window
         """
         self.main_window = main_window
-        self.tool_bar = None
-        self.view_switcher = None
-        self.filter_toolbar = None
+        self.tool_bar: Optional[QToolBar] = None
+        self.view_switcher: Optional[ViewSwitcher] = None
+        self.filter_toolbar: Optional[FilterToolbar] = None
         
-    def create_toolbar(self):
+    def create_toolbar(self) -> QToolBar:
         """
         Create and configure the main toolbar.
         
@@ -59,7 +52,7 @@ class ToolbarManager:
         
         return self.tool_bar
     
-    def _create_view_switcher(self):
+    def _create_view_switcher(self) -> None:
         """Create the view switcher buttons."""
         self.view_switcher = ViewSwitcher(self.main_window)
         
@@ -73,17 +66,17 @@ class ToolbarManager:
         # Add to toolbar
         self.tool_bar.addWidget(self.view_switcher)
     
-    def _on_view_switch(self, index):
+    def _on_view_switch(self, index: int) -> None:
         """Handle view switch request."""
         if hasattr(self.main_window, 'switch_view'):
             self.main_window.switch_view(index)
     
-    def _on_info_requested(self):
+    def _on_info_requested(self) -> None:
         """Handle info modal request."""
         if hasattr(self.main_window, 'show_info_modal'):
             self.main_window.show_info_modal()
     
-    def set_view_buttons_enabled(self, enabled):
+    def set_view_buttons_enabled(self, enabled: bool) -> None:
         """
         Enable or disable view buttons.
         
@@ -93,7 +86,11 @@ class ToolbarManager:
         if self.view_switcher:
             self.view_switcher.set_joined_enabled(enabled)
     
-    def populate_filter_combo(self, columns):
+    def on_datos_disponibles(self, has_data: bool) -> None:
+        """Slot para reaccionar a la disponibilidad de datos"""
+        self.set_view_buttons_enabled(has_data)
+    
+    def populate_filter_combo(self, columns: List[str]) -> None:
         """
         Populate the filter combo box with column names.
         
@@ -103,12 +100,12 @@ class ToolbarManager:
         if self.filter_toolbar:
             self.filter_toolbar.populate_columns(columns)
     
-    def clear_filters(self):
+    def clear_filters(self) -> None:
         """Clear filter controls."""
         if self.filter_toolbar:
             self.filter_toolbar.clear()
     
-    def get_toolbar(self):
+    def get_toolbar(self) -> Optional[QToolBar]:
         """
         Get the toolbar widget.
         

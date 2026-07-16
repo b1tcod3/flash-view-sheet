@@ -4,9 +4,9 @@ Proporciona interfaz para crear y configurar tablas pivote (simple y combinada)
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                               QLabel, QGroupBox, QFrame, QComboBox, QTableView,
-                               QTabWidget, QTextEdit, QProgressBar, QMessageBox,
-                               QCheckBox, QSpinBox, QListWidget, QListWidgetItem, QLineEdit)
+                                QLabel, QGroupBox, QFrame, QComboBox, QTableView,
+                                QTabWidget, QTextEdit, QProgressBar, QMessageBox,
+                                QCheckBox, QSpinBox, QListWidget, QListWidgetItem, QLineEdit)
 from PySide6.QtCore import Qt, Signal, QThread
 from PySide6.QtGui import QFont, QPixmap
 import pandas as pd
@@ -25,13 +25,13 @@ class PivotWorkerThread(QThread):
     pivot_completed = Signal(object)  # Pandas DataFrame
     error_occurred = Signal(str)
     
-    def __init__(self, df, pivot_type, parameters):
-        super().__init__()
+    def __init__(self, df: pd.DataFrame | None, pivot_type: str, parameters: Dict[str, Any], parent: QThread | None = None) -> None:
+        super().__init__(parent)
         self.df = df.copy() if df is not None else None
         self.pivot_type = pivot_type  # 'simple' o 'combined'
         self.parameters = parameters
         
-    def run(self):
+    def run(self) -> None:
         """Ejecutar el pivoteo"""
         try:
             if self.df is None or self.df.empty:
@@ -73,18 +73,18 @@ class PivotTableWidget(QWidget):
     pivot_created = Signal(object)  # Pandas DataFrame del resultado
     data_changed = Signal(object)   # Pandas DataFrame original
     
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.df_original = None
-        self.df_current = None
-        self.worker_thread = None
-        self.current_pivot_params = {}
-        self.current_pivot_type = 'simple'
+        self.df_original: pd.DataFrame | None = None
+        self.df_current: pd.DataFrame | None = None
+        self.worker_thread: PivotWorkerThread | None = None
+        self.current_pivot_params: Dict[str, Any] = {}
+        self.current_pivot_type: str = 'simple'
         
         self.setup_ui()
         self.setup_connections()
         
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configurar la interfaz de usuario"""
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(10, 10, 10, 10)
@@ -125,7 +125,7 @@ class PivotTableWidget(QWidget):
         # Panel inferior: Botones de acción
         self.create_action_panel(main_layout)
         
-    def create_config_panel(self):
+    def create_config_panel(self) -> QWidget:
         """Crear panel de configuración"""
         config_widget = QWidget()
         config_layout = QVBoxLayout(config_widget)
@@ -184,7 +184,7 @@ class PivotTableWidget(QWidget):
         
         return config_widget
         
-    def create_basic_config_tab(self):
+    def create_basic_config_tab(self) -> None:
         """Crear tab de configuración básica"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -238,7 +238,7 @@ class PivotTableWidget(QWidget):
         
         self.config_tabs.addTab(tab, "Configuración Básica")
         
-    def create_filters_config_tab(self):
+    def create_filters_config_tab(self) -> None:
         """Crear tab de configuración de filtros"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -255,7 +255,7 @@ class PivotTableWidget(QWidget):
         
         self.config_tabs.addTab(tab, "Filtros")
         
-    def create_aggregations_config_tab(self):
+    def create_aggregations_config_tab(self) -> None:
         """Crear tab de configuración de agregaciones"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -272,7 +272,7 @@ class PivotTableWidget(QWidget):
         
         self.config_tabs.addTab(tab, "Agregaciones")
         
-    def create_advanced_options_tab(self):
+    def create_advanced_options_tab(self) -> None:
         """Crear tab de opciones avanzadas"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -310,7 +310,7 @@ class PivotTableWidget(QWidget):
         
         self.config_tabs.addTab(tab, "Opciones Avanzadas")
         
-    def create_preview_panel(self):
+    def create_preview_panel(self) -> QWidget:
         """Crear panel de preview y resultado"""
         preview_widget = QWidget()
         preview_layout = QVBoxLayout(preview_widget)
@@ -345,7 +345,7 @@ class PivotTableWidget(QWidget):
         
         return preview_widget
         
-    def create_preview_original_tab(self):
+    def create_preview_original_tab(self) -> None:
         """Crear tab de preview de datos originales"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -377,7 +377,7 @@ class PivotTableWidget(QWidget):
         
         self.preview_tabs.addTab(tab, "Datos Originales")
         
-    def create_pivot_result_tab(self):
+    def create_pivot_result_tab(self) -> None:
         """Crear tab de resultado del pivote"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -410,7 +410,7 @@ class PivotTableWidget(QWidget):
         
         self.preview_tabs.addTab(tab, "Resultado Pivote")
         
-    def create_pivot_history_tab(self):
+    def create_pivot_history_tab(self) -> None:
         """Crear tab de historial de pivoteos"""
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -442,7 +442,7 @@ class PivotTableWidget(QWidget):
         
         self.preview_tabs.addTab(tab, "Historial")
         
-    def create_action_panel(self, main_layout):
+    def create_action_panel(self, main_layout: QVBoxLayout) -> None:
         """Crear panel de botones de acción"""
         action_frame = QFrame()
         action_frame.setStyleSheet("""
@@ -545,7 +545,7 @@ class PivotTableWidget(QWidget):
         
         main_layout.addWidget(action_frame)
         
-    def setup_connections(self):
+    def setup_connections(self) -> None:
         """Configurar conexiones de señales"""
         # Conexión del cambio de tipo de pivoteo
         self.pivot_type_combo.currentTextChanged.connect(self.on_pivot_type_changed)
@@ -560,7 +560,7 @@ class PivotTableWidget(QWidget):
         # Inicializar estado de UI
         self.update_ui_state()
         
-    def set_data(self, df):
+    def set_data(self, df: pd.DataFrame | None) -> None:
         """Establecer datos para pivotear"""
         self.df_original = df.copy() if df is not None else None
         self.df_current = df.copy() if df is not None else None
@@ -577,7 +577,7 @@ class PivotTableWidget(QWidget):
         self.update_column_selections()
         self.update_original_preview()
         
-    def update_ui_state(self):
+    def update_ui_state(self) -> None:
         """Actualizar estado de UI basado en si hay datos"""
         has_data = self.df_original is not None and not self.df_original.empty
         
@@ -597,7 +597,7 @@ class PivotTableWidget(QWidget):
             self.original_table.setModel(None)
             self.result_table.setModel(None)
             
-    def update_column_selections(self):
+    def update_column_selections(self) -> None:
         """Actualizar selecciones de columnas"""
         if self.df_original is None:
             return
@@ -631,7 +631,7 @@ class PivotTableWidget(QWidget):
             f"Dataset: {len(self.df_original)} filas, {len(self.df_original.columns)} columnas"
         )
         
-    def update_original_preview(self):
+    def update_original_preview(self) -> None:
         """Actualizar preview de datos originales"""
         if self.df_original is not None and len(self.df_original) > 0:
             from app.models.pandas_model import VirtualizedPandasModel
@@ -643,7 +643,7 @@ class PivotTableWidget(QWidget):
         else:
             self.original_table.setModel(None)
             
-    def on_pivot_type_changed(self, text):
+    def on_pivot_type_changed(self, text: str) -> None:
         """Manejar cambio de tipo de pivoteo"""
         if "Simple" in text:
             self.current_pivot_type = 'simple'
@@ -666,32 +666,32 @@ class PivotTableWidget(QWidget):
             self.pivot_columns_list.setSelectionMode(QListWidget.MultiSelection)
             self.values_columns_list.setSelectionMode(QListWidget.MultiSelection)
     
-    def get_selected_values_columns(self):
+    def get_selected_values_columns(self) -> List[str]:
         """Obtener columnas de valores seleccionadas"""
-        values_columns = []
+        values_columns: List[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.checkState() == Qt.Checked:
                 values_columns.append(item.text())
         return values_columns
     
-    def on_filters_changed(self, filters):
+    def on_filters_changed(self, filters: Any) -> None:
         """Manejar cambios en filtros"""
         self.current_pivot_params['filters'] = filters
     
-    def on_aggregations_changed(self, aggregations):
+    def on_aggregations_changed(self, aggregations: List[Dict[str, Any]]) -> None:
         """Manejar cambios en agregaciones"""
         # Convertir agregaciones a formato de parámetros
         if aggregations:
             aggfuncs = [agg.get('function', 'mean') for agg in aggregations if agg.get('active', True)]
             self.current_pivot_params['aggfuncs'] = aggfuncs
             
-    def get_current_parameters(self):
+    def get_current_parameters(self) -> Dict[str, Any]:
         """Obtener parámetros actuales de configuración"""
-        parameters = {}
+        parameters: Dict[str, Any] = {}
         
         # Obtener índices seleccionados
-        index_columns = []
+        index_columns: List[str] = []
         for i in range(self.index_columns_list.count()):
             item = self.index_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -699,7 +699,7 @@ class PivotTableWidget(QWidget):
         parameters['index'] = index_columns
         
         # Obtener columnas del pivote seleccionadas
-        pivot_columns = []
+        pivot_columns: List[str] = []
         for i in range(self.pivot_columns_list.count()):
             item = self.pivot_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -707,7 +707,7 @@ class PivotTableWidget(QWidget):
         parameters['columns'] = pivot_columns
         
         # Obtener columnas de valores seleccionadas
-        values_columns = []
+        values_columns: List[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -741,9 +741,9 @@ class PivotTableWidget(QWidget):
             
         return parameters
         
-    def validate_parameters(self, parameters):
+    def validate_parameters(self, parameters: Dict[str, Any]) -> List[str]:
         """Validar parámetros de configuración"""
-        errors = []
+        errors: List[str] = []
         
         if not parameters.get('index'):
             errors.append("Debe seleccionar al menos una columna para índices")
@@ -765,7 +765,7 @@ class PivotTableWidget(QWidget):
                 
         return errors
         
-    def preview_pivot(self):
+    def preview_pivot(self) -> None:
         """Previsualizar resultado del pivoteo"""
         if self.df_original is None:
             return
@@ -795,7 +795,7 @@ class PivotTableWidget(QWidget):
         self.worker_thread.error_occurred.connect(self.on_pivot_error)
         self.worker_thread.start()
         
-    def apply_pivot(self):
+    def apply_pivot(self) -> None:
         """Aplicar pivoteo permanentemente"""
         if self.df_original is None:
             return
@@ -804,11 +804,11 @@ class PivotTableWidget(QWidget):
         self.preview_pivot()
         # El worker emitirá señal y se actualizará automáticamente
         
-    def update_progress(self, value, message):
+    def update_progress(self, value: int, message: str) -> None:
         """Actualizar barra de progreso"""
         self.progress_bar.setValue(value)
         
-    def on_preview_completed(self, result_df):
+    def on_preview_completed(self, result_df: pd.DataFrame | None) -> None:
         """Manejar preview completado"""
         self.progress_bar.setVisible(False)
         
@@ -833,12 +833,12 @@ class PivotTableWidget(QWidget):
         else:
             QMessageBox.warning(self, "Advertencia", "El pivoteo no produjo resultados.")
             
-    def on_pivot_error(self, error_message):
+    def on_pivot_error(self, error_message: str) -> None:
         """Manejar error en pivoteo"""
         self.progress_bar.setVisible(False)
         QMessageBox.critical(self, "Error", error_message)
         
-    def update_result_table(self, df):
+    def update_result_table(self, df: pd.DataFrame | None) -> None:
         """Actualizar tabla de resultado"""
         from app.models.pandas_model import VirtualizedPandasModel
         
@@ -848,7 +848,7 @@ class PivotTableWidget(QWidget):
         else:
             self.result_table.setModel(None)
             
-    def add_to_pivot_history(self):
+    def add_to_pivot_history(self) -> None:
         """Agregar operación al historial"""
         timestamp = pd.Timestamp.now().strftime("%H:%M:%S")
         
@@ -864,12 +864,12 @@ class PivotTableWidget(QWidget):
         item.setData(Qt.UserRole, self.current_pivot_params.copy())
         self.pivot_history_list.addItem(item)
         
-    def clear_pivot_history(self):
+    def clear_pivot_history(self) -> None:
         """Limpiar historial de pivoteos"""
         self.pivot_history_list.clear()
         QMessageBox.information(self, "Éxito", "Historial de pivoteos limpiado.")
         
-    def export_pivot_result(self):
+    def export_pivot_result(self) -> None:
         """Exportar resultado del pivoteo"""
         from PySide6.QtWidgets import QFileDialog
         from core.data_handler import exportar_a_csv, exportar_a_xlsx, exportar_a_pdf
@@ -992,7 +992,7 @@ class PivotTableWidget(QWidget):
                 f"Error durante la exportación:\n{str(e)}"
             )
         
-    def open_advanced_config(self):
+    def open_advanced_config(self) -> None:
         """Abrir diálogo de configuración avanzada"""
         from app.widgets.pivot_config_dialog import PivotConfigDialog
         
@@ -1003,7 +1003,7 @@ class PivotTableWidget(QWidget):
             config = dialog.get_current_configuration()
             self.apply_configuration_from_dialog(config)
     
-    def apply_configuration_from_dialog(self, config):
+    def apply_configuration_from_dialog(self, config: Dict[str, Any]) -> None:
         """Aplicar configuración desde el diálogo"""
         # Aplicar configuración básica
         if 'index' in config:
@@ -1032,7 +1032,7 @@ class PivotTableWidget(QWidget):
             if hasattr(self, 'filter_panel'):
                 self.filter_panel.set_active_filters(config['filters'])
     
-    def set_list_selections(self, list_widget, selected_items):
+    def set_list_selections(self, list_widget: QListWidget, selected_items: List[str]) -> None:
         """Establecer selecciones en un QListWidget"""
         for i in range(list_widget.count()):
             item = list_widget.item(i)
@@ -1041,7 +1041,7 @@ class PivotTableWidget(QWidget):
             else:
                 item.setCheckState(Qt.Unchecked)
         
-    def show_info(self):
+    def show_info(self) -> None:
         """Mostrar información sobre la tabla pivote"""
         info_text = """
         <h3>Tabla Pivote - Información</h3>

@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Gráficos y Visualizaciones &mdash; Flash Sheet - Exportación Separada 1.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Guía de Exportación Básica" href="basic_export.html" />
+    <link rel="prev" title="Guía de Visualización de Datos" href="data_visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Flash Sheet - Exportación Separada
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Guía del Usuario:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Guía de Inicio Rápido de Flash Sheet (Tutorial de 10 Minutos)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_usage.html">Guía de Uso Básico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_visualization.html">Guía de Visualización de Datos</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Guía de Gráficos y Visualizaciones</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tipos-de-graficos-disponibles">Tipos de Gráficos Disponibles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-de-barras">Gráficos de Barras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-de-lineas">Gráficos de Líneas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-de-torta">Gráficos de Torta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-de-dispersion">Gráficos de Dispersión</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#otros-tipos-de-graficos">Otros Tipos de Gráficos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creando-graficos">Creando Gráficos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-basica-de-graficos">Creación Básica de Gráficos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seleccion-de-datos">Selección de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#personalizacion-de-graficos">Personalización de Gráficos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#opciones-de-apariencia">Opciones de Apariencia</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuracion-de-ejes">Configuración de Ejes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#leyenda-y-titulos">Leyenda y Títulos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#caracteristicas-avanzadas">Características Avanzadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-interactivos">Gráficos Interactivos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#superposiciones-estadisticas">Superposiciones Estadísticas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graficos-multiples">Gráficos Múltiples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exportando-graficos">Exportando Gráficos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formatos-soportados">Formatos Soportados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opciones-de-exportacion">Opciones de Exportación</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plantillas-de-graficos">Plantillas de Gráficos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#consideraciones-de-rendimiento">Consideraciones de Rendimiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mejores-practicas">Mejores Prácticas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#principios-de-diseno-de-graficos">Principios de Diseño de Gráficos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preparacion-de-datos">Preparación de Datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#proximos-pasos">Próximos Pasos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="basic_export.html">Guía de Exportación Básica</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html">Guía de Características Avanzadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_features.html#ejemplos-detallados-y-casos-de-uso-empresariales">Ejemplos Detallados y Casos de Uso Empresariales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Guía de Solución de Problemas</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guía del Desarrollador:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/architecture.html">Sistema de Arquitectura de Flash Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/main_window.html">Sistema de Arquitectura de Main Window - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/data_handler.html">Sistema de Data Handler - Recorrido Detallado del Código</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/views_system.html">Arquitectura del Sistema de Vistas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/code_walkthrough/advanced_features.html">Advanced Features Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/api_reference.html">Referencia de API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/development_guide.html">Guía de Desarrollo</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versiones:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases/installation_guide.html">Guía de Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.0.0/installation_guide.html#id156">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id146">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id151">}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases/v1.1.0/installation_guide.html#id156">}</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Flash Sheet - Exportación Separada</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Guía de Gráficos y Visualizaciones</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/graphics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="guia-de-graficos-y-visualizaciones">
+<h1>Guía de Gráficos y Visualizaciones<a class="headerlink" href="#guia-de-graficos-y-visualizaciones" title="Link to this heading"></a></h1>
+<p>Flash Sheet proporciona capacidades comprehensivas de gráficos para visualizar tus datos a través de varios tipos de gráficos y opciones de personalización.</p>
+<section id="tipos-de-graficos-disponibles">
+<h2>Tipos de Gráficos Disponibles<a class="headerlink" href="#tipos-de-graficos-disponibles" title="Link to this heading"></a></h2>
+<section id="graficos-de-barras">
+<h3>Gráficos de Barras<a class="headerlink" href="#graficos-de-barras" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Barras Verticales</strong>: Gráfico de barras estándar para comparar categorías</p></li>
+<li><p><strong>Barras Horizontales</strong>: Barras mostradas horizontalmente</p></li>
+<li><p><strong>Barras Apiladas</strong>: Múltiples series de datos apiladas</p></li>
+<li><p><strong>Barras Agrupadas</strong>: Comparación lado a lado de múltiples series</p></li>
+</ul>
+</section>
+<section id="graficos-de-lineas">
+<h3>Gráficos de Líneas<a class="headerlink" href="#graficos-de-lineas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Línea Simple</strong>: Conectar puntos de datos con líneas</p></li>
+<li><p><strong>Múltiples Líneas</strong>: Comparar múltiples series de datos</p></li>
+<li><p><strong>Gráficos de Área</strong>: Área rellena bajo la línea</p></li>
+<li><p><strong>Gráficos Spline</strong>: Líneas curvas suaves</p></li>
+</ul>
+</section>
+<section id="graficos-de-torta">
+<h3>Gráficos de Torta<a class="headerlink" href="#graficos-de-torta" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Torta Estándar</strong>: Gráfico circular dividido por proporciones</p></li>
+<li><p><strong>Gráficos de Dona</strong>: Gráfico de torta con centro removido</p></li>
+<li><p><strong>Torta Explotada</strong>: Segmentos jalados para énfasis</p></li>
+</ul>
+</section>
+<section id="graficos-de-dispersion">
+<h3>Gráficos de Dispersión<a class="headerlink" href="#graficos-de-dispersion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Dispersión XY</strong>: Trazar puntos basados en dos variables numéricas</p></li>
+<li><p><strong>Gráficos de Burbujas</strong>: Agregar tercera dimensión con tamaño de burbuja</p></li>
+<li><p><strong>Líneas de Tendencia</strong>: Agregar líneas de regresión y curvas</p></li>
+</ul>
+</section>
+<section id="otros-tipos-de-graficos">
+<h3>Otros Tipos de Gráficos<a class="headerlink" href="#otros-tipos-de-graficos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Histogramas</strong>: Distribución de datos numéricos</p></li>
+<li><p><strong>Gráficos de Caja</strong>: Resumen de distribución estadística</p></li>
+<li><p><strong>Mapas de Calor</strong>: Visualización de matriz con codificación de color</p></li>
+</ul>
+</section>
+</section>
+<section id="creando-graficos">
+<h2>Creando Gráficos<a class="headerlink" href="#creando-graficos" title="Link to this heading"></a></h2>
+<section id="creacion-basica-de-graficos">
+<h3>Creación Básica de Gráficos<a class="headerlink" href="#creacion-basica-de-graficos" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Cambia a la pestaña <strong>Vista de Gráficos</strong></p></li>
+<li><p>Selecciona tu tipo de gráfico de la barra de herramientas</p></li>
+<li><p>Elige las columnas de datos para ejes X e Y</p></li>
+<li><p>Personaliza apariencia y opciones</p></li>
+<li><p>Exporta o guarda el gráfico</p></li>
+</ol>
+</section>
+<section id="seleccion-de-datos">
+<h3>Selección de Datos<a class="headerlink" href="#seleccion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Selección de Columnas</strong>: Elegir qué columnas usar para el gráfico</p></li>
+<li><p><strong>Rango de Datos</strong>: Seleccionar filas específicas o usar datos filtrados</p></li>
+<li><p><strong>Agregación</strong>: Agrupar datos por categorías o períodos de tiempo</p></li>
+<li><p><strong>Muestreo</strong>: Usar muestreo de datos para datasets muy grandes</p></li>
+</ul>
+</section>
+</section>
+<section id="personalizacion-de-graficos">
+<h2>Personalización de Gráficos<a class="headerlink" href="#personalizacion-de-graficos" title="Link to this heading"></a></h2>
+<section id="opciones-de-apariencia">
+<h3>Opciones de Apariencia<a class="headerlink" href="#opciones-de-apariencia" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Colores</strong>: Elegir de paletas predefinidas o colores personalizados</p></li>
+<li><p><strong>Temas</strong>: Aplicar diferentes temas visuales</p></li>
+<li><p><strong>Fuentes</strong>: Personalizar fuentes de título, eje y etiqueta</p></li>
+<li><p><strong>Líneas de Cuadrícula</strong>: Mostrar/ocultar cuadrícula de fondo</p></li>
+</ul>
+</section>
+<section id="configuracion-de-ejes">
+<h3>Configuración de Ejes<a class="headerlink" href="#configuracion-de-ejes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Etiquetas de Ejes</strong>: Personalizar títulos de ejes</p></li>
+<li><p><strong>Opciones de Escala</strong>: Lineal, logarítmica o escalas personalizadas</p></li>
+<li><p><strong>Marcas de Graduación</strong>: Controlar frecuencia de marcas de graduación y formato</p></li>
+<li><p><strong>Límites de Rango</strong>: Establecer valores mínimo y máximo</p></li>
+</ul>
+</section>
+<section id="leyenda-y-titulos">
+<h3>Leyenda y Títulos<a class="headerlink" href="#leyenda-y-titulos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Título del Gráfico</strong>: Agregar títulos descriptivos</p></li>
+<li><p><strong>Títulos de Ejes</strong>: Etiquetar ejes X e Y apropiadamente</p></li>
+<li><p><strong>Leyenda</strong>: Posicionar y personalizar la leyenda</p></li>
+<li><p><strong>Etiquetas de Datos</strong>: Mostrar valores en elementos del gráfico</p></li>
+</ul>
+</section>
+</section>
+<section id="caracteristicas-avanzadas">
+<h2>Características Avanzadas<a class="headerlink" href="#caracteristicas-avanzadas" title="Link to this heading"></a></h2>
+<section id="graficos-interactivos">
+<h3>Gráficos Interactivos<a class="headerlink" href="#graficos-interactivos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Tooltips</strong>: Información al pasar el mouse sobre puntos de datos</p></li>
+<li><p><strong>Zooming</strong>: Hacer zoom en áreas del gráfico</p></li>
+<li><p><strong>Panning</strong>: Navegar gráficos grandes</p></li>
+<li><p><strong>Selección</strong>: Hacer clic para seleccionar puntos de datos</p></li>
+</ul>
+</section>
+<section id="superposiciones-estadisticas">
+<h3>Superposiciones Estadísticas<a class="headerlink" href="#superposiciones-estadisticas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Líneas de Tendencia</strong>: Lineal, polinomial o tendencias exponenciales</p></li>
+<li><p><strong>Barras de Error</strong>: Mostrar variabilidad de datos</p></li>
+<li><p><strong>Intervalos de Confianza</strong>: Bandas de confianza estadística</p></li>
+<li><p><strong>Promedios Móviles</strong>: Suavizar tendencias de datos</p></li>
+</ul>
+</section>
+<section id="graficos-multiples">
+<h3>Gráficos Múltiples<a class="headerlink" href="#graficos-multiples" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Subplots</strong>: Múltiples gráficos en una vista</p></li>
+<li><p><strong>Grids de Facetas</strong>: Gráficos divididos por categorías</p></li>
+<li><p><strong>Gráficos Comparativos</strong>: Comparaciones lado a lado</p></li>
+</ul>
+</section>
+</section>
+<section id="exportando-graficos">
+<h2>Exportando Gráficos<a class="headerlink" href="#exportando-graficos" title="Link to this heading"></a></h2>
+<section id="formatos-soportados">
+<h3>Formatos Soportados<a class="headerlink" href="#formatos-soportados" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>PNG</strong>: Imagen raster de alta calidad</p></li>
+<li><p><strong>SVG</strong>: Gráficos vectoriales escalables</p></li>
+<li><p><strong>PDF</strong>: Formato vectorial para documentos</p></li>
+<li><p><strong>JPEG</strong>: Formato de imagen comprimida</p></li>
+</ul>
+</section>
+<section id="opciones-de-exportacion">
+<h3>Opciones de Exportación<a class="headerlink" href="#opciones-de-exportacion" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Resolución</strong>: Configuraciones DPI para calidad de imagen</p></li>
+<li><p><strong>Tamaño</strong>: Dimensiones personalizadas</p></li>
+<li><p><strong>Fondo</strong>: Fondo transparente o color sólido</p></li>
+<li><p><strong>Compresión</strong>: Compensaciones calidad vs tamaño de archivo</p></li>
+</ul>
+</section>
+<section id="plantillas-de-graficos">
+<h3>Plantillas de Gráficos<a class="headerlink" href="#plantillas-de-graficos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Guardar Plantillas</strong>: Reutilizar configuraciones de gráficos</p></li>
+<li><p><strong>Cargar Plantillas</strong>: Aplicar configuraciones guardadas</p></li>
+<li><p><strong>Configuraciones Predeterminadas</strong>: Establecer preferencias personales</p></li>
+</ul>
+</section>
+</section>
+<section id="consideraciones-de-rendimiento">
+<h2>Consideraciones de Rendimiento<a class="headerlink" href="#consideraciones-de-rendimiento" title="Link to this heading"></a></h2>
+<p>Para datasets grandes:</p>
+<ul class="simple">
+<li><p><strong>Muestreo de Datos</strong>: Muestrear automáticamente datasets grandes</p></li>
+<li><p><strong>Renderizado Progresivo</strong>: Renderizar gráficos incrementalmente</p></li>
+<li><p><strong>Optimización de Memoria</strong>: Uso eficiente de memoria</p></li>
+<li><p><strong>Almacenamiento en Caché</strong>: Almacenar en caché gráficos renderizados</p></li>
+</ul>
+</section>
+<section id="mejores-practicas">
+<h2>Mejores Prácticas<a class="headerlink" href="#mejores-practicas" title="Link to this heading"></a></h2>
+<section id="principios-de-diseno-de-graficos">
+<h3>Principios de Diseño de Gráficos<a class="headerlink" href="#principios-de-diseno-de-graficos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Propósito Claro</strong>: Cada gráfico debería tener un mensaje específico</p></li>
+<li><p><strong>Tipo Apropiado</strong>: Elegir el gráfico correcto para tus datos</p></li>
+<li><p><strong>Simplicidad</strong>: Evitar desorden y elementos innecesarios</p></li>
+<li><p><strong>Accesibilidad</strong>: Considerar daltonismo y legibilidad</p></li>
+</ul>
+</section>
+<section id="preparacion-de-datos">
+<h3>Preparación de Datos<a class="headerlink" href="#preparacion-de-datos" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Limpiar Datos</strong>: Remover valores atípicos o manejar valores faltantes</p></li>
+<li><p><strong>Escalas Apropiadas</strong>: Elegir escalas que muestren datos claramente</p></li>
+<li><p><strong>Formatos Consistentes</strong>: Usar formatos consistentes de fecha/número</p></li>
+<li><p><strong>Etiquetas Significativas</strong>: Usar etiquetas descriptivas de eje y leyenda</p></li>
+</ul>
+</section>
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="basic_export.html"><span class="doc">Guía de Exportación Básica</span></a> - Exportar tus gráficos y datos</p></li>
+<li><p><a class="reference internal" href="advanced_features.html"><span class="doc">Guía de Características Avanzadas</span></a> - Técnicas avanzadas de gráficos</p></li>
+<li><p><a class="reference internal" href="troubleshooting.html"><span class="doc">Guía de Solución de Problemas</span></a> - Problemas relacionados con gráficos y soluciones</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_visualization.html" class="btn btn-neutral float-left" title="Guía de Visualización de Datos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basic_export.html" class="btn btn-neutral float-right" title="Guía de Exportación Básica" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Sistema de Análisis de Datos.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
