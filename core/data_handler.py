@@ -6,15 +6,14 @@ import pandas as pd
 import numpy as np
 import os
 from pathlib import Path
-from typing import Optional, Tuple, Dict, Any
+from typing import Any
 import sys
 
 # Añadir directorio raíz para importar config
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import optimization_config
 
-
-def cargar_datos(filepath: str, chunk_size: Optional[int] = None) -> pd.DataFrame:
+def cargar_datos(filepath: str, chunk_size: int | None = None) -> pd.DataFrame:
     """
     Cargar datos desde un archivo usando el nuevo sistema de loaders
 
@@ -55,8 +54,7 @@ def cargar_datos(filepath: str, chunk_size: Optional[int] = None) -> pd.DataFram
 
     return loader.load()
 
-
-def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: Optional[dict] = None, chunk_size: Optional[int] = None) -> pd.DataFrame:
+def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict | None = None, chunk_size: int | None = None) -> pd.DataFrame:
     """
     Cargar datos desde un archivo con opciones adicionales usando el sistema de loaders
 
@@ -99,7 +97,6 @@ def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: O
 
     return df
 
-
 def get_supported_file_formats() -> list:
     """
     Get list of all supported file formats
@@ -109,7 +106,6 @@ def get_supported_file_formats() -> list:
     """
     from core.loaders import get_supported_formats
     return get_supported_formats()
-
 
 def is_file_format_supported(filepath: str) -> bool:
     """
@@ -124,8 +120,7 @@ def is_file_format_supported(filepath: str) -> bool:
     from core.loaders import is_file_supported
     return is_file_supported(filepath)
 
-
-def obtener_metadata(df: pd.DataFrame) -> Dict[str, Any]:
+def obtener_metadata(df: pd.DataFrame) -> dict[str, Any]:
     """
     Obtener metadata del DataFrame
     
@@ -147,8 +142,7 @@ def obtener_metadata(df: pd.DataFrame) -> Dict[str, Any]:
     
     return metadata
 
-
-def obtener_estadisticas(df: pd.DataFrame, columnas: Optional[list] = None, percentiles: Optional[list] = None) -> pd.DataFrame:
+def obtener_estadisticas(df: pd.DataFrame, columnas: list | None = None, percentiles: list | None = None) -> pd.DataFrame:
     """
     Obtener estadísticas descriptivas del DataFrame con optimización para datasets grandes
 
@@ -195,7 +189,6 @@ def obtener_estadisticas(df: pd.DataFrame, columnas: Optional[list] = None, perc
         # Si hay error, devolver DataFrame vacío
         return pd.DataFrame()
 
-
 def obtener_estadisticas_basicas(df: pd.DataFrame) -> dict:
     """
     Obtener estadísticas básicas optimizadas para datasets grandes
@@ -223,7 +216,6 @@ def obtener_estadisticas_basicas(df: pd.DataFrame) -> dict:
         print(f"Error al calcular estadísticas básicas: {str(e)}")
         return {}
 
-
 def aplicar_filtro(df: pd.DataFrame, columna: str, termino: str, use_index: bool = True) -> pd.DataFrame:
     """
     Aplicar filtro a los datos con optimización para datasets grandes
@@ -249,7 +241,6 @@ def aplicar_filtro(df: pd.DataFrame, columna: str, termino: str, use_index: bool
     else:
         return _aplicar_filtro_simple(df, columna, termino)
 
-
 def _aplicar_filtro_simple(df: pd.DataFrame, columna: str, termino: str) -> pd.DataFrame:
     """
     Aplicar filtro simple (método original)
@@ -265,7 +256,6 @@ def _aplicar_filtro_simple(df: pd.DataFrame, columna: str, termino: str) -> pd.D
     # Filtrar por contenido de texto (case-insensitive)
     df_filtrado = df[df[columna].astype(str).str.contains(termino, case=False, na=False)]
     return df_filtrado
-
 
 def _aplicar_filtro_indexado(df: pd.DataFrame, columna: str, termino: str) -> pd.DataFrame:
     """
@@ -305,7 +295,6 @@ def _aplicar_filtro_indexado(df: pd.DataFrame, columna: str, termino: str) -> pd
     except Exception as e:
         print(f"Error en filtrado indexado, usando método simple: {str(e)}")
         return _aplicar_filtro_simple(df, columna, termino)
-
 
 def exportar_a_pdf(df: pd.DataFrame, filepath: str) -> bool:
     """
@@ -350,7 +339,6 @@ def exportar_a_pdf(df: pd.DataFrame, filepath: str) -> bool:
         print(f"Error al exportar a PDF: {str(e)}")
         return False
 
-
 def exportar_a_sql(df: pd.DataFrame, filepath: str, nombre_tabla: str) -> bool:
     """
     Exportar DataFrame a base de datos SQL
@@ -376,7 +364,6 @@ def exportar_a_sql(df: pd.DataFrame, filepath: str, nombre_tabla: str) -> bool:
     except Exception as e:
         print(f"Error al exportar a SQL: {str(e)}")
         return False
-
 
 def exportar_a_imagen(table_view: Any, filepath: str) -> bool:
     """
@@ -408,7 +395,6 @@ def exportar_a_imagen(table_view: Any, filepath: str) -> bool:
     except Exception as e:
         print(f"Error al exportar a imagen: {str(e)}")
         return False
-
 
 def exportar_a_xlsx(df: pd.DataFrame, filepath: str) -> bool:
     """
@@ -448,7 +434,6 @@ def exportar_a_xlsx(df: pd.DataFrame, filepath: str) -> bool:
         print(f"Error al exportar a XLSX: {str(e)}")
         return False
 
-
 def exportar_a_csv(df: pd.DataFrame, filepath: str, delimiter: str = ',', encoding: str = 'utf-8') -> bool:
     """
     Exportar DataFrame a archivo CSV
@@ -471,8 +456,7 @@ def exportar_a_csv(df: pd.DataFrame, filepath: str, delimiter: str = ',', encodi
         print(f"Error al exportar a CSV: {str(e)}")
         return False
 
-
-def limpiar_datos(df: pd.DataFrame, opciones: Optional[dict] = None) -> pd.DataFrame:
+def limpiar_datos(df: pd.DataFrame, opciones: dict | None = None) -> pd.DataFrame:
     """
     Limpiar datos del DataFrame aplicando varias operaciones de limpieza
 
@@ -529,7 +513,6 @@ def limpiar_datos(df: pd.DataFrame, opciones: Optional[dict] = None) -> pd.DataF
 
     return df_clean
 
-
 def agregar_datos(df: pd.DataFrame, operaciones: list) -> pd.DataFrame:
     """
     Realizar operaciones de agregación en el DataFrame
@@ -576,7 +559,6 @@ def agregar_datos(df: pd.DataFrame, operaciones: list) -> pd.DataFrame:
     else:
         return pd.DataFrame()
 
-
 def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
                   aggfunc: str = 'mean') -> pd.DataFrame:
     """
@@ -608,9 +590,6 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
         print(f"Error al crear tabla pivote: {str(e)}")
         return pd.DataFrame()
 
-
-
-
 # ===============================
 # SISTEMA DE EXPORTACIÓN SEPARADA CON PLANTILLAS EXCEL (FASE 3)
 # ===============================
@@ -627,7 +606,7 @@ import re
 import gc
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Dict, Any, Union, Tuple, Iterator, Callable
+from typing import Any, Iterator, Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from collections import namedtuple, defaultdict
@@ -673,7 +652,6 @@ except ImportError:
             self.max_concurrent_operations: int = 2
             self.progress_interval: int = 10
 
-
 @dataclass
 class ExportSeparatedConfig:
     """Configuración completa para separación de datos"""
@@ -688,7 +666,7 @@ class ExportSeparatedConfig:
     file_template: str = "{valor}.xlsx"  # Plantilla nombre archivo
     
     # Mapeo de columnas
-    column_mapping: Dict[str, str] = field(default_factory=dict)
+    column_mapping: dict[str, str] = field(default_factory=dict)
     # Ej: {'columna_df': 'A', 'otra_columna': 'C'}
     
     # Opciones avanzadas
@@ -699,9 +677,9 @@ class ExportSeparatedConfig:
     # Opciones de rendimiento
     enable_chunking: bool = True  # Habilitar chunking automático
     max_memory_mb: int = 2048  # Límite de memoria
-    progress_callback: Optional[callable] = None  # Callback de progreso
+    progress_callback: callable | None = None  # Callback de progreso
     
-    def validate(self) -> Dict[str, Any]:
+    def validate(self) -> dict[str, Any]:
         """Validar configuración completa"""
         errors = []
         warnings = []
@@ -742,7 +720,7 @@ class ExportSeparatedConfig:
             'warnings': warnings
         }
     
-    def get_default_mapping(self, df_columns: List[str]) -> Dict[str, str]:
+    def get_default_mapping(self, df_columns: list[str]) -> dict[str, str]:
         """Obtener mapeo por defecto (posicional)"""
         mapping = {}
         for i, col in enumerate(df_columns):
@@ -752,14 +730,13 @@ class ExportSeparatedConfig:
                 mapping[col] = get_column_letter(i + 1)
         return mapping
 
-
 @dataclass
 class ValidationResult:
     """Resultado de validación"""
     is_valid: bool = True
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    info: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    info: list[str] = field(default_factory=list)
     
     def add_error(self, error: str) -> None:
         self.errors.append(error)
@@ -771,7 +748,6 @@ class ValidationResult:
     def add_info(self, info: str) -> None:
         self.info.append(info)
 
-
 @dataclass
 class ExportResult:
     """Resultado de exportación individual"""
@@ -781,31 +757,26 @@ class ExportResult:
     rows_processed: int = 0
     processing_time: float = 0.0
     error: str = ""
-    timestamp: Optional[datetime] = None
-
+    timestamp: datetime | None = None
 
 class SeparationError(Exception):
     """Error base para separación de datos"""
-    def __init__(self, message: str, error_code: Optional[str] = None, details: Optional[dict] = None) -> None:
+    def __init__(self, message: str, error_code: str | None = None, details: dict | None = None) -> None:
         super().__init__(message)
         self.error_code = error_code
         self.details = details or {}
-
 
 class TemplateError(SeparationError):
     """Error específico de plantilla Excel"""
     pass
 
-
 class ConfigurationError(SeparationError):
     """Error de configuración inválida"""
     pass
 
-
 class MemoryError(SeparationError):
     """Error de memoria insuficiente"""
     pass
-
 
 class ExcelTemplateSplitter:
     """Clase principal para separación de datos con plantillas Excel"""
@@ -920,7 +891,7 @@ class ExcelTemplateSplitter:
         
         return result
     
-    def analyze_data(self) -> Dict[str, Any]:
+    def analyze_data(self) -> dict[str, Any]:
         """Analizar DataFrame para generar preview y validar separación"""
         analysis = {}
         
@@ -965,7 +936,7 @@ class ExcelTemplateSplitter:
         
         return analysis
     
-    def generate_file_preview(self) -> List[Dict[str, Any]]:
+    def generate_file_preview(self) -> list[dict[str, Any]]:
         """Generar preview de archivos que se crearán"""
         preview = []
         
@@ -1009,7 +980,7 @@ class ExcelTemplateSplitter:
         
         return self._process_file_template(self.config.file_template, group_info)
     
-    def _process_file_template(self, template: str, group_info: Dict[str, Any]) -> str:
+    def _process_file_template(self, template: str, group_info: dict[str, Any]) -> str:
         """Procesar plantilla de nombre de archivo con placeholders"""
         processed = template
         
@@ -1055,7 +1026,7 @@ class ExcelTemplateSplitter:
         
         return sanitized
     
-    def separate_and_export(self) -> Dict[str, Any]:
+    def separate_and_export(self) -> dict[str, Any]:
         """Ejecutar separación completa y exportación"""
         start_time = time.time()
         
@@ -1286,7 +1257,6 @@ class ExcelTemplateSplitter:
             except Exception as e:
                 self.logger.warning(f"No se pudo limpiar archivo temporal {file_path}: {str(e)}")
 
-
 def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
     """
     Exportar DataFrame a archivos Excel separados usando plantillas
@@ -1299,18 +1269,18 @@ def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
             - start_cell: str (ej: 'A5')
             - output_folder: str
             - file_template: str
-            - column_mapping: Dict[str, str]
+            - column_mapping: dict[str, str]
             - handle_duplicates: str ('overwrite', 'append', 'skip')
     
     Returns:
         dict con resultado:
             - success: bool
-            - files_created: List[str]
+            - files_created: list[str]
             - groups_processed: int
             - total_rows: int
             - processing_time: float
-            - errors: List[str]
-            - warnings: List[str]
+            - errors: list[str]
+            - warnings: list[str]
     """
     try:
         # Crear configuración

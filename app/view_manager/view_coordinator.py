@@ -9,8 +9,7 @@ from PySide6.QtCore import Signal, QObject
 from PySide6.QtWidgets import QStackedWidget, QWidget
 from .view_registry import ViewRegistry
 from .view_switcher import ViewSwitcher
-from typing import Optional, Dict, Any
-
+from typing import Any
 
 class ViewCoordinator(QObject):
     """Coordinador de vistas - Maneja la creación y coordinación de todas las vistas"""
@@ -21,7 +20,7 @@ class ViewCoordinator(QObject):
     filter_applied = Signal(str, str)  # (columna, termino)
     filter_cleared = Signal()
     
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Inicializar el coordinador de vistas
         
         Args:
@@ -29,21 +28,21 @@ class ViewCoordinator(QObject):
         """
         super().__init__(parent)
         self._parent = parent
-        self._stacked_widget: Optional[QStackedWidget] = None
+        self._stacked_widget: QStackedWidget | None = None
         self._view_switcher: ViewSwitcher = ViewSwitcher()
         
         # Referencias a las vistas
-        self._views: Dict[int, Any] = {}
+        self._views: dict[int, Any] = {}
         
         # Referencias para coordinación de estado
-        self._main_view: Optional[Any] = None
-        self._data_view: Optional[Any] = None
-        self._info_modal: Optional[Any] = None
-        self._graphics_view: Optional[Any] = None
-        self._joined_data_view: Optional[Any] = None
-        self._original_data: Optional[Any] = None
+        self._main_view: Any | None = None
+        self._data_view: Any | None = None
+        self._info_modal: Any | None = None
+        self._graphics_view: Any | None = None
+        self._joined_data_view: Any | None = None
+        self._original_data: Any | None = None
     
-    def create_views(self, parent_widget: QWidget) -> Dict[int, Any]:
+    def create_views(self, parent_widget: QWidget) -> dict[int, Any]:
         """Crear todas las vistas y añadirlas al stacked widget
         
         Args:
@@ -116,7 +115,7 @@ class ViewCoordinator(QObject):
         """Obtener el widget stacked"""
         return self._stacked_widget
     
-    def get_view(self, view_id: int) -> Optional[Any]:
+    def get_view(self, view_id: int) -> Any | None:
         """Obtener referencia a una vista específica
         
         Args:
@@ -127,19 +126,19 @@ class ViewCoordinator(QObject):
         """
         return self._views.get(view_id)
     
-    def get_main_view(self) -> Optional[Any]:
+    def get_main_view(self) -> Any | None:
         """Obtener referencia a la vista principal"""
         return self._main_view
     
-    def get_data_view(self) -> Optional[Any]:
+    def get_data_view(self) -> Any | None:
         """Obtener referencia a la vista de datos"""
         return self._data_view
     
-    def get_graphics_view(self) -> Optional[Any]:
+    def get_graphics_view(self) -> Any | None:
         """Obtener referencia a la vista de gráficos"""
         return self._graphics_view
     
-    def get_joined_data_view(self) -> Optional[Any]:
+    def get_joined_data_view(self) -> Any | None:
         """Obtener referencia a la vista de join"""
         return self._joined_data_view
     
@@ -254,7 +253,7 @@ class ViewCoordinator(QObject):
         if data_view is not None and hasattr(data_view, 'column_visibility_group'):
             data_view.column_visibility_group.setVisible(enabled)
     
-    def get_original_data(self) -> Optional[Any]:
+    def get_original_data(self) -> Any | None:
         """Obtener los datos originales"""
         return self._original_data
     

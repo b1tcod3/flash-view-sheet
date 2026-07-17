@@ -8,8 +8,6 @@ but this module is kept for potential future use or advanced filtering.
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QComboBox, QLineEdit, QPushButton
 from PySide6.QtCore import Signal
-from typing import List
-
 
 class FilterToolbar(QWidget):
     """
@@ -93,7 +91,7 @@ class FilterToolbar(QWidget):
         self.clear()
         self.filter_cleared.emit()
     
-    def populate_columns(self, columns: List[str]) -> None:
+    def populate_columns(self, columns: list[str]) -> None:
         """
         Populate the column combo box.
         

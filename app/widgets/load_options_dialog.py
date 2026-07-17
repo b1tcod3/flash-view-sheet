@@ -8,7 +8,6 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                  QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox)
 from PySide6.QtCore import Qt
 import pandas as pd
-from typing import Dict, Tuple
 
 class LoadOptionsDialog(QDialog):
     """
@@ -20,7 +19,7 @@ class LoadOptionsDialog(QDialog):
         self.setWindowTitle("Opciones de Carga")
         self.resize(600, 400)
         self.skip_rows: int = 0
-        self.column_names: Dict[str, str] = {}
+        self.column_names: dict[str, str] = {}
         self.enable_column_visibility: bool = False
         self.setup_ui()
         
@@ -86,7 +85,7 @@ class LoadOptionsDialog(QDialog):
             self.add_row()
             self.table.item(self.table.rowCount()-1, 0).setText(col)
             
-    def get_options(self) -> Tuple[int, Dict[str, str], bool]:
+    def get_options(self) -> tuple[int, dict[str, str], bool]:
         """Obtener las opciones configuradas"""
         self.skip_rows = self.skip_spin.value()
         self.column_names = {}

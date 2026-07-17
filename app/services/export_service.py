@@ -5,7 +5,7 @@ Servicio centralizado para todas las operaciones de exportación de datos
 en Flash View Sheet.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 import pandas as pd
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QFileDialog, QInputDialog
 from PySide6.QtCore import Qt
@@ -18,7 +18,6 @@ from core.data_handler import (
     exportar_datos_separados
 )
 
-
 class ExportService:
     """
     Servicio unificado para operaciones de exportación.
@@ -29,7 +28,7 @@ class ExportService:
     - Gestión de diálogos de exportación
     """
     
-    def __init__(self, parent_window: Optional[Any] = None) -> None:
+    def __init__(self, parent_window: Any | None = None) -> None:
         """Inicializar el servicio de exportación"""
         self.parent_window = parent_window
     
@@ -37,13 +36,13 @@ class ExportService:
         """Establecer ventana padre para diálogos"""
         self.parent_window = window
     
-    def _ensure_extension(self, filepath: str, extension: str, valid_extensions: List[str]) -> str:
+    def _ensure_extension(self, filepath: str, extension: str, valid_extensions: list[str]) -> str:
         """Asegurar que el archivo tenga la extensión correcta"""
         if not any(filepath.lower().endswith(ext) for ext in valid_extensions):
             filepath += extension
         return filepath
     
-    def export_to_pdf(self, df: pd.DataFrame, filepath: Optional[str] = None) -> bool:
+    def export_to_pdf(self, df: pd.DataFrame, filepath: str | None = None) -> bool:
         """Exportar datos a PDF"""
         if df is None or df.empty:
             QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
@@ -74,7 +73,7 @@ class ExportService:
             QMessageBox.critical(self.parent_window, "Error", f"Error exportando a PDF: {str(e)}")
             return False
     
-    def export_to_xlsx(self, df: pd.DataFrame, filepath: Optional[str] = None) -> bool:
+    def export_to_xlsx(self, df: pd.DataFrame, filepath: str | None = None) -> bool:
         """Exportar datos a Excel"""
         if df is None or df.empty:
             QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
@@ -105,7 +104,7 @@ class ExportService:
             QMessageBox.critical(self.parent_window, "Error", f"Error exportando a XLSX: {str(e)}")
             return False
     
-    def export_to_csv(self, df: pd.DataFrame, filepath: Optional[str] = None, delimiter: str = ',') -> bool:
+    def export_to_csv(self, df: pd.DataFrame, filepath: str | None = None, delimiter: str = ',') -> bool:
         """Exportar datos a CSV"""
         if df is None or df.empty:
             QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
@@ -136,7 +135,7 @@ class ExportService:
             QMessageBox.critical(self.parent_window, "Error", f"Error exportando a CSV: {str(e)}")
             return False
     
-    def export_to_sql(self, df: pd.DataFrame, filepath: Optional[str] = None, table_name: Optional[str] = None) -> bool:
+    def export_to_sql(self, df: pd.DataFrame, filepath: str | None = None, table_name: str | None = None) -> bool:
         """Exportar datos a SQL"""
         if df is None or df.empty:
             QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
@@ -176,7 +175,7 @@ class ExportService:
             QMessageBox.critical(self.parent_window, "Error", f"Error exportando a SQL: {str(e)}")
             return False
     
-    def export_to_image(self, table_widget: Any, filepath: Optional[str] = None) -> bool:
+    def export_to_image(self, table_widget: Any, filepath: str | None = None) -> bool:
         """Exportar vista de tabla a imagen"""
         if table_widget is None:
             QMessageBox.warning(self.parent_window, "Advertencia", "No hay tabla para exportar.")
@@ -208,7 +207,7 @@ class ExportService:
             QMessageBox.critical(self.parent_window, "Error", f"Error exportando a imagen: {str(e)}")
             return False
     
-    def export_separated(self, df: pd.DataFrame, config: Any) -> Dict[str, Any]:
+    def export_separated(self, df: pd.DataFrame, config: Any) -> dict[str, Any]:
         """
         Exportar datos separados por columna usando plantillas Excel.
         
@@ -325,7 +324,7 @@ class ExportService:
             QMessageBox.warning(self.parent_window, "Error", "Formato no soportado.")
             return False
     
-    def _get_text_input(self, title: str, label: str) -> Tuple[str, bool]:
+    def _get_text_input(self, title: str, label: str) -> tuple[str, bool]:
         """Obtener entrada de texto del usuario"""
         text, ok = QInputDialog.getText(self.parent_window, title, label)
         return text, ok

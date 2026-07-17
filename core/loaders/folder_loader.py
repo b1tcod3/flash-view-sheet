@@ -3,10 +3,9 @@ Folder Loader
 Handles loading and scanning of folders containing Excel files
 """
 
-from typing import List, Dict, Any
+from typing import Any
 from pathlib import Path
 import pandas as pd
-
 
 class FolderLoader:
     """
@@ -34,7 +33,7 @@ class FolderLoader:
         if not self.folder_path.is_dir():
             raise ValueError(f"Path is not a directory: {self.folder_path}")
 
-    def _scan_excel_files(self) -> List[Path]:
+    def _scan_excel_files(self) -> list[Path]:
         """
         Scan the folder for Excel files
 
@@ -47,7 +46,7 @@ class FolderLoader:
                 excel_files.append(file_path)
         return sorted(excel_files)
 
-    def get_excel_files(self) -> List[str]:
+    def get_excel_files(self) -> list[str]:
         """
         Get list of Excel file paths as strings
 
@@ -56,7 +55,7 @@ class FolderLoader:
         """
         return [str(f) for f in self.excel_files]
 
-    def get_file_metadata(self, file_path: str) -> Dict[str, Any]:
+    def get_file_metadata(self, file_path: str) -> dict[str, Any]:
         """
         Get metadata for a specific Excel file (with caching)
 
@@ -119,7 +118,7 @@ class FolderLoader:
             self._metadata_cache[cache_key] = error_metadata
             return error_metadata
 
-    def get_all_metadata(self) -> List[Dict[str, Any]]:
+    def get_all_metadata(self) -> list[dict[str, Any]]:
         """
         Get metadata for all Excel files in the folder
 
@@ -131,7 +130,7 @@ class FolderLoader:
             metadata.append(self.get_file_metadata(str(file_path)))
         return metadata
 
-    def get_metadata_batch(self, start_idx: int = 0, batch_size: int = 10) -> List[Dict[str, Any]]:
+    def get_metadata_batch(self, start_idx: int = 0, batch_size: int = 10) -> list[dict[str, Any]]:
         """
         Get metadata for a batch of Excel files (for performance optimization)
 

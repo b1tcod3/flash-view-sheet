@@ -4,15 +4,13 @@ Configuration for loading folders with Excel files
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum
 
+from enum import Enum
 
 class ColumnAlignmentStrategy(Enum):
     """Strategies for aligning columns"""
     BY_POSITION = "position"
     BY_NAME = "name"
-
 
 @dataclass
 class FolderLoadConfig:
@@ -20,12 +18,12 @@ class FolderLoadConfig:
     Configuration for folder loading operations
     """
     folder_path: str
-    included_files: List[str] = field(default_factory=list)
-    excluded_files: List[str] = field(default_factory=list)
-    included_columns: List[str] = field(default_factory=list)  # Column names to include (empty = all)
-    excluded_columns: List[str] = field(default_factory=list)  # Column names to exclude
+    included_files: list[str] = field(default_factory=list)
+    excluded_files: list[str] = field(default_factory=list)
+    included_columns: list[str] = field(default_factory=list)  # Column names to include (empty = all)
+    excluded_columns: list[str] = field(default_factory=list)  # Column names to exclude
     alignment_strategy: ColumnAlignmentStrategy = ColumnAlignmentStrategy.BY_POSITION
-    column_rename_mapping: Dict[str, str] = field(default_factory=dict)
+    column_rename_mapping: dict[str, str] = field(default_factory=dict)
     skip_rows: int = 0
     add_source_column: bool = True
     source_column_name: str = "__source__"

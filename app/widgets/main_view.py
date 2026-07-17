@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIcon, QPixmap
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any
 
 class MainView(QWidget):
     """
@@ -18,13 +18,13 @@ class MainView(QWidget):
     load_file_clicked = Signal()
     reload_with_options = Signal(str, int, dict, bool)
     
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.current_file: Optional[str] = None
+        self.current_file: str | None = None
         self.skip_rows: int = 0
-        self.column_names: Dict[str, Any] = {}
+        self.column_names: dict[str, Any] = {}
         self.options_visible: bool = False
-        self._original_columns: List[str] = []
+        self._original_columns: list[str] = []
         self.setup_ui()
         
     def setup_ui(self) -> None:
@@ -156,7 +156,7 @@ class MainView(QWidget):
         self.current_file = filepath
         self.update_info()
     
-    def set_original_columns(self, columns: List[str]) -> None:
+    def set_original_columns(self, columns: list[str]) -> None:
         """Establecer los nombres de columnas de los datos originales"""
         self._original_columns = columns
 

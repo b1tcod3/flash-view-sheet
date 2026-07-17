@@ -7,7 +7,7 @@ multiple aggregation types, and advanced statistical operations.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, List, Union, Optional, Callable, Tuple
+from typing import Any, Callable
 import logging
 from datetime import datetime
 import warnings
@@ -15,14 +15,13 @@ import warnings
 # Configurar logging
 logger = logging.getLogger(__name__)
 
-
 class PivotAggregation:
     """
     Clase para representar una función de agregación individual
     """
     
-    def __init__(self, function: Union[str, Callable], column: str, 
-                 new_column_name: Optional[str] = None, parameters: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, function: str | Callable, column: str, 
+                 new_column_name: str | None = None, parameters: dict[str, Any] | None = None) -> None:
         """
         Inicializar agregación
         
@@ -128,7 +127,6 @@ class PivotAggregation:
             logger.warning(f"Función de agregación '{self.function}' no encontrada")
             return np.nan
 
-
 class PivotAggregationManager:
     """
     Gestor de agregaciones para tablas pivote
@@ -137,7 +135,7 @@ class PivotAggregationManager:
     
     def __init__(self) -> None:
         """Inicializar gestor de agregaciones"""
-        self.aggregations: List[PivotAggregation] = []
+        self.aggregations: list[PivotAggregation] = []
         self.aggregation_types = {
             'basic': ['sum', 'mean', 'median', 'count', 'min', 'max', 'std', 'var'],
             'extended': ['first', 'last', 'size', 'nunique', 'unique', 'skew', 'kurtosis'],
@@ -165,8 +163,8 @@ class PivotAggregationManager:
             'custom': 'Personalizada'
         }
         
-    def add_aggregation(self, function: Union[str, Callable], column: str, 
-                       new_column_name: Optional[str] = None, parameters: Optional[Dict[str, Any]] = None) -> 'PivotAggregationManager':
+    def add_aggregation(self, function: str | Callable, column: str, 
+                       new_column_name: str | None = None, parameters: dict[str, Any] | None = None) -> 'PivotAggregationManager':
         """
         Añadir agregación al gestor
         
@@ -183,8 +181,8 @@ class PivotAggregationManager:
         self.aggregations.append(new_agg)
         return self
         
-    def add_multiple_aggregations(self, functions: List[str], column: str, 
-                                 prefix: Optional[str] = None) -> 'PivotAggregationManager':
+    def add_multiple_aggregations(self, functions: list[str], column: str, 
+                                 prefix: str | None = None) -> 'PivotAggregationManager':
         """
         Añadir múltiples agregaciones para una columna
         
@@ -205,7 +203,7 @@ class PivotAggregationManager:
             
         return self
         
-    def add_aggregation_for_columns(self, aggregation_function: str, columns: List[str]) -> 'PivotAggregationManager':
+    def add_aggregation_for_columns(self, aggregation_function: str, columns: list[str]) -> 'PivotAggregationManager':
         """
         Añadir una agregación para múltiples columnas
         
@@ -246,12 +244,12 @@ class PivotAggregationManager:
             self.aggregations.pop(index)
         return self
         
-    def get_aggregations(self) -> List[PivotAggregation]:
+    def get_aggregations(self) -> list[PivotAggregation]:
         """
         Obtener lista de agregaciones
         
         Returns:
-            List[PivotAggregation]: Lista de agregaciones
+            list[PivotAggregation]: Lista de agregaciones
         """
         return self.aggregations.copy()
         
@@ -286,7 +284,7 @@ class PivotAggregationManager:
         logger.info(f"Aplicadas {len(self.aggregations)} agregaciones")
         return result_df
         
-    def get_valid_aggregations(self, data_type: str = 'numeric') -> List[str]:
+    def get_valid_aggregations(self, data_type: str = 'numeric') -> list[str]:
         """
         Obtener funciones de agregación válidas para un tipo de datos
         
@@ -294,7 +292,7 @@ class PivotAggregationManager:
             data_type: Tipo de datos ('numeric', 'string', 'datetime', 'any')
             
         Returns:
-            List[str]: Lista de funciones válidas
+            list[str]: Lista de funciones válidas
         """
         if data_type == 'numeric':
             return self.aggregation_types['basic'] + self.aggregation_types['extended'] + ['quantile']
@@ -305,7 +303,7 @@ class PivotAggregationManager:
         else:  # 'any'
             return self.aggregation_types['basic'] + ['nunique', 'size', 'first', 'last']
             
-    def get_aggregation_info(self, function: str) -> Dict[str, Any]:
+    def get_aggregation_info(self, function: str) -> dict[str, Any]:
         """
         Obtener información sobre una función de agregación
         
@@ -313,7 +311,7 @@ class PivotAggregationManager:
             function: Nombre de la función
             
         Returns:
-            Dict[str, Any]: Información de la función
+            dict[str, Any]: Información de la función
         """
         info = {
             'name': function,
@@ -340,8 +338,8 @@ class PivotAggregationManager:
         return info
         
     def create_custom_aggregation(self, custom_function: Callable, 
-                                 column: str, new_column_name: Optional[str] = None,
-                                 parameters: Optional[Dict[str, Any]] = None) -> 'PivotAggregationManager':
+                                 column: str, new_column_name: str | None = None,
+                                 parameters: dict[str, Any] | None = None) -> 'PivotAggregationManager':
         """
         Crear agregación con función personalizada
         
@@ -359,12 +357,12 @@ class PivotAggregationManager:
             **(parameters or {})
         })
         
-    def get_aggregation_summary(self) -> Dict[str, Any]:
+    def get_aggregation_summary(self) -> dict[str, Any]:
         """
         Obtener resumen de agregaciones configuradas
         
         Returns:
-            Dict[str, Any]: Resumen de agregaciones
+            dict[str, Any]: Resumen de agregaciones
         """
         summary = {
             'total_aggregations': len(self.aggregations),
@@ -391,14 +389,13 @@ class PivotAggregationManager:
                 
         return summary
 
-
 # Funciones de utilidad para crear agregaciones predefinidas
-def create_standard_aggregations() -> List[Dict[str, str]]:
+def create_standard_aggregations() -> list[dict[str, str]]:
     """
     Crear lista de agregaciones estándar para UI
     
     Returns:
-        List[Dict[str, str]]: Lista de agregaciones con información para UI
+        list[dict[str, str]]: Lista de agregaciones con información para UI
     """
     return [
         {'function': 'sum', 'display_name': 'Suma', 'category': 'numeric'},
@@ -416,7 +413,6 @@ def create_standard_aggregations() -> List[Dict[str, str]]:
         {'function': 'quantile', 'display_name': 'Cuantil', 'category': 'numeric'}
     ]
 
-
 def create_weighted_average_function() -> Callable:
     """
     Crear función de promedio ponderado
@@ -431,7 +427,6 @@ def create_weighted_average_function() -> Callable:
         except:
             return np.nan
     return weighted_average
-
 
 def create_rolling_aggregation_function(window: int, func: str = 'mean') -> Callable:
     """
@@ -461,7 +456,6 @@ def create_rolling_aggregation_function(window: int, func: str = 'mean') -> Call
         except:
             return np.nan
     return rolling_agg
-
 
 def create_growth_rate_function() -> Callable:
     """

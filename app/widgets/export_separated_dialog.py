@@ -18,7 +18,7 @@ import tempfile
 import openpyxl
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Any
 
 # Importar funcionalidad core
 import sys
@@ -28,15 +28,14 @@ from core.data_handler import (
     SeparationError, TemplateError, ConfigurationError, MemoryError
 )
 
-
 class ColumnMappingWidget(QWidget):
     """Widget para gestionar mapeo de columnas DataFrame ↔ Excel"""
     
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.df_columns: List[str] = []
-        self.excel_columns: List[str] = []
-        self.mapping: Dict[str, str] = {}
+        self.df_columns: list[str] = []
+        self.excel_columns: list[str] = []
+        self.mapping: dict[str, str] = {}
         self.setup_ui()
         
     def setup_ui(self) -> None:
@@ -75,12 +74,12 @@ class ColumnMappingWidget(QWidget):
         button_layout.addStretch()
         layout.addLayout(button_layout)
     
-    def set_dataframe_columns(self, columns: List[str]) -> None:
+    def set_dataframe_columns(self, columns: list[str]) -> None:
         """Establecer columnas del DataFrame"""
         self.df_columns = columns
         self.refresh_mapping_table()
     
-    def set_excel_columns(self, columns: List[str]) -> None:
+    def set_excel_columns(self, columns: list[str]) -> None:
         """Establecer columnas disponibles en Excel"""
         self.excel_columns = columns
         
@@ -154,7 +153,7 @@ class ColumnMappingWidget(QWidget):
         for row in selected_rows:
             self.mapping_table.removeRow(row)
     
-    def get_mapping(self) -> Dict[str, str]:
+    def get_mapping(self) -> dict[str, str]:
         """Obtener mapeo actual"""
         mapping = {}
         for row in range(self.mapping_table.rowCount()):
@@ -189,15 +188,14 @@ class ColumnMappingWidget(QWidget):
                 else:
                     preview_item.setText("Sin datos")
 
-
 class ExcelTemplateDialog(QDialog):
     """Diálogo para seleccionar y validar plantilla Excel"""
     
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.template_path: str = ""
         self.selected_sheet: str = ""
-        self.available_sheets: List[str] = []
+        self.available_sheets: list[str] = []
         self.setWindowTitle("Seleccionar Plantilla Excel")
         self.resize(700, 500)
         self.setup_ui()
@@ -337,15 +335,14 @@ class ExcelTemplateDialog(QDialog):
         if self.template_path:
             self.show_preview()
     
-    def get_template_info(self) -> Tuple[str, str, List[str]]:
+    def get_template_info(self) -> tuple[str, str, list[str]]:
         """Obtener información de plantilla seleccionada"""
         return self.template_path, self.selected_sheet, self.available_sheets
-
 
 class FilePreviewDialog(QDialog):
     """Diálogo para vista previa de archivos a generar"""
     
-    def __init__(self, files_info: List[Dict[str, Any]], parent: Optional[QWidget] = None) -> None:
+    def __init__(self, files_info: list[dict[str, Any]], parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.files_info = files_info
         self.setWindowTitle("Vista Previa de Archivos")
@@ -427,7 +424,7 @@ class FilePreviewDialog(QDialog):
         
         self.update_summary(filtered_files)
     
-    def get_filtered_files(self) -> List[Dict[str, Any]]:
+    def get_filtered_files(self) -> list[dict[str, Any]]:
         """Obtener archivos filtrados por estado"""
         filter_text = self.status_filter.currentText()
         
@@ -436,7 +433,7 @@ class FilePreviewDialog(QDialog):
         else:
             return [f for f in self.files_info if f.get('status') == filter_text]
     
-    def update_summary(self, files: List[Dict[str, Any]]) -> None:
+    def update_summary(self, files: list[dict[str, Any]]) -> None:
         """Actualizar resumen"""
         total_files = len(files)
         total_rows = sum(f.get('rows', 0) for f in files)
@@ -450,7 +447,6 @@ class FilePreviewDialog(QDialog):
         """Filtrar archivos por estado"""
         self.refresh_table()
 
-
 class ExportSeparatedDialog(QDialog):
     """
     Diálogo principal para configuración de exportación separada con plantillas Excel
@@ -460,11 +456,11 @@ class ExportSeparatedDialog(QDialog):
     configuration_changed = Signal()
     validation_updated = Signal(bool, str)  # is_valid, message
     
-    def __init__(self, dataframe: pd.DataFrame, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, dataframe: pd.DataFrame, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df = dataframe
-        self.config: Optional[ExportSeparatedConfig] = None
-        self.validation_result: Optional[ValidationResult] = None
+        self.config: ExportSeparatedConfig | None = None
+        self.validation_result: ValidationResult | None = None
         self.setup_ui()
         self.setup_connections()
         self.setup_validation()
@@ -830,7 +826,7 @@ class ExportSeparatedDialog(QDialog):
         except Exception as e:
             self.update_validation_display(None, str(e))
     
-    def update_validation_display(self, validation_result: Optional[ValidationResult], error_msg: str = "") -> None:
+    def update_validation_display(self, validation_result: ValidationResult | None, error_msg: str = "") -> None:
         """Actualizar display de validación"""
         if error_msg:
             self.validation_label.setText(f"❌ Error: {error_msg}")
@@ -906,7 +902,7 @@ class ExportSeparatedDialog(QDialog):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error mostrando vista previa: {str(e)}")
     
-    def get_configuration(self, validate: bool = True) -> Optional[ExportSeparatedConfig]:
+    def get_configuration(self, validate: bool = True) -> ExportSeparatedConfig | None:
         """Obtener configuración actual"""
         try:
             # Recopilar datos básicos

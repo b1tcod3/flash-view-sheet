@@ -8,7 +8,6 @@ from PySide6.QtWidgets import QMenu, QMenuBar
 from .menu_actions import MenuActions
 from typing import Any
 
-
 class DatosMenu:
     """
     Clase para crear y configurar el menú Datos.

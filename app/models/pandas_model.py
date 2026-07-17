@@ -8,12 +8,11 @@ from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex, QThread, Signal
 import math
 import sys
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Any
 
 # Añadir directorio raíz para importar config
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import optimization_config
-
 
 class VirtualizedPandasModel(QAbstractTableModel):
     """
@@ -21,7 +20,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
     Implementa paginación virtual para manejar datasets grandes eficientemente
     """
 
-    def __init__(self, df: Optional[pd.DataFrame] = None, chunk_size: Optional[int] = None) -> None:
+    def __init__(self, df: pd.DataFrame | None = None, chunk_size: int | None = None) -> None:
         super().__init__()
         self.full_df: pd.DataFrame = df if df is not None else pd.DataFrame()
 
@@ -34,7 +33,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
         self.total_cols: int = len(self.full_df.columns) if self.total_rows > 0 else 0
 
         # Cache para chunks de datos
-        self.data_cache: Dict[int, pd.DataFrame] = {}
+        self.data_cache: dict[int, pd.DataFrame] = {}
         self.cache_size: int = optimization_config.MAX_CACHE_CHUNKS
 
         # Configuración de virtualización usando configuración global
@@ -74,7 +73,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
             return 0
         return self.total_cols
     
-    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Optional[str]:
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> str | None:
         """
         Retornar datos para la celda especificada con carga bajo demanda
 
@@ -226,7 +225,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
             for chunk_idx in chunks_to_remove:
                 del self.data_cache[chunk_idx]
     
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole) -> Optional[str]:
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole) -> str | None:
         """
         Retornar datos para los encabezados
 

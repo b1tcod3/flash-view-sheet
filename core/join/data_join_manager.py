@@ -5,12 +5,11 @@ DataJoinManager: Clase principal para operaciones de cruce de datos
 import pandas as pd
 import time
 from datetime import datetime
-from typing import List, Optional
+
 import psutil
 
 from .models import JoinConfig, JoinResult, JoinMetadata, ValidationResult, JoinType
 from .exceptions import JoinValidationError, JoinExecutionError, MemoryLimitExceededError, UnsupportedJoinError
-
 
 class DataJoinManager:
     """Clase principal responsable de ejecutar operaciones de cruce entre datasets"""

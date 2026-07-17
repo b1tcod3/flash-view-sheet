@@ -5,17 +5,16 @@ Evita problemas de recursión infinita.
 
 import openpyxl
 from openpyxl.utils import coordinate_to_tuple, column_index_from_string
-from typing import Dict, Any, Tuple
+from typing import Any
 import copy
-
 
 class SimpleExcelFormatPreserver:
     """Versión simplificada para preservar formato sin problemas de recursión"""
     
     def __init__(self) -> None:
-        self.saved_cell_data: Dict[str, Any] = {}
+        self.saved_cell_data: dict[str, Any] = {}
     
-    def save_cell_format(self, cell: Any) -> Dict[str, Any]:
+    def save_cell_format(self, cell: Any) -> dict[str, Any]:
         """
         Guardar formato de una celda sin usar deepcopy
         
@@ -54,14 +53,14 @@ class SimpleExcelFormatPreserver:
         
         return format_info
     
-    def _serialize_border(self, side: Any) -> Dict[str, Any]:
+    def _serialize_border(self, side: Any) -> dict[str, Any]:
         """Serializar border side"""
         return {
             'style': side.style,
             'color': side.color.rgb if side.color else None
         }
     
-    def restore_cell_format(self, cell: Any, format_info: Dict[str, Any]) -> None:
+    def restore_cell_format(self, cell: Any, format_info: dict[str, Any]) -> None:
         """
         Restaurar formato de una celda
         
@@ -138,7 +137,7 @@ class SimpleExcelFormatPreserver:
             if 'value' in format_info:
                 cell.value = format_info['value']
     
-    def backup_area_formatting(self, worksheet: Any, start_cell: str, area_size: Tuple[int, int]) -> Dict[str, Any]:
+    def backup_area_formatting(self, worksheet: Any, start_cell: str, area_size: tuple[int, int]) -> dict[str, Any]:
         """
         Backup del formato en un área específica
         
@@ -168,8 +167,8 @@ class SimpleExcelFormatPreserver:
         
         return backup
     
-    def insert_data_simple_preservation(self, worksheet: Any, data: Dict[str, Any], 
-                                      column_mapping: Dict[str, str], start_cell: str) -> None:
+    def insert_data_simple_preservation(self, worksheet: Any, data: dict[str, Any], 
+                                      column_mapping: dict[str, str], start_cell: str) -> None:
         """
         Insertar datos preservando formato de manera simple
         
@@ -217,9 +216,8 @@ class SimpleExcelFormatPreserver:
                     except:
                         pass
 
-
 def create_excel_with_simple_format_preservation(template_path: str, output_path: str, 
-                                               data: Dict[str, Any], column_mapping: Dict[str, str],
+                                               data: dict[str, Any], column_mapping: dict[str, str],
                                                start_cell: str) -> bool:
     """
     Función utilitaria simple para preservar formato Excel

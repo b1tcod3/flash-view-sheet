@@ -178,9 +178,9 @@ class TestExportSeparatedIntegration(unittest.TestCase):
         action = MenuActions.exportar_separado_action
         self.assertIsNotNone(action)
         
-        # Verificar que el método exportar_datos_separados existe en MainWindow
-        self.assertTrue(hasattr(window, 'exportar_datos_separados'))
-        self.assertTrue(callable(window.exportar_datos_separados))
+        # Verificar que el método exportar_datos_separados existe en el coordinator
+        self.assertTrue(hasattr(window.coordinator, 'exportar_datos_separados'))
+        self.assertTrue(callable(window.coordinator.exportar_datos_separados))
     
     def test_progress_dialog_integration(self) -> None:
         """Test integración del diálogo de progreso"""

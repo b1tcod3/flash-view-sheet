@@ -7,11 +7,10 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
-from typing import Optional, Dict, Any, List
+from typing import Any
 
 from paginacion.data_view import DataView
 from core.join.models import JoinResult, JoinMetadata
-
 
 class JoinedDataView(DataView):
     """
@@ -22,9 +21,9 @@ class JoinedDataView(DataView):
     # Señales
     new_join_requested = Signal()  # Solicitar nuevo cruce de datos
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.join_metadata: Optional[JoinMetadata] = None
+        self.join_metadata: JoinMetadata | None = None
         self.left_dataset_name: str = ""
         self.right_dataset_name: str = ""
 

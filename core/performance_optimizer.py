@@ -8,13 +8,12 @@ import time
 import psutil
 import gc
 import threading
-from typing import Dict, List, Optional, Iterator, Tuple, Any, Callable
+from typing import Iterator, Any, Callable
 from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
 import openpyxl
 from openpyxl.worksheet.table import Table, TableStyleInfo
-
 
 class ChunkingStrategy(Enum):
     """Estrategias de chunking disponibles"""
@@ -23,7 +22,6 @@ class ChunkingStrategy(Enum):
     SIZE_BASED = "size"     # Basado en tamaño de grupos
     GROUP_BASED = "group"   # Basado en número de grupos
     AGGRESSIVE = "aggressive"  # Chunking agresivo
-
 
 @dataclass
 class ProcessingMetrics:
@@ -39,7 +37,6 @@ class ProcessingMetrics:
     files_created: int
     total_rows_processed: int
 
-
 @dataclass
 class SystemResources:
     """Estado de recursos del sistema"""
@@ -48,7 +45,6 @@ class SystemResources:
     cpu_percent: float
     disk_free_space_mb: float
     disk_write_speed_mbps: float
-
 
 class PerformanceOptimizer:
     """Optimizador principal de rendimiento"""
@@ -124,7 +120,7 @@ class PerformanceOptimizer:
     
     def process_dataframe_in_chunks(self, df: pd.DataFrame, 
                                    separator_column: str,
-                                   chunk_size: int) -> Iterator[Tuple[str, pd.DataFrame]]:
+                                   chunk_size: int) -> Iterator[tuple[str, pd.DataFrame]]:
         """
         Procesar DataFrame por chunks para optimizar memoria
         Implementa procesamiento eficiente con cleanup automático
@@ -245,7 +241,6 @@ class PerformanceOptimizer:
             total_rows_processed=rows_processed
         )
 
-
 class ExcelFormatOptimizer:
     """Optimizador específico para operaciones de Excel"""
     
@@ -284,7 +279,7 @@ class ExcelFormatOptimizer:
     def preserve_format_during_insert(self, workbook: openpyxl.Workbook,
                                      start_cell: str, 
                                      data_df: pd.DataFrame,
-                                     column_mapping: Dict[str, str]) -> bool:
+                                     column_mapping: dict[str, str]) -> bool:
         """
         Insertar datos preservando formato Excel con optimizaciones
         Implementa ExcelFormatPreservationAlgorithm especificado
@@ -348,7 +343,7 @@ class ExcelFormatOptimizer:
         
         return ""
     
-    def _cache_existing_formats(self, sheet: Any, data_range: str) -> Dict[Tuple[int, int], Any]:
+    def _cache_existing_formats(self, sheet: Any, data_range: str) -> dict[tuple[int, int], Any]:
         """Cachear formatos existentes para preservación"""
         formats = {}
         
@@ -378,7 +373,7 @@ class ExcelFormatOptimizer:
         
         return formats
     
-    def _apply_cached_format(self, cell: Any, cached_format: Dict[str, Any]) -> None:
+    def _apply_cached_format(self, cell: Any, cached_format: dict[str, Any]) -> None:
         """Aplicar formato cacheado a celda"""
         try:
             if 'font' in cached_format and cached_format['font']:
@@ -394,7 +389,7 @@ class ExcelFormatOptimizer:
         except Exception as e:
             print(f"Warning: Error aplicando formato cacheado: {e}")
     
-    def _cell_coordinates_to_indices(self, cell_coord: str) -> Tuple[int, int]:
+    def _cell_coordinates_to_indices(self, cell_coord: str) -> tuple[int, int]:
         """Convertir coordenada de celda (A1) a índices (1, 1)"""
         from openpyxl.utils import coordinate_to_tuple
         row, col = coordinate_to_tuple(cell_coord)
@@ -405,14 +400,13 @@ class ExcelFormatOptimizer:
         from openpyxl.utils import column_index_from_string
         return column_index_from_string(col_letter)
 
-
 class ProgressMonitor:
     """Monitor de progreso con cancelación de operaciones"""
     
     def __init__(self) -> None:
         self.cancelled = False
         self.paused = False
-        self.callbacks: List[Callable[[ProcessingMetrics], None]] = []
+        self.callbacks: list[Callable[[ProcessingMetrics], None]] = []
         self._lock = threading.Lock()
     
     def cancel_operation(self) -> None:

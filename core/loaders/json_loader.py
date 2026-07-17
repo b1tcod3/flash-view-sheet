@@ -5,19 +5,18 @@ Handles JavaScript Object Notation format
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class JsonLoader(FileLoader):
     """
     File loader for JSON format
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.json']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load JSON file into DataFrame
         
@@ -45,7 +44,7 @@ class JsonLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading JSON file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the JSON file
         """

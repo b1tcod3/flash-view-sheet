@@ -4,10 +4,9 @@ Abstract base class for all file format loaders
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, List
+from typing import Any
 import pandas as pd
 from pathlib import Path
-
 
 class FileLoader(ABC):
     """
@@ -33,7 +32,7 @@ class FileLoader(ABC):
             )
 
     @abstractmethod
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """
         Get list of supported file extensions
         
@@ -43,7 +42,7 @@ class FileLoader(ABC):
         pass
 
     @abstractmethod
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load the file into a pandas DataFrame
         
@@ -57,7 +56,7 @@ class FileLoader(ABC):
         pass
 
     @abstractmethod
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the file
         
@@ -89,7 +88,7 @@ class FileLoader(ABC):
             f"Chunk loading not supported by {self.__class__.__name__}"
         )
 
-    def get_memory_usage_info(self) -> Dict[str, Any]:
+    def get_memory_usage_info(self) -> dict[str, Any]:
         """
         Get memory usage information for the file
         

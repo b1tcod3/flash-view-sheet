@@ -7,8 +7,7 @@ en la aplicación, permitiendo su reutilización y mantenimiento centralizado.
 
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
-from typing import Any, List, Optional
-
+from typing import Any
 
 class MenuActions:
     """
@@ -155,7 +154,7 @@ class MenuActions:
                 action.setEnabled(enable)
     
     @classmethod
-    def get_archivo_actions(cls) -> List[Optional[Any]]:
+    def get_archivo_actions(cls) -> list[Any | None]:
         """Obtener lista de acciones del menú Archivo."""
         return [
             cls.ABRIR,
@@ -171,7 +170,7 @@ class MenuActions:
         ]
     
     @classmethod
-    def get_exportar_actions(cls) -> List[Optional[Any]]:
+    def get_exportar_actions(cls) -> list[Any | None]:
         """Obtener lista de acciones del submenú Exportar."""
         return [
             cls.EXPORTAR_PDF,
@@ -182,7 +181,7 @@ class MenuActions:
         ]
     
     @classmethod
-    def get_vista_actions(cls) -> List[Optional[Any]]:
+    def get_vista_actions(cls) -> list[Any | None]:
         """Obtener lista de acciones del menú Vista."""
         return [
             cls.VISTA_PRINCIPAL,

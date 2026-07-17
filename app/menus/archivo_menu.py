@@ -5,8 +5,7 @@ Este módulo define la creación y configuración del menú Archivo.
 """
 
 from PySide6.QtWidgets import QMenu, QMenuBar
-from typing import Any, List, Optional
-
+from typing import Any
 
 class ArchivoMenu:
     """
@@ -14,7 +13,7 @@ class ArchivoMenu:
     """
     
     @staticmethod
-    def create(menu_bar: QMenuBar, actions: List[Optional[Any]], parent_window: Any) -> QMenu:
+    def create(menu_bar: QMenuBar, actions: list[Any | None], parent_window: Any) -> QMenu:
         """
         Crear el menú Archivo.
         

@@ -11,22 +11,21 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt, Signal, QDate
 from PySide6.QtGui import QFont
 import pandas as pd
-from typing import Dict, List, Any, Optional
+from typing import Any
 import logging
 
 # Configurar logging
 logger = logging.getLogger(__name__)
-
 
 class FilterValueWidget(QWidget):
     """Widget dinámico para entrada de valores de filtro según el tipo"""
     
     value_changed = Signal(object)  # Valor del filtro
     
-    def __init__(self, filter_type: str = "equals", parent: Optional[QWidget] = None) -> None:
+    def __init__(self, filter_type: str = "equals", parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.filter_type = filter_type
-        self.value_widget: Optional[QWidget] = None
+        self.value_widget: QWidget | None = None
         self.setup_ui()
         
     def setup_ui(self) -> None:
@@ -175,7 +174,6 @@ class FilterValueWidget(QWidget):
         else:
             self.value_widget.setText(str(value))
 
-
 class PivotFilterPanel(QWidget):
     """
     Panel para gestión de filtros avanzados de tabla pivote
@@ -186,10 +184,10 @@ class PivotFilterPanel(QWidget):
     filters_changed = Signal(dict)  # Diccionario de filtros
     preview_requested = Signal()    # Solicitud de preview
     
-    def __init__(self, df_original: Optional[pd.DataFrame] = None, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, df_original: pd.DataFrame | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
-        self.active_filters: Dict[str, Dict[str, Any]] = {}
+        self.active_filters: dict[str, dict[str, Any]] = {}
         self.setup_ui()
         self.setup_connections()
         
@@ -516,7 +514,7 @@ class PivotFilterPanel(QWidget):
         for value, text in filter_types:
             self.filter_type_combo.addItem(text, value)
             
-    def set_data(self, df: Optional[pd.DataFrame]) -> None:
+    def set_data(self, df: pd.DataFrame | None) -> None:
         """Establecer datos para filtrar"""
         self.df_original = df
         
@@ -637,7 +635,7 @@ class PivotFilterPanel(QWidget):
         # TODO: Implementar reordenamiento
         pass
         
-    def load_filter_to_form(self, filter_data: Dict[str, Any]) -> None:
+    def load_filter_to_form(self, filter_data: dict[str, Any]) -> None:
         """Cargar filtro en el formulario para edición"""
         column = filter_data['column']
         config = filter_data['config']
@@ -769,11 +767,11 @@ Reducción: {((len(self.df_original) - len(filtered_df)) / len(self.df_original)
             
         self.filters_changed.emit(filters_dict)
         
-    def get_active_filters(self) -> Dict[str, Dict[str, Any]]:
+    def get_active_filters(self) -> dict[str, dict[str, Any]]:
         """Obtener filtros activos"""
         return self.active_filters.copy()
         
-    def set_active_filters(self, filters_dict: Dict[str, Any]) -> None:
+    def set_active_filters(self, filters_dict: dict[str, Any]) -> None:
         """Establecer filtros activos desde diccionario"""
         self.active_filters.clear()
         

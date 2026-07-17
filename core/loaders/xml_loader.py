@@ -5,19 +5,18 @@ Handles eXtensible Markup Language format
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class XmlLoader(FileLoader):
     """
     File loader for XML format
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.xml']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load XML file into DataFrame
         
@@ -65,7 +64,7 @@ class XmlLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading XML file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the XML file
         """

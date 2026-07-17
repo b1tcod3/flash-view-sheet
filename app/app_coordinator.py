@@ -5,7 +5,7 @@ Coordinador central que maneja la lógica de negocio y la orquestación
 entre servicios, diálogos y vistas.
 """
 
-from typing import Any, Dict, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 import pandas as pd
 from PySide6.QtCore import QObject, Signal
@@ -21,7 +21,6 @@ from core.join.join_history import JoinHistory
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QMainWindow
-
 
 class AppCoordinator(QObject):
     """
@@ -43,7 +42,7 @@ class AppCoordinator(QObject):
     datos_disponibles = Signal(bool)
     
     def __init__(self, parent_window: 'QMainWindow', data_service: DataService, export_service: ExportService, 
-                 pivot_service: PivotService, view_coordinator: ViewCoordinator, toolbar_manager: ToolbarManager, join_history: Optional[JoinHistory]) -> None:
+                 pivot_service: PivotService, view_coordinator: ViewCoordinator, toolbar_manager: ToolbarManager, join_history: JoinHistory | None) -> None:
         """Inicializar el coordinador"""
         super().__init__(parent_window)
         
@@ -74,7 +73,7 @@ class AppCoordinator(QObject):
             if config and config.folder_path:
                 self.procesar_carga_carpeta(config)
 
-    def iniciar_carga_archivo(self, filepath: str, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None, enable_vis: bool = True, enable_column_visibility: bool = True) -> None:
+    def iniciar_carga_archivo(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None, enable_vis: bool = True, enable_column_visibility: bool = True) -> None:
         """Inicia la carga de un archivo: valida extensión, muestra progreso, crea hilo y conecta resultados."""
         from pathlib import Path
         path = Path(filepath)
@@ -209,7 +208,7 @@ class AppCoordinator(QObject):
         dialog.join_completed.connect(self._on_join_completed)
         dialog.exec()
     
-    def _on_join_completed(self, result: JoinResult, right_file_path: Optional[str]) -> None:
+    def _on_join_completed(self, result: JoinResult, right_file_path: str | None) -> None:
         """Manejar resultado de join"""
         try:
             left_name = self.data_service.get_filename()
@@ -376,7 +375,6 @@ class AppCoordinator(QObject):
             if not current_page_data.empty:
                 graphics_view.update_data(current_page_data)
 
-
     # ==================== CLEANUP ====================
 
     def cleanup(self) -> None:
@@ -389,7 +387,6 @@ class AppCoordinator(QObject):
                 pass
         self.view_coordinator = None  # type: ignore[assignment]
         self.toolbar_manager = None  # type: ignore[assignment]
-
 
 # Exports
 __all__ = ['AppCoordinator']

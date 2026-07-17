@@ -9,9 +9,8 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                 QLineEdit, QMessageBox, QCheckBox)
 from PySide6.QtCore import Qt, QPoint, QMimeData, QTimer
 from PySide6.QtGui import QDrag, QPixmap, QPainter, QColor
-from typing import List, Dict, Any, Optional
+from typing import Any
 import pandas as pd
-
 
 class ColumnAlignmentPreview(QWidget):
     """
@@ -20,9 +19,9 @@ class ColumnAlignmentPreview(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.file_metadata: List[Dict[str, Any]] = []
-        self.alignment_data: List[Dict[str, Any]] = []
-        self.column_mappings: Dict[str, str] = {}
+        self.file_metadata: list[dict[str, Any]] = []
+        self.alignment_data: list[dict[str, Any]] = []
+        self.column_mappings: dict[str, str] = {}
         self.dragged_item: QTableWidgetItem | None = None
         self.drag_start_pos: QPoint | None = None
         self.included_positions: set[int] = set()
@@ -79,7 +78,7 @@ class ColumnAlignmentPreview(QWidget):
         self.alignment_table.itemDoubleClicked.connect(self.edit_column_name)
         self.alignment_table.itemChanged.connect(self.on_item_changed)
 
-    def set_file_metadata(self, metadata: List[Dict[str, Any]]) -> None:
+    def set_file_metadata(self, metadata: list[dict[str, Any]]) -> None:
         """
         Set the file metadata for alignment preview
 
@@ -157,7 +156,7 @@ class ColumnAlignmentPreview(QWidget):
             return
 
         # Simple name-based alignment - find common column names
-        all_columns: List[str] = []
+        all_columns: list[str] = []
         for meta in self.file_metadata:
             all_columns.extend(meta.get('columns', []))
 
@@ -230,7 +229,7 @@ class ColumnAlignmentPreview(QWidget):
         if current_item:
             self.edit_column_name(current_item)
 
-    def get_column_mappings(self) -> Dict[str, str]:
+    def get_column_mappings(self) -> dict[str, str]:
         """
         Get the current column mappings
 
@@ -239,16 +238,16 @@ class ColumnAlignmentPreview(QWidget):
         """
         return self.column_mappings.copy()
 
-    def get_alignment_data(self) -> List[Dict[str, Any]]:
+    def get_alignment_data(self) -> list[dict[str, Any]]:
         """
         Get the current alignment data
 
         Returns:
             List of alignment information
         """
-        alignment: List[Dict[str, Any]] = []
+        alignment: list[dict[str, Any]] = []
         for row in range(self.alignment_table.rowCount()):
-            row_data: Dict[str, Any] = {'position': row + 1, 'columns': {}}
+            row_data: dict[str, Any] = {'position': row + 1, 'columns': {}}
 
             for col in range(2, self.alignment_table.columnCount()):  # Skip position and include columns
                 item = self.alignment_table.item(row, col)
@@ -260,7 +259,7 @@ class ColumnAlignmentPreview(QWidget):
 
         return alignment
 
-    def get_included_columns(self) -> List[str]:
+    def get_included_columns(self) -> list[str]:
         """
         Get the list of column names that are included in the consolidation
 
@@ -270,7 +269,7 @@ class ColumnAlignmentPreview(QWidget):
         if not self.file_metadata:
             return []
 
-        included_columns: List[str] = []
+        included_columns: list[str] = []
         first_file_columns = self.file_metadata[0].get('columns', [])
 
         for pos in sorted(self.included_positions):

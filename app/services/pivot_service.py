@@ -5,10 +5,9 @@ Servicio centralizado para operaciones de tablas pivote
 en Flash View Sheet.
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 import pandas as pd
 from PySide6.QtWidgets import QMessageBox
-
 
 class PivotService:
     """
@@ -22,15 +21,15 @@ class PivotService:
     
     def __init__(self) -> None:
         """Inicializar el servicio de pivote"""
-        self.last_result: Optional[pd.DataFrame] = None
-        self.last_config: Optional[Dict[str, Any]] = None
+        self.last_result: pd.DataFrame | None = None
+        self.last_config: dict[str, Any] | None = None
     
     def cleanup(self) -> None:
         """Liberar DataFrame cacheado."""
         self.last_result = None
         self.last_config = None
     
-    def create_simple_pivot(self, df: pd.DataFrame, index: Union[str, List[str]], columns: Optional[Union[str, List[str]]] = None, values: Optional[Union[str, List[str]]] = None, aggfunc: str = 'sum') -> Optional[pd.DataFrame]:
+    def create_simple_pivot(self, df: pd.DataFrame, index: str | list[str], columns: str | list[str] | None = None, values: str | list[str] | None = None, aggfunc: str = 'sum') -> pd.DataFrame | None:
         """
         Crear una tabla pivote simple.
         
@@ -72,7 +71,7 @@ class PivotService:
         except Exception as e:
             raise Exception(f"Error creando tabla pivote: {str(e)}")
     
-    def create_combined_pivot(self, df: pd.DataFrame, index: Union[str, List[str]], columns: Union[str, List[str]], values: List[str], aggfuncs: Optional[List[str]] = None) -> Optional[pd.DataFrame]:
+    def create_combined_pivot(self, df: pd.DataFrame, index: str | list[str], columns: str | list[str], values: list[str], aggfuncs: list[str] | None = None) -> pd.DataFrame | None:
         """
         Crear una tabla pivote combinada con múltiples valores y funciones.
         
@@ -134,7 +133,7 @@ class PivotService:
         except Exception as e:
             raise Exception(f"Error creando tabla pivote combinada: {str(e)}")
     
-    def create_simple_aggregation(self, df: pd.DataFrame, index: Union[str, List[str]], values: Union[str, List[str]], aggfunc: str = 'mean') -> Optional[pd.DataFrame]:
+    def create_simple_aggregation(self, df: pd.DataFrame, index: str | list[str], values: str | list[str], aggfunc: str = 'mean') -> pd.DataFrame | None:
         """
         Crear agregación simple por filas cuando no hay columnas para pivot.
         
@@ -183,7 +182,7 @@ class PivotService:
         except Exception as e:
             raise Exception(f"Error creando agregación simple: {str(e)}")
     
-    def create_fallback_aggregation(self, df: pd.DataFrame, index: Union[str, List[str]], values: Union[str, List[str]], aggfunc: str = 'mean') -> Optional[pd.DataFrame]:
+    def create_fallback_aggregation(self, df: pd.DataFrame, index: str | list[str], values: str | list[str], aggfunc: str = 'mean') -> pd.DataFrame | None:
         """
         Crear agregación de fallback cuando el pivote no es posible.
         
@@ -260,7 +259,7 @@ class PivotService:
         except Exception as e:
             raise Exception(f"Error creando agregación de fallback: {str(e)}")
     
-    def execute_pivot_with_fallback(self, df: pd.DataFrame, config: Dict[str, Any]) -> Optional[pd.DataFrame]:
+    def execute_pivot_with_fallback(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
         """
         Ejecutar pivote con fallback a agregación si falla.
         
@@ -311,7 +310,7 @@ class PivotService:
             config.get('aggfunc', config.get('aggfuncs', ['mean']))
         )
     
-    def get_crosstab(self, df: pd.DataFrame, index: str, columns: str, normalize: bool = False) -> Optional[pd.DataFrame]:
+    def get_crosstab(self, df: pd.DataFrame, index: str, columns: str, normalize: bool = False) -> pd.DataFrame | None:
         """
         Crear tabla de contingencia (crosstab).
         
@@ -354,7 +353,7 @@ class PivotService:
         except Exception as e:
             raise Exception(f"Error creando crosstab: {str(e)}")
     
-    def get_pivot_stats(self) -> Optional[Dict[str, Any]]:
+    def get_pivot_stats(self) -> dict[str, Any] | None:
         """Obtener estadísticas del último pivote/aggregación"""
         if self.last_result is None:
             return None
@@ -368,7 +367,7 @@ class PivotService:
     
     # ==================== MÉTODOS DE INTERFAZ SIMPLIFICADA ====================
     
-    def execute_simple(self, df: pd.DataFrame, config: Dict[str, Any]) -> Optional[pd.DataFrame]:
+    def execute_simple(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
         """
         Ejecutar pivote simple con fallback a agregación.
         
@@ -403,7 +402,7 @@ class PivotService:
             aggfunc=config.get('aggfunc', 'mean')
         )
     
-    def execute_combined(self, df: pd.DataFrame, config: Dict[str, Any]) -> Optional[pd.DataFrame]:
+    def execute_combined(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
         """
         Ejecutar pivote combinada con fallback a agregación.
         
@@ -437,7 +436,7 @@ class PivotService:
     
     # ==================== UTILIDADES ====================
     
-    def get_aggregation_functions(self) -> List[Tuple[str, str]]:
+    def get_aggregation_functions(self) -> list[tuple[str, str]]:
         """Obtener lista de funciones de agregación disponibles"""
         return [
             ('Suma', 'sum'),
@@ -451,7 +450,7 @@ class PivotService:
             ('Último valor', 'last'),
         ]
     
-    def validate_pivot_config(self, df: pd.DataFrame, config: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_pivot_config(self, df: pd.DataFrame, config: dict[str, Any]) -> dict[str, Any]:
         """
         Validar configuración de pivote.
         

@@ -6,8 +6,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                           QGroupBox, QScrollArea, QFrame)
 from PySide6.QtCore import Qt
 import pandas as pd
-from typing import Dict, Any
-
+from typing import Any
 
 class InfoPanel(QWidget):
     """

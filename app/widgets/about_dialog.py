@@ -9,8 +9,6 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 from pathlib import Path
-from typing import Optional
-
 
 class AboutDialog(QDialog):
     """Diálogo modal para mostrar información Acerca de"""
@@ -19,7 +17,7 @@ class AboutDialog(QDialog):
     AUTHOR = "b1tcod3"
     GITHUB_URL = "https://github.com/b1tcod3"
     
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.parent_window = parent
         self.setup_ui()
@@ -84,7 +82,7 @@ class AboutDialog(QDialog):
         logo_label.setAlignment(Qt.AlignCenter)
         return logo_label
     
-    def _get_logo_path(self) -> Optional[str]:
+    def _get_logo_path(self) -> str | None:
         """Obtener ruta del logo"""
         if self.parent_window:
             import sys
@@ -147,11 +145,10 @@ class AboutDialog(QDialog):
         layout.addLayout(btn_layout)
     
     @classmethod
-    def show_about(cls, parent: Optional[QWidget] = None) -> None:
+    def show_about(cls, parent: QWidget | None = None) -> None:
         """Método estático para mostrar el diálogo"""
         dialog = cls(parent)
         dialog.exec()
-
 
 # Constantes exportadas
 __all__ = ['AboutDialog']

@@ -5,19 +5,18 @@ Handles Python Pickle format
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class PickleLoader(FileLoader):
     """
     File loader for Pickle format
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.pkl', '.pickle']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load Pickle file into DataFrame
         
@@ -49,7 +48,7 @@ class PickleLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading Pickle file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the Pickle file
         """

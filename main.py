@@ -5,13 +5,12 @@ Punto de entrada principal de la aplicación
 """
 
 import sys
+import traceback
 from pathlib import Path
-from typing import Any, Dict, Optional
+from types import TracebackType
 
-import pandas as pd
-from PySide6.QtCore import QObject
-from PySide6.QtGui import QAction, QCloseEvent, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QToolBar
+from PySide6.QtGui import QCloseEvent, QIcon
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
 
 from core.join.join_history import JoinHistory
 
@@ -26,7 +25,6 @@ from app.app_coordinator import AppCoordinator
 # Importar menús
 from app.menus import MenuActions
 
-
 class MainWindow(QMainWindow):
     """Ventana principal de la aplicación - Orquestador de componentes"""
     
@@ -38,16 +36,16 @@ class MainWindow(QMainWindow):
     toolbar_manager: ToolbarManager
     view_coordinator: ViewCoordinator
     coordinator: AppCoordinator
-    join_history: Optional[JoinHistory]
+    join_history: JoinHistory | None
     stacked_widget: QStackedWidget
-    separar_menu: Optional[QObject]
-    datos_menu: Optional[QObject]
-    tabla_pivote_menu: Optional[QObject]
-    exportar_separado_action: Optional[QAction]
-    cruzar_datos_action: Optional[QAction]
-    pivot_simple_action: Optional[QAction]
-    pivot_combinada_action: Optional[QAction]
-    export_pivot_action: Optional[QAction]
+    separar_menu: object | None
+    datos_menu: object | None
+    tabla_pivote_menu: object | None
+    exportar_separado_action: object | None
+    cruzar_datos_action: object | None
+    pivot_simple_action: object | None
+    pivot_combinada_action: object | None
+    export_pivot_action: object | None
     
     def __init__(self) -> None:
         super().__init__()
@@ -102,6 +100,9 @@ class MainWindow(QMainWindow):
         # Inicializar JoinHistory después del coordinator
         self.join_history = JoinHistory()
         self.coordinator.join_history = self.join_history
+        
+        # Dar coordinadores al toolbar
+        self.toolbar_manager.set_coordinators(self.view_coordinator, self.coordinator)
         
         # Conectar señales del coordinator
         self.coordinator.status_message.connect(self.statusBar().showMessage)
@@ -175,73 +176,11 @@ class MainWindow(QMainWindow):
         self.coordinator.datos_disponibles.connect(MenuActions.enable_data_actions)
         self.coordinator.datos_disponibles.connect(self.toolbar_manager.on_datos_disponibles)
     
-    # ==================== DELEGADOS ====================
+    # ==================== SEÑALES ====================
     
-    def switch_view(self, index: int) -> bool:
-        """Cambiar a la vista especificada"""
-        return self.view_coordinator.switch_to(index)
-    
-    def show_info_modal(self) -> None:
-        """Delegar modal de información al coordinador"""
-        self.coordinator.mostrar_info()
-    
-    # ==================== GESTIÓN DE CARGA ====================
-    
-    def abrir_archivo(self) -> None:
-        """Delegar apertura de archivo al coordinador"""
-        self.coordinator.solicitar_apertura_archivo()
-    
-    def _on_reload_with_options(self, filepath: str, skip_rows: int, column_names: Dict[str, str], enable_column_visibility: bool = True) -> None:
+    def _on_reload_with_options(self, filepath: str, skip_rows: int, column_names: dict[str, str], enable_column_visibility: bool = True) -> None:
         """Manejar recarga con opciones"""
         self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility)
-    
-    # ==================== CARGA DE CARPETA ====================
-    
-    def cargar_carpeta(self) -> None:
-        """Delegar carga de carpeta al coordinador"""
-        self.coordinator.solicitar_carga_carpeta()
-    
-    # ==================== OPERACIONES DELEGADAS ====================
-    
-    def abrir_cruzar_datos(self) -> None:
-        """Abrir diálogo para cruzar datos"""
-        self.coordinator.abrir_cruzar_datos()
-    
-    def abrir_pivot_simple(self) -> None:
-        """Abrir diálogo de pivote simple"""
-        self.coordinator.abrir_pivot_simple()
-    
-    def abrir_pivot_combinada(self) -> None:
-        """Abrir diálogo de pivote combinada"""
-        self.coordinator.abrir_pivot_combinada()
-    
-    def exportar_resultado_pivote(self) -> None:
-        """Exportar resultado de pivote"""
-        self.coordinator.exportar_resultado_pivote()
-    
-    def exportar_a_pdf(self) -> None:
-        """Exportar a PDF"""
-        self.coordinator.exportar_a_pdf()
-    
-    def exportar_a_xlsx(self) -> None:
-        """Exportar a Excel"""
-        self.coordinator.exportar_a_xlsx()
-    
-    def exportar_a_csv(self) -> None:
-        """Exportar a CSV"""
-        self.coordinator.exportar_a_csv()
-    
-    def exportar_a_sql(self) -> None:
-        """Exportar a SQL"""
-        self.coordinator.exportar_a_sql()
-    
-    def exportar_a_imagen(self) -> None:
-        """Exportar a imagen"""
-        self.coordinator.exportar_a_imagen()
-    
-    def exportar_datos_separados(self) -> None:
-        """Exportar datos separados"""
-        self.coordinator.exportar_datos_separados()
     
     # ==================== ACERCA DE ====================
     
@@ -264,10 +203,25 @@ class MainWindow(QMainWindow):
         
         event.accept()
 
+def _global_exception_handler(exc_type: type[BaseException] | None, exc_value: BaseException | None, exc_traceback: TracebackType | None) -> None:
+    """Atrapa errores fatales y muestra un diálogo antes de morir."""
+    error_msg = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    print(f"Error fatal:\n{error_msg}", file=sys.stderr)
+
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Icon.Critical)
+    msg.setWindowTitle("Error Crítico")
+    msg.setText("Ha ocurrido un error inesperado en la aplicación.")
+    msg.setDetailedText(error_msg)
+    msg.exec()
+
 
 def main() -> None:
     """Función principal de la aplicación"""
     app = QApplication(sys.argv)
+
+    # Instalar manejador global de errores
+    sys.excepthook = _global_exception_handler
     
     # Configurar icono
     logo_path = Path(__file__).parent / "assets" / "logo.png"
@@ -279,7 +233,6 @@ def main() -> None:
     window.show()
     
     sys.exit(app.exec())
-
 
 if __name__ == "__main__":
     main()

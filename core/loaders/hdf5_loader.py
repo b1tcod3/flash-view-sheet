@@ -5,19 +5,18 @@ Handles Hierarchical Data Format version 5 (requires tables)
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class Hdf5Loader(FileLoader):
     """
     File loader for HDF5 format
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.hdf5', '.h5']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load HDF5 file into DataFrame
         
@@ -54,7 +53,7 @@ class Hdf5Loader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading HDF5 file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the HDF5 file
         """

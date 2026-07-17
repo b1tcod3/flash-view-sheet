@@ -13,13 +13,12 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Any
 
 from core.data_handler import cargar_datos
 from core.join.models import JoinConfig, JoinType
 from core.join.data_join_manager import DataJoinManager
 from core.join.exceptions import JoinValidationError, JoinExecutionError
-
 
 class JoinDialog(QDialog):
     """
@@ -30,12 +29,12 @@ class JoinDialog(QDialog):
     join_completed = Signal(object, str)  # JoinResult, right_file_path
     join_cancelled = Signal()
 
-    def __init__(self, left_df: pd.DataFrame, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, left_df: pd.DataFrame, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.left_df = left_df
-        self.right_df: Optional[pd.DataFrame] = None
-        self.right_file_path: Optional[str] = None
-        self.join_manager: Optional[DataJoinManager] = None
+        self.right_df: pd.DataFrame | None = None
+        self.right_file_path: str | None = None
+        self.join_manager: DataJoinManager | None = None
         self.setup_ui()
         self.setup_connections()
 
@@ -408,7 +407,7 @@ class JoinDialog(QDialog):
             # Buscar columnas con nombres similares para sugerir automáticamente
             self._suggest_matching_columns(left_columns, right_columns)
 
-    def _suggest_matching_columns(self, left_columns: List[str], right_columns: List[str]) -> None:
+    def _suggest_matching_columns(self, left_columns: list[str], right_columns: list[str]) -> None:
         """Sugerir automáticamente columnas que podrían hacer match"""
         # Buscar columnas con el mismo nombre (case insensitive)
         suggested_left = None

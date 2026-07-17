@@ -5,12 +5,11 @@ JoinHistory: Sistema para mantener historial de operaciones de cruce
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import Any
 from dataclasses import dataclass, asdict
 import pandas as pd
 
 from .models import JoinConfig, JoinResult
-
 
 @dataclass
 class JoinHistoryEntry:
@@ -20,17 +19,16 @@ class JoinHistoryEntry:
     left_dataset_name: str
     right_dataset_name: str
     config: JoinConfig
-    result_metadata: Dict[str, Any]
+    result_metadata: dict[str, Any]
     success: bool
     error_message: str = ""
-
 
 class JoinHistory:
     """Sistema para mantener historial de operaciones de cruce"""
 
     def __init__(self, max_entries: int = 50) -> None:
         self.max_entries = max_entries
-        self.entries: List[JoinHistoryEntry] = []
+        self.entries: list[JoinHistoryEntry] = []
         self.history_file = Path(__file__).parent / "join_history.json"
 
         # Cargar historial existente
@@ -67,13 +65,13 @@ class JoinHistory:
         # Guardar
         self._save_history()
 
-    def get_entries(self, limit: Optional[int] = None) -> List[JoinHistoryEntry]:
+    def get_entries(self, limit: int | None = None) -> list[JoinHistoryEntry]:
         """Obtener entradas del historial"""
         if limit:
             return self.entries[:limit]
         return self.entries
 
-    def get_entry(self, entry_id: str) -> Optional[JoinHistoryEntry]:
+    def get_entry(self, entry_id: str) -> JoinHistoryEntry | None:
         """Obtener entrada específica por ID"""
         for entry in self.entries:
             if entry.id == entry_id:
@@ -119,7 +117,7 @@ class JoinHistory:
         except Exception as e:
             raise ValueError(f"Error importando historial: {str(e)}")
 
-    def _entry_to_dict(self, entry: JoinHistoryEntry) -> Dict[str, Any]:
+    def _entry_to_dict(self, entry: JoinHistoryEntry) -> dict[str, Any]:
         """Convertir entrada a diccionario para serialización"""
         return {
             'id': entry.id,
@@ -140,7 +138,7 @@ class JoinHistory:
             'error_message': entry.error_message
         }
 
-    def _dict_to_entry(self, data: Dict[str, Any]) -> Optional[JoinHistoryEntry]:
+    def _dict_to_entry(self, data: dict[str, Any]) -> JoinHistoryEntry | None:
         """Convertir diccionario a entrada"""
         try:
             from .models import JoinType

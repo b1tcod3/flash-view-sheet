@@ -5,19 +5,18 @@ Handles YAML format (requires pyyaml)
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class YamlLoader(FileLoader):
     """
     File loader for YAML format
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.yaml', '.yml']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load YAML file into DataFrame
         
@@ -70,7 +69,7 @@ class YamlLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading YAML file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the YAML file
         """

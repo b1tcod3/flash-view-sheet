@@ -4,8 +4,6 @@ Represents metadata for Excel files
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
-
 
 @dataclass
 class FileMetadata:
@@ -16,12 +14,12 @@ class FileMetadata:
     filepath: str
     file_size_bytes: int
     file_size_mb: float
-    sheets: List[str]
+    sheets: list[str]
     sheet_count: int
-    columns: List[str]
+    columns: list[str]
     num_columns: int
     num_rows: int
-    error: Optional[str] = None
+    error: str | None = None
 
     @property
     def has_error(self) -> bool:

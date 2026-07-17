@@ -13,7 +13,6 @@ from .vista_menu import VistaMenu
 from .exportar_menu import ExportarMenu
 from typing import Any
 
-
 class MenuBuilder:
     """
     Builder para crear la barra de menús completa.
@@ -59,8 +58,11 @@ class MenuBuilder:
         self._build_vista_menu()
         self._build_ayuda_menu()
         
-        # Conectar señales de acciones a slots del parent
-        self._connect_actions()
+        # Conectar señales de acciones directamente a coordinator
+        self._connect_actions(
+            self.parent_window.coordinator,
+            self.parent_window.view_coordinator,
+        )
         
         return self.menu_bar
     
@@ -109,47 +111,34 @@ class MenuBuilder:
         ayuda_menu = self.menu_bar.addMenu("&Ayuda")
         ayuda_menu.addAction(MenuActions.ACERCA_DE)
     
-    def _connect_actions(self) -> None:
-        """Conectar acciones a los slots del parent window."""
+    def _connect_actions(self, coordinator: Any, view_coordinator: Any) -> None:
         # Archivo
-        MenuActions.ABRIR.triggered.connect(self.parent_window.abrir_archivo)
-        MenuActions.CARGAR_CARPETA.triggered.connect(self.parent_window.cargar_carpeta)
-        MenuActions.EXPORTAR_PDF.triggered.connect(self.parent_window.exportar_a_pdf)
-        MenuActions.EXPORTAR_IMAGEN.triggered.connect(self.parent_window.exportar_a_imagen)
-        MenuActions.EXPORTAR_XLSX.triggered.connect(self.parent_window.exportar_a_xlsx)
-        MenuActions.EXPORTAR_CSV.triggered.connect(self.parent_window.exportar_a_csv)
-        MenuActions.EXPORTAR_SQL.triggered.connect(self.parent_window.exportar_a_sql)
+        MenuActions.ABRIR.triggered.connect(coordinator.solicitar_apertura_archivo)
+        MenuActions.CARGAR_CARPETA.triggered.connect(coordinator.solicitar_carga_carpeta)
+        MenuActions.EXPORTAR_PDF.triggered.connect(coordinator.exportar_a_pdf)
+        MenuActions.EXPORTAR_IMAGEN.triggered.connect(coordinator.exportar_a_imagen)
+        MenuActions.EXPORTAR_XLSX.triggered.connect(coordinator.exportar_a_xlsx)
+        MenuActions.EXPORTAR_CSV.triggered.connect(coordinator.exportar_a_csv)
+        MenuActions.EXPORTAR_SQL.triggered.connect(coordinator.exportar_a_sql)
         MenuActions.SALIR.triggered.connect(self.parent_window.close)
-        
+
         # Separar
-        MenuActions.EXPORTAR_SEPARADO.triggered.connect(
-            self.parent_window.exportar_datos_separados
-        )
-        
+        MenuActions.EXPORTAR_SEPARADO.triggered.connect(coordinator.exportar_datos_separados)
+
         # Datos
-        MenuActions.CRUZAR_DATOS.triggered.connect(self.parent_window.abrir_cruzar_datos)
-        
+        MenuActions.CRUZAR_DATOS.triggered.connect(coordinator.abrir_cruzar_datos)
+
         # Tabla Pivote
-        MenuActions.PIVOT_SIMPLE.triggered.connect(self.parent_window.abrir_pivot_simple)
-        MenuActions.PIVOT_COMBINADA.triggered.connect(
-            self.parent_window.abrir_pivot_combinada
-        )
-        MenuActions.EXPORTAR_PIVOTE.triggered.connect(
-            self.parent_window.exportar_resultado_pivote
-        )
-        
+        MenuActions.PIVOT_SIMPLE.triggered.connect(coordinator.abrir_pivot_simple)
+        MenuActions.PIVOT_COMBINADA.triggered.connect(coordinator.abrir_pivot_combinada)
+        MenuActions.EXPORTAR_PIVOTE.triggered.connect(coordinator.exportar_resultado_pivote)
+
         # Vista
-        MenuActions.VISTA_PRINCIPAL.triggered.connect(
-            lambda: self.parent_window.switch_view(0)
-        )
-        MenuActions.VISTA_DATOS.triggered.connect(
-            lambda: self.parent_window.switch_view(1)
-        )
-        MenuActions.VISTA_INFO.triggered.connect(self.parent_window.show_info_modal)
-        MenuActions.VISTA_GRAFICOS.triggered.connect(
-            lambda: self.parent_window.switch_view(2)
-        )
-        
+        MenuActions.VISTA_PRINCIPAL.triggered.connect(lambda: view_coordinator.switch_to(0))
+        MenuActions.VISTA_DATOS.triggered.connect(lambda: view_coordinator.switch_to(1))
+        MenuActions.VISTA_GRAFICOS.triggered.connect(lambda: view_coordinator.switch_to(2))
+        MenuActions.VISTA_INFO.triggered.connect(coordinator.mostrar_info)
+
         # Ayuda
         MenuActions.ACERCA_DE.triggered.connect(self.parent_window.mostrar_acerca_de)
     

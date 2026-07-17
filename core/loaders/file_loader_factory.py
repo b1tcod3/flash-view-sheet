@@ -3,7 +3,7 @@ File Loader Factory
 Factory pattern for creating appropriate file loaders based on file extension
 """
 
-from typing import Dict, Type, Optional, List
+from typing import Type
 from pathlib import Path
 from .base_loader import FileLoader
 from .csv_loader import CsvLoader
@@ -17,7 +17,6 @@ from .pickle_loader import PickleLoader
 from .sqlite_loader import SqliteLoader
 from .yaml_loader import YamlLoader
 
-
 class FileLoaderFactory:
     """
     Factory class for creating file loaders
@@ -26,7 +25,7 @@ class FileLoaderFactory:
 
     def __init__(self) -> None:
         # Map file extensions to loader classes
-        self._loader_mapping: Dict[str, Type[FileLoader]] = {
+        self._loader_mapping: dict[str, Type[FileLoader]] = {
             # Existing formats
             '.csv': CsvLoader,
             '.tsv': CsvLoader,  # TSV is handled by CSV loader
@@ -88,7 +87,7 @@ class FileLoaderFactory:
         extension = Path(filepath).suffix.lower()
         return extension in self._loader_mapping
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         """
         Get list of all supported file extensions
         
@@ -97,7 +96,7 @@ class FileLoaderFactory:
         """
         return list(self._loader_mapping.keys())
 
-    def get_loader_info(self, filepath: str) -> Dict[str, str]:
+    def get_loader_info(self, filepath: str) -> dict[str, str]:
         """
         Get information about the loader for a given file
         
@@ -165,10 +164,8 @@ class FileLoaderFactory:
         
         return descriptions.get(extension.lower(), f"Unknown format: {extension}")
 
-
 # Global factory instance
 _global_factory = FileLoaderFactory()
-
 
 def get_file_loader(filepath: str) -> FileLoader:
     """
@@ -182,7 +179,6 @@ def get_file_loader(filepath: str) -> FileLoader:
     """
     return _global_factory.get_loader(filepath)
 
-
 def is_file_supported(filepath: str) -> bool:
     """
     Check if a file format is supported (convenience function)
@@ -195,8 +191,7 @@ def is_file_supported(filepath: str) -> bool:
     """
     return _global_factory.is_supported(filepath)
 
-
-def get_supported_formats() -> List[str]:
+def get_supported_formats() -> list[str]:
     """
     Get list of all supported file formats (convenience function)
     

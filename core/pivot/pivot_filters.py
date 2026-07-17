@@ -7,7 +7,7 @@ with support for multiple filter types, AND/OR logic, and complex conditions.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, List, Union, Optional, Callable
+from typing import Any, Callable
 import logging
 from datetime import datetime
 import re
@@ -15,14 +15,13 @@ import re
 # Configurar logging
 logger = logging.getLogger(__name__)
 
-
 class PivotFilter:
     """
     Clase individual para representar un filtro
     """
     
     def __init__(self, column: str, filter_type: str, value: Any = None, 
-                 operator: str = 'and', parameters: Optional[Dict[str, Any]] = None) -> None:
+                 operator: str = 'and', parameters: dict[str, Any] | None = None) -> None:
         """
         Inicializar filtro
         
@@ -166,7 +165,6 @@ class PivotFilter:
             logger.error(f"Error en filtro personalizado: {str(e)}")
             return df
 
-
 class PivotFilterManager:
     """
     Gestor de filtros para tablas pivote
@@ -175,11 +173,11 @@ class PivotFilterManager:
     
     def __init__(self) -> None:
         """Inicializar gestor de filtros"""
-        self.filters: List[PivotFilter] = []
+        self.filters: list[PivotFilter] = []
         self.logic_operator = 'and'  # 'and' o 'or'
         
     def add_filter(self, column: str, filter_type: str, value: Any = None, 
-                   operator: str = 'and', parameters: Optional[Dict[str, Any]] = None) -> 'PivotFilterManager':
+                   operator: str = 'and', parameters: dict[str, Any] | None = None) -> 'PivotFilterManager':
         """
         Añadir filtro al gestor
         
@@ -197,7 +195,7 @@ class PivotFilterManager:
         self.filters.append(new_filter)
         return self
         
-    def add_filters_from_dict(self, filters_dict: Dict[str, Dict[str, Any]]) -> 'PivotFilterManager':
+    def add_filters_from_dict(self, filters_dict: dict[str, dict[str, Any]]) -> 'PivotFilterManager':
         """
         Añadir múltiples filtros desde diccionario
         
@@ -260,12 +258,12 @@ class PivotFilterManager:
             self.filters.pop(index)
         return self
         
-    def get_filters(self) -> List[PivotFilter]:
+    def get_filters(self) -> list[PivotFilter]:
         """
         Obtener lista de filtros
         
         Returns:
-            List[PivotFilter]: Lista de filtros
+            list[PivotFilter]: Lista de filtros
         """
         return self.filters.copy()
         
@@ -310,12 +308,12 @@ class PivotFilterManager:
             logger.error(f"Error aplicando filtros: {str(e)}")
             return df
             
-    def get_filter_summary(self) -> Dict[str, Any]:
+    def get_filter_summary(self) -> dict[str, Any]:
         """
         Obtener resumen de filtros configurados
         
         Returns:
-            Dict[str, Any]: Resumen de filtros
+            dict[str, Any]: Resumen de filtros
         """
         summary = {
             'total_filters': len(self.filters),
@@ -338,7 +336,7 @@ class PivotFilterManager:
             
         return summary
         
-    def validate_filters(self, df: pd.DataFrame) -> List[str]:
+    def validate_filters(self, df: pd.DataFrame) -> list[str]:
         """
         Validar que todos los filtros son aplicables al DataFrame
         
@@ -346,7 +344,7 @@ class PivotFilterManager:
             df: DataFrame a validar
             
         Returns:
-            List[str]: Lista de errores encontrados
+            list[str]: Lista de errores encontrados
         """
         errors = []
         
@@ -372,14 +370,13 @@ class PivotFilterManager:
                         
         return errors
 
-
 # Función de utilidad para crear filtros predefinidos
-def create_standard_filters() -> Dict[str, Dict[str, Any]]:
+def create_standard_filters() -> dict[str, dict[str, Any]]:
     """
     Crear diccionarios de filtros estándar
     
     Returns:
-        Dict[str, Dict[str, Any]]: Diccionario de filtros predefinidos
+        dict[str, dict[str, Any]]: Diccionario de filtros predefinidos
     """
     return {
         'equals': {'type': 'equals', 'description': 'Igual a'},

@@ -11,8 +11,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
-from typing import Dict, List, Any, Optional
-
+from typing import Any
 
 class PivotConfigDialog(QDialog):
     """
@@ -27,7 +26,7 @@ class PivotConfigDialog(QDialog):
     def __init__(self, df_original: pd.DataFrame | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
-        self.current_config: Dict[str, Any] = {}
+        self.current_config: dict[str, Any] = {}
         self.setup_ui()
         self.setup_connections()
         
@@ -635,12 +634,12 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         
         self.config_preview_text.setPlainText(preview_text)
         
-    def get_current_configuration(self) -> Dict[str, Any]:
+    def get_current_configuration(self) -> dict[str, Any]:
         """Obtener configuración actual"""
-        config: Dict[str, Any] = {}
+        config: dict[str, Any] = {}
         
         # Índices seleccionados
-        index_columns: List[str] = []
+        index_columns: list[str] = []
         for i in range(self.index_columns_list.count()):
             item = self.index_columns_list.item(i)
             if item.isSelected():
@@ -648,7 +647,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['index'] = index_columns
         
         # Columnas del pivote seleccionadas
-        pivot_columns: List[str] = []
+        pivot_columns: list[str] = []
         for i in range(self.pivot_columns_list.count()):
             item = self.pivot_columns_list.item(i)
             if item.isSelected():
@@ -656,7 +655,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['columns'] = pivot_columns
         
         # Valores seleccionados
-        values_columns: List[str] = []
+        values_columns: list[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.isSelected():
@@ -664,7 +663,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         config['values'] = values_columns
         
         # Funciones de agregación
-        agg_functions: List[str] = []
+        agg_functions: list[str] = []
         for i in range(self.functions_table.count()):
             item = self.functions_table.item(i)
             text = item.text()
@@ -691,7 +690,7 @@ OPERADOR LÓGICO: {config.get('logic_operator', 'AND')}
         
         return config
         
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Obtener configuración en formato compatible con las funciones de pivote"""
         config = self.get_current_configuration()
         

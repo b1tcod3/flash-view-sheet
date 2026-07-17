@@ -6,7 +6,7 @@ de datos en Flash View Sheet.
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 import pandas as pd
 from PySide6.QtCore import QThread, Signal, Qt
 from PySide6.QtWidgets import QProgressDialog, QMessageBox, QDialog
@@ -18,7 +18,6 @@ from core.data_handler import (
 from core.loaders.folder_loader import FolderLoader
 from core.consolidation.excel_consolidator import ExcelConsolidator
 
-
 class DataLoaderThread(QThread):
     """Hilo para cargar datos en segundo plano"""
     
@@ -27,7 +26,7 @@ class DataLoaderThread(QThread):
     # Signal(str)
     error_occurred = Signal(str)
     
-    def __init__(self, filepath: str, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> None:
+    def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> None:
         super().__init__()
         self.filepath = filepath
         self.skip_rows = skip_rows
@@ -45,7 +44,6 @@ class DataLoaderThread(QThread):
             if not self.isInterruptionRequested():
                 self.error_occurred.emit(str(e))
 
-
 class FolderLoaderThread(QThread):
     """Hilo para cargar y consolidar archivos de una carpeta en segundo plano."""
     
@@ -53,7 +51,7 @@ class FolderLoaderThread(QThread):
     error_occurred = Signal(str)
     progress_updated = Signal(int, int)
     
-    def __init__(self, folder_path: str, config: Optional[Any] = None) -> None:
+    def __init__(self, folder_path: str, config: Any | None = None) -> None:
         super().__init__()
         self.folder_path = folder_path
         self.config = config
@@ -108,7 +106,6 @@ class FolderLoaderThread(QThread):
             if not self.isInterruptionRequested():
                 self.error_occurred.emit(str(e))
 
-
 class DataService:
     """
     Servicio unificado para operaciones de datos.
@@ -121,14 +118,14 @@ class DataService:
     
     def __init__(self) -> None:
         """Inicializar el servicio de datos"""
-        self.df_original: Optional[pd.DataFrame] = None
-        self.df_vista_actual: Optional[pd.DataFrame] = None
-        self.loading_thread: Optional[DataLoaderThread] = None
-        self.folder_loading_thread: Optional[FolderLoaderThread] = None
-        self.progress_dialog: Optional[QProgressDialog] = None
+        self.df_original: pd.DataFrame | None = None
+        self.df_vista_actual: pd.DataFrame | None = None
+        self.loading_thread: DataLoaderThread | None = None
+        self.folder_loading_thread: FolderLoaderThread | None = None
+        self.progress_dialog: QProgressDialog | None = None
         
         # Formatos soportados
-        self._format_descriptions: Dict[str, str] = {
+        self._format_descriptions: dict[str, str] = {
             '.xlsx': 'Archivos de Excel',
             '.xls': 'Archivos de Excel Legacy',
             '.csv': 'Archivos CSV',
@@ -154,12 +151,12 @@ class DataService:
         return self.df_vista_actual is not None and not self.df_vista_actual.empty
     
     @property
-    def datos_actuales(self) -> Optional[pd.DataFrame]:
+    def datos_actuales(self) -> pd.DataFrame | None:
         """Obtener los datos actuales"""
         return self.df_vista_actual
     
     @property
-    def datos_originales(self) -> Optional[pd.DataFrame]:
+    def datos_originales(self) -> pd.DataFrame | None:
         """Obtener los datos originales"""
         return self.df_original
     
@@ -179,12 +176,12 @@ class DataService:
         
         return ";;".join(format_filters)
     
-    def create_loader_thread(self, filepath: str, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> DataLoaderThread:
+    def create_loader_thread(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> DataLoaderThread:
         """Crear un hilo de carga de datos"""
         self.loading_thread = DataLoaderThread(filepath, skip_rows, column_names)
         return self.loading_thread
     
-    def create_folder_loader_thread(self, folder_path: str, config: Optional[Any] = None) -> FolderLoaderThread:
+    def create_folder_loader_thread(self, folder_path: str, config: Any | None = None) -> FolderLoaderThread:
         """Crear un hilo de carga de carpeta"""
         self.folder_loading_thread = FolderLoaderThread(folder_path, config)
         return self.folder_loading_thread
@@ -211,7 +208,7 @@ class DataService:
         except Exception as e:
             raise Exception(f"No se pudo cargar el archivo: {str(e)}")
     
-    def load_data_with_options(self, filepath: str, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load_data_with_options(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """Cargar datos con opciones adicionales"""
         try:
             self.df_original = cargar_datos_con_opciones(filepath, skip_rows, column_names)
@@ -220,7 +217,7 @@ class DataService:
         except Exception as e:
             raise Exception(f"No se pudo cargar el archivo: {str(e)}")
     
-    def load_folder(self, folder_path: str, config: Optional[Any] = None) -> pd.DataFrame:
+    def load_folder(self, folder_path: str, config: Any | None = None) -> pd.DataFrame:
         """
         Cargar y consolidar archivos de una carpeta.
         
@@ -268,7 +265,7 @@ class DataService:
         except Exception as e:
             raise Exception(f"Error cargando carpeta: {str(e)}")
     
-    def reset_to_original(self) -> Optional[pd.DataFrame]:
+    def reset_to_original(self) -> pd.DataFrame | None:
         """Restaurar datos originales"""
         if self.df_original is not None:
             self.df_vista_actual = self.df_original.copy()
@@ -285,23 +282,23 @@ class DataService:
         self.df_original = df.copy()
         return self.df_original
 
-    def extensiones_permitidas(self) -> List[str]:
+    def extensiones_permitidas(self) -> list[str]:
         """Obtener lista de extensiones de archivo soportadas"""
         return get_supported_file_formats()
     
-    def get_column_names(self) -> List[str]:
+    def get_column_names(self) -> list[str]:
         """Obtener nombres de columnas"""
         if self.df_vista_actual is not None:
             return self.df_vista_actual.columns.tolist()
         return []
     
-    def get_data_shape(self) -> Tuple[int, int]:
+    def get_data_shape(self) -> tuple[int, int]:
         """Obtener forma de los datos actuales"""
         if self.df_vista_actual is not None:
             return self.df_vista_actual.shape
         return (0, 0)
     
-    def get_filepath(self) -> Optional[str]:
+    def get_filepath(self) -> str | None:
         """Obtener ruta del archivo cargado"""
         if self.loading_thread:
             return self.loading_thread.filepath

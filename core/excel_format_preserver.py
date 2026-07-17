@@ -6,19 +6,18 @@ Soluciona el problema de que las plantillas cambian de formato al insertar valor
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment, NamedStyle
 from openpyxl.utils import get_column_letter, column_index_from_string
-from typing import Dict, Any, List, Tuple
+from typing import Any
 import copy
-
 
 class ExcelFormatPreserver:
     """Clase para preservar formato Excel durante modificaciones"""
     
     def __init__(self) -> None:
-        self.cached_formats: Dict[str, Any] = {}
-        self.original_styles: Dict[str, Any] = {}
-        self.worksheet_cache: Dict[str, Any] = {}
+        self.cached_formats: dict[str, Any] = {}
+        self.original_styles: dict[str, Any] = {}
+        self.worksheet_cache: dict[str, Any] = {}
     
-    def cache_workbook_formats(self, workbook: Any) -> Dict[str, Any]:
+    def cache_workbook_formats(self, workbook: Any) -> dict[str, Any]:
         """
         Cache todos los formatos de un workbook para preservar durante modificaciones
         
@@ -85,7 +84,7 @@ class ExcelFormatPreserver:
         
         return formats_cache
     
-    def restore_workbook_formats(self, workbook: Any, formats_cache: Dict[str, Any]) -> None:
+    def restore_workbook_formats(self, workbook: Any, formats_cache: dict[str, Any]) -> None:
         """
         Restaurar todos los formatos de un workbook desde el cache
         
@@ -134,7 +133,7 @@ class ExcelFormatPreserver:
                     except Exception as e:
                         print(f"Warning: No se pudo restaurar formato de celda {cell_coord}: {e}")
     
-    def _extract_cell_format(self, cell: Any) -> Dict[str, Any]:
+    def _extract_cell_format(self, cell: Any) -> dict[str, Any]:
         """
         Extraer formato completo de una celda
         
@@ -174,7 +173,7 @@ class ExcelFormatPreserver:
         
         return format_dict
     
-    def _apply_cell_format(self, cell: Any, format_dict: Dict[str, Any]) -> None:
+    def _apply_cell_format(self, cell: Any, format_dict: dict[str, Any]) -> None:
         """
         Aplicar formato a una celda preservando valor
         
@@ -218,8 +217,8 @@ class ExcelFormatPreserver:
             cell.number_format != 'General'
         )
     
-    def insert_data_preserving_format(self, worksheet: Any, data: Dict[Tuple[int, int], Any], 
-                                    column_mapping: Dict[str, str], start_cell: str) -> None:
+    def insert_data_preserving_format(self, worksheet: Any, data: dict[tuple[int, int], Any], 
+                                    column_mapping: dict[str, str], start_cell: str) -> None:
         """
         Insertar datos en worksheet preservando formato existente
         
@@ -290,9 +289,8 @@ class ExcelFormatPreserver:
             except Exception as e:
                 print(f"Warning: No se pudo restaurar formato de {cell_coord}: {e}")
 
-
 def create_template_with_preserved_format(template_path: str, output_path: str, 
-                                        data: Dict[str, Any], column_mapping: Dict[str, str],
+                                        data: dict[str, Any], column_mapping: dict[str, str],
                                         start_cell: str) -> bool:
     """
     Función utilitaria para crear archivo Excel con formato preservado

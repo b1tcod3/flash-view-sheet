@@ -7,14 +7,13 @@ advanced filtering and aggregation operations.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, Optional, List, Union, Tuple
+from typing import Any
 import logging
 from datetime import datetime
 from abc import ABC, abstractmethod
 
 # Configurar logging
 logger = logging.getLogger(__name__)
-
 
 class BasePivotTable(ABC):
     """
@@ -64,7 +63,7 @@ class BasePivotTable(ABC):
         logger.info(f"DataFrame válido para pivoteo: {df.shape}")
         return True
         
-    def validate_columns_exist(self, df: pd.DataFrame, columns: List[str]) -> bool:
+    def validate_columns_exist(self, df: pd.DataFrame, columns: list[str]) -> bool:
         """
         Validar que las columnas especificadas existen en el DataFrame
         
@@ -83,7 +82,7 @@ class BasePivotTable(ABC):
             raise ValueError(f"Columnas no encontradas: {missing_columns}")
         return True
         
-    def normalize_parameter(self, param: Union[str, List[str]]) -> List[str]:
+    def normalize_parameter(self, param: str | list[str]) -> list[str]:
         """
         Normalizar un parámetro a lista de strings
         
@@ -91,13 +90,13 @@ class BasePivotTable(ABC):
             param: Parámetro que puede ser string o lista
             
         Returns:
-            List[str]: Lista de strings normalizada
+            list[str]: Lista de strings normalizada
         """
         if isinstance(param, str):
             return [param]
         return param
         
-    def apply_filters(self, df: pd.DataFrame, filters: Dict[str, Any]) -> pd.DataFrame:
+    def apply_filters(self, df: pd.DataFrame, filters: dict[str, Any]) -> pd.DataFrame:
         """
         Aplicar filtros al DataFrame antes del pivoteo
         
@@ -149,8 +148,8 @@ class BasePivotTable(ABC):
                     
         return filtered_df
         
-    def execute_basic_pivot(self, df: pd.DataFrame, index: List[str], columns: List[str], 
-                          values: List[str], aggfunc: Union[str, List[str]], 
+    def execute_basic_pivot(self, df: pd.DataFrame, index: list[str], columns: list[str], 
+                          values: list[str], aggfunc: str | list[str], 
                           fill_value: Any = None, dropna: bool = True, 
                           margins: bool = False, margins_name: str = 'All') -> pd.DataFrame:
         """
@@ -197,8 +196,8 @@ class BasePivotTable(ABC):
             logger.error(f"Error en pivoteo básico: {str(e)}")
             raise
             
-    def _execute_single_value_pivot(self, df: pd.DataFrame, index: List[str], 
-                                  columns: List[str], value: str, aggfunc: Union[str, List[str]], 
+    def _execute_single_value_pivot(self, df: pd.DataFrame, index: list[str], 
+                                  columns: list[str], value: str, aggfunc: str | list[str], 
                                   fill_value: Any = None, dropna: bool = True, 
                                   margins: bool = False, margins_name: str = 'All') -> pd.DataFrame:
         """Ejecutar pivoteo para un solo valor"""
@@ -224,8 +223,8 @@ class BasePivotTable(ABC):
             logger.error(f"Error al crear tabla pivote para valor único: {str(e)}")
             return pd.DataFrame()
             
-    def _execute_multi_value_pivot(self, df: pd.DataFrame, index: List[str],
-                                 columns: List[str], values: List[str], aggfunc: List[str],
+    def _execute_multi_value_pivot(self, df: pd.DataFrame, index: list[str],
+                                 columns: list[str], values: list[str], aggfunc: list[str],
                                  fill_value: Any = None, dropna: bool = True,
                                  margins: bool = False, margins_name: str = 'All') -> pd.DataFrame:
         """Ejecutar pivoteo para múltiples valores con estrategia mejorada"""
@@ -371,7 +370,7 @@ class BasePivotTable(ABC):
             return pd.DataFrame()
             
     @abstractmethod
-    def execute(self, df: pd.DataFrame, parameters: Dict[str, Any] = None) -> pd.DataFrame:
+    def execute(self, df: pd.DataFrame, parameters: dict[str, Any] = None) -> pd.DataFrame:
         """
         Ejecutar la tabla pivote con parámetros específicos
         
@@ -392,7 +391,6 @@ class BasePivotTable(ABC):
         """Obtener nombre de la tabla pivote"""
         return self.name
 
-
 class SimplePivotTable(BasePivotTable):
     """
     Implementación de tabla pivote simple
@@ -406,7 +404,7 @@ class SimplePivotTable(BasePivotTable):
             "Pivoteo simple: una columna para filas, una para columnas, una para valores"
         )
         
-    def execute(self, df: pd.DataFrame, parameters: Dict[str, Any] = None) -> pd.DataFrame:
+    def execute(self, df: pd.DataFrame, parameters: dict[str, Any] = None) -> pd.DataFrame:
         """
         Ejecutar pivoteo simple
         
@@ -482,7 +480,6 @@ class SimplePivotTable(BasePivotTable):
             logger.error(f"Error en pivoteo simple: {str(e)}")
             raise
 
-
 class CombinedPivotTable(BasePivotTable):
     """
     Implementación de tabla pivote combinada
@@ -496,7 +493,7 @@ class CombinedPivotTable(BasePivotTable):
             "Pivoteo combinado: múltiples columnas para filas, columnas, valores y agregaciones"
         )
         
-    def execute(self, df: pd.DataFrame, parameters: Dict[str, Any] = None) -> pd.DataFrame:
+    def execute(self, df: pd.DataFrame, parameters: dict[str, Any] = None) -> pd.DataFrame:
         """
         Ejecutar pivoteo combinado
         

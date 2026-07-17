@@ -7,29 +7,29 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QGroupBox, QDialogButtonBox,
                                QListWidget, QListWidgetItem, QCheckBox,
                                QTableWidget, QTableWidgetItem, QHeaderView,
-                               QFileDialog, QMessageBox, QSplitter, QFrame)
+                               QFileDialog, QMessageBox, QSplitter, QFrame,
+                               QWidget)
 from PySide6.QtCore import Qt
-from typing import List, Dict, Any, Optional
+from typing import Any
 from pathlib import Path
 
 from core.loaders.folder_loader import FolderLoader
 from core.models.folder_load_config import FolderLoadConfig, ColumnAlignmentStrategy
 from .column_alignment_preview import ColumnAlignmentPreview
 
-
 class FolderLoadDialog(QDialog):
     """
     Dialog for configuring folder loading operations
     """
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Cargar Carpeta con Archivos Excel")
         self.resize(800, 600)
 
-        self.folder_loader: Optional[FolderLoader] = None
+        self.folder_loader: FolderLoader | None = None
         self.config: FolderLoadConfig = FolderLoadConfig(folder_path="")
-        self.file_checkboxes: Dict[str, QCheckBox] = {}
+        self.file_checkboxes: dict[str, QCheckBox] = {}
 
         self.setup_ui()
         self.connect_signals()

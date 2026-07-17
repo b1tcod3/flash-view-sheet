@@ -11,12 +11,11 @@ from PySide6.QtCore import Qt, Signal, QThread
 from PySide6.QtGui import QFont, QPixmap
 import pandas as pd
 import traceback
-from typing import Dict, List, Any, Optional
+from typing import Any
 import logging
 
 # Configurar logging
 logger = logging.getLogger(__name__)
-
 
 class PivotWorkerThread(QThread):
     """Hilo para ejecutar operaciones de pivoteo en segundo plano"""
@@ -25,7 +24,7 @@ class PivotWorkerThread(QThread):
     pivot_completed = Signal(object)  # Pandas DataFrame
     error_occurred = Signal(str)
     
-    def __init__(self, df: pd.DataFrame | None, pivot_type: str, parameters: Dict[str, Any], parent: QThread | None = None) -> None:
+    def __init__(self, df: pd.DataFrame | None, pivot_type: str, parameters: dict[str, Any], parent: QThread | None = None) -> None:
         super().__init__(parent)
         self.df = df.copy() if df is not None else None
         self.pivot_type = pivot_type  # 'simple' o 'combined'
@@ -62,7 +61,6 @@ class PivotWorkerThread(QThread):
             error_msg = f"Error al crear tabla pivote: {str(e)}\n{traceback.format_exc()}"
             self.error_occurred.emit(error_msg)
 
-
 class PivotTableWidget(QWidget):
     """
     Widget principal para crear y configurar tablas pivote
@@ -78,7 +76,7 @@ class PivotTableWidget(QWidget):
         self.df_original: pd.DataFrame | None = None
         self.df_current: pd.DataFrame | None = None
         self.worker_thread: PivotWorkerThread | None = None
-        self.current_pivot_params: Dict[str, Any] = {}
+        self.current_pivot_params: dict[str, Any] = {}
         self.current_pivot_type: str = 'simple'
         
         self.setup_ui()
@@ -666,9 +664,9 @@ class PivotTableWidget(QWidget):
             self.pivot_columns_list.setSelectionMode(QListWidget.MultiSelection)
             self.values_columns_list.setSelectionMode(QListWidget.MultiSelection)
     
-    def get_selected_values_columns(self) -> List[str]:
+    def get_selected_values_columns(self) -> list[str]:
         """Obtener columnas de valores seleccionadas"""
-        values_columns: List[str] = []
+        values_columns: list[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -679,19 +677,19 @@ class PivotTableWidget(QWidget):
         """Manejar cambios en filtros"""
         self.current_pivot_params['filters'] = filters
     
-    def on_aggregations_changed(self, aggregations: List[Dict[str, Any]]) -> None:
+    def on_aggregations_changed(self, aggregations: list[dict[str, Any]]) -> None:
         """Manejar cambios en agregaciones"""
         # Convertir agregaciones a formato de parámetros
         if aggregations:
             aggfuncs = [agg.get('function', 'mean') for agg in aggregations if agg.get('active', True)]
             self.current_pivot_params['aggfuncs'] = aggfuncs
             
-    def get_current_parameters(self) -> Dict[str, Any]:
+    def get_current_parameters(self) -> dict[str, Any]:
         """Obtener parámetros actuales de configuración"""
-        parameters: Dict[str, Any] = {}
+        parameters: dict[str, Any] = {}
         
         # Obtener índices seleccionados
-        index_columns: List[str] = []
+        index_columns: list[str] = []
         for i in range(self.index_columns_list.count()):
             item = self.index_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -699,7 +697,7 @@ class PivotTableWidget(QWidget):
         parameters['index'] = index_columns
         
         # Obtener columnas del pivote seleccionadas
-        pivot_columns: List[str] = []
+        pivot_columns: list[str] = []
         for i in range(self.pivot_columns_list.count()):
             item = self.pivot_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -707,7 +705,7 @@ class PivotTableWidget(QWidget):
         parameters['columns'] = pivot_columns
         
         # Obtener columnas de valores seleccionadas
-        values_columns: List[str] = []
+        values_columns: list[str] = []
         for i in range(self.values_columns_list.count()):
             item = self.values_columns_list.item(i)
             if item.checkState() == Qt.Checked:
@@ -741,9 +739,9 @@ class PivotTableWidget(QWidget):
             
         return parameters
         
-    def validate_parameters(self, parameters: Dict[str, Any]) -> List[str]:
+    def validate_parameters(self, parameters: dict[str, Any]) -> list[str]:
         """Validar parámetros de configuración"""
-        errors: List[str] = []
+        errors: list[str] = []
         
         if not parameters.get('index'):
             errors.append("Debe seleccionar al menos una columna para índices")
@@ -1003,7 +1001,7 @@ class PivotTableWidget(QWidget):
             config = dialog.get_current_configuration()
             self.apply_configuration_from_dialog(config)
     
-    def apply_configuration_from_dialog(self, config: Dict[str, Any]) -> None:
+    def apply_configuration_from_dialog(self, config: dict[str, Any]) -> None:
         """Aplicar configuración desde el diálogo"""
         # Aplicar configuración básica
         if 'index' in config:
@@ -1032,7 +1030,7 @@ class PivotTableWidget(QWidget):
             if hasattr(self, 'filter_panel'):
                 self.filter_panel.set_active_filters(config['filters'])
     
-    def set_list_selections(self, list_widget: QListWidget, selected_items: List[str]) -> None:
+    def set_list_selections(self, list_widget: QListWidget, selected_items: list[str]) -> None:
         """Establecer selecciones en un QListWidget"""
         for i in range(list_widget.count()):
             item = list_widget.item(i)

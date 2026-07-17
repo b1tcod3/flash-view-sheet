@@ -13,8 +13,6 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QComboBox,
                                 QFrame, QMessageBox, QProgressBar)
 from PySide6.QtCore import Qt, QThread, Signal
 import numpy as np
-from typing import List
-
 
 class VisualizationWorker(QThread):
     """Hilo para generar visualizaciones en segundo plano"""
@@ -22,7 +20,7 @@ class VisualizationWorker(QThread):
     finished = Signal(object)  # Signal para enviar el canvas de matplotlib
     error = Signal(str)
 
-    def __init__(self, df: pd.DataFrame, plot_type: str, columns: List[str], parent: QThread | None = None) -> None:
+    def __init__(self, df: pd.DataFrame, plot_type: str, columns: list[str], parent: QThread | None = None) -> None:
         super().__init__(parent)
         self.df = df
         self.plot_type = plot_type
@@ -140,7 +138,6 @@ class VisualizationWorker(QThread):
             ax.text(0.5, 0.5, 'Selecciona dos columnas para gráfico de línea',
                     ha='center', va='center', transform=ax.transAxes)
 
-
 class VisualizationPanel(QWidget):
     """
     Panel para mostrar visualizaciones de datos
@@ -254,7 +251,7 @@ class VisualizationPanel(QWidget):
             return
 
         plot_type = self.plot_type_combo.currentText()
-        columns: List[str] = []
+        columns: list[str] = []
 
         if plot_type in ['Histograma', 'Box Plot']:
             if not self.x_column_combo.currentText():

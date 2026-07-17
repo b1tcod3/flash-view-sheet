@@ -5,19 +5,18 @@ Handles Excel formats (.xlsx, .xls)
 
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any
 from .base_loader import FileLoader
-
 
 class ExcelLoader(FileLoader):
     """
     File loader for Excel formats
     """
 
-    def get_supported_extensions(self) -> List[str]:
+    def get_supported_extensions(self) -> list[str]:
         return ['.xlsx', '.xls']
 
-    def load(self, skip_rows: int = 0, column_names: Optional[Dict[str, str]] = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
         """
         Load Excel file into DataFrame
         
@@ -45,7 +44,7 @@ class ExcelLoader(FileLoader):
         except Exception as e:
             raise Exception(f"Error loading Excel file {self.filepath}: {str(e)}")
 
-    def get_file_info(self) -> Dict[str, Any]:
+    def get_file_info(self) -> dict[str, Any]:
         """
         Get information about the Excel file
         """

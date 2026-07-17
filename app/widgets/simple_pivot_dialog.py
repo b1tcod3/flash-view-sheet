@@ -10,8 +10,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 import pandas as pd
-from typing import Optional, Dict, Any, List
-
+from typing import Any
 
 class SimplePivotDialog(QDialog):
     """
@@ -19,7 +18,7 @@ class SimplePivotDialog(QDialog):
     Una sola columna para cada parámetro
     """
     
-    def __init__(self, df_original: Optional[pd.DataFrame] = None, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, df_original: pd.DataFrame | None = None, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df_original = df_original
         self.setup_ui()
@@ -156,7 +155,7 @@ class SimplePivotDialog(QDialog):
         for combo in combos_to_watch:
             combo.currentTextChanged.connect(self.update_preview)
             
-    def set_data(self, df: Optional[pd.DataFrame]) -> None:
+    def set_data(self, df: pd.DataFrame | None) -> None:
         """Establecer datos para configurar"""
         self.df_original = df
         
@@ -241,7 +240,7 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         
         QMessageBox.information(self, "Vista Previa", preview_text)
         
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Obtener configuración actual"""
         config = {
             'index': self.index_combo.currentText() if self.index_combo.currentText() else None,
@@ -253,7 +252,7 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         
         return config
         
-    def validate_configuration(self) -> List[str]:
+    def validate_configuration(self) -> list[str]:
         """Validar que la configuración esté completa"""
         config = self.get_config()
         
@@ -327,6 +326,6 @@ La tabla resultante tendrá como filas los valores únicos de '{config.get('inde
         # Todo validado, aceptar
         self.accept()
         
-    def get_configuration(self) -> Dict[str, Any]:
+    def get_configuration(self) -> dict[str, Any]:
         """Obtener configuración final (alias para compatibilidad)"""
         return self.get_config()
