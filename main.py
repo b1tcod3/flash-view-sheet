@@ -163,8 +163,7 @@ class MainWindow(QMainWindow):
     
     def mostrar_acerca_de(self) -> None:
         """Mostrar diálogo Acerca de"""
-        from app.widgets.about_dialog import AboutDialog
-        AboutDialog.show_about(self)
+        self.coordinator.mostrar_acerca_de()
     
     # ==================== EVENTOS ====================
     

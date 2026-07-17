@@ -375,6 +375,11 @@ class AppCoordinator(QObject):
             if not current_page_data.empty:
                 graphics_view.update_data(current_page_data)
 
+    def mostrar_acerca_de(self) -> None:
+        """Mostrar diálogo Acerca de"""
+        from app.widgets.about_dialog import AboutDialog
+        AboutDialog.show_about(self.parent)
+
     # ==================== CLEANUP ====================
 
     def cleanup(self) -> None:
