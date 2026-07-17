@@ -12,6 +12,7 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox, QFileDialog
 
 from app.services import DataService, ExportService, PivotService
+from app.services.data_service import DataLoaderThread, FolderLoaderThread
 from app.view_manager import ViewCoordinator, ViewRegistry
 from app.toolbar import ToolbarManager
 from app.widgets import JoinDialog, SimplePivotDialog, PivotConfigDialog, FolderLoadDialog
@@ -53,6 +54,8 @@ class AppCoordinator(QObject):
         self.view_coordinator = view_coordinator
         self.toolbar_manager = toolbar_manager
         self.join_history = join_history
+        self._loader_thread: DataLoaderThread | None = None
+        self._folder_thread: FolderLoaderThread | None = None
     
     # ==================== CARGA DE ARCHIVO ====================
 
@@ -82,6 +85,8 @@ class AppCoordinator(QObject):
             self.status_message.emit(f"Formato no soportado: {path.suffix}")
             return
 
+        self._cancel_thread(self._loader_thread)
+
         progress = self.data_service.create_progress_dialog(
             "Cargando datos", "Cargando archivo..."
         )
@@ -97,12 +102,14 @@ class AppCoordinator(QObject):
             self._on_error_carga(str(e))
             return
 
+        self._loader_thread = thread
         self._pending_vis = enable_vis
         self._pending_col_vis = enable_column_visibility
 
         thread.data_loaded.connect(self._on_datos_cargados)
         thread.error_occurred.connect(self._on_error_carga)
         thread.finished.connect(progress.close)
+        thread.finished.connect(self._on_loader_finished)
         thread.start()
 
     # ==================== CALLBACKS DE DATOS ====================
@@ -154,6 +161,8 @@ class AppCoordinator(QObject):
     
     def procesar_carga_carpeta(self, config: FolderLoadConfig) -> None:
         """Procesar carga de carpeta en segundo plano"""
+        self._cancel_thread(self._folder_thread)
+
         progress = self.data_service.create_progress_dialog(
             "Cargando carpeta", "Escaneando archivos Excel..."
         )
@@ -169,9 +178,11 @@ class AppCoordinator(QObject):
             self._on_error_carga(str(e))
             return
 
+        self._folder_thread = thread
         thread.data_loaded.connect(self._on_folder_data_loaded)
         thread.error_occurred.connect(self._on_error_carga)
         thread.finished.connect(progress.close)
+        thread.finished.connect(self._on_folder_finished)
         thread.progress_updated.connect(
             lambda current, total: progress.setValue(int(current / total * 100)) if total > 0 else None
         )
@@ -380,10 +391,34 @@ class AppCoordinator(QObject):
         from app.widgets.about_dialog import AboutDialog
         AboutDialog.show_about(self.parent)
 
+    # ==================== THREAD CLEANUP ====================
+
+    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | None) -> None:
+        """Detener un hilo de forma segura si está corriendo."""
+        if thread is None or not thread.isRunning():
+            return
+        thread.requestInterruption()
+        thread.quit()
+        if not thread.wait(2000):
+            thread.terminate()
+            thread.wait(1000)
+
+    def _on_loader_finished(self) -> None:
+        self._loader_thread = None
+
+    def _on_folder_finished(self) -> None:
+        self._folder_thread = None
+
     # ==================== CLEANUP ====================
 
     def cleanup(self) -> None:
         """Limpieza profunda de recursos, señales e historial."""
+        # 0. Detener hilos de carga activos
+        self._cancel_thread(self._loader_thread)
+        self._cancel_thread(self._folder_thread)
+        self._loader_thread = None
+        self._folder_thread = None
+
         # 1. Desconectar señales de manera segura
         for sig in (self.status_message, self.datos_originales_cargados,
                     self.datos_actualizados, self.datos_disponibles):

@@ -332,3 +332,7 @@ class DataService:
         # 4. Forzar recolección de basura
         import gc
         gc.collect()
+
+        # 5. Liberar referencias a hilos
+        self.loading_thread = None
+        self.folder_loading_thread = None
