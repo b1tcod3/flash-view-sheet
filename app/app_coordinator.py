@@ -47,7 +47,7 @@ class AppCoordinator(QObject):
         """Inicializar el coordinador"""
         super().__init__(parent_window)
         
-        self.parent = parent_window
+        self.parent_window = parent_window
         self.data_service = data_service
         self.export_service = export_service
         self.pivot_service = pivot_service
@@ -63,14 +63,14 @@ class AppCoordinator(QObject):
         """Muestra QFileDialog y arranca la carga si se selecciona un archivo."""
         filtro = self.data_service.get_file_filter()
         filepath, _ = QFileDialog.getOpenFileName(
-            self.parent, "Abrir archivo de datos", "", filtro
+            self.parent_window, "Abrir archivo de datos", "", filtro
         )
         if filepath:
             self.iniciar_carga_archivo(filepath, skip_rows=0, column_names={})
 
     def solicitar_carga_carpeta(self) -> None:
         """Muestra FolderLoadDialog y procesa la carga si se confirma."""
-        dialog = FolderLoadDialog(self.parent)
+        dialog = FolderLoadDialog(self.parent_window)
         if dialog.exec():
             config = dialog.get_config()
             if config and config.folder_path:
@@ -122,9 +122,6 @@ class AppCoordinator(QObject):
         # Actualizar MainView con info del archivo
         self.view_coordinator.update_main_view(self.data_service.get_filepath())
         
-        # Actualizar estado UI
-        self._actualizar_ui_post_carga()
-        
         # Emitir señales para que las vistas reaccionen
         self.datos_originales_cargados.emit(self.data_service.datos_originales)
         self.datos_actualizados.emit(self.data_service.datos_actuales)
@@ -146,16 +143,8 @@ class AppCoordinator(QObject):
     
     def _on_error_carga(self, error_message: str) -> None:
         """Manejar error de carga"""
-        QMessageBox.critical(self.parent, "Error de carga", error_message)
+        QMessageBox.critical(self.parent_window, "Error de carga", error_message)
         self.status_message.emit("Error al cargar archivo")
-    
-    def _actualizar_ui_post_carga(self) -> None:
-        """Actualizar UI después de cargar datos"""
-        main_view = self.view_coordinator.get_main_view()
-        
-        if main_view:
-            main_view.set_file_info(self.data_service.get_filepath())
-            main_view.show_options_button()
     
     # ==================== CARGA DE CARPETA ====================
     
@@ -200,7 +189,7 @@ class AppCoordinator(QObject):
         self.datos_disponibles.emit(True)
         
         rows, cols = df.shape
-        QMessageBox.information(self.parent, "Éxito",
+        QMessageBox.information(self.parent_window, "Éxito",
             f"Carpeta cargada exitosamente.\n\n"
             f"Filas: {rows}, Columnas: {cols}")
         
@@ -211,11 +200,11 @@ class AppCoordinator(QObject):
     def abrir_cruzar_datos(self) -> None:
         """Abrir diálogo para cruzar datos"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos cargados para cruzar.")
             return
         
-        dialog = JoinDialog(self.data_service.datos_actuales, self.parent)
+        dialog = JoinDialog(self.data_service.datos_actuales, self.parent_window)
         dialog.join_completed.connect(self._on_join_completed)
         dialog.exec()
     
@@ -238,7 +227,7 @@ class AppCoordinator(QObject):
                 f"Cruce completado: {result.metadata.result_rows} filas")
             
         except Exception as e:
-            QMessageBox.critical(self.parent, "Error", 
+            QMessageBox.critical(self.parent_window, "Error", 
                                f"Error procesando resultado del join: {str(e)}")
     
     def _basename(self, path: str) -> str:
@@ -251,11 +240,11 @@ class AppCoordinator(QObject):
     def abrir_pivot_simple(self) -> None:
         """Abrir diálogo de pivote simple"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos cargados.")
             return
         
-        dialog = SimplePivotDialog(self.data_service.datos_actuales, self.parent)
+        dialog = SimplePivotDialog(self.data_service.datos_actuales, self.parent_window)
         if dialog.exec() == QMessageBox.Accepted:
             config = dialog.get_config()
             if config:
@@ -271,21 +260,21 @@ class AppCoordinator(QObject):
             self.view_coordinator.switch_to(ViewRegistry.VIEW_DATA)
             self.datos_actualizados.emit(self.data_service.datos_actuales)
             self.status_message.emit(f"Pivote simple: {len(result)} filas")
-            QMessageBox.information(self.parent, "Éxito",
+            QMessageBox.information(self.parent_window, "Éxito",
                 f"Tabla pivote creada.\n\n"
                 f"Dimensiones: {len(result)} filas x {len(result.columns)} columnas")
         else:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No se pudo crear la tabla pivote.")
     
     def abrir_pivot_combinada(self) -> None:
         """Abrir diálogo de pivote combinada"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos cargados.")
             return
         
-        dialog = PivotConfigDialog(self.data_service.datos_actuales, self.parent)
+        dialog = PivotConfigDialog(self.data_service.datos_actuales, self.parent_window)
         if dialog.exec() == QMessageBox.Accepted:
             config = dialog.get_config()
             if config:
@@ -301,21 +290,21 @@ class AppCoordinator(QObject):
             self.view_coordinator.switch_to(ViewRegistry.VIEW_DATA)
             self.datos_actualizados.emit(self.data_service.datos_actuales)
             self.status_message.emit(f"Pivote combinada: {len(result)} filas")
-            QMessageBox.information(self.parent, "Éxito",
+            QMessageBox.information(self.parent_window, "Éxito",
                 f"Tabla pivote combinada creada.\n\n"
                 f"Dimensiones: {len(result)} filas x {len(result.columns)} columnas")
         else:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No se pudo crear la tabla pivote.")
     
     def exportar_resultado_pivote(self) -> None:
         """Exportar resultado de pivote"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Resultado_Pivote", parent=self.parent)
+            self.data_service.datos_actuales, "Resultado_Pivote", parent=self.parent_window)
     
     # ==================== EXPORTACIÓN ====================
     
@@ -326,42 +315,42 @@ class AppCoordinator(QObject):
             self.view_coordinator.show_info_modal(
                 df, self.data_service.get_filename())
         else:
-            QMessageBox.warning(self.parent, "Advertencia",
+            QMessageBox.warning(self.parent_window, "Advertencia",
                               "No hay datos cargados.")
 
     def exportar_a_pdf(self) -> None:
         """Exportar a PDF"""
-        self.export_service.export_to_pdf(self.data_service.datos_actuales, parent=self.parent)
+        self.export_service.export_to_pdf(self.data_service.datos_actuales, parent=self.parent_window)
     
     def exportar_a_xlsx(self) -> None:
         """Exportar a Excel"""
-        self.export_service.export_to_xlsx(self.data_service.datos_actuales, parent=self.parent)
+        self.export_service.export_to_xlsx(self.data_service.datos_actuales, parent=self.parent_window)
     
     def exportar_a_csv(self) -> None:
         """Exportar a CSV"""
-        self.export_service.export_to_csv(self.data_service.datos_actuales, parent=self.parent)
+        self.export_service.export_to_csv(self.data_service.datos_actuales, parent=self.parent_window)
     
     def exportar_a_sql(self) -> None:
         """Exportar a SQL"""
-        self.export_service.export_to_sql(self.data_service.datos_actuales, parent=self.parent)
+        self.export_service.export_to_sql(self.data_service.datos_actuales, parent=self.parent_window)
     
     def exportar_a_imagen(self) -> None:
         """Exportar a imagen"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Exportacion_Imagen", parent=self.parent)
+            self.data_service.datos_actuales, "Exportacion_Imagen", parent=self.parent_window)
     
     def exportar_datos_separados(self) -> None:
         """Exportar datos separados"""
         if not self.data_service.has_data:
-            QMessageBox.warning(self.parent, "Advertencia", 
+            QMessageBox.warning(self.parent_window, "Advertencia", 
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Exportacion_Separada", parent=self.parent)
+            self.data_service.datos_actuales, "Exportacion_Separada", parent=self.parent_window)
     
     # ==================== FILTROS ====================
     
@@ -385,7 +374,7 @@ class AppCoordinator(QObject):
     def mostrar_acerca_de(self) -> None:
         """Mostrar diálogo Acerca de"""
         from app.widgets.about_dialog import AboutDialog
-        AboutDialog.show_about(self.parent)
+        AboutDialog.show_about(self.parent_window)
 
     # ==================== THREAD CLEANUP ====================
 
