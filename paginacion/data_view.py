@@ -27,7 +27,7 @@ class DataView(QWidget):
     # Señales para comunicación con ventana principal
     filter_applied = Signal(str, str)  # columna, término
     filter_cleared = Signal()
-    data_updated = Signal()  # Datos actualizados (para actualizar gráficos, etc.)
+    data_updated = Signal(object)  # pd.DataFrame completo filtrado
     
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -425,8 +425,9 @@ class DataView(QWidget):
         # Actualizar estado de botones
         self.update_pagination_buttons()
         
-        # Emitir señal de datos actualizados
-        self.data_updated.emit()
+        # Emitir señal de datos actualizados con el DataFrame completo filtrado
+        if self.pagination_manager is not None:
+            self.data_updated.emit(self.pagination_manager.filtered_df)
         
     def update_page_info(self) -> None:
         """Actualizar etiqueta de información de página"""

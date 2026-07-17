@@ -233,13 +233,13 @@ class ViewCoordinator(QObject):
             self._main_view.set_original_columns(df.columns.tolist())
     
     def on_datos_actualizados(self, df: Any) -> None:
-        """Slot para reaccionar a la actualización de datos actuales
+        """Slot para reaccionar a la actualización de datos actuales.
         
-        Actualiza la vista de datos y la vista de gráficos con los nuevos datos.
+        Actualiza la vista de datos. La vista de gráficos se actualiza
+        vía la señal data_updated de DataView (flujo unidireccional).
         """
         if df is not None:
             self.update_data_view(df)
-            self.update_graphics_view(df)
 
     def toggle_visualization(self, enabled: bool) -> None:
         """Habilitar o deshabilitar el panel de gráficos/visualización"""

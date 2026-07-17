@@ -376,15 +376,11 @@ class AppCoordinator(QObject):
         self.status_message.emit("Filtro limpiado")
         self.datos_actualizados.emit(self.data_service.datos_actuales)
     
-    def on_data_updated(self) -> None:
-        """Manejar datos actualizados"""
+    def on_data_updated(self, df: pd.DataFrame) -> None:
+        """Manejar datos actualizados — reenvía el DataFrame filtrado a la vista de gráficos."""
         graphics_view = self.view_coordinator.get_graphics_view()
-        data_view = self.view_coordinator.get_data_view()
-        
-        if graphics_view and data_view:
-            current_page_data = data_view.export_current_page()
-            if not current_page_data.empty:
-                graphics_view.update_data(current_page_data)
+        if graphics_view and not df.empty:
+            graphics_view.update_data(df)
 
     def mostrar_acerca_de(self) -> None:
         """Mostrar diálogo Acerca de"""
