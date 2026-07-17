@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 import sys
 
 # Añadir directorio raíz para importar config
@@ -677,7 +677,7 @@ class ExportSeparatedConfig:
     # Opciones de rendimiento
     enable_chunking: bool = True  # Habilitar chunking automático
     max_memory_mb: int = 2048  # Límite de memoria
-    progress_callback: callable | None = None  # Callback de progreso
+    progress_callback: Callable | None = None  # Callback de progreso
     
     def validate(self) -> dict[str, Any]:
         """Validar configuración completa"""

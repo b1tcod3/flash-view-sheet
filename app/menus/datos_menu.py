@@ -1,31 +1,17 @@
 """
 Menú Datos para Flash View Sheet.
-
-Este módulo define la creación y configuración del menú Datos.
 """
 
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenu, QMenuBar
-from .menu_actions import MenuActions
 from typing import Any
 
+
 class DatosMenu:
-    """
-    Clase para crear y configurar el menú Datos.
-    """
-    
+    """Clase para crear y configurar el menú Datos."""
+
     @staticmethod
-    def create(menu_bar: QMenuBar, parent_window: Any) -> QMenu:
-        """
-        Crear el menú Datos.
-        
-        Args:
-            menu_bar: QMenuBar donde se añadirá el menú
-            parent_window: Referencia a la ventana principal
-            
-        Returns:
-            QMenu: El menú Datos creado
-        """
+    def create(menu_bar: QMenuBar, cruzar_datos_action: QAction) -> QMenu:
         datos_menu = menu_bar.addMenu("&Datos")
-        datos_menu.addAction(MenuActions.CRUZAR_DATOS)
-        
+        datos_menu.addAction(cruzar_datos_action)
         return datos_menu

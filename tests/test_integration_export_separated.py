@@ -17,7 +17,6 @@ from PySide6.QtCore import Qt
 
 from main import MainWindow
 from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig, exportar_datos_separados
-from app.menus import MenuActions
 
 
 class TestExportSeparatedIntegration(unittest.TestCase):
@@ -87,13 +86,13 @@ class TestExportSeparatedIntegration(unittest.TestCase):
         window.data_service.set_original_data(self.df_test.copy())
         
         # Habilitar acciones de datos via single source of truth
-        MenuActions.enable_data_actions(True)
+        window.menu_builder.set_data_actions_enabled(True)
         
-        self.assertTrue(MenuActions.exportar_separado_action.isEnabled())
+        self.assertTrue(window.menu_builder.exportar_separado_action.isEnabled())
         
         # Verificar que tiene el status tip correcto
         expected_tip = "Exportar datos separados por columna usando plantillas Excel"
-        self.assertEqual(MenuActions.exportar_separado_action.statusTip(), expected_tip)
+        self.assertEqual(window.menu_builder.exportar_separado_action.statusTip(), expected_tip)
     
     def test_export_processing_integration(self) -> None:
         """Test procesamiento de exportación desde core"""
@@ -122,13 +121,13 @@ class TestExportSeparatedIntegration(unittest.TestCase):
         window = MainWindow()
         
         # Sin datos
-        MenuActions.enable_data_actions(False)
-        self.assertFalse(MenuActions.exportar_separado_action.isEnabled())
+        window.menu_builder.set_data_actions_enabled(False)
+        self.assertFalse(window.menu_builder.exportar_separado_action.isEnabled())
         
         # Con datos válidos
         window.data_service.set_original_data(self.df_test.copy())
-        MenuActions.enable_data_actions(True)
-        self.assertTrue(MenuActions.exportar_separado_action.isEnabled())
+        window.menu_builder.set_data_actions_enabled(True)
+        self.assertTrue(window.menu_builder.exportar_separado_action.isEnabled())
     
     def test_error_handling_integration(self) -> None:
         """Test manejo de errores en la integración"""
@@ -175,7 +174,7 @@ class TestExportSeparatedIntegration(unittest.TestCase):
         window = MainWindow()
         
         # Verificar que la acción del menú existe
-        action = MenuActions.exportar_separado_action
+        action = window.menu_builder.exportar_separado_action
         self.assertIsNotNone(action)
         
         # Verificar que el método exportar_datos_separados existe en el coordinator

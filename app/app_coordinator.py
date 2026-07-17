@@ -42,7 +42,7 @@ class AppCoordinator(QObject):
     datos_disponibles = Signal(bool)
     
     def __init__(self, parent_window: 'QMainWindow', data_service: DataService, export_service: ExportService, 
-                 pivot_service: PivotService, view_coordinator: ViewCoordinator, toolbar_manager: ToolbarManager, join_history: JoinHistory | None) -> None:
+                 pivot_service: PivotService, view_coordinator: ViewCoordinator, toolbar_manager: ToolbarManager, join_history: JoinHistory) -> None:
         """Inicializar el coordinador"""
         super().__init__(parent_window)
         
@@ -304,7 +304,7 @@ class AppCoordinator(QObject):
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Resultado_Pivote")
+            self.data_service.datos_actuales, "Resultado_Pivote", parent=self.parent)
     
     # ==================== EXPORTACIÓN ====================
     
@@ -320,19 +320,19 @@ class AppCoordinator(QObject):
 
     def exportar_a_pdf(self) -> None:
         """Exportar a PDF"""
-        self.export_service.export_to_pdf(self.data_service.datos_actuales)
+        self.export_service.export_to_pdf(self.data_service.datos_actuales, parent=self.parent)
     
     def exportar_a_xlsx(self) -> None:
         """Exportar a Excel"""
-        self.export_service.export_to_xlsx(self.data_service.datos_actuales)
+        self.export_service.export_to_xlsx(self.data_service.datos_actuales, parent=self.parent)
     
     def exportar_a_csv(self) -> None:
         """Exportar a CSV"""
-        self.export_service.export_to_csv(self.data_service.datos_actuales)
+        self.export_service.export_to_csv(self.data_service.datos_actuales, parent=self.parent)
     
     def exportar_a_sql(self) -> None:
         """Exportar a SQL"""
-        self.export_service.export_to_sql(self.data_service.datos_actuales)
+        self.export_service.export_to_sql(self.data_service.datos_actuales, parent=self.parent)
     
     def exportar_a_imagen(self) -> None:
         """Exportar a imagen"""
@@ -341,7 +341,7 @@ class AppCoordinator(QObject):
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Exportacion_Imagen")
+            self.data_service.datos_actuales, "Exportacion_Imagen", parent=self.parent)
     
     def exportar_datos_separados(self) -> None:
         """Exportar datos separados"""
@@ -350,7 +350,7 @@ class AppCoordinator(QObject):
                               "No hay datos para exportar.")
             return
         self.export_service.show_export_dialog(
-            self.data_service.datos_actuales, "Exportacion_Separada")
+            self.data_service.datos_actuales, "Exportacion_Separada", parent=self.parent)
     
     # ==================== FILTROS ====================
     
@@ -378,15 +378,27 @@ class AppCoordinator(QObject):
     # ==================== CLEANUP ====================
 
     def cleanup(self) -> None:
-        """Desconectar señales y liberar referencias."""
+        """Limpieza profunda de recursos, señales e historial."""
+        # 1. Desconectar señales de manera segura
         for sig in (self.status_message, self.datos_originales_cargados,
                     self.datos_actualizados, self.datos_disponibles):
             try:
                 sig.disconnect()
             except RuntimeError:
                 pass
+
+        # 2. Liberar join_history
+        self.join_history = None  # type: ignore[assignment]
+
+        # 3. Liberar referencias a componentes
         self.view_coordinator = None  # type: ignore[assignment]
         self.toolbar_manager = None  # type: ignore[assignment]
+
+        # 4. Limpiar tareas pendientes del ThreadPool global
+        from PySide6.QtCore import QThreadPool
+        pool = QThreadPool.globalInstance()
+        if pool is not None:
+            pool.clear()
 
 # Exports
 __all__ = ['AppCoordinator']

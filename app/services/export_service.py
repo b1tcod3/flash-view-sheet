@@ -7,7 +7,8 @@ en Flash View Sheet.
 
 from typing import Any
 import pandas as pd
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QFileDialog, QInputDialog
+from PySide6.QtWidgets import (QWidget, QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                                QComboBox, QPushButton, QMessageBox, QFileDialog, QInputDialog)
 from PySide6.QtCore import Qt
 from core.data_handler import (
     exportar_a_pdf,
@@ -28,29 +29,21 @@ class ExportService:
     - Gestión de diálogos de exportación
     """
     
-    def __init__(self, parent_window: Any | None = None) -> None:
-        """Inicializar el servicio de exportación"""
-        self.parent_window = parent_window
-    
-    def set_parent_window(self, window: Any) -> None:
-        """Establecer ventana padre para diálogos"""
-        self.parent_window = window
-    
     def _ensure_extension(self, filepath: str, extension: str, valid_extensions: list[str]) -> str:
         """Asegurar que el archivo tenga la extensión correcta"""
         if not any(filepath.lower().endswith(ext) for ext in valid_extensions):
             filepath += extension
         return filepath
     
-    def export_to_pdf(self, df: pd.DataFrame, filepath: str | None = None) -> bool:
+    def export_to_pdf(self, df: pd.DataFrame, filepath: str | None = None, parent: QWidget | None = None) -> bool:
         """Exportar datos a PDF"""
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return False
         
         if filepath is None:
             filepath, _ = QFileDialog.getSaveFileName(
-                self.parent_window,
+                parent,
                 "Guardar como PDF",
                 "",
                 "Archivos PDF (*.pdf)"
@@ -64,24 +57,24 @@ class ExportService:
         try:
             success = exportar_a_pdf(df, filepath)
             if success:
-                QMessageBox.information(self.parent_window, "Éxito", f"Datos exportados a {filepath}")
+                QMessageBox.information(parent, "Éxito", f"Datos exportados a {filepath}")
                 return True
             else:
-                QMessageBox.critical(self.parent_window, "Error", "No se pudo exportar a PDF.")
+                QMessageBox.critical(parent, "Error", "No se pudo exportar a PDF.")
                 return False
         except Exception as e:
-            QMessageBox.critical(self.parent_window, "Error", f"Error exportando a PDF: {str(e)}")
+            QMessageBox.critical(parent, "Error", f"Error exportando a PDF: {str(e)}")
             return False
     
-    def export_to_xlsx(self, df: pd.DataFrame, filepath: str | None = None) -> bool:
+    def export_to_xlsx(self, df: pd.DataFrame, filepath: str | None = None, parent: QWidget | None = None) -> bool:
         """Exportar datos a Excel"""
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return False
         
         if filepath is None:
             filepath, _ = QFileDialog.getSaveFileName(
-                self.parent_window,
+                parent,
                 "Guardar como Excel",
                 "",
                 "Archivos Excel (*.xlsx)"
@@ -95,24 +88,24 @@ class ExportService:
         try:
             success = exportar_a_xlsx(df, filepath)
             if success:
-                QMessageBox.information(self.parent_window, "Éxito", f"Datos exportados a {filepath}")
+                QMessageBox.information(parent, "Éxito", f"Datos exportados a {filepath}")
                 return True
             else:
-                QMessageBox.critical(self.parent_window, "Error", "No se pudo exportar a XLSX.")
+                QMessageBox.critical(parent, "Error", "No se pudo exportar a XLSX.")
                 return False
         except Exception as e:
-            QMessageBox.critical(self.parent_window, "Error", f"Error exportando a XLSX: {str(e)}")
+            QMessageBox.critical(parent, "Error", f"Error exportando a XLSX: {str(e)}")
             return False
     
-    def export_to_csv(self, df: pd.DataFrame, filepath: str | None = None, delimiter: str = ',') -> bool:
+    def export_to_csv(self, df: pd.DataFrame, filepath: str | None = None, delimiter: str = ',', parent: QWidget | None = None) -> bool:
         """Exportar datos a CSV"""
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return False
         
         if filepath is None:
             filepath, _ = QFileDialog.getSaveFileName(
-                self.parent_window,
+                parent,
                 "Guardar como CSV",
                 "",
                 "Archivos CSV (*.csv)"
@@ -126,24 +119,24 @@ class ExportService:
         try:
             success = exportar_a_csv(df, filepath, delimiter=delimiter, encoding='utf-8')
             if success:
-                QMessageBox.information(self.parent_window, "Éxito", f"Datos exportados a {filepath}")
+                QMessageBox.information(parent, "Éxito", f"Datos exportados a {filepath}")
                 return True
             else:
-                QMessageBox.critical(self.parent_window, "Error", "No se pudo exportar a CSV.")
+                QMessageBox.critical(parent, "Error", "No se pudo exportar a CSV.")
                 return False
         except Exception as e:
-            QMessageBox.critical(self.parent_window, "Error", f"Error exportando a CSV: {str(e)}")
+            QMessageBox.critical(parent, "Error", f"Error exportando a CSV: {str(e)}")
             return False
     
-    def export_to_sql(self, df: pd.DataFrame, filepath: str | None = None, table_name: str | None = None) -> bool:
+    def export_to_sql(self, df: pd.DataFrame, filepath: str | None = None, table_name: str | None = None, parent: QWidget | None = None) -> bool:
         """Exportar datos a SQL"""
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return False
         
         if filepath is None:
             filepath, _ = QFileDialog.getSaveFileName(
-                self.parent_window,
+                parent,
                 "Guardar como Base de Datos SQL",
                 "",
                 "Bases de Datos SQLite (*.db)"
@@ -155,7 +148,7 @@ class ExportService:
         filepath = self._ensure_extension(filepath, '.db', ['.db', '.sqlite', '.sqlite3'])
         
         if table_name is None:
-            table_name, ok = self._get_text_input("Nombre de la Tabla", "Ingresa el nombre de la tabla:")
+            table_name, ok = self._get_text_input("Nombre de la Tabla", "Ingresa el nombre de la tabla:", parent)
             if not ok or not table_name:
                 return False
         
@@ -163,27 +156,27 @@ class ExportService:
             success = exportar_a_sql(df, filepath, table_name)
             if success:
                 QMessageBox.information(
-                    self.parent_window, 
+                    parent, 
                     "Éxito", 
                     f"Datos exportados a {filepath} en tabla '{table_name}'"
                 )
                 return True
             else:
-                QMessageBox.critical(self.parent_window, "Error", "No se pudo exportar a SQL.")
+                QMessageBox.critical(parent, "Error", "No se pudo exportar a SQL.")
                 return False
         except Exception as e:
-            QMessageBox.critical(self.parent_window, "Error", f"Error exportando a SQL: {str(e)}")
+            QMessageBox.critical(parent, "Error", f"Error exportando a SQL: {str(e)}")
             return False
     
-    def export_to_image(self, table_widget: Any, filepath: str | None = None) -> bool:
+    def export_to_image(self, table_widget: Any, filepath: str | None = None, parent: QWidget | None = None) -> bool:
         """Exportar vista de tabla a imagen"""
         if table_widget is None:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay tabla para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay tabla para exportar.")
             return False
         
         if filepath is None:
             filepath, _ = QFileDialog.getSaveFileName(
-                self.parent_window,
+                parent,
                 "Guardar como Imagen",
                 "",
                 "Archivos de Imagen (*.png *.jpg *.jpeg)"
@@ -198,16 +191,16 @@ class ExportService:
         try:
             success = exportar_a_imagen(table_widget, filepath)
             if success:
-                QMessageBox.information(self.parent_window, "Éxito", f"Imagen exportada a {filepath}")
+                QMessageBox.information(parent, "Éxito", f"Imagen exportada a {filepath}")
                 return True
             else:
-                QMessageBox.critical(self.parent_window, "Error", "No se pudo exportar a imagen.")
+                QMessageBox.critical(parent, "Error", "No se pudo exportar a imagen.")
                 return False
         except Exception as e:
-            QMessageBox.critical(self.parent_window, "Error", f"Error exportando a imagen: {str(e)}")
+            QMessageBox.critical(parent, "Error", f"Error exportando a imagen: {str(e)}")
             return False
     
-    def export_separated(self, df: pd.DataFrame, config: Any) -> dict[str, Any]:
+    def export_separated(self, df: pd.DataFrame, config: Any, parent: QWidget | None = None) -> dict[str, Any]:
         """
         Exportar datos separados por columna usando plantillas Excel.
         
@@ -219,7 +212,7 @@ class ExportService:
             Dict con resultado de la exportación
         """
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return {'success': False, 'error': 'No hay datos'}
         
         try:
@@ -245,21 +238,21 @@ class ExportService:
                     mensaje += f"\n\nPrimeros 10 archivos:\n" + "\n".join([f"• {archivo}" for archivo in archivos_generados[:10]])
                     mensaje += f"\n... y {len(archivos_generados) - 10} archivos más"
                 
-                QMessageBox.information(self.parent_window, "Éxito", mensaje)
+                QMessageBox.information(parent, "Éxito", mensaje)
                 return resultado
             else:
                 errores = resultado.get('errors', [])
                 if errores:
-                    QMessageBox.critical(self.parent_window, "Error en Exportación", 
+                    QMessageBox.critical(parent, "Error en Exportación", 
                                        f"No se pudo completar la exportación:\n\n{chr(10).join(errores)}")
                 return resultado
                 
         except Exception as e:
             error_msg = self._format_export_error(str(e))
-            QMessageBox.critical(self.parent_window, "Error", error_msg)
+            QMessageBox.critical(parent, "Error", error_msg)
             return {'success': False, 'error': str(e)}
     
-    def show_export_dialog(self, df: pd.DataFrame, default_prefix: str = "Exportacion") -> bool:
+    def show_export_dialog(self, df: pd.DataFrame, default_prefix: str = "Exportacion", parent: QWidget | None = None) -> bool:
         """
         Mostrar diálogo genérico de exportación con selección de formato.
         
@@ -271,10 +264,10 @@ class ExportService:
             True si se completó la exportación, False en caso contrario
         """
         if df is None or df.empty:
-            QMessageBox.warning(self.parent_window, "Advertencia", "No hay datos para exportar.")
+            QMessageBox.warning(parent, "Advertencia", "No hay datos para exportar.")
             return False
         
-        dialog = QDialog(self.parent_window)
+        dialog = QDialog(parent)
         dialog.setWindowTitle("Exportar Datos")
         dialog.setModal(True)
         
@@ -319,14 +312,14 @@ class ExportService:
         elif "PDF" in format_text:
             return self.export_to_pdf(df)
         elif "SQLite" in format_text:
-            return self.export_to_sql(df)
+            return self.export_to_sql(df, parent=parent)
         else:
-            QMessageBox.warning(self.parent_window, "Error", "Formato no soportado.")
+            QMessageBox.warning(parent, "Error", "Formato no soportado.")
             return False
     
-    def _get_text_input(self, title: str, label: str) -> tuple[str, bool]:
+    def _get_text_input(self, title: str, label: str, parent: QWidget | None = None) -> tuple[str, bool]:
         """Obtener entrada de texto del usuario"""
-        text, ok = QInputDialog.getText(self.parent_window, title, label)
+        text, ok = QInputDialog.getText(parent, title, label)
         return text, ok
     
     def _format_export_error(self, error_str: str) -> str:

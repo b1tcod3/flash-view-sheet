@@ -84,17 +84,17 @@ def test_view_mapping() -> None:
     """Test para verificar el mapeo de vistas"""
     print("\n🔍 Verificando mapeo de vistas...")
     
-    with open('main.py', 'r', encoding='utf-8') as f:
+    with open('app/view_manager/view_coordinator.py', 'r', encoding='utf-8') as f:
         content = f.read()
     
     # Verificar el orden de creación de vistas
     import re
     
     # Buscar las líneas donde se añaden widgets al stacked widget
-    view_creation_pattern = r'self\.stacked_widget\.addWidget\(self\.(\w+)\)'
+    view_creation_pattern = r'self\._stacked_widget\.addWidget\(self\.(\w+)\)'
     matches = re.findall(view_creation_pattern, content)
     
-    expected_order = ['main_view', 'data_view', 'graphics_view']
+    expected_order = ['_main_view', '_data_view', '_graphics_view', '_joined_data_view']
     
     print(f"📋 Orden de creación de vistas:")
     for i, view in enumerate(matches):

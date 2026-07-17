@@ -312,7 +312,8 @@ class DataService:
         return "Archivo cargado"
     
     def cleanup(self) -> None:
-        """Limpiar recursos del servicio de forma cooperativa"""
+        """Libera agresivamente la memoria de los DataFrames cargados."""
+        # 1. Detener hilos activos
         for thread in (self.loading_thread, self.folder_loading_thread):
             if thread and thread.isRunning():
                 thread.requestInterruption()
@@ -320,6 +321,14 @@ class DataService:
                 if not thread.wait(2000):
                     thread.terminate()
                     thread.wait(1000)
+
+        # 2. Cerrar diálogo de progreso
         self.close_progress_dialog()
+
+        # 3. Sobrescribir DataFrames pesados
         self.df_original = None
         self.df_vista_actual = None
+
+        # 4. Forzar recolección de basura
+        import gc
+        gc.collect()

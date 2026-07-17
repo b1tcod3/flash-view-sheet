@@ -1,163 +1,254 @@
 """
 Constructor de menús para Flash View Sheet.
 
-Este módulo proporciona una interfaz unificada para construir
-la barra de menús completa de la aplicación.
+Todas las acciones de menú viven como atributos de instancia de esta clase,
+eliminando el estado global de MenuActions. La señal datos_disponibles
+se conecta directamente al método set_data_actions_enabled().
 """
 
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenuBar
-from .menu_actions import MenuActions
 from .archivo_menu import ArchivoMenu
 from .datos_menu import DatosMenu
 from .vista_menu import VistaMenu
 from .exportar_menu import ExportarMenu
 from typing import Any
 
+
 class MenuBuilder:
     """
     Builder para crear la barra de menús completa.
     
-    Usage:
-        builder = MenuBuilder(parent_window)
-        menubar = builder.build()
+    Todas las QAction se crean y gestionan como atributos de instancia.
     """
-    
+
     def __init__(self, parent_window: Any) -> None:
-        """
-        Inicializar el constructor de menús.
-        
-        Args:
-            parent_window: Referencia a la ventana principal
-        """
         self.parent_window = parent_window
-        self.menu_bar = None
-        
+        self.menu_bar: QMenuBar | None = None
+
         # Referencias a menús para actualización posterior
-        self.separar_menu = None
-        self.datos_menu = None
-        self.tabla_pivote_menu = None
-        
+        self.separar_menu: Any | None = None
+        self.datos_menu: Any | None = None
+        self.tabla_pivote_menu: Any | None = None
+
+        # Acciones — se crean en _create_actions()
+        self.abrir_action: QAction
+        self.cargar_carpeta_action: QAction
+        self.exportar_pdf_action: QAction
+        self.exportar_imagen_action: QAction
+        self.exportar_xlsx_action: QAction
+        self.exportar_csv_action: QAction
+        self.exportar_sql_action: QAction
+        self.salir_action: QAction
+
+        self.exportar_separado_action: QAction
+
+        self.cruzar_datos_action: QAction
+
+        self.pivot_simple_action: QAction
+        self.pivot_combinada_action: QAction
+        self.export_pivot_action: QAction
+
+        self.vista_principal_action: QAction
+        self.vista_datos_action: QAction
+        self.vista_info_action: QAction
+        self.vista_graficos_action: QAction
+
+        self.acerca_de_action: QAction
+
+        self._create_actions()
+
+    def _create_actions(self) -> None:
+        """Crear todas las acciones como atributos de instancia."""
+        p = self.parent_window
+
+        # === Archivo ===
+        self.abrir_action = QAction("&Abrir...", p)
+        self.abrir_action.setShortcut("Ctrl+O")
+        self.abrir_action.setStatusTip("Abrir archivo de datos")
+
+        self.cargar_carpeta_action = QAction("&Cargar Carpeta...", p)
+        self.cargar_carpeta_action.setShortcut("Ctrl+Shift+O")
+        self.cargar_carpeta_action.setStatusTip("Cargar y consolidar carpeta de archivos Excel")
+
+        self.exportar_pdf_action = QAction("&PDF...", p)
+        self.exportar_pdf_action.setShortcut("Ctrl+P")
+        self.exportar_pdf_action.setStatusTip("Exportar datos a formato PDF")
+
+        self.exportar_imagen_action = QAction("&Imagen...", p)
+        self.exportar_imagen_action.setShortcut("Ctrl+I")
+        self.exportar_imagen_action.setStatusTip("Exportar vista actual como imagen")
+
+        self.exportar_xlsx_action = QAction("&XLSX...", p)
+        self.exportar_xlsx_action.setShortcut("Ctrl+X")
+        self.exportar_xlsx_action.setStatusTip("Exportar datos a formato Excel")
+
+        self.exportar_csv_action = QAction("&CSV...", p)
+        self.exportar_csv_action.setShortcut("Ctrl+C")
+        self.exportar_csv_action.setStatusTip("Exportar datos a formato CSV")
+
+        self.exportar_sql_action = QAction("&SQL...", p)
+        self.exportar_sql_action.setShortcut("Ctrl+S")
+        self.exportar_sql_action.setStatusTip("Exportar datos a base de datos SQLite")
+
+        self.salir_action = QAction("&Salir", p)
+        self.salir_action.setShortcut("Ctrl+Q")
+        self.salir_action.setStatusTip("Cerrar la aplicación")
+
+        # === Separar ===
+        self.exportar_separado_action = QAction("&Exportar Datos Separados...", p)
+        self.exportar_separado_action.setShortcut("Ctrl+Shift+S")
+        self.exportar_separado_action.setStatusTip("Exportar datos separados por columna usando plantillas Excel")
+        self.exportar_separado_action.setEnabled(False)
+
+        # === Datos ===
+        self.cruzar_datos_action = QAction("&Cruzar Datos...", p)
+        self.cruzar_datos_action.setShortcut("Ctrl+Shift+J")
+        self.cruzar_datos_action.setStatusTip("Cruzar datos con otro dataset usando operaciones de join")
+        self.cruzar_datos_action.setEnabled(False)
+
+        # === Tabla Pivote ===
+        self.pivot_simple_action = QAction("&Simple...", p)
+        self.pivot_simple_action.setShortcut("Ctrl+Alt+S")
+        self.pivot_simple_action.setStatusTip("Crear tabla pivote simple")
+        self.pivot_simple_action.setEnabled(False)
+
+        self.pivot_combinada_action = QAction("&Combinada...", p)
+        self.pivot_combinada_action.setShortcut("Ctrl+Alt+C")
+        self.pivot_combinada_action.setStatusTip("Crear tabla pivote combinada")
+        self.pivot_combinada_action.setEnabled(False)
+
+        self.export_pivot_action = QAction("&Exportar Datos Actuales...", p)
+        self.export_pivot_action.setShortcut("Ctrl+Alt+E")
+        self.export_pivot_action.setStatusTip("Exportar los datos que se muestran actualmente")
+        self.export_pivot_action.setEnabled(False)
+
+        # === Vista ===
+        self.vista_principal_action = QAction("&Vista Principal", p)
+        self.vista_principal_action.setShortcut("Ctrl+1")
+        self.vista_principal_action.setStatusTip("Cambiar a la vista principal")
+
+        self.vista_datos_action = QAction("&Vista de Datos", p)
+        self.vista_datos_action.setShortcut("Ctrl+2")
+        self.vista_datos_action.setStatusTip("Cambiar a la vista de datos")
+
+        self.vista_info_action = QAction("&Ver Información del dataset", p)
+        self.vista_info_action.setStatusTip("Mostrar información del dataset actual")
+
+        self.vista_graficos_action = QAction("&Vista Gráficos", p)
+        self.vista_graficos_action.setShortcut("Ctrl+G")
+        self.vista_graficos_action.setStatusTip("Cambiar a la vista de gráficos")
+
+        # === Ayuda ===
+        self.acerca_de_action = QAction("&Acerca de...", p)
+        self.acerca_de_action.setShortcut("F1")
+        self.acerca_de_action.setStatusTip("Mostrar información sobre la aplicación")
+
+    # ==================== CONSTRUCCIÓN ====================
+
     def build(self) -> QMenuBar:
-        """
-        Construir la barra de menús completa.
-        
-        Returns:
-            QMenuBar: La barra de menús configurada
-        """
-        # Inicializar acciones
-        MenuActions.initialize_actions(self.parent_window)
-        
-        # Crear barra de menús
+        """Construir la barra de menús completa."""
         self.menu_bar = QMenuBar()
-        
-        # Construir cada menú
+
         self._build_archivo_menu()
         self._build_separar_menu()
         self._build_datos_menu()
         self._build_tabla_pivote_menu()
         self._build_vista_menu()
         self._build_ayuda_menu()
-        
-        # Conectar señales de acciones directamente a coordinator
+
         self._connect_actions(
             self.parent_window.coordinator,
             self.parent_window.view_coordinator,
         )
-        
+
         return self.menu_bar
-    
+
     def _build_archivo_menu(self) -> None:
-        """Construir el menú Archivo."""
-        ArchivoMenu.create(
-            self.menu_bar,
-            MenuActions.get_archivo_actions(),
-            self.parent_window
-        )
-    
+        actions: list[QAction | None] = [
+            self.abrir_action,
+            self.cargar_carpeta_action,
+            None,
+            self.exportar_pdf_action,
+            self.exportar_imagen_action,
+            self.exportar_xlsx_action,
+            self.exportar_csv_action,
+            self.exportar_sql_action,
+            None,
+            self.salir_action,
+        ]
+        ArchivoMenu.create(self.menu_bar, actions, self.parent_window)
+
     def _build_separar_menu(self) -> None:
-        """Construir el menú Separar."""
-        from PySide6.QtWidgets import QMenu
-        
         self.separar_menu = self.menu_bar.addMenu("&Separar")
-        self.separar_menu.addAction(MenuActions.EXPORTAR_SEPARADO)
-        
+        self.separar_menu.addAction(self.exportar_separado_action)
+
     def _build_datos_menu(self) -> None:
-        """Construir el menú Datos."""
-        DatosMenu.create(self.menu_bar, self.parent_window)
-    
-    def _build_tabla_pivote_menu(self) -> None:
-        """Construir el menú Tabla Pivote."""
-        from PySide6.QtWidgets import QMenu
-        
-        self.tabla_pivote_menu = self.menu_bar.addMenu("&Tabla Pivote")
-        
-        self.tabla_pivote_menu.addAction(MenuActions.PIVOT_SIMPLE)
-        self.tabla_pivote_menu.addAction(MenuActions.PIVOT_COMBINADA)
-        self.tabla_pivote_menu.addSeparator()
-        self.tabla_pivote_menu.addAction(MenuActions.EXPORTAR_PIVOTE)
-    
-    def _build_vista_menu(self) -> None:
-        """Construir el menú Vista."""
-        VistaMenu.create(
-            self.menu_bar,
-            MenuActions.get_vista_actions(),
-            self.parent_window
+        self.datos_menu = DatosMenu.create(
+            self.menu_bar, self.cruzar_datos_action
         )
-    
+
+    def _build_tabla_pivote_menu(self) -> None:
+        self.tabla_pivote_menu = self.menu_bar.addMenu("&Tabla Pivote")
+        self.tabla_pivote_menu.addAction(self.pivot_simple_action)
+        self.tabla_pivote_menu.addAction(self.pivot_combinada_action)
+        self.tabla_pivote_menu.addSeparator()
+        self.tabla_pivote_menu.addAction(self.export_pivot_action)
+
+    def _build_vista_menu(self) -> None:
+        actions: list[QAction | None] = [
+            self.vista_principal_action,
+            self.vista_datos_action,
+            self.vista_info_action,
+            self.vista_graficos_action,
+        ]
+        VistaMenu.create(self.menu_bar, actions, self.parent_window)
+
     def _build_ayuda_menu(self) -> None:
-        """Construir el menú Ayuda."""
-        from PySide6.QtWidgets import QMenu
-        
         ayuda_menu = self.menu_bar.addMenu("&Ayuda")
-        ayuda_menu.addAction(MenuActions.ACERCA_DE)
-    
+        ayuda_menu.addAction(self.acerca_de_action)
+
+    # ==================== CONEXIONES ====================
+
     def _connect_actions(self, coordinator: Any, view_coordinator: Any) -> None:
-        # Archivo
-        MenuActions.ABRIR.triggered.connect(coordinator.solicitar_apertura_archivo)
-        MenuActions.CARGAR_CARPETA.triggered.connect(coordinator.solicitar_carga_carpeta)
-        MenuActions.EXPORTAR_PDF.triggered.connect(coordinator.exportar_a_pdf)
-        MenuActions.EXPORTAR_IMAGEN.triggered.connect(coordinator.exportar_a_imagen)
-        MenuActions.EXPORTAR_XLSX.triggered.connect(coordinator.exportar_a_xlsx)
-        MenuActions.EXPORTAR_CSV.triggered.connect(coordinator.exportar_a_csv)
-        MenuActions.EXPORTAR_SQL.triggered.connect(coordinator.exportar_a_sql)
-        MenuActions.SALIR.triggered.connect(self.parent_window.close)
+        self.abrir_action.triggered.connect(coordinator.solicitar_apertura_archivo)
+        self.cargar_carpeta_action.triggered.connect(coordinator.solicitar_carga_carpeta)
+        self.exportar_pdf_action.triggered.connect(coordinator.exportar_a_pdf)
+        self.exportar_imagen_action.triggered.connect(coordinator.exportar_a_imagen)
+        self.exportar_xlsx_action.triggered.connect(coordinator.exportar_a_xlsx)
+        self.exportar_csv_action.triggered.connect(coordinator.exportar_a_csv)
+        self.exportar_sql_action.triggered.connect(coordinator.exportar_a_sql)
+        self.salir_action.triggered.connect(self.parent_window.close)
 
-        # Separar
-        MenuActions.EXPORTAR_SEPARADO.triggered.connect(coordinator.exportar_datos_separados)
+        self.exportar_separado_action.triggered.connect(coordinator.exportar_datos_separados)
+        self.cruzar_datos_action.triggered.connect(coordinator.abrir_cruzar_datos)
 
-        # Datos
-        MenuActions.CRUZAR_DATOS.triggered.connect(coordinator.abrir_cruzar_datos)
+        self.pivot_simple_action.triggered.connect(coordinator.abrir_pivot_simple)
+        self.pivot_combinada_action.triggered.connect(coordinator.abrir_pivot_combinada)
+        self.export_pivot_action.triggered.connect(coordinator.exportar_resultado_pivote)
 
-        # Tabla Pivote
-        MenuActions.PIVOT_SIMPLE.triggered.connect(coordinator.abrir_pivot_simple)
-        MenuActions.PIVOT_COMBINADA.triggered.connect(coordinator.abrir_pivot_combinada)
-        MenuActions.EXPORTAR_PIVOTE.triggered.connect(coordinator.exportar_resultado_pivote)
+        self.vista_principal_action.triggered.connect(lambda: view_coordinator.switch_to(0))
+        self.vista_datos_action.triggered.connect(lambda: view_coordinator.switch_to(1))
+        self.vista_graficos_action.triggered.connect(lambda: view_coordinator.switch_to(2))
+        self.vista_info_action.triggered.connect(coordinator.mostrar_info)
 
-        # Vista
-        MenuActions.VISTA_PRINCIPAL.triggered.connect(lambda: view_coordinator.switch_to(0))
-        MenuActions.VISTA_DATOS.triggered.connect(lambda: view_coordinator.switch_to(1))
-        MenuActions.VISTA_GRAFICOS.triggered.connect(lambda: view_coordinator.switch_to(2))
-        MenuActions.VISTA_INFO.triggered.connect(coordinator.mostrar_info)
+        self.acerca_de_action.triggered.connect(self.parent_window.mostrar_acerca_de)
 
-        # Ayuda
-        MenuActions.ACERCA_DE.triggered.connect(self.parent_window.mostrar_acerca_de)
-    
-    def update_data_menus(self, has_data: bool) -> None:
-        """
-        Actualizar estado de menús que requieren datos.
-        
-        Args:
-            has_data: True si hay datos cargados
-        """
-        MenuActions.enable_data_actions(has_data)
-    
+    # ==================== ESTADO ====================
+
+    def set_data_actions_enabled(self, enabled: bool) -> None:
+        """Habilitar/deshabilitar acciones que requieren datos cargados."""
+        for action in (
+            self.exportar_separado_action,
+            self.cruzar_datos_action,
+            self.pivot_simple_action,
+            self.pivot_combinada_action,
+            self.export_pivot_action,
+        ):
+            action.setEnabled(enabled)
+
     def get_menu_references(self) -> dict[str, Any]:
-        """
-        Obtener referencias a los menús para uso externo.
-        
-        Returns:
-            dict con referencias a los menús
-        """
+        """Obtener referencias a los menús para uso externo."""
         return {
             'separar_menu': self.separar_menu,
             'datos_menu': self.datos_menu,

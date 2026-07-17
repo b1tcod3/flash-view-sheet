@@ -9,8 +9,9 @@ import traceback
 from pathlib import Path
 from types import TracebackType
 
+from PySide6.QtCore import QEvent, QObject
 from PySide6.QtGui import QCloseEvent, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from core.join.join_history import JoinHistory
 
@@ -23,7 +24,7 @@ from app.view_manager import ViewCoordinator
 from app.app_coordinator import AppCoordinator
 
 # Importar menús
-from app.menus import MenuActions
+from app.menus.menu_builder import MenuBuilder
 
 class MainWindow(QMainWindow):
     """Ventana principal de la aplicación - Orquestador de componentes"""
@@ -36,16 +37,11 @@ class MainWindow(QMainWindow):
     toolbar_manager: ToolbarManager
     view_coordinator: ViewCoordinator
     coordinator: AppCoordinator
-    join_history: JoinHistory | None
-    stacked_widget: QStackedWidget
+    join_history: JoinHistory
+    menu_builder: MenuBuilder
     separar_menu: object | None
     datos_menu: object | None
     tabla_pivote_menu: object | None
-    exportar_separado_action: object | None
-    cruzar_datos_action: object | None
-    pivot_simple_action: object | None
-    pivot_combinada_action: object | None
-    export_pivot_action: object | None
     
     def __init__(self) -> None:
         super().__init__()
@@ -73,7 +69,7 @@ class MainWindow(QMainWindow):
     def _init_services(self) -> None:
         """Inicializar servicios centralizados"""
         self.data_service = DataService()
-        self.export_service = ExportService(self)
+        self.export_service = ExportService()
         self.filter_service = FilterService()
         self.pivot_service = PivotService()
     
@@ -83,10 +79,11 @@ class MainWindow(QMainWindow):
     
     def _init_coordinator(self) -> None:
         """Inicializar coordinador de aplicación"""
-        # View Coordinator
+        # 1. Dependencias primero
+        self.join_history = JoinHistory()
         self.view_coordinator = ViewCoordinator(self)
         
-        # AppCoordinator con todas las dependencias
+        # 2. Inyectar todo en el constructor
         self.coordinator = AppCoordinator(
             parent_window=self,
             data_service=self.data_service,
@@ -94,54 +91,34 @@ class MainWindow(QMainWindow):
             pivot_service=self.pivot_service,
             view_coordinator=self.view_coordinator,
             toolbar_manager=self.toolbar_manager,
-            join_history=None  # Se inicializa después
+            join_history=self.join_history
         )
         
-        # Inicializar JoinHistory después del coordinator
-        self.join_history = JoinHistory()
-        self.coordinator.join_history = self.join_history
-        
-        # Dar coordinadores al toolbar
+        # 3. Conexiones posteriores
         self.toolbar_manager.set_coordinators(self.view_coordinator, self.coordinator)
-        
-        # Conectar señales del coordinator
         self.coordinator.status_message.connect(self.statusBar().showMessage)
     
     def _setup_ui(self) -> None:
         """Configurar la interfaz de usuario"""
-        self._create_central_widget()
-        self._create_views()
+        self._setup_central_widget()
         self._create_menu_bar()
         self._add_toolbar()
         self.statusBar().showMessage("Listo para cargar datos")
     
-    def _create_central_widget(self) -> None:
-        """Crear widget central con stacked widget"""
-        self.stacked_widget = QStackedWidget()
-        self.setCentralWidget(self.stacked_widget)
-    
-    def _create_views(self) -> None:
-        """Delegar creación de vistas al ViewCoordinator"""
-        self.view_coordinator.create_views(self.stacked_widget)
-        self.stacked_widget.addWidget(self.view_coordinator.get_stacked_widget())
+    def _setup_central_widget(self) -> None:
+        """Delega la creación del contenedor principal al ViewCoordinator"""
+        self.view_coordinator.create_views(self)
+        self.setCentralWidget(self.view_coordinator.get_stacked_widget())
     
     def _create_menu_bar(self) -> None:
         """Crear barra de menús"""
-        from app.menus import MenuBuilder
+        self.menu_builder = MenuBuilder(self)
+        self.menu_builder.build()
         
-        menu_builder = MenuBuilder(self)
-        menu_builder.build()
-        
-        refs = menu_builder.get_menu_references()
+        refs = self.menu_builder.get_menu_references()
         self.separar_menu = refs.get('separar_menu')
         self.datos_menu = refs.get('datos_menu')
         self.tabla_pivote_menu = refs.get('tabla_pivote_menu')
-        
-        self.exportar_separado_action = MenuActions.EXPORTAR_SEPARADO
-        self.cruzar_datos_action = MenuActions.CRUZAR_DATOS
-        self.pivot_simple_action = MenuActions.PIVOT_SIMPLE
-        self.pivot_combinada_action = MenuActions.PIVOT_COMBINADA
-        self.export_pivot_action = MenuActions.EXPORTAR_PIVOTE
     
     def _add_toolbar(self) -> None:
         """Añadir toolbar"""
@@ -173,7 +150,7 @@ class MainWindow(QMainWindow):
             self.view_coordinator.on_datos_actualizados)
         
         # Conectar datos_disponibles a menús y toolbar (single source of truth)
-        self.coordinator.datos_disponibles.connect(MenuActions.enable_data_actions)
+        self.coordinator.datos_disponibles.connect(self.menu_builder.set_data_actions_enabled)
         self.coordinator.datos_disponibles.connect(self.toolbar_manager.on_datos_disponibles)
     
     # ==================== SEÑALES ====================
@@ -216,9 +193,20 @@ def _global_exception_handler(exc_type: type[BaseException] | None, exc_value: B
     msg.exec()
 
 
+class SafeApplication(QApplication):
+    """Captura excepciones dentro de slots de Qt y las redirige a sys.excepthook."""
+
+    def notify(self, receiver: QObject, event: QEvent) -> bool:
+        try:
+            return super().notify(receiver, event)
+        except Exception:
+            sys.excepthook(*sys.exc_info())
+            return False
+
+
 def main() -> None:
     """Función principal de la aplicación"""
-    app = QApplication(sys.argv)
+    app = SafeApplication(sys.argv)
 
     # Instalar manejador global de errores
     sys.excepthook = _global_exception_handler

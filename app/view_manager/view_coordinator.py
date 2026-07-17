@@ -258,13 +258,19 @@ class ViewCoordinator(QObject):
         return self._original_data
     
     def cleanup(self) -> None:
-        """Liberar referencias a vistas y datos."""
-        self._original_data = None
+        """Destruye referencias a vistas y cierra modales pendientes."""
+        # 1. Cerrar modal activo si existe
+        if self._info_modal is not None:
+            self._info_modal.close()
+            self._info_modal.deleteLater()
+            self._info_modal = None
+
+        # 2. Romper referencias a vistas
         self._main_view = None
         self._data_view = None
-        self._info_modal = None
         self._graphics_view = None
         self._joined_data_view = None
+        self._original_data = None
         self._views.clear()
     
     def get_current_view_name(self) -> str:
