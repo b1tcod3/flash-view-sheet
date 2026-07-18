@@ -190,14 +190,15 @@ class DataService:
     
     def create_progress_dialog(self, title: str = "Cargando datos", label: str = "Cargando archivo...") -> QProgressDialog:
         """Crear un diálogo de progreso"""
+        self.close_progress_dialog()
         self.progress_dialog = QProgressDialog(label, "Cancelar", 0, 100)
         self.progress_dialog.setWindowTitle(title)
         self.progress_dialog.setWindowModality(Qt.WindowModal)
         return self.progress_dialog
-    
+
     def close_progress_dialog(self) -> None:
         """Cerrar el diálogo de progreso si existe"""
-        if hasattr(self, 'progress_dialog') and self.progress_dialog:
+        if self.progress_dialog:
             self.progress_dialog.close()
             self.progress_dialog = None
     
@@ -218,54 +219,6 @@ class DataService:
             return self.df_vista_actual
         except Exception as e:
             raise Exception(f"No se pudo cargar el archivo: {str(e)}")
-    
-    def load_folder(self, folder_path: str, config: Any | None = None) -> pd.DataFrame:
-        """
-        Cargar y consolidar archivos de una carpeta.
-        
-        Args:
-            folder_path: Ruta de la carpeta
-            config: Configuración de carga (opcional)
-        
-        Returns:
-            DataFrame consolidado
-        """
-        try:
-            folder_loader = FolderLoader(folder_path)
-            
-            # Obtener archivos
-            all_metadata = folder_loader.get_all_metadata()
-            
-            if config and hasattr(config, 'should_include_file'):
-                selected_files = [
-                    meta['filepath'] for meta in all_metadata
-                    if config.should_include_file(meta['filename'])
-                ]
-            else:
-                selected_files = [meta['filepath'] for meta in all_metadata]
-            
-            if not selected_files:
-                raise Exception("No se encontraron archivos válidos en la carpeta.")
-            
-            # Consolidar
-            consolidator = ExcelConsolidator()
-            
-            if config and hasattr(config, 'column_rename_mapping') and config.column_rename_mapping:
-                consolidator.set_column_mappings(config.column_rename_mapping)
-            
-            consolidated_df = consolidator.consolidate_chunked(
-                selected_files,
-                alignment_method='position',
-                chunk_size=10
-            )
-            
-            self.df_original = consolidated_df
-            self.df_vista_actual = consolidated_df.copy()
-            
-            return consolidated_df
-            
-        except Exception as e:
-            raise Exception(f"Error cargando carpeta: {str(e)}")
     
     def reset_to_original(self) -> pd.DataFrame | None:
         """Restaurar datos originales"""
@@ -288,6 +241,7 @@ class DataService:
         """Reset data state without stopping threads or closing dialogs."""
         self.df_original = None
         self.df_vista_actual = None
+        # TODO: Emitir señal (ej. datos_disponibles(False)) para deshabilitar menús/toolbar
         import gc
         gc.collect()
 
