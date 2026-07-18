@@ -7,7 +7,6 @@ en Flash View Sheet.
 
 from typing import Any
 import pandas as pd
-from PySide6.QtWidgets import QMessageBox
 
 class PivotService:
     """
