@@ -88,6 +88,8 @@ class FolderLoaderThread(QThread):
                 consolidator.set_column_mappings(self.config.column_rename_mapping)
             
             def _progress_callback(progress: float) -> None:
+                if self.isInterruptionRequested():
+                    raise InterruptedError("Thread interrupted")
                 current = int(progress / 100 * total_files)
                 self.progress_updated.emit(current, total_files)
             

@@ -6,6 +6,7 @@ entre servicios, diálogos y vistas.
 """
 
 from typing import Any, TYPE_CHECKING
+from pathlib import Path
 
 import pandas as pd
 from PySide6.QtCore import QObject, Signal
@@ -78,7 +79,6 @@ class AppCoordinator(QObject):
 
     def iniciar_carga_archivo(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None, enable_vis: bool = True, enable_column_visibility: bool = True) -> None:
         """Inicia la carga de un archivo: valida extensión, muestra progreso, crea hilo y conecta resultados."""
-        from pathlib import Path
         path = Path(filepath)
         extensiones = self.data_service.extensiones_permitidas()
         if path.suffix.lower() not in extensiones:
@@ -232,7 +232,6 @@ class AppCoordinator(QObject):
     
     def _basename(self, path: str) -> str:
         """Obtener nombre de archivo sin ruta"""
-        from pathlib import Path
         return Path(path).name
     
     # ==================== OPERACIONES DE PIVOTE ====================
