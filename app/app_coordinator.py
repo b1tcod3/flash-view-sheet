@@ -354,16 +354,22 @@ class AppCoordinator(QObject):
     # ==================== FILTROS ====================
     
     def on_filter_applied(self, column: str, term: str) -> None:
-        """Manejar filtro aplicado"""
-        self.status_message.emit(
-            f"Filtro aplicado en '{column}': '{term}'")
-        self.datos_actualizados.emit(self.data_service.datos_actuales)
-    
+        """Manejar filtro aplicado — la vista de datos ya se actualiza vía PaginationManager.data_changed."""
+        self.status_message.emit(f"Filtro aplicado en '{column}': '{term}'")
+
     def on_filter_cleared(self) -> None:
-        """Manejar filtro limpiado"""
+        """Manejar filtro limpiado — la vista de datos ya se restaura vía PaginationManager.data_changed."""
         self.status_message.emit("Filtro limpiado")
-        self.datos_actualizados.emit(self.data_service.datos_actuales)
-    
+
+    def limpiar_datos(self) -> None:
+        """Limpia los datos cargados y restaura el estado inicial."""
+        self.data_service.clear_data()
+        self.view_coordinator.switch_to(ViewRegistry.VIEW_DATA)
+        self.datos_originales_cargados.emit(pd.DataFrame())
+        self.datos_actualizados.emit(pd.DataFrame())
+        self.datos_disponibles.emit(False)
+        self.status_message.emit("Datos limpiados")
+
     def on_data_updated(self, df: pd.DataFrame) -> None:
         """Manejar datos actualizados — reenvía el DataFrame filtrado a la vista de gráficos."""
         graphics_view = self.view_coordinator.get_graphics_view()

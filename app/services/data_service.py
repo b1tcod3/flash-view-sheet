@@ -284,6 +284,13 @@ class DataService:
         self.df_original = df.copy()
         return self.df_original
 
+    def clear_data(self) -> None:
+        """Reset data state without stopping threads or closing dialogs."""
+        self.df_original = None
+        self.df_vista_actual = None
+        import gc
+        gc.collect()
+
     def extensiones_permitidas(self) -> list[str]:
         """Obtener lista de extensiones de archivo soportadas"""
         return get_supported_file_formats()
