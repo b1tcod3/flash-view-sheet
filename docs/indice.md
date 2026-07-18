@@ -11,6 +11,7 @@ Documentación técnica del proyecto para análisis por agentes de IA y humanos.
 | [main.md](main.md) | Punto de entrada, `MainWindow`, función `main()`, orquestación de componentes | ✅ Completo |
 | [app_coordinator.md](app_coordinator.md) | Orquestador central de lógica de negocio | ✅ Completo |
 | [data_service.md](data_service.md) | DataService, hilos de carga, gestión de estado de datos | ✅ Completo |
+| [pivot_service.md](pivot_service.md) | PivotService, tablas pivote, agregaciones, crosstab | ✅ Completo |
 
 ---
 
