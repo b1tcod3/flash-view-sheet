@@ -115,7 +115,8 @@ class PivotService:
                             pivot_df = pivot_df.add_suffix(f'_{agg}')
                             result_dfs.append(pivot_df)
                             
-                    except Exception:
+                    except (ValueError, KeyError) as e:
+                        logger.debug("No se pudo pivotar columna %s con función %s: %s", val_col, agg, e)
                         continue
             
             if result_dfs:
@@ -162,15 +163,14 @@ class PivotService:
             
             agg_df = df.groupby(index).agg(agg_dict).reset_index()
             
-            # Simplificar nombres de columnas
-            if aggfunc != 'sum':
-                new_cols = []
-                for col in agg_df.columns:
-                    if col in index:
-                        new_cols.append(col)
-                    else:
-                        new_cols.append(f"{col}_{aggfunc}")
-                agg_df.columns = new_cols
+            # Renombrar columnas con sufijo de función de agregación
+            new_cols = []
+            for col in agg_df.columns:
+                if col in index:
+                    new_cols.append(col)
+                else:
+                    new_cols.append(f"{col}_{aggfunc}")
+            agg_df.columns = new_cols
             
             self.last_result = agg_df
             self.last_config = {
@@ -207,7 +207,9 @@ class PivotService:
                 if isinstance(index, str):
                     groupby_columns = [index]
                 elif isinstance(index, list):
-                    groupby_columns = index[:2]  # Limitar a 2 columnas para evitar dimensionalidad excesiva
+                    # Limitar a 2 columnas groupBy para evitar cardinalidad excesiva
+                    # (n filas × m columnas puede generar resultados muy grandes)
+                    groupby_columns = index[:2]
                 else:
                     groupby_columns = []
             else:
@@ -261,57 +263,6 @@ class PivotService:
             
         except Exception as e:
             raise Exception(f"Error creando agregación de fallback: {str(e)}")
-    
-    def execute_pivot_with_fallback(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
-        """
-        Ejecutar pivote con fallback a agregación si falla.
-        
-        Args:
-            df: DataFrame source
-            config: Configuración de pivote
-        
-        Returns:
-            DataFrame con el resultado
-        """
-        if df is None or df.empty:
-            return None
-        
-        is_pivot = config.get('is_pivot', True)
-        
-        if is_pivot:
-            # Intentar pivote primero
-            try:
-                if config.get('columns') or config.get('pivot_columns'):
-                    # Es un pivote con columnas
-                    result = self.create_combined_pivot(
-                        df,
-                        config.get('index', config.get('rows')),
-                        config.get('columns', config.get('pivot_columns')),
-                        config.get('values', []),
-                        config.get('aggfuncs', [config.get('aggfunc', 'mean')])
-                    )
-                else:
-                    # Es una agregación simple sin columnas pivot
-                    result = self.create_simple_aggregation(
-                        df,
-                        config.get('index', config.get('rows')),
-                        config.get('values', []),
-                        config.get('aggfunc', 'mean')
-                    )
-                
-                if result is not None and not result.empty:
-                    return result
-                    
-            except Exception as e:
-                logger.warning("Pivote falló, usando agregación: %s", e)
-        
-        # Fallback a agregación
-        return self.create_fallback_aggregation(
-            df,
-            config.get('index', config.get('rows')),
-            config.get('values', []),
-            config.get('aggfunc', config.get('aggfuncs', ['mean']))
-        )
     
     def get_crosstab(self, df: pd.DataFrame, index: str, columns: str, normalize: bool = False) -> pd.DataFrame | None:
         """
@@ -398,12 +349,20 @@ class PivotService:
                 logger.warning("Pivote simple falló, iniciando fallback a agregación: %s", e)
         
         # Fallback a agregación simple
-        return self.create_simple_aggregation(
-            df,
-            index=config.get('index', config.get('rows')),
-            values=config.get('values'),
-            aggfunc=config.get('aggfunc', 'mean')
-        )
+        try:
+            result = self.create_simple_aggregation(
+                df,
+                index=config.get('index', config.get('rows')),
+                values=config.get('values'),
+                aggfunc=config.get('aggfunc', 'mean')
+            )
+            if result is not None and not result.empty:
+                return result
+        except Exception as e:
+            logger.warning("Fallback agregación simple falló: %s", e)
+
+        self.last_result = None
+        return None
     
     def execute_combined(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
         """
@@ -430,12 +389,20 @@ class PivotService:
             logger.warning("Pivote combinada falló, iniciando fallback a agregación: %s", e)
         
         # Fallback a agregación
-        return self.create_fallback_aggregation(
-            df,
-            index=config.get('index', config.get('rows')),
-            values=config.get('values', []),
-            aggfunc=config.get('aggfunc', config.get('aggfuncs', ['mean']))
-        )
+        try:
+            result = self.create_fallback_aggregation(
+                df,
+                index=config.get('index', config.get('rows')),
+                values=config.get('values', []),
+                aggfunc=config.get('aggfunc', config.get('aggfuncs', ['mean']))
+            )
+            if result is not None and not result.empty:
+                return result
+        except Exception as e:
+            logger.warning("Fallback agregación combinada falló: %s", e)
+
+        self.last_result = None
+        return None
     
     # ==================== UTILIDADES ====================
     
