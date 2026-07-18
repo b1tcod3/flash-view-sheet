@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 import pandas as pd
 from PySide6.QtCore import QThread, Signal, Qt
-from PySide6.QtWidgets import QProgressDialog, QMessageBox, QDialog
+from PySide6.QtWidgets import QProgressDialog
 from core.data_handler import (
     cargar_datos, 
     cargar_datos_con_opciones,
