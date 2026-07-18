@@ -174,20 +174,17 @@ class FilterService:
             raise ValueError(f"La columna '{column}' no existe en el DataFrame")
         
         try:
-            # Convertir a datetime si no lo es
-            if not pd.api.types.is_datetime64_any_dtype(df[column]):
-                df[column] = pd.to_datetime(df[column], errors='coerce')
-            
-            mask = pd.Series([True] * len(df), index=df.index)
-            
+            # Crear serie temporal sin modificar el df original
+            temp_dates = pd.to_datetime(df[column], errors='coerce')
+
+            # Empezar con mask que descarta valores no convertibles (NaT)
+            mask = temp_dates.notna()
+
             if start_date:
-                start = pd.to_datetime(start_date)
-                mask = mask & (df[column] >= start)
-            
+                mask &= (temp_dates >= pd.to_datetime(start_date))
             if end_date:
-                end = pd.to_datetime(end_date)
-                mask = mask & (df[column] <= end)
-            
+                mask &= (temp_dates <= pd.to_datetime(end_date))
+
             filtered_df = df[mask].copy()
             
             self.filter_history.append({
