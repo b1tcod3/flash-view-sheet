@@ -5,9 +5,12 @@ Servicio centralizado para operaciones de tablas pivote
 en Flash View Sheet.
 """
 
+import logging
 from typing import Any
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
+
+logger = logging.getLogger(__name__)
 
 class PivotService:
     """
@@ -300,7 +303,7 @@ class PivotService:
                     return result
                     
             except Exception as e:
-                print(f"Pivote falló, usando agregación: {str(e)}")
+                logger.warning("Pivote falló, usando agregación: %s", e)
         
         # Fallback a agregación
         return self.create_fallback_aggregation(
@@ -392,7 +395,7 @@ class PivotService:
                 if result is not None and not result.empty:
                     return result
             except Exception as e:
-                print(f"Pivote simple falló: {e}")
+                logger.warning("Pivote simple falló, iniciando fallback a agregación: %s", e)
         
         # Fallback a agregación simple
         return self.create_simple_aggregation(
@@ -424,7 +427,7 @@ class PivotService:
             if result is not None and not result.empty:
                 return result
         except Exception as e:
-            print(f"Pivote combinada falló: {e}")
+            logger.warning("Pivote combinada falló, iniciando fallback a agregación: %s", e)
         
         # Fallback a agregación
         return self.create_fallback_aggregation(
