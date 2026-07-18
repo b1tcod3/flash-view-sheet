@@ -3,7 +3,8 @@ JoinedDataView: Vista especializada para mostrar resultados de cruces de datos
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-                                QGroupBox, QTextEdit, QPushButton, QMessageBox, QFileDialog)
+                                QGroupBox, QTextEdit, QPushButton, QMessageBox,
+                                QFileDialog, QDialog)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
