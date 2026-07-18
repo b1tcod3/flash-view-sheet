@@ -7,7 +7,6 @@ en Flash View Sheet.
 
 from typing import Any
 import pandas as pd
-from PySide6.QtWidgets import QMessageBox
 
 class FilterService:
     """
@@ -47,9 +46,9 @@ class FilterService:
         
         try:
             if case_sensitive:
-                mask = df[column].astype(str).str.contains(term, regex=False)
+                mask = df[column].astype(str).str.contains(term, regex=False, na=False)
             else:
-                mask = df[column].astype(str).str.lower().str.contains(term.lower(), regex=False)
+                mask = df[column].astype(str).str.contains(term, case=False, regex=False, na=False)
             
             filtered_df = df[mask].copy()
             
@@ -86,7 +85,7 @@ class FilterService:
             raise ValueError(f"La columna '{column}' no existe en el DataFrame")
         
         try:
-            mask = df[column].astype(str).str.contains(pattern, regex=True)
+            mask = df[column].astype(str).str.contains(pattern, regex=True, na=False)
             filtered_df = df[mask].copy()
             
             self.filter_history.append({
