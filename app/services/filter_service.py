@@ -279,9 +279,7 @@ class FilterService:
         
         try:
             unique = df[column].dropna().unique()
-            if len(unique) > limit:
-                return list(unique[:limit]) + [f"... y {len(unique) - limit} más"]
-            return list(unique)
+            return unique[:limit].tolist()
         except Exception:
             return []
     
