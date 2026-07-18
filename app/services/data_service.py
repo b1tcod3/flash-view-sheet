@@ -308,9 +308,11 @@ class DataService:
         return (0, 0)
     
     def get_filepath(self) -> str | None:
-        """Obtener ruta del archivo cargado"""
+        """Obtener ruta del archivo o carpeta cargada"""
         if self.loading_thread:
             return self.loading_thread.filepath
+        if self.folder_loading_thread:
+            return self.folder_loading_thread.folder_path
         return None
     
     def get_filename(self) -> str:
