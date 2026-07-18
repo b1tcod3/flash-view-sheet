@@ -7,6 +7,7 @@ en Flash View Sheet.
 
 from typing import Any
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
 
 class PivotService:
     """
@@ -219,8 +220,8 @@ class PivotService:
             
             # Si no hay valores específicos, usar columnas numéricas
             if not values_columns:
-                values_columns = [col for col in df.columns 
-                                if df[col].dtype in ['int64', 'float64']]
+                values_columns = [col for col in df.columns
+                                if is_numeric_dtype(df[col])]
                 if not values_columns:
                     values_columns = df.columns.tolist()
             
@@ -489,8 +490,8 @@ class PivotService:
                 }
         
         # Verificar tipos de datos para valores
-        numeric_cols = [col for col in values if col in df.columns 
-                       if df[col].dtype in ['int64', 'float64']]
+        numeric_cols = [col for col in values if col in df.columns
+                       and is_numeric_dtype(df[col])]
         if not numeric_cols and values:
             return {
                 'is_valid': False,
