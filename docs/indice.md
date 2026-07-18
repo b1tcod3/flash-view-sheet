@@ -9,6 +9,8 @@ Documentación técnica del proyecto para análisis por agentes de IA y humanos.
 | Archivo | Descripción | Estado |
 |---------|-------------|--------|
 | [main.md](main.md) | Punto de entrada, `MainWindow`, función `main()`, orquestación de componentes | ✅ Completo |
+| [app_coordinator.md](app_coordinator.md) | Orquestador central de lógica de negocio | ✅ Completo |
+| [data_service.md](data_service.md) | DataService, hilos de carga, gestión de estado de datos | ✅ Completo |
 
 ---
 
@@ -16,8 +18,7 @@ Documentación técnica del proyecto para análisis por agentes de IA y humanos.
 
 | Archivo | Descripción | Estado |
 |---------|-------------|--------|
-| `app/app_coordinator.md` | Orquestador central de lógica de negocio | ⏳ Pendiente |
-| `app/services.md` | DataService, ExportService, FilterService, PivotService | ⏳ Pendiente |
+| `app/services.md` | ExportService, FilterService, PivotService | ⏳ Pendiente |
 | `app/view_manager.md` | ViewCoordinator, ViewSwitcher, ViewRegistry | ⏳ Pendiente |
 | `app/toolbar.md` | ToolbarManager, ViewSwitcher, FilterToolbar | ⏳ Pendiente |
 | `app/menus.md` | MenuBuilder, MenuActions, menús | ⏳ Pendiente |
