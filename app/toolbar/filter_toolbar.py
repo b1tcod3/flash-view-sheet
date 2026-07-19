@@ -33,12 +33,6 @@ class FilterToolbar(QWidget):
         """
         super().__init__(parent)
         
-        # UI elements
-        self.filter_combo = None
-        self.filter_input = None
-        self.apply_filter_btn = None
-        self.clear_filter_btn = None
-        
         # Create UI
         self._setup_ui()
         self._connect_signals()
@@ -46,29 +40,29 @@ class FilterToolbar(QWidget):
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         # Main layout
-        self.layout = QHBoxLayout(self)
-        self.layout.setSpacing(5)
-        self.layout.setContentsMargins(5, 5, 5, 5)
+        self._layout = QHBoxLayout(self)
+        self._layout.setSpacing(5)
+        self._layout.setContentsMargins(5, 5, 5, 5)
         
         # ComboBox for column selection
         self.filter_combo = QComboBox()
         self.filter_combo.setFixedWidth(150)
         self.filter_combo.setPlaceholderText("Seleccionar columna")
-        self.layout.addWidget(self.filter_combo)
+        self._layout.addWidget(self.filter_combo)
         
         # LineEdit for search term
         self.filter_input = QLineEdit()
         self.filter_input.setFixedWidth(200)
         self.filter_input.setPlaceholderText("Término de búsqueda")
-        self.layout.addWidget(self.filter_input)
+        self._layout.addWidget(self.filter_input)
         
         # Apply filter button
         self.apply_filter_btn = QPushButton("Aplicar Filtro")
-        self.layout.addWidget(self.apply_filter_btn)
+        self._layout.addWidget(self.apply_filter_btn)
         
         # Clear filter button
         self.clear_filter_btn = QPushButton("Limpiar Filtro")
-        self.layout.addWidget(self.clear_filter_btn)
+        self._layout.addWidget(self.clear_filter_btn)
     
     def _connect_signals(self) -> None:
         """Connect button signals to slots."""
@@ -135,3 +129,6 @@ class FilterToolbar(QWidget):
         self.filter_input.setEnabled(enabled)
         self.apply_filter_btn.setEnabled(enabled)
         self.clear_filter_btn.setEnabled(enabled)
+
+    def set_layout_margins(self, left: int, top: int, right: int, bottom: int) -> None:
+        self._layout.setContentsMargins(left, top, right, bottom)

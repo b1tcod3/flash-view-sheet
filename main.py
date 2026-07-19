@@ -6,17 +6,18 @@ Punto de entrada principal de la aplicación
 
 import sys
 import traceback
-from pathlib import Path
 from types import TracebackType
 
 from PySide6.QtCore import QEvent, QObject
 from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
+from app.resources import get_asset_path
+
 from core.join.join_history import JoinHistory
 
 # Importar servicios y gestores
-from app.services import DataService, ExportService, FilterService, PivotService
+from app.services import DataService, ExportService, FilterService, PivotService, CleaningService
 from app.toolbar import ToolbarManager
 from app.view_manager import ViewCoordinator
 
@@ -34,6 +35,7 @@ class MainWindow(QMainWindow):
     export_service: ExportService
     filter_service: FilterService
     pivot_service: PivotService
+    cleaning_service: CleaningService
     toolbar_manager: ToolbarManager
     view_coordinator: ViewCoordinator
     coordinator: AppCoordinator
@@ -72,6 +74,7 @@ class MainWindow(QMainWindow):
         self.export_service = ExportService()
         self.filter_service = FilterService()
         self.pivot_service = PivotService()
+        self.cleaning_service = CleaningService()
     
     def _init_toolbar(self) -> None:
         """Inicializar toolbar manager"""
@@ -89,6 +92,7 @@ class MainWindow(QMainWindow):
             data_service=self.data_service,
             export_service=self.export_service,
             pivot_service=self.pivot_service,
+            cleaning_service=self.cleaning_service,
             view_coordinator=self.view_coordinator,
             toolbar_manager=self.toolbar_manager,
             join_history=self.join_history
@@ -133,6 +137,7 @@ class MainWindow(QMainWindow):
         
         if main_view:
             main_view.load_file_clicked.connect(self.coordinator.solicitar_apertura_archivo)
+            main_view.files_dropped.connect(self.coordinator.iniciar_carga_multiple)
             main_view.reload_with_options.connect(self._on_reload_with_options)
         
         if data_view:
@@ -146,6 +151,8 @@ class MainWindow(QMainWindow):
         # Conectar señales de datos del coordinator al ViewCoordinator
         self.coordinator.datos_originales_cargados.connect(
             self.view_coordinator.on_datos_originales_cargados)
+        self.coordinator.datos_originales_cargados.connect(
+            lambda df: self.toolbar_manager.populate_filter_combo(list(df.columns)))
         self.coordinator.datos_actualizados.connect(
             self.view_coordinator.on_datos_actualizados)
         
@@ -158,12 +165,6 @@ class MainWindow(QMainWindow):
     def _on_reload_with_options(self, filepath: str, skip_rows: int, column_names: dict[str, str], enable_column_visibility: bool = True) -> None:
         """Manejar recarga con opciones"""
         self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility)
-    
-    # ==================== ACERCA DE ====================
-    
-    def mostrar_acerca_de(self) -> None:
-        """Mostrar diálogo Acerca de"""
-        self.coordinator.mostrar_acerca_de()
     
     # ==================== EVENTOS ====================
     
@@ -211,7 +212,7 @@ def main() -> None:
     sys.excepthook = _global_exception_handler
     
     # Configurar icono
-    logo_path = Path(__file__).parent / "assets" / "logo.png"
+    logo_path = get_asset_path("logo.png")
     if logo_path.exists():
         app.setWindowIcon(QIcon(str(logo_path)))
     
