@@ -9,7 +9,6 @@ from PySide6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 from app.toolbar.view_switcher import ViewSwitcher
-from app.toolbar.filter_toolbar import FilterToolbar
 
 if TYPE_CHECKING:
     from app.view_manager import ViewCoordinator
@@ -23,7 +22,6 @@ class ToolbarManager:
     Responsibilities:
     - Create and configure the main toolbar
     - Manage view switcher buttons
-    - Manage filter controls
     - Coordinate toolbar components
     """
 
@@ -31,7 +29,6 @@ class ToolbarManager:
         self.main_window = main_window
         self.tool_bar: QToolBar | None = None
         self.view_switcher: ViewSwitcher | None = None
-        self.filter_toolbar: FilterToolbar | None = None
         self.view_coordinator: 'ViewCoordinator' | None = None
         self.coordinator: 'AppCoordinator' | None = None
         self.buttons_layout: QHBoxLayout | None = None
@@ -58,7 +55,6 @@ class ToolbarManager:
         ribbon_layout.setSpacing(8)
 
         ribbon_layout.addWidget(self._create_herramientas_section())
-        ribbon_layout.addWidget(self._create_filtros_section())
 
         self.tool_bar.addWidget(ribbon_wrapper)
         return self.tool_bar
@@ -111,21 +107,6 @@ class ToolbarManager:
 
         return section
 
-    def _create_filtros_section(self) -> QFrame:
-        section = self._create_section_frame("Filtros")
-
-        self.filter_toolbar = FilterToolbar()
-        self.filter_toolbar.set_layout_margins(0, 3, 0, 0)
-
-        if self.coordinator is not None:
-            self.filter_toolbar.filter_applied.connect(self.coordinator.on_filter_applied)
-            self.filter_toolbar.filter_cleared.connect(self.coordinator.on_filter_cleared)
-
-        section_layout = section.layout()
-        assert section_layout is not None
-        section_layout.addWidget(self.filter_toolbar)
-        return section
-
     def _create_view_switcher(self) -> None:
         self.view_switcher = ViewSwitcher(self.main_window)
 
@@ -152,14 +133,6 @@ class ToolbarManager:
 
     def on_datos_disponibles(self, has_data: bool) -> None:
         self.set_view_buttons_enabled(has_data)
-
-    def populate_filter_combo(self, columns: list[str]) -> None:
-        if self.filter_toolbar:
-            self.filter_toolbar.populate_columns(columns)
-
-    def clear_filters(self) -> None:
-        if self.filter_toolbar:
-            self.filter_toolbar.clear()
 
     def get_toolbar(self) -> QToolBar | None:
         return self.tool_bar

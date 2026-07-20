@@ -151,8 +151,6 @@ class MainWindow(QMainWindow):
         # Conectar señales de datos del coordinator al ViewCoordinator
         self.coordinator.datos_originales_cargados.connect(
             self.view_coordinator.on_datos_originales_cargados)
-        self.coordinator.datos_originales_cargados.connect(
-            lambda df: self.toolbar_manager.populate_filter_combo(list(df.columns)))
         self.coordinator.datos_actualizados.connect(
             self.view_coordinator.on_datos_actualizados)
         
