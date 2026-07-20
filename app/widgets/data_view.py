@@ -7,7 +7,7 @@ import pandas as pd
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
                                QLineEdit, QPushButton, QLabel, QFrame,
                                QMessageBox, QSpinBox, QSizePolicy, QButtonGroup,
-                               QSpacerItem, QComboBox)
+                               QSpacerItem, QComboBox, QHeaderView)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
@@ -110,10 +110,15 @@ class DataView(QWidget):
         self.table_view.setShowGrid(False)
         self.table_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        header = self.table_view.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)  # type: ignore[attr-defined]
+        header.setStretchLastSection(True)
+
         self.table_view.setStyleSheet("""
             QTableView {
                 background-color: white;
-                border: none;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
                 outline: none;
             }
             QTableView::item {
@@ -126,12 +131,13 @@ class DataView(QWidget):
                 color: #1d4ed8;
             }
             QHeaderView::section {
-                background-color: white;
+                background-color: #f9fafb;
                 color: #111827;
                 font-weight: bold;
-                padding: 8px 5px;
+                padding: 8px 10px;
                 border: none;
                 border-bottom: 2px solid #e5e7eb;
+                border-right: 1px solid #e5e7eb;
                 text-align: left;
             }
         """)
