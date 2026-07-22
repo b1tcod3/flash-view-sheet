@@ -9,7 +9,7 @@ import pandas as pd
 # Añadir el directorio actual al path para importar módulos
 sys.path.insert(0, '/var/www/html/proyectos/flash-sheet')
 
-from paginacion.pagination_manager import PaginationManager
+from app.services.pagination_manager import PaginationManager
 
 def test_pagination_bug() -> None:
     """Test específico para verificar que todas las páginas muestren datos correctamente"""

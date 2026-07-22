@@ -46,15 +46,14 @@ class MenuBuilder:
         self.cruzar_datos_action: QAction
 
         self.pivot_simple_action: QAction
-        self.pivot_combinada_action: QAction
         self.export_pivot_action: QAction
 
         self.vista_principal_action: QAction
         self.vista_datos_action: QAction
         self.vista_info_action: QAction
-        self.vista_graficos_action: QAction
-
         self.acerca_de_action: QAction
+
+        self.limpieza_rapida_action: QAction
 
         self._create_actions()
 
@@ -108,15 +107,10 @@ class MenuBuilder:
         self.cruzar_datos_action.setEnabled(False)
 
         # === Tabla Pivote ===
-        self.pivot_simple_action = QAction("&Simple...", p)
-        self.pivot_simple_action.setShortcut("Ctrl+Alt+S")
-        self.pivot_simple_action.setStatusTip("Crear tabla pivote simple")
+        self.pivot_simple_action = QAction("&Generar Pivote Automático", p)
+        self.pivot_simple_action.setShortcut("Ctrl+Alt+P")
+        self.pivot_simple_action.setStatusTip("Generar tablas pivote automáticas para todas las combinaciones")
         self.pivot_simple_action.setEnabled(False)
-
-        self.pivot_combinada_action = QAction("&Combinada...", p)
-        self.pivot_combinada_action.setShortcut("Ctrl+Alt+C")
-        self.pivot_combinada_action.setStatusTip("Crear tabla pivote combinada")
-        self.pivot_combinada_action.setEnabled(False)
 
         self.export_pivot_action = QAction("&Exportar Datos Actuales...", p)
         self.export_pivot_action.setShortcut("Ctrl+Alt+E")
@@ -135,14 +129,16 @@ class MenuBuilder:
         self.vista_info_action = QAction("&Ver Información del dataset", p)
         self.vista_info_action.setStatusTip("Mostrar información del dataset actual")
 
-        self.vista_graficos_action = QAction("&Vista Gráficos", p)
-        self.vista_graficos_action.setShortcut("Ctrl+G")
-        self.vista_graficos_action.setStatusTip("Cambiar a la vista de gráficos")
-
         # === Ayuda ===
         self.acerca_de_action = QAction("&Acerca de...", p)
         self.acerca_de_action.setShortcut("F1")
         self.acerca_de_action.setStatusTip("Mostrar información sobre la aplicación")
+
+        # === Datos ===
+        self.limpieza_rapida_action = QAction("Limpieza &Rápida", p)
+        self.limpieza_rapida_action.setShortcut("Ctrl+L")
+        self.limpieza_rapida_action.setStatusTip("Eliminar nulos, duplicados y espacios en blanco")
+        self.limpieza_rapida_action.setEnabled(False)
 
     # ==================== CONSTRUCCIÓN ====================
 
@@ -185,13 +181,12 @@ class MenuBuilder:
 
     def _build_datos_menu(self) -> None:
         self.datos_menu = DatosMenu.create(
-            self.menu_bar, self.cruzar_datos_action
+            self.menu_bar, self.cruzar_datos_action, self.limpieza_rapida_action
         )
 
     def _build_tabla_pivote_menu(self) -> None:
         self.tabla_pivote_menu = self.menu_bar.addMenu("&Tabla Pivote")
         self.tabla_pivote_menu.addAction(self.pivot_simple_action)
-        self.tabla_pivote_menu.addAction(self.pivot_combinada_action)
         self.tabla_pivote_menu.addSeparator()
         self.tabla_pivote_menu.addAction(self.export_pivot_action)
 
@@ -200,7 +195,6 @@ class MenuBuilder:
             self.vista_principal_action,
             self.vista_datos_action,
             self.vista_info_action,
-            self.vista_graficos_action,
         ]
         VistaMenu.create(self.menu_bar, actions, self.parent_window)
 
@@ -222,17 +216,16 @@ class MenuBuilder:
 
         self.exportar_separado_action.triggered.connect(coordinator.exportar_datos_separados)
         self.cruzar_datos_action.triggered.connect(coordinator.abrir_cruzar_datos)
+        self.limpieza_rapida_action.triggered.connect(coordinator.ejecutar_limpieza_rapida)
 
-        self.pivot_simple_action.triggered.connect(coordinator.abrir_pivot_simple)
-        self.pivot_combinada_action.triggered.connect(coordinator.abrir_pivot_combinada)
+        self.pivot_simple_action.triggered.connect(coordinator.auto_pivot)
         self.export_pivot_action.triggered.connect(coordinator.exportar_resultado_pivote)
 
         self.vista_principal_action.triggered.connect(lambda: view_coordinator.switch_to(0))
         self.vista_datos_action.triggered.connect(lambda: view_coordinator.switch_to(1))
-        self.vista_graficos_action.triggered.connect(lambda: view_coordinator.switch_to(2))
         self.vista_info_action.triggered.connect(coordinator.mostrar_info)
 
-        self.acerca_de_action.triggered.connect(self.parent_window.mostrar_acerca_de)
+        self.acerca_de_action.triggered.connect(coordinator.mostrar_acerca_de)
 
     # ==================== ESTADO ====================
 
@@ -242,8 +235,8 @@ class MenuBuilder:
             self.exportar_separado_action,
             self.cruzar_datos_action,
             self.pivot_simple_action,
-            self.pivot_combinada_action,
             self.export_pivot_action,
+            self.limpieza_rapida_action,
         ):
             action.setEnabled(enabled)
 

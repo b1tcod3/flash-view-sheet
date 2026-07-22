@@ -4,7 +4,7 @@ Test simplificado para verificar que la corrección funciona sin GUI
 """
 
 import pandas as pd
-from paginacion.pagination_manager import PaginationManager
+from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
 def test_core_pagination() -> None:

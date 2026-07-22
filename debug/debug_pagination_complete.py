@@ -5,8 +5,8 @@ Test específico para identificar el problema exacto de paginación
 
 import pandas as pd
 import sys
-from paginacion.data_view import DataView
-from paginacion.pagination_manager import PaginationManager
+from app.widgets.data_view import DataView
+from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
 def test_pagination_issue():

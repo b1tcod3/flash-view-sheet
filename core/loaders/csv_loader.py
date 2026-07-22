@@ -16,20 +16,26 @@ class CsvLoader(FileLoader):
     def get_supported_extensions(self) -> list[str]:
         return ['.csv', '.tsv']
 
-    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None, separator: str | None = None) -> pd.DataFrame:
         """
         Load CSV/TSV file into DataFrame
         
         Args:
             skip_rows: Number of rows to skip at the beginning
             column_names: Dictionary for renaming columns
+            separator: Custom separator character (overrides default detection)
             
         Returns:
             DataFrame with loaded data
         """
         try:
-            # Determine separator based on file extension
-            sep = '\t' if self.filepath.lower().endswith('.tsv') else ','
+            # Determine separator: explicit > extension-based > default comma
+            if separator is not None:
+                sep = separator
+            elif self.filepath.lower().endswith('.tsv'):
+                sep = '\t'
+            else:
+                sep = ','
             
             # Load with skip_rows if specified
             if skip_rows > 0:
@@ -75,12 +81,17 @@ class CsvLoader(FileLoader):
         """
         return True
 
-    def load_in_chunks(self, chunk_size: int = 1000) -> pd.DataFrame:
+    def load_in_chunks(self, chunk_size: int = 1000, separator: str | None = None) -> pd.DataFrame:
         """
         Load CSV/TSV file in chunks for better memory management
         """
         try:
-            sep = '\t' if self.filepath.lower().endswith('.tsv') else ','
+            if separator is not None:
+                sep = separator
+            elif self.filepath.lower().endswith('.tsv'):
+                sep = '\t'
+            else:
+                sep = ','
             
             chunk_list = []
             for chunk in pd.read_csv(self.filepath, sep=sep, chunksize=chunk_size):

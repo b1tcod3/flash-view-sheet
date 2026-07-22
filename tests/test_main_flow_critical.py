@@ -12,7 +12,7 @@ from PySide6.QtCore import QThread, Signal, QTimer
 
 # Importar módulos exactos de main.py
 from core.data_handler import cargar_datos_con_opciones
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 class RealDataLoaderThread(QThread):
     """Hilo real de carga de datos como en main.py"""

@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 from PySide6.QtCore import QTimer
 
 # Importar componentes del proyecto
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba diversos"""

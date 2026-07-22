@@ -16,24 +16,28 @@ class ExcelLoader(FileLoader):
     def get_supported_extensions(self) -> list[str]:
         return ['.xlsx', '.xls']
 
-    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
+    def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None, sheet_name: str | None = None) -> pd.DataFrame:
         """
         Load Excel file into DataFrame
         
         Args:
             skip_rows: Number of rows to skip at the beginning
             column_names: Dictionary for renaming columns
+            sheet_name: Name of the sheet to load (default: first sheet)
             
         Returns:
             DataFrame with loaded data
         """
         try:
+            # Determine which sheet to load
+            sheet = 0 if sheet_name is None else sheet_name
+
             # For Excel, use header=skip_rows to use the row after skipping as header
             if skip_rows > 0:
-                df = pd.read_excel(self.filepath, header=skip_rows)
+                df = pd.read_excel(self.filepath, sheet_name=sheet, header=skip_rows)
                 df = df.reset_index(drop=True)
             else:
-                df = pd.read_excel(self.filepath)
+                df = pd.read_excel(self.filepath, sheet_name=sheet)
             
             # Apply column renaming if specified
             if column_names:

@@ -1,173 +1,487 @@
 """
 Vista Principal para Flash View Sheet
-Muestra botón para cargar archivo, card con resumen e icono de spreadsheet
+Implementa interfaz de carga con Drag & Drop y lista de archivos recientes.
 """
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                                QLabel, QGroupBox, QFrame)
+                               QLabel, QFrame, QScrollArea, QProgressBar, QStyle)
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QPixmap, QDragEnterEvent, QDropEvent, QIcon
 from pathlib import Path
-from typing import Any
+
+from app.resources import get_asset_path
+
+class FileItemWidget(QFrame):
+    """Widget personalizado para representar un archivo en la lista de subidas"""
+    
+    cancel_clicked = Signal(str)
+    delete_clicked = Signal(str)
+
+    def __init__(self, filepath: str, parent: QWidget | None = None):
+        super().__init__(parent)
+        self.filepath = filepath
+        self.filename = Path(filepath).name
+        self.is_uploading = True
+        self.setup_ui()
+
+    def setup_ui(self):
+        self.setStyleSheet("""
+            QFrame {
+                background-color: transparent;
+                border-bottom: 1px solid #e0e0e0;
+                padding: 8px 0px;
+            }
+            QLabel { border: none; }
+        """)
+        
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(5, 5, 5, 5)
+
+        # Icono del archivo
+        self.icon_label = QLabel()
+        self.icon_label.setFixedSize(32, 32)
+        self.icon_label.setStyleSheet("background-color: #f0f4f8; border-radius: 4px;")
+        self.icon_label.setAlignment(Qt.AlignCenter)
+        self.icon_label.setPixmap(self.style().standardIcon(QStyle.SP_FileIcon).pixmap(20, 20))
+        layout.addWidget(self.icon_label)
+
+        # Contenedor central (Nombre + Progreso)
+        center_layout = QVBoxLayout()
+        center_layout.setSpacing(2)
+        
+        self.name_label = QLabel(self.filename)
+        self.name_label.setStyleSheet("font-weight: bold; font-size: 13px; color: #333;")
+        center_layout.addWidget(self.name_label)
+
+        # Elementos de progreso
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setFixedHeight(4)
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: none;
+                background-color: #e0e0e0;
+                border-radius: 2px;
+            }
+            QProgressBar::chunk {
+                background-color: #4a90e2;
+                border-radius: 2px;
+            }
+        """)
+        center_layout.addWidget(self.progress_bar)
+
+        # Textos de progreso (Tamaño y Porcentaje)
+        self.progress_text_layout = QHBoxLayout()
+        self.size_label = QLabel("Calculando...")
+        self.size_label.setStyleSheet("font-size: 11px; color: #888;")
+        self.percent_label = QLabel("Cargando... 0%")
+        self.percent_label.setStyleSheet("font-size: 11px; color: #4a90e2; font-weight: bold;")
+        
+        self.progress_text_layout.addWidget(self.size_label)
+        self.progress_text_layout.addStretch()
+        self.progress_text_layout.addWidget(self.percent_label)
+        
+        center_layout.addLayout(self.progress_text_layout)
+        layout.addLayout(center_layout)
+
+        # Botón de acción (Cancelar / Eliminar)
+        self.action_btn = QPushButton()
+        self.action_btn.setIcon(self.style().standardIcon(QStyle.SP_DialogCancelButton))
+        self.action_btn.setFixedSize(24, 24)
+        self.action_btn.setCursor(Qt.PointingHandCursor)
+        self.action_btn.setStyleSheet("""
+            QPushButton {
+                border: none;
+                color: #ff4d4f;
+                font-size: 14px;
+                background-color: transparent;
+            }
+            QPushButton:hover { background-color: #ffeeee; border-radius: 12px; }
+        """)
+        self.action_btn.clicked.connect(self._on_action_clicked)
+        layout.addWidget(self.action_btn)
+
+    def set_progress(self, loaded_bytes: int, total_bytes: int):
+        """Actualiza el estado de la carga visualmente"""
+        if total_bytes > 0:
+            percent = int((loaded_bytes / total_bytes) * 100)
+            self.progress_bar.setValue(percent)
+            
+            loaded_mb = loaded_bytes / (1024 * 1024)
+            total_mb = total_bytes / (1024 * 1024)
+            self.size_label.setText(f"{loaded_mb:.1f} MB of {total_mb:.1f} MB")
+            self.percent_label.setText(f"Cargando... {percent}%")
+            
+            if percent >= 100:
+                self.set_completed()
+
+    def set_completed(self):
+        """Cambia el widget a su estado de carga finalizada"""
+        self.is_uploading = False
+        self.progress_bar.hide()
+        self.size_label.hide()
+        self.percent_label.hide()
+        self.action_btn.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
+
+    def set_error(self, message: str = "Error"):
+        """Marca el widget como error de carga"""
+        self.is_uploading = False
+        self.progress_bar.hide()
+        self.size_label.hide()
+        self.percent_label.setText(message)
+        self.percent_label.setStyleSheet("font-size: 11px; color: #ff4d4f; font-weight: bold;")
+        self.action_btn.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
+
+    def _on_action_clicked(self):
+        if self.is_uploading:
+            self.cancel_clicked.emit(self.filepath)
+        else:
+            self.delete_clicked.emit(self.filepath)
+
+
+class RecentFileWidget(QFrame):
+    """Widget para un archivo reciente en la lista"""
+
+    clicked = Signal(str)
+    remove_clicked = Signal(str)
+
+    def __init__(self, filepath: str, filename: str, relative_time: str,
+                 parent: QWidget | None = None):
+        super().__init__(parent)
+        self.filepath = filepath
+        self.setStyleSheet("""
+            QFrame {
+                background-color: transparent;
+                border-bottom: 1px solid #e0e0e0;
+                padding: 6px 0px;
+            }
+            QFrame:hover { background-color: #f5f7fa; }
+            QLabel { border: none; }
+        """)
+        self.setCursor(Qt.PointingHandCursor)
+
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(5, 4, 5, 4)
+        layout.setSpacing(8)
+
+        icon_label = QLabel()
+        icon_label.setFixedSize(28, 28)
+        icon_label.setStyleSheet("background-color: #eef5ff; border-radius: 4px;")
+        icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setPixmap(self.style().standardIcon(QStyle.SP_FileIcon).pixmap(18, 18))
+        layout.addWidget(icon_label)
+
+        text_layout = QVBoxLayout()
+        text_layout.setSpacing(1)
+
+        name_lbl = QLabel(filename)
+        name_lbl.setStyleSheet("font-weight: bold; font-size: 12px; color: #333;")
+        text_layout.addWidget(name_lbl)
+
+        time_lbl = QLabel(relative_time)
+        time_lbl.setStyleSheet("font-size: 11px; color: #888;")
+        text_layout.addWidget(time_lbl)
+
+        layout.addLayout(text_layout, 1)
+
+        remove_btn = QPushButton()
+        remove_btn.setIcon(self.style().standardIcon(QStyle.SP_DialogCancelButton))
+        remove_btn.setFixedSize(20, 20)
+        remove_btn.setStyleSheet("""
+            QPushButton { border: none; background: transparent; }
+            QPushButton:hover { background-color: #ffeeee; border-radius: 10px; }
+        """)
+        remove_btn.clicked.connect(lambda: self.remove_clicked.emit(filepath))
+        layout.addWidget(remove_btn)
+
+    def mousePressEvent(self, event) -> None:
+        if event.button() == Qt.LeftButton:
+            self.clicked.emit(self.filepath)
+        super().mousePressEvent(event)
+
 
 class MainView(QWidget):
     """
-    Vista principal con elementos básicos para cargar datos
+    Vista principal con Drag & Drop y lista de archivos recientes.
     """
-
     load_file_clicked = Signal()
+    files_dropped = Signal(list)  # lista de rutas válidas (multi-archivo)
     reload_with_options = Signal(str, int, dict, bool)
+    recent_file_clicked = Signal(str)
+    recent_file_remove = Signal(str)
     
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.current_file: str | None = None
-        self.skip_rows: int = 0
-        self.column_names: dict[str, Any] = {}
-        self.options_visible: bool = False
         self._original_columns: list[str] = []
+        self._file_widgets: dict[str, FileItemWidget] = {}
+        
+        self.setAcceptDrops(True) # Habilitar Drag & Drop en toda la vista
         self.setup_ui()
         
     def setup_ui(self) -> None:
-        """Configurar la interfaz de la vista principal"""
-        main_layout = QVBoxLayout(self)
-        main_layout.setAlignment(Qt.AlignCenter)
+        main_layout = QHBoxLayout(self)
+        main_layout.setContentsMargins(40, 40, 40, 40)
+        main_layout.setSpacing(40)
+
+        # ==========================================
+        # PANEL IZQUIERDO: Zona de Carga (Drag & Drop)
+        # ==========================================
+        left_panel = QVBoxLayout()
         
-        # Grupo principal
-        main_group = QGroupBox("Flash View Sheet - Visor de Datos Tabulares")
-        main_group.setStyleSheet("""
-            QGroupBox {
-                font-size: 14px;
-                font-weight: bold;
-                border: 2px solid #4a90e2;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 15px;
+        self.drop_zone = QFrame()
+        self.drop_zone.setObjectName("uploadZone")
+        self.drop_zone.setStyleSheet("""
+            QFrame#uploadZone {
+                border: 2px dashed #4a90e2;
+                border-radius: 12px;
+                background-color: #f8fbff;
+            }
+            QFrame#uploadZone:hover {
+                background-color: #eef5ff;
             }
         """)
-        group_layout = QVBoxLayout(main_group)
         
+        drop_layout = QVBoxLayout(self.drop_zone)
+        drop_layout.setAlignment(Qt.AlignCenter)
+        drop_layout.setSpacing(15)
+
         # Logo de la aplicación
-        icon_label = QLabel()
-        # Cargar el logo desde assets
-        logo_path = Path(__file__).resolve().parent.parent.parent / "assets" / "logo.png"
+        logo_label = QLabel()
+        logo_path = get_asset_path("logo.png")
         if logo_path.exists():
             pixmap = QPixmap(str(logo_path))
-            # Escalar la imagen manteniendo la proporción - smaller for small screens
-            scaled_pixmap = pixmap.scaled(96, 96, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            icon_label.setPixmap(scaled_pixmap)
+            scaled_pixmap = pixmap.scaled(128, 128, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            logo_label.setPixmap(scaled_pixmap)
         else:
-            # Fallback al emoji si el logo no existe
-            icon_label.setText("📊")
-            icon_label.setStyleSheet("""
-                font-size: 64px;
-                text-align: center;
-            """)
-        icon_label.setAlignment(Qt.AlignCenter)
-        group_layout.addWidget(icon_label)
-        
-        # Card con información
-        card_frame = QFrame()
-        card_frame.setFrameStyle(QFrame.Box)
-        card_frame.setStyleSheet("""
-            QFrame {
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                background-color: #f9f9f9;
-                padding: 10px;
-            }
-        """)
-        card_layout = QVBoxLayout(card_frame)
-        
-        self.info_label = QLabel("No hay archivo cargado")
-        self.info_label.setWordWrap(True)
-        self.info_label.setStyleSheet("font-size: 14px; color: #666;")
-        card_layout.addWidget(self.info_label)
-        
-        group_layout.addWidget(card_frame)
-        
-        # Botón para cargar archivo
-        self.load_button = QPushButton("Cargar Archivo")
+            logo_label.setText("Flash Sheet")
+            logo_label.setStyleSheet("font-size: 24px; color: #4a90e2; font-weight: bold;")
+        logo_label.setAlignment(Qt.AlignCenter)
+        drop_layout.addWidget(logo_label)
+
+        # Flecha de subida
+        upload_icon = QLabel("↑")
+        upload_icon.setStyleSheet("font-size: 48px; color: #4a90e2; font-weight: bold;")
+        upload_icon.setAlignment(Qt.AlignCenter)
+        drop_layout.addWidget(upload_icon)
+
+        # Botón Browse
+        self.load_button = QPushButton("Browse")
+        self.load_button.setCursor(Qt.PointingHandCursor)
         self.load_button.setStyleSheet("""
             QPushButton {
                 background-color: #4a90e2;
                 color: white;
                 border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
+                padding: 10px 30px;
+                border-radius: 20px;
                 font-size: 14px;
+                font-weight: bold;
             }
-            QPushButton:hover {
-                background-color: #357abd;
-            }
+            QPushButton:hover { background-color: #357abd; }
         """)
         self.load_button.clicked.connect(self.load_file)
-        group_layout.addWidget(self.load_button)
+        drop_layout.addWidget(self.load_button, alignment=Qt.AlignCenter)
+
+        # Texto informativo
+        drop_label = QLabel("drop a file here")
+        drop_label.setStyleSheet("color: #a0a0a0; font-size: 14px;")
+        drop_label.setAlignment(Qt.AlignCenter)
+        drop_layout.addWidget(drop_label)
+
+        support_label = QLabel("*File supported .csv, .xlsx, .json")
+        support_label.setStyleSheet("color: #666; font-size: 12px;")
+        support_label.setAlignment(Qt.AlignCenter)
+        drop_layout.addWidget(support_label)
+
+        left_panel.addWidget(self.drop_zone)
+        main_layout.addLayout(left_panel, stretch=6) # Toma el 60% del ancho
+
+        # ==========================================
+        # PANEL DERECHO: Archivos Cargados
+        # ==========================================
+        right_panel = QVBoxLayout()
         
-        # Botón para opciones de carga (inicialmente oculto)
-        self.options_button = QPushButton("Opciones de Carga")
+        title_label = QLabel("Uploaded files")
+        title_label.setStyleSheet("font-weight: bold; font-size: 16px; color: #333;")
+        right_panel.addWidget(title_label)
+
+        # Scroll Area para la lista
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.NoFrame)
+        self.scroll_area.setStyleSheet("background: transparent;")
+        
+        self.files_container = QWidget()
+        self.files_container.setStyleSheet("background: transparent;")
+        self.files_layout = QVBoxLayout(self.files_container)
+        self.files_layout.setAlignment(Qt.AlignTop)
+        self.files_layout.setContentsMargins(0, 0, 10, 0)
+        
+        self.scroll_area.setWidget(self.files_container)
+        right_panel.addWidget(self.scroll_area)
+
+        self.recent_title_label = QLabel("Archivos Recientes")
+        self.recent_title_label.setStyleSheet("font-weight: bold; font-size: 16px; color: #333; padding-top: 8px;")
+        self.recent_title_label.hide()
+        right_panel.addWidget(self.recent_title_label)
+
+        self.recent_scroll_area = QScrollArea()
+        self.recent_scroll_area.setWidgetResizable(True)
+        self.recent_scroll_area.setFrameShape(QFrame.NoFrame)
+        self.recent_scroll_area.setMaximumHeight(200)
+        self.recent_scroll_area.setStyleSheet("background: transparent;")
+        self.recent_scroll_area.hide()
+
+        self.recent_container = QWidget()
+        self.recent_container.setStyleSheet("background: transparent;")
+        self.recent_layout = QVBoxLayout(self.recent_container)
+        self.recent_layout.setAlignment(Qt.AlignTop)
+        self.recent_layout.setContentsMargins(0, 0, 10, 0)
+
+        self.recent_scroll_area.setWidget(self.recent_container)
+        right_panel.addWidget(self.recent_scroll_area)
+        
+        # Botón de opciones (ahora reubicado o flotante bajo la lista)
+        self.options_button = QPushButton("Opciones del Archivo Actual")
         self.options_button.setStyleSheet("""
             QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-size: 12px;
+                background-color: #6c757d; color: white; border: none;
+                padding: 8px; border-radius: 4px;
             }
-            QPushButton:hover {
-                background-color: #5a6268;
-            }
+            QPushButton:hover { background-color: #5a6268; }
         """)
         self.options_button.clicked.connect(self.show_options)
-        self.options_button.hide()  # Ocultar inicialmente
-        group_layout.addWidget(self.options_button)
-        
-        main_layout.addWidget(main_group)
-        
+        self.options_button.hide()
+        right_panel.addWidget(self.options_button)
+
+        main_layout.addLayout(right_panel, stretch=4) # Toma el 40% del ancho
+
+    # --- Eventos de Drag & Drop ---
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+            self.drop_zone.setStyleSheet("""
+                QFrame#uploadZone {
+                    border: 2px solid #4a90e2; background-color: #eef5ff; border-radius: 12px;
+                }
+            """)
+
+    def dragLeaveEvent(self, event) -> None:
+        self.drop_zone.setStyleSheet("""
+            QFrame#uploadZone {
+                border: 2px dashed #4a90e2; background-color: #f8fbff; border-radius: 12px;
+            }
+        """)
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        self.dragLeaveEvent(None)
+        urls = event.mimeData().urls()
+        if not urls:
+            return
+        paths = []
+        for url in urls:
+            filepath = url.toLocalFile()
+            if Path(filepath).is_file():
+                paths.append(filepath)
+        if paths:
+            self.files_dropped.emit(paths)
+
+    # --- Lógica de Vistas y Archivos ---
     def load_file(self) -> None:
-        """Emitir señal de intención de carga de archivo."""
         self.load_file_clicked.emit()
+
+    def add_file_to_list(self, filepath: str) -> FileItemWidget:
+        """Añade un archivo a la lista lateral derecha e inicia su estado 'cargando'"""
+        if filepath in self._file_widgets:
+            return self._file_widgets[filepath]
             
+        widget = FileItemWidget(filepath, self)
+        widget.delete_clicked.connect(self.remove_file_from_list)
+        widget.cancel_clicked.connect(self.remove_file_from_list)
+        
+        self.files_layout.addWidget(widget)
+        self._file_widgets[filepath] = widget
+        self.current_file = filepath
+        return widget
+
+    def clear_file_list(self) -> None:
+        """Limpia toda la lista de archivos"""
+        for widget in self._file_widgets.values():
+            self.files_layout.removeWidget(widget)
+            widget.deleteLater()
+        self._file_widgets.clear()
+        self.hide_options_button()
+
+    def update_file_progress(self, filepath: str, loaded: int, total: int) -> None:
+        """Permite al Coordinador actualizar la barra de progreso"""
+        if filepath in self._file_widgets:
+            self._file_widgets[filepath].set_progress(loaded, total)
+
+    def set_file_completed(self, filepath: str) -> None:
+        """Marca la carga como terminada"""
+        if filepath in self._file_widgets:
+            self._file_widgets[filepath].set_completed()
+            self.current_file = filepath
+            self.show_options_button()
+
+    def remove_file_from_list(self, filepath: str) -> None:
+        if filepath in self._file_widgets:
+            widget = self._file_widgets.pop(filepath)
+            self.files_layout.removeWidget(widget)
+            widget.deleteLater()
+            
+            if self.current_file == filepath:
+                self.current_file = None
+                self.hide_options_button()
+
+    def set_file_info(self, filepath: str) -> None:
+        """Método de retrocompatibilidad con el coordinador actual"""
+        self.add_file_to_list(filepath)
+        self.set_file_completed(filepath)
+
     def show_options(self) -> None:
-        """Mostrar diálogo de opciones de carga"""
         from app.widgets.load_options_dialog import LoadOptionsDialog
         dialog = LoadOptionsDialog(self)
-
         if self._original_columns:
             dialog.set_columns(self._original_columns)
 
         if dialog.exec():
             skip_rows, column_names, enable_column_visibility = dialog.get_options()
-            # Emitir señal para recargar con las nuevas opciones
             self.reload_with_options.emit(self.current_file, skip_rows, column_names, enable_column_visibility)
-            
-    def update_info(self) -> None:
-        """Actualizar información en la card"""
-        if self.current_file:
-            filename = Path(self.current_file).name
-            self.info_label.setText(f"Archivo cargado: {filename}\n\nHaz clic en 'Vista de Datos' o 'Vista de Gráficos' para explorar.")
-            self.show_options_button()
-        else:
-            self.info_label.setText("No hay archivo cargado")
-            self.hide_options_button()
-            
-    def set_file_info(self, filepath: str) -> None:
-        """Establecer información del archivo desde fuera"""
-        self.current_file = filepath
-        self.update_info()
-    
+
     def set_original_columns(self, columns: list[str]) -> None:
-        """Establecer los nombres de columnas de los datos originales"""
         self._original_columns = columns
 
     def show_options_button(self) -> None:
-        """Mostrar el botón de opciones"""
-        if not self.options_visible:
-            self.options_button.show()
-            self.options_visible = True
+        self.options_button.show()
 
     def hide_options_button(self) -> None:
-        """Ocultar el botón de opciones"""
-        if self.options_visible:
-            self.options_button.hide()
-            self.options_visible = False
+        self.options_button.hide()
+
+    # --- Archivos Recientes ---
+
+    def set_recent_files(self, entries: list[dict]) -> None:
+        for i in range(self.recent_layout.count()):
+            child = self.recent_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        if not entries:
+            self.recent_title_label.hide()
+            self.recent_scroll_area.hide()
+            return
+
+        self.recent_title_label.show()
+        self.recent_scroll_area.show()
+
+        for entry in entries:
+            widget = RecentFileWidget(
+                entry["filepath"],
+                entry["filename"],
+                entry["relative_time"],
+                self,
+            )
+            widget.clicked.connect(self.recent_file_clicked.emit)
+            widget.remove_clicked.connect(self.recent_file_remove.emit)
+            self.recent_layout.addWidget(widget)

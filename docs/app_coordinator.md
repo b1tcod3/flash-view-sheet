@@ -289,13 +289,13 @@ Mismo patron que pivote simple pero usando `pivot_service.execute_combined()` y 
 
 #### `exportar_resultado_pivote()`
 
-Delega a `export_service.show_export_dialog()` con el DataFrame actual.
+Delega a `mostrar_dialogo_exportacion()` con prefijo "Resultado_Pivote".
 
 ---
 
 ### 3.8 Exportacion
 
-Todos los metodos verifican `data_service.has_data` y delegan a `export_service`:
+Todos los metodos verifican `data_service.has_data` y delegan a `export_service` via `_exportar_con_dialogo()`:
 
 | Metodo | Formato | Metodo de ExportService |
 |--------|---------|------------------------|
@@ -303,8 +303,8 @@ Todos los metodos verifican `data_service.has_data` y delegan a `export_service`
 | `exportar_a_xlsx()` | Excel | `export_to_xlsx()` |
 | `exportar_a_csv()` | CSV | `export_to_csv()` |
 | `exportar_a_sql()` | SQL/SQLite | `export_to_sql()` |
-| `exportar_a_imagen()` | PNG/JPG | `show_export_dialog()` |
-| `exportar_datos_separados()` | Excel separado | `show_export_dialog()` |
+| `exportar_a_imagen()` | PNG/JPG | `mostrar_dialogo_exportacion()` (TODO) |
+| `exportar_datos_separados()` | Excel separado | `mostrar_dialogo_exportacion()` (TODO) |
 
 #### `mostrar_info()`
 

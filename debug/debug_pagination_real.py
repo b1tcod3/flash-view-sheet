@@ -6,8 +6,8 @@ Debug del problema de paginación en la aplicación real
 import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from paginacion.data_view import DataView
-from paginacion.pagination_manager import PaginationManager
+from app.widgets.data_view import DataView
+from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
 def create_test_data():

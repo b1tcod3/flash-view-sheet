@@ -14,6 +14,18 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import optimization_config
 
+def _format_value(value: Any) -> str:
+    if pd.isna(value):
+        return ""
+    if isinstance(value, float):
+        if math.isinf(value):
+            return ""
+        if value == int(value):
+            return str(int(value))
+        return str(value).replace(".", ",")
+    return str(value)
+
+
 class VirtualizedPandasModel(QAbstractTableModel):
     """
     Modelo optimizado que adapta un DataFrame de Pandas para QTableView
@@ -96,14 +108,13 @@ class VirtualizedPandasModel(QAbstractTableModel):
                 # Para datos no virtualizados, acceso directo
                 if not self.enable_virtualization:
                     value = self.full_df.iloc[row, column]
-                    return str(value) if not pd.isna(value) else ""
+                    return _format_value(value)
                 
                 # Para datos virtualizados, usar chunk system
                 chunk_data = self._get_chunk_data(row)
                 if chunk_data is not None and column < len(chunk_data.columns):
                     value = chunk_data.iloc[row - chunk_data.index[0], column]
-                    # Convertir a string para mostrar
-                    return str(value) if not pd.isna(value) else ""
+                    return _format_value(value)
 
         return None
 

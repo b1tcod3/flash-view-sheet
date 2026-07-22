@@ -11,7 +11,14 @@ class DatosMenu:
     """Clase para crear y configurar el menú Datos."""
 
     @staticmethod
-    def create(menu_bar: QMenuBar, cruzar_datos_action: QAction) -> QMenu:
+    def create(
+        menu_bar: QMenuBar,
+        cruzar_datos_action: QAction,
+        limpieza_rapida_action: QAction | None = None,
+    ) -> QMenu:
         datos_menu = menu_bar.addMenu("&Datos")
         datos_menu.addAction(cruzar_datos_action)
+        if limpieza_rapida_action is not None:
+            datos_menu.addSeparator()
+            datos_menu.addAction(limpieza_rapida_action)
         return datos_menu

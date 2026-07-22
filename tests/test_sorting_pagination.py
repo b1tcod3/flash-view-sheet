@@ -4,8 +4,8 @@ Test para verificar que el ordenamiento funciona correctamente con la paginació
 """
 
 import pandas as pd
-from paginacion.data_view import DataView
-from paginacion.pagination_manager import PaginationManager
+from app.widgets.data_view import DataView
+from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
 def create_test_data_unsorted() -> pd.DataFrame:

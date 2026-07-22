@@ -10,7 +10,7 @@ from types import TracebackType
 
 from PySide6.QtCore import QEvent, QObject
 from PySide6.QtGui import QCloseEvent, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog
 
 from app.resources import get_asset_path
 
@@ -18,6 +18,7 @@ from core.join.join_history import JoinHistory
 
 # Importar servicios y gestores
 from app.services import DataService, ExportService, FilterService, PivotService, CleaningService
+from app.services.recent_files_service import RecentFilesService
 from app.toolbar import ToolbarManager
 from app.view_manager import ViewCoordinator
 
@@ -40,6 +41,7 @@ class MainWindow(QMainWindow):
     view_coordinator: ViewCoordinator
     coordinator: AppCoordinator
     join_history: JoinHistory
+    recent_files_service: RecentFilesService
     menu_builder: MenuBuilder
     separar_menu: object | None
     datos_menu: object | None
@@ -63,6 +65,7 @@ class MainWindow(QMainWindow):
         # Configurar UI
         self._setup_ui()
         self._setup_connections()
+        self._load_initial_recent_files()
         
         print(f"DEBUG: MainWindow initialized with size {self.size()}")
     
@@ -75,6 +78,7 @@ class MainWindow(QMainWindow):
         self.filter_service = FilterService()
         self.pivot_service = PivotService()
         self.cleaning_service = CleaningService()
+        self.recent_files_service = RecentFilesService()
     
     def _init_toolbar(self) -> None:
         """Inicializar toolbar manager"""
@@ -95,7 +99,8 @@ class MainWindow(QMainWindow):
             cleaning_service=self.cleaning_service,
             view_coordinator=self.view_coordinator,
             toolbar_manager=self.toolbar_manager,
-            join_history=self.join_history
+            join_history=self.join_history,
+            recent_files_service=self.recent_files_service
         )
         
         # 3. Conexiones posteriores
@@ -139,11 +144,12 @@ class MainWindow(QMainWindow):
             main_view.load_file_clicked.connect(self.coordinator.solicitar_apertura_archivo)
             main_view.files_dropped.connect(self.coordinator.iniciar_carga_multiple)
             main_view.reload_with_options.connect(self._on_reload_with_options)
+            main_view.recent_file_clicked.connect(self.coordinator.on_recent_file_clicked)
+            main_view.recent_file_remove.connect(self.coordinator.on_recent_file_remove)
         
         if data_view:
             data_view.filter_applied.connect(self.coordinator.on_filter_applied)
             data_view.filter_cleared.connect(self.coordinator.on_filter_cleared)
-            data_view.data_updated.connect(self.coordinator.on_data_updated)
         
         if joined_view:
             joined_view.new_join_requested.connect(self.coordinator.abrir_cruzar_datos)
@@ -158,11 +164,35 @@ class MainWindow(QMainWindow):
         self.coordinator.datos_disponibles.connect(self.menu_builder.set_data_actions_enabled)
         self.coordinator.datos_disponibles.connect(self.toolbar_manager.on_datos_disponibles)
     
+    def _load_initial_recent_files(self) -> None:
+        """Cargar y mostrar archivos recientes al iniciar"""
+        main_view = self.view_coordinator.get_main_view()
+        if main_view:
+            entries = self.recent_files_service.get_recent()
+            main_view.set_recent_files(entries)
+    
     # ==================== SEÑALES ====================
     
     def _on_reload_with_options(self, filepath: str, skip_rows: int, column_names: dict[str, str], enable_column_visibility: bool = True) -> None:
         """Manejar recarga con opciones"""
-        self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility)
+        separator = None
+        sheet_name = None
+        suffix = Path(filepath).suffix.lower()
+        if suffix in ('.csv', '.tsv'):
+            from app.widgets.csv_separator_dialog import CSVSeparatorDialog
+            dialog = CSVSeparatorDialog(self)
+            if dialog.exec() == QDialog.Accepted:
+                separator = dialog.get_separator()
+            else:
+                return
+        elif suffix in ('.xlsx', '.xls'):
+            from app.widgets.excel_sheet_dialog import ExcelSheetDialog
+            dialog = ExcelSheetDialog(filepath, self)
+            if dialog.exec() == QDialog.Accepted:
+                sheet_name = dialog.get_sheet_name()
+            else:
+                return
+        self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility, separator=separator, sheet_name=sheet_name)
     
     # ==================== EVENTOS ====================
     

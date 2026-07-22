@@ -7,7 +7,7 @@ import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PySide6.QtCore import Qt
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 from app.models.pandas_model import VirtualizedPandasModel
 
 def create_test_data() -> pd.DataFrame:

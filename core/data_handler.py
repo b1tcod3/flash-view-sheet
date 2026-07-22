@@ -54,7 +54,7 @@ def cargar_datos(filepath: str, chunk_size: int | None = None) -> pd.DataFrame:
 
     return loader.load()
 
-def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict | None = None, chunk_size: int | None = None) -> pd.DataFrame:
+def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: dict | None = None, chunk_size: int | None = None, separator: str | None = None, sheet_name: str | None = None) -> pd.DataFrame:
     """
     Cargar datos desde un archivo con opciones adicionales usando el sistema de loaders
 
@@ -63,14 +63,20 @@ def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: d
         skip_rows: Número de filas a saltar al inicio (la siguiente fila se usa como header)
         column_names: Diccionario con nombres de columnas a renombrar {original: nuevo}
         chunk_size: Tamaño de chunk para lectura (si el formato lo soporta)
+        separator: Separador personalizado para archivos CSV/TSV
+        sheet_name: Nombre de la hoja para archivos Excel
 
     Returns:
         DataFrame de Pandas con los datos cargados y opciones aplicadas
     """
     from core.loaders import get_file_loader
+    from core.loaders.csv_loader import CsvLoader
+    from core.loaders.excel_loader import ExcelLoader
 
     # Usar el factory pattern para cargar el archivo
     loader = get_file_loader(filepath)
+    is_csv = isinstance(loader, CsvLoader)
+    is_excel = isinstance(loader, ExcelLoader)
     
     # Aplicar optimización para archivos grandes
     # Nota: load_in_chunks no soporta skip_rows/column_names, usar carga normal si se requieren
@@ -86,14 +92,27 @@ def cargar_datos_con_opciones(filepath: str, skip_rows: int = 0, column_names: d
                 chunk_size = 10000
         
         try:
-            df = loader.load_in_chunks(chunk_size)
+            if is_csv:
+                df = loader.load_in_chunks(chunk_size, separator=separator)
+            else:
+                df = loader.load_in_chunks(chunk_size)
         except Exception as e:
             # Si falla el chunk loading, usar carga normal
             print(f"Chunk loading falló, usando carga normal: {str(e)}")
-            df = loader.load(skip_rows, column_names)
+            if is_csv:
+                df = loader.load(skip_rows, column_names, separator=separator)
+            elif is_excel:
+                df = loader.load(skip_rows, column_names, sheet_name=sheet_name)
+            else:
+                df = loader.load(skip_rows, column_names)
     else:
         # Carga normal con opciones
-        df = loader.load(skip_rows, column_names)
+        if is_csv:
+            df = loader.load(skip_rows, column_names, separator=separator)
+        elif is_excel:
+            df = loader.load(skip_rows, column_names, sheet_name=sheet_name)
+        else:
+            df = loader.load(skip_rows, column_names)
 
     return df
 

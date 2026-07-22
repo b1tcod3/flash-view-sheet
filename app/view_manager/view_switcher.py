@@ -6,7 +6,6 @@ Provides methods to switch between different views in the application.
 """
 
 from PySide6.QtCore import Signal, QObject
-from .view_registry import ViewRegistry
 
 
 class ViewSwitcher(QObject):
@@ -17,25 +16,22 @@ class ViewSwitcher(QObject):
     view_about_to_change = Signal(int, int)  # (vista_actual, vista_nueva)
     
     def __init__(self, stacked_widget=None):
-        """Inicializar el switcher de vistas
-        
-        Args:
-            stacked_widget: QStackedWidget que contiene las vistas
-        """
         super().__init__()
         self._stacked_widget = stacked_widget
-        self._current_view = ViewRegistry.VIEW_MAIN
+        self._current_view = 0
+        self._current_registry_id = 0
         self._view_history = []
+        self._index_to_registry: dict[int, int] = {}
     
     def set_stacked_widget(self, stacked_widget):
-        """Establecer el widget stacked
-        
-        Args:
-            stacked_widget: QStackedWidget que contiene las vistas
-        """
+        """Establecer el widget stacked"""
         self._stacked_widget = stacked_widget
         if stacked_widget:
             self._current_view = stacked_widget.currentIndex()
+    
+    def set_index_mapping(self, index_to_registry: dict[int, int]) -> None:
+        """Establecer mapeo de stacked index → ViewRegistry ID"""
+        self._index_to_registry = index_to_registry
     
     def get_current_view(self) -> int:
         """Obtener índice de la vista actual"""
@@ -47,7 +43,7 @@ class ViewSwitcher(QObject):
         """Cambiar a la vista especificada
         
         Args:
-            index: Índice de la vista a mostrar
+            index: Índice del stacked widget a mostrar
             
         Returns:
             bool: True si el cambio fue exitoso
@@ -55,7 +51,7 @@ class ViewSwitcher(QObject):
         if not self._stacked_widget:
             return False
         
-        if not ViewRegistry.is_valid_view(index):
+        if index < 0 or index >= self._stacked_widget.count():
             return False
         
         # Emitir señal antes del cambio
@@ -64,6 +60,7 @@ class ViewSwitcher(QObject):
         # Realizar el cambio
         self._stacked_widget.setCurrentIndex(index)
         self._current_view = index
+        self._current_registry_id = self._index_to_registry.get(index, 0)
         self._view_history.append(index)
         
         # Limitar historial a 20 elementos
@@ -83,17 +80,18 @@ class ViewSwitcher(QObject):
         """Cambiar a la vista de datos"""
         return self.switch_to(ViewRegistry.VIEW_DATA)
     
-    def switch_to_graphics(self) -> bool:
-        """Cambiar a la vista de gráficos"""
-        return self.switch_to(ViewRegistry.VIEW_GRAPHICS)
-    
     def switch_to_join(self) -> bool:
         """Cambiar a la vista de join"""
         return self.switch_to(ViewRegistry.VIEW_JOIN)
     
+    def switch_to_pivot(self) -> bool:
+        """Cambiar a la vista de pivote"""
+        return self.switch_to(ViewRegistry.VIEW_PIVOT)
+    
     def get_view_name(self) -> str:
         """Obtener nombre de la vista actual"""
-        return ViewRegistry.get_view_name(self._current_view)
+        from .view_registry import ViewRegistry
+        return ViewRegistry.get_view_name(self._current_registry_id)
     
     def get_view_history(self) -> list:
         """Obtener historial de vistas visitadas"""

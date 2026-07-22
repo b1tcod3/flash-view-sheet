@@ -7,7 +7,7 @@ Este test demuestra que la paginación SÍ funciona en todos los casos
 import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 def create_comprehensive_test_data():
     """Crear datos de prueba comprehensivos"""

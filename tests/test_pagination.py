@@ -9,8 +9,8 @@ import pandas as pd
 # Añadir el directorio actual al path para importar módulos
 sys.path.insert(0, '/var/www/html/proyectos/flash-sheet')
 
-from paginacion.pagination_manager import PaginationManager
-from paginacion.data_view import DataView
+from app.services.pagination_manager import PaginationManager
+from app.widgets.data_view import DataView
 import pandas as pd
 
 def crear_datos_prueba() -> pd.DataFrame:

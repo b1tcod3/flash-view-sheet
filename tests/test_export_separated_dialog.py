@@ -1,13 +1,14 @@
 """
-Tests para el diálogo de exportación separada - Actualizado para implementación con tabs
+Tests para el diálogo de exportación separada - Actualizado para implementación compacta con QSplitter
 """
 
 import unittest
 import pandas as pd
+from pathlib import Path
 from unittest.mock import patch, MagicMock, mock_open
 import tempfile
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QDialog
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtTest import QTest
 
@@ -107,40 +108,47 @@ class TestExportSeparatedDialog(unittest.TestCase):
     def test_select_template_functionality(self) -> None:
         """Test funcionalidad de selección de plantilla"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Mock del diálogo de archivo
-        with patch('app.widgets.export_separated_dialog.ExcelTemplateDialog') as mock_dialog_class:
-            mock_dialog = MagicMock()
-            mock_dialog.exec.return_value = True
-            mock_dialog.get_template_info.return_value = ('/path/to/template.xlsx', 'Sheet1', ['Sheet1'])
-            mock_dialog_class.return_value = mock_dialog
-            
+
+        # Mock de QFileDialog y openpyxl
+        with patch('app.widgets.export_separated_dialog.QFileDialog.getOpenFileName') as mock_file, \
+             patch('app.widgets.export_separated_dialog.openpyxl.load_workbook') as mock_wb:
+            mock_file.return_value = ('/path/to/template.xlsx', '')
+            mock_workbook = MagicMock()
+            mock_workbook.sheetnames = ['Sheet1', 'Sheet2']
+            mock_wb.return_value = mock_workbook
+
             dialog.select_template()
-            
+
             # Verificar que se actualiza el label
             self.assertIn('template.xlsx', dialog.template_path_label.text())
+            self.assertTrue(dialog.sheet_combo.isEnabled())
+            self.assertEqual(dialog.sheet_combo.count(), 2)
     
     def test_select_destination_folder_functionality(self) -> None:
         """Test funcionalidad de selección de carpeta de destino"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Mock del diálogo de directorio
-        with patch('PySide6.QtWidgets.QFileDialog.getExistingDirectory') as mock_dir_dialog:
+
+        with patch('app.widgets.export_separated_dialog.QFileDialog.getExistingDirectory') as mock_dir_dialog:
             mock_dir_dialog.return_value = '/path/to/output'
-            
+
             dialog.select_destination_folder()
-            
-            # Verificar que se actualiza el label
-            self.assertIn('/path/to/output', dialog.dest_folder_label.text())
+
+            # Verificar que se guarda el Path y se muestra solo el nombre
+            self.assertIsNotNone(dialog._dest_path)
+            self.assertEqual(dialog.dest_folder_label.text(), 'output')
+            self.assertEqual(dialog.dest_folder_label.toolTip(), '/path/to/output')
     
     def test_validate_configuration_valid(self) -> None:
         """Test validación con configuración válida"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Configurar valores básicos válidos
+
+        # Configurar valores básicos válidos para que _build_config devuelva config
         dialog.column_combo.setCurrentText('Region')
         dialog.filename_template_edit.setText('Reporte_{valor}.xlsx')
-        
+        dialog._template_path = '/test/template.xlsx'
+        dialog._dest_path = Path('/test/output')
+        dialog.dest_folder_label.setText('output')
+
         # Mock ExcelTemplateSplitter para evitar dependencia
         with patch('app.widgets.export_separated_dialog.ExcelTemplateSplitter') as mock_splitter_class:
             mock_splitter = MagicMock()
@@ -150,12 +158,12 @@ class TestExportSeparatedDialog(unittest.TestCase):
             mock_validation_result.warnings = []
             mock_splitter.validate_configuration.return_value = mock_validation_result
             mock_splitter_class.return_value = mock_splitter
-            
+
             # Ejecutar validación
             dialog.validate_configuration()
-            
+
             # Verificar que se llama al validador
-            mock_splitter.validate_configuration.assert_called_once()
+            mock_splitter.validate_configuration.assert_called()
     
     def test_validate_configuration_invalid(self) -> None:
         """Test validación con configuración inválida"""
@@ -182,18 +190,20 @@ class TestExportSeparatedDialog(unittest.TestCase):
     def test_get_configuration_basic(self) -> None:
         """Test obtención de configuración básica"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Configurar valores
         dialog.column_combo.setCurrentText('Region')
         dialog.filename_template_edit.setText('Reporte_{valor}.xlsx')
         dialog.start_cell_combo.setCurrentText('A1')
-        
-        # Mock del atributo _template_path
+
+        # Mock del atributo _template_path y _dest_path
         dialog._template_path = '/path/to/template.xlsx'
-        dialog.dest_folder_label.setText('/path/to/output')
-        
+        dialog._dest_path = Path('/path/to/output')
+        dialog.dest_folder_label.setText('output')
+        dialog.dest_folder_label.setToolTip('/path/to/output')
+
         config = dialog.get_configuration(validate=False)
-        
+
         self.assertIsNotNone(config)
         self.assertEqual(config.separator_column, 'Region')
         self.assertEqual(config.file_template, 'Reporte_{valor}.xlsx')
@@ -204,57 +214,49 @@ class TestExportSeparatedDialog(unittest.TestCase):
     def test_get_configuration_custom_start_cell(self) -> None:
         """Test obtención de configuración con celda inicial personalizada"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Configurar valores
         dialog.column_combo.setCurrentText('Region')
         dialog.start_cell_combo.setCurrentText('Personalizado')
-        dialog.start_cell_edit.setText('C5')
-        
-        # Mock del atributo _template_path
+        dialog.start_cell_combo.lineEdit().setText('C5')
+
+        # Mock del atributo _template_path y _dest_path
         dialog._template_path = '/path/to/template.xlsx'
-        dialog.dest_folder_label.setText('/path/to/output')
+        dialog._dest_path = Path('/path/to/output')
+        dialog.dest_folder_label.setText('output')
         dialog.filename_template_edit.setText('Reporte.xlsx')
-        
+
         config = dialog.get_configuration(validate=False)
-        
+
         self.assertIsNotNone(config)
         self.assertEqual(config.start_cell, 'C5')
     
     def test_cancel_functionality(self) -> None:
         """Test funcionalidad de cancelar"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Simular click en cancelar
-        dialog.cancel_btn.click()
-        
-        # Verificar que el diálogo se rechaza
-        # En PySide6, esto debería resultar en Rejected
-        # Nota: QTest.click() puede no funcionar en todos los casos, 
-        # así que también probamos directamente reject()
+
         dialog.reject()
         self.assertEqual(dialog.result(), QDialog.Rejected)
     
     def test_accept_functionality_valid_config(self) -> None:
         """Test funcionalidad de aceptar con configuración válida"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Configurar valores válidos
         dialog.column_combo.setCurrentText('Region')
         dialog.filename_template_edit.setText('Reporte_{valor}.xlsx')
-        
+        dialog._template_path = '/test/template.xlsx'
+        dialog._dest_path = Path('/test/output')
+        dialog.dest_folder_label.setText('output')
+
         # Mock para evitar validación real
         with patch.object(dialog, 'get_configuration') as mock_get_config:
             mock_config = MagicMock()
             mock_get_config.return_value = mock_config
-            
-            # Mock QDialog accept to prevent actual dialog acceptance
+
             with patch.object(QDialog, 'accept') as mock_accept:
-                # Simular click en exportar
                 dialog.export_btn.clicked.emit()
-                
-                # Verificar que se llama a get_configuration
-                # Nota: En algunos entornos de test, las señales no se procesan inmediatamente
-                # así que verificamos manualmente
+
                 if dialog.export_btn.isEnabled():
                     dialog.accept()
                     mock_get_config.assert_called_once()
@@ -377,12 +379,16 @@ class TestExportSeparatedDialog(unittest.TestCase):
     def test_specific_start_cell_custom(self) -> None:
         """Test selección de celda inicial personalizada"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Seleccionar celda específica
+        dialog.column_combo.setCurrentText('Region')
         dialog.start_cell_combo.setCurrentText('Personalizado')
-        dialog.start_cell_edit.setText('C5')
-        
-        # Verificar configuración
+        dialog.start_cell_combo.lineEdit().setText('C5')
+        dialog._template_path = '/test/template.xlsx'
+        dialog._dest_path = Path('/test/output')
+        dialog.dest_folder_label.setText('output')
+        dialog.filename_template_edit.setText('test.xlsx')
+
         config = dialog.get_configuration(validate=False)
         self.assertEqual(config.start_cell, 'C5')
 
@@ -409,31 +415,32 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
     def test_full_workflow_simulation(self) -> None:
         """Test simulación de flujo completo"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Paso 1: Seleccionar columna
         dialog.column_combo.setCurrentText('A')
         dialog.on_column_changed('A')
-        
+
         # Paso 2: Configurar plantilla (mock)
         dialog._template_path = '/test/template.xlsx'
-        dialog.template_path_label.setText('📄 template.xlsx')
+        dialog.template_path_label.setText('template.xlsx')
         dialog.sheet_combo.setEnabled(True)
         dialog.sheet_combo.addItems(['Sheet1'])
-        
+
         # Paso 3: Configurar salida (mock)
-        dialog.dest_folder_label.setText('📁 /test/output')
-        
+        dialog._dest_path = Path('/test/output')
+        dialog.dest_folder_label.setText('output')
+
         # Paso 4: Configurar nombre de archivo
         dialog.filename_template_edit.setText('Report_{valor}.xlsx')
-        
+
         # Paso 5: Actualizar previews
         dialog.update_values_preview()
         dialog.update_filename_preview()
-        
+
         # Verificar que se configuró correctamente
         self.assertEqual(dialog.column_combo.currentText(), 'A')
         self.assertEqual(dialog.filename_template_edit.text(), 'Report_{valor}.xlsx')
-        
+
         # Verificar que los previews se actualizaron
         self.assertGreater(dialog.values_preview.count(), 0)
         self.assertGreater(dialog.filenames_preview.count(), 0)
@@ -451,47 +458,23 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
     def test_export_with_minimal_config_integration(self) -> None:
         """Test exportación con configuración mínima en integración"""
         dialog = ExportSeparatedDialog(self.df_test)
-        
+
         # Configuración mínima
         dialog.column_combo.setCurrentText('A')
         dialog._template_path = '/minimal/template.xlsx'
-        dialog.dest_folder_label.setText('/minimal/output')
+        dialog._dest_path = Path('/minimal/output')
+        dialog.dest_folder_label.setText('output')
         dialog.filename_template_edit.setText('Simple.xlsx')
-        
+
         config = dialog.get_configuration(validate=False)
-        
+
         # Verificar configuración mínima
+        self.assertIsNotNone(config)
         self.assertEqual(config.separator_column, 'A')
         self.assertEqual(config.file_template, 'Simple.xlsx')
         self.assertEqual(config.start_cell, 'A1')  # Default
     
-    def test_tab_functionality(self) -> None:
-        """Test funcionalidad de tabs"""
-        dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Verificar que existe el tab widget
-        self.assertIsNotNone(dialog.tab_widget)
-        
-        # Verificar que se agregaron los tabs
-        self.assertEqual(dialog.tab_widget.count(), 3)  # 3 tabs esperados
-        
-        # Verificar títulos de tabs
-        tab_titles = [dialog.tab_widget.tabText(i) for i in range(dialog.tab_widget.count())]
-        self.assertIn("Configuración Básica", tab_titles)
-        self.assertIn("Mapeo de Columnas", tab_titles)
-        self.assertIn("Destino y Opciones", tab_titles)
-    
-    def test_advanced_options_functionality(self) -> None:
-        """Test funcionalidad de opciones avanzadas"""
-        dialog = ExportSeparatedDialog(self.df_test)
-        
-        # Verificar componentes de opciones avanzadas
-        self.assertIsNotNone(dialog.handle_duplicates_combo)
-        self.assertIsNotNone(dialog.chunk_size_spin)
-        
-        # Verificar que tienen valores por defecto
-        self.assertGreater(dialog.handle_duplicates_combo.count(), 0)
-        self.assertGreater(dialog.chunk_size_spin.value(), 0)
+
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ from PySide6.QtGui import QFont
 import pandas as pd
 from typing import Any
 
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 from core.join.models import JoinResult, JoinMetadata
 
 class JoinedDataView(DataView):

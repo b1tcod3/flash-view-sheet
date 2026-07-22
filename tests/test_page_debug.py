@@ -8,7 +8,7 @@ import pandas as pd
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
 
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 def test_page_preservation_debug() -> None:
     """Test que rastrea exactamente cuándo se pierde la página"""

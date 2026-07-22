@@ -23,16 +23,16 @@ class ViewSwitcher(QWidget):
     Provides:
     - Vista Principal button
     - Vista de Datos button
-    - Ver Información button
-    - Vista Gráficos button
     - Cruzar Datos button
+    - Tabla Pivote button
+    - Ver Información button
     """
 
     view_main = Signal()
     view_data = Signal()
     view_info = Signal()
-    view_graphics = Signal()
     view_joined = Signal()
+    view_pivot = Signal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -40,8 +40,8 @@ class ViewSwitcher(QWidget):
         self.view_main_btn: QPushButton
         self.view_data_btn: QPushButton
         self.view_info_btn: QPushButton
-        self.view_graphics_btn: QPushButton
         self.view_joined_btn: QPushButton
+        self.view_pivot_btn: QPushButton
 
         self._setup_ui()
         self._connect_signals()
@@ -72,13 +72,6 @@ class ViewSwitcher(QWidget):
 
         self._layout.addWidget(_make_vline())
 
-        self.view_graphics_btn = self._make_button(
-            style.standardIcon(QStyle.SP_ComputerIcon),  # type: ignore[attr-defined]
-            "Vista Gráficos",
-            icon_size
-        )
-        self._layout.addWidget(self.view_graphics_btn)
-
         self.view_joined_btn = self._make_button(
             style.standardIcon(QStyle.SP_DriveNetIcon),  # type: ignore[attr-defined]
             "Cruzar Datos",
@@ -86,6 +79,16 @@ class ViewSwitcher(QWidget):
         )
         self.view_joined_btn.setEnabled(False)
         self._layout.addWidget(self.view_joined_btn)
+
+        self._layout.addWidget(_make_vline())
+
+        self.view_pivot_btn = self._make_button(
+            style.standardIcon(QStyle.SP_FileDialogDetailedView),  # type: ignore[attr-defined]
+            "Tabla Pivote",
+            icon_size
+        )
+        self.view_pivot_btn.setEnabled(False)
+        self._layout.addWidget(self.view_pivot_btn)
 
         self._layout.addWidget(_make_vline())
 
@@ -126,8 +129,8 @@ class ViewSwitcher(QWidget):
         self.view_main_btn.clicked.connect(self.view_main.emit)
         self.view_data_btn.clicked.connect(self.view_data.emit)
         self.view_info_btn.clicked.connect(self.view_info.emit)
-        self.view_graphics_btn.clicked.connect(self.view_graphics.emit)
         self.view_joined_btn.clicked.connect(self.view_joined.emit)
+        self.view_pivot_btn.clicked.connect(self.view_pivot.emit)
 
     def set_joined_enabled(self, enabled: bool) -> None:
         self.view_joined_btn.setEnabled(enabled)
@@ -141,5 +144,5 @@ class ViewSwitcher(QWidget):
     def set_info_enabled(self, enabled: bool) -> None:
         self.view_info_btn.setEnabled(enabled)
 
-    def set_graphics_enabled(self, enabled: bool) -> None:
-        self.view_graphics_btn.setEnabled(enabled)
+    def set_pivot_enabled(self, enabled: bool) -> None:
+        self.view_pivot_btn.setEnabled(enabled)

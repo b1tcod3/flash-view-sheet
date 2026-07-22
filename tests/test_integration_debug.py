@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, Q
 from PySide6.QtCore import QThread, Signal
 
 # Simular las importaciones de main.py
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 from core.data_handler import cargar_datos_con_opciones
 
 class DataLoaderThread(QThread):
@@ -96,7 +96,6 @@ class IntegrationTestWindow(QMainWindow):
         if self.data_view:
             self.data_view.filter_applied.connect(self.on_filter_applied)
             self.data_view.filter_cleared.connect(self.on_filter_cleared)
-            self.data_view.data_updated.connect(self.on_data_updated)
             
     def load_data_async(self) -> None:
         """Cargar datos asincrónicamente - idéntico a main.py"""
@@ -142,12 +141,6 @@ class IntegrationTestWindow(QMainWindow):
     def on_filter_cleared(self) -> None:
         """Slot para manejar filtro limpiado"""
         print("🔍 TEST: Filtro limpiado")
-        
-    def on_data_updated(self) -> None:
-        """Slot para manejar datos actualizados"""
-        print("🔍 TEST: Datos actualizados")
-        # Verificar estado después de actualizar
-        self.verify_current_page_data()
         
     def verify_integration_state(self) -> None:
         """Verificar estado después de la integración"""

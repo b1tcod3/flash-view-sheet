@@ -1,7 +1,7 @@
 """
 Flash View Sheet - Paquete Principal de la Aplicación
 
-Este módulo exports los componentes principales de la aplicación.
+Este módulo export los componentes principales de la aplicación.
 """
 
 # Menús
@@ -22,7 +22,6 @@ from app.services import (
 from app.widgets import (
     MainView,
     InfoModal,
-    GraphicsView,
     DataView,
 )
 
@@ -44,6 +43,5 @@ __all__ = [
     # Widgets
     'MainView',
     'InfoModal',
-    'GraphicsView',
     'DataView',
 ]

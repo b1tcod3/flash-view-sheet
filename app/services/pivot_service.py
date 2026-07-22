@@ -1,471 +1,115 @@
 """
 Servicio de Tablas Pivote - PivotService
 
-Servicio centralizado para operaciones de tablas pivote
-en Flash View Sheet.
+Servicio para operaciones de tablas pivote automáticas.
 """
 
-import logging
-from typing import Any
+from typing import Any, Callable
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
-logger = logging.getLogger(__name__)
+MAX_PIVOT_TABS = 5
+
 
 class PivotService:
     """
     Servicio para operaciones de tablas pivote.
-    
-    Responsabilidades:
-    - Crear tablas pivote simples y combinadas
-    - Crear agregaciones cuando el pivote no es posible
-    - Gestión de configuraciones de pivote
     """
-    
+
     def __init__(self) -> None:
-        """Inicializar el servicio de pivote"""
         self.last_result: pd.DataFrame | None = None
-        self.last_config: dict[str, Any] | None = None
-    
+
     def cleanup(self) -> None:
-        """Liberar DataFrame cacheado."""
         self.last_result = None
-        self.last_config = None
-    
-    def create_simple_pivot(self, df: pd.DataFrame, index: str | list[str], columns: str | list[str] | None = None, values: str | list[str] | None = None, aggfunc: str = 'sum') -> pd.DataFrame | None:
+
+    def detect_categorical_columns(self, df: pd.DataFrame) -> list[str]:
+        """Solo columnas con ≤20 valores únicos."""
+        return [c for c in df.columns if df[c].nunique() <= 20]
+
+    def detect_numeric_columns(self, df: pd.DataFrame) -> list[str]:
+        """Detectar columnas numéricas."""
+        return [c for c in df.columns if is_numeric_dtype(df[c])]
+
+    def rank_combinations(self, df: pd.DataFrame, cat_cols: list[str], num_cols: list[str]) -> list[tuple[str, str, int]]:
         """
-        Crear una tabla pivote simple.
-        
-        Args:
-            df: DataFrame source
-            index: Columna(s) para índice
-            columns: Columna(s) para columnas pivote
-            values: Columna(s) a agregar
-            aggfunc: Función de agregación
-        
-        Returns:
-            DataFrame con la tabla pivote
+        Rankear combinaciones categórica × numérica por volumen de datos.
+        Retorna lista de (cat, num, score) ordenada de mayor a menor.
         """
-        if df is None or df.empty:
-            return None
-        
-        try:
-            pivot_df = pd.pivot_table(
-                df,
-                index=index,
-                columns=columns,
-                values=values,
-                aggfunc=aggfunc,
-                margins=False,
-                dropna=True
-            )
-            
-            self.last_result = pivot_df
-            self.last_config = {
-                'type': 'simple_pivot',
-                'index': index,
-                'columns': columns,
-                'values': values,
-                'aggfunc': aggfunc
-            }
-            
-            return pivot_df
-            
-        except Exception as e:
-            raise Exception(f"Error creando tabla pivote: {str(e)}")
-    
-    def create_combined_pivot(self, df: pd.DataFrame, index: str | list[str], columns: str | list[str], values: list[str], aggfuncs: list[str] | None = None) -> pd.DataFrame | None:
+        combos = []
+        for cat in cat_cols:
+            for num in num_cols:
+                score = int(df[num].notna().sum())
+                combos.append((cat, num, score))
+        combos.sort(key=lambda x: x[2], reverse=True)
+        return combos
+
+    def generate_auto_pivots(
+        self,
+        df: pd.DataFrame,
+        progress_callback: Callable[[int, int], None] | None = None,
+    ) -> dict[str, pd.DataFrame]:
         """
-        Crear una tabla pivote combinada con múltiples valores y funciones.
-        
-        Args:
-            df: DataFrame source
-            index: Columna(s) para índice
-            columns: Columna(s) para columnas pivote
-            values: Lista de columnas a agregar
-            aggfuncs: Lista de funciones de agregación
-        
-        Returns:
-            DataFrame con la tabla pivote combinada
+        Generar tablas pivote automáticas (máximo MAX_PIVOT_TABS)
+        para las combinaciones con más datos.
         """
-        if df is None or df.empty:
-            return None
-        
-        if aggfuncs is None:
-            aggfuncs = ['sum', 'mean', 'count']
-        
-        try:
-            result_dfs = []
-            
-            for val_col in values:
-                for agg in aggfuncs:
-                    try:
-                        pivot_df = pd.pivot_table(
-                            df,
-                            index=index,
-                            columns=columns,
-                            values=val_col,
-                            aggfunc=agg,
-                            margins=False,
-                            dropna=True
-                        )
-                        
-                        # Renombrar columnas con sufijo
-                        if pivot_df is not None and not pivot_df.empty:
-                            pivot_df = pivot_df.add_suffix(f'_{agg}')
-                            result_dfs.append(pivot_df)
-                            
-                    except (ValueError, KeyError) as e:
-                        logger.debug("No se pudo pivotar columna %s con función %s: %s", val_col, agg, e)
-                        continue
-            
-            if result_dfs:
-                # Combinar todos los DataFrames
-                combined = pd.concat(result_dfs, axis=1)
-                self.last_result = combined
-                self.last_config = {
-                    'type': 'combined_pivot',
-                    'index': index,
-                    'columns': columns,
-                    'values': values,
-                    'aggfuncs': aggfuncs
-                }
-                return combined
-            
-            return None
-            
-        except Exception as e:
-            raise Exception(f"Error creando tabla pivote combinada: {str(e)}")
-    
-    def create_simple_aggregation(self, df: pd.DataFrame, index: str | list[str], values: str | list[str], aggfunc: str = 'mean') -> pd.DataFrame | None:
-        """
-        Crear agregación simple por filas cuando no hay columnas para pivot.
-        
-        Args:
-            df: DataFrame source
-            index: Columna(s) para grouping
-            values: Columna(s) a agregar
-            aggfunc: Función de agregación
-        
-        Returns:
-            DataFrame agregado
-        """
-        if df is None or df.empty:
-            return None
-        
-        try:
-            if isinstance(index, str):
-                index = [index]
-            if isinstance(values, str):
-                values = [values]
-            
-            agg_dict = {col: aggfunc for col in values}
-            
-            agg_df = df.groupby(index).agg(agg_dict).reset_index()
-            
-            # Renombrar columnas con sufijo de función de agregación
-            new_cols = []
-            for col in agg_df.columns:
-                if col in index:
-                    new_cols.append(col)
-                else:
-                    new_cols.append(f"{col}_{aggfunc}")
-            agg_df.columns = new_cols
-            
-            self.last_result = agg_df
-            self.last_config = {
-                'type': 'simple_aggregation',
-                'index': index,
-                'values': values,
-                'aggfunc': aggfunc
-            }
-            
-            return agg_df
-            
-        except Exception as e:
-            raise Exception(f"Error creando agregación simple: {str(e)}")
-    
-    def create_fallback_aggregation(self, df: pd.DataFrame, index: str | list[str], values: str | list[str], aggfunc: str = 'mean') -> pd.DataFrame | None:
-        """
-        Crear agregación de fallback cuando el pivote no es posible.
-        
-        Args:
-            df: DataFrame source
-            index: Columna(s) para grouping (puede ser vacío para agregación global)
-            values: Columna(s) a agregar
-            aggfunc: Función de agregación
-        
-        Returns:
-            DataFrame agregado
-        """
-        if df is None or df.empty:
-            return None
-        
-        try:
-            # Normalizar index
-            if index:
-                if isinstance(index, str):
-                    groupby_columns = [index]
-                elif isinstance(index, list):
-                    # Limitar a 2 columnas groupBy para evitar cardinalidad excesiva
-                    # (n filas × m columnas puede generar resultados muy grandes)
-                    groupby_columns = index[:2]
-                else:
-                    groupby_columns = []
-            else:
-                groupby_columns = []
-            
-            # Normalizar values
-            if isinstance(values, str):
-                values_columns = [values]
-            elif isinstance(values, list):
-                values_columns = values
-            else:
-                values_columns = []
-            
-            # Si no hay valores específicos, usar columnas numéricas
-            if not values_columns:
-                values_columns = [col for col in df.columns
-                                if is_numeric_dtype(df[col])]
-                if not values_columns:
-                    values_columns = df.columns.tolist()
-            
-            # Filtrar solo columnas que existen
-            values_columns = [col for col in values_columns if col in df.columns]
-            
-            if not values_columns:
-                raise ValueError("No se encontraron columnas válidas para agregar")
-            
-            # Crear diccionario de agregación
-            if isinstance(aggfunc, list):
-                agg_function = aggfunc[0] if aggfunc else 'mean'
-            else:
-                agg_function = aggfunc if aggfunc else 'mean'
-            
-            agg_dict = {col: agg_function for col in values_columns}
-            
-            if groupby_columns:
-                # Agregación por grupos
-                agg_df = df.groupby(groupby_columns)[values_columns].agg(agg_function).reset_index()
-            else:
-                # Agregación global
-                agg_df = df[values_columns].agg(agg_function).to_frame().T.reset_index(drop=True)
-            
-            self.last_result = agg_df
-            self.last_config = {
-                'type': 'fallback_aggregation',
-                'index': groupby_columns,
-                'values': values_columns,
-                'aggfunc': agg_function
-            }
-            
-            return agg_df
-            
-        except Exception as e:
-            raise Exception(f"Error creando agregación de fallback: {str(e)}")
-    
-    def get_crosstab(self, df: pd.DataFrame, index: str, columns: str, normalize: bool = False) -> pd.DataFrame | None:
-        """
-        Crear tabla de contingencia (crosstab).
-        
-        Args:
-            df: DataFrame source
-            index: Columna(s) para filas
-            columns: Columna para columnas
-            normalize: Si normalizar los valores
-        
-        Returns:
-            DataFrame crosstab
-        """
-        if df is None or df.empty:
-            return None
-        
-        try:
-            if normalize:
-                crosstab_df = pd.crosstab(
-                    df[index],
-                    df[columns],
-                    normalize='all'
-                ) * 100  # Porcentajes
-                crosstab_df = crosstab_df.round(2)
-            else:
-                crosstab_df = pd.crosstab(
-                    df[index],
-                    df[columns]
+        cat_cols = self.detect_categorical_columns(df)
+        num_cols = self.detect_numeric_columns(df)
+
+        print(f"Columnas categóricas detectadas: {cat_cols}")
+        print(f"Columnas numéricas detectadas: {num_cols}")
+
+        combos = self.rank_combinations(df, cat_cols, num_cols)
+        top_combos = combos[:MAX_PIVOT_TABS]
+
+        print(f"Top {len(top_combos)} combinaciones: {[(c, n) for c, n, _ in top_combos]}")
+
+        results: dict[str, pd.DataFrame] = {}
+        total = len(top_combos)
+        idx = 0
+
+        for cat, num, score in top_combos:
+            try:
+                pivot_df = pd.pivot_table(
+                    df, index=cat, values=num,
+                    aggfunc=['count', 'nunique', 'sum'],
+                    margins=False, dropna=True
                 )
-            
-            self.last_result = crosstab_df
-            self.last_config = {
-                'type': 'crosstab',
-                'index': index,
-                'columns': columns,
-                'normalize': normalize
-            }
-            
-            return crosstab_df
-            
-        except Exception as e:
-            raise Exception(f"Error creando crosstab: {str(e)}")
-    
+
+                if len(pivot_df.columns) == 3:
+                    pivot_df.columns = ['conteo', 'conteo_unico', 'suma']
+                else:
+                    pivot_df.columns = ['_'.join(map(str, col)).strip() for col in pivot_df.columns]
+
+                pivot_df = pivot_df.reset_index()
+
+                totals = {pivot_df.columns[0]: 'Total'}
+                for col in pivot_df.columns[1:]:
+                    totals[col] = pivot_df[col].sum()
+                pivot_df = pd.concat([pivot_df, pd.DataFrame([totals])], ignore_index=True)
+
+                name = f"{cat} × {num}"
+                results[name] = pivot_df
+
+            except Exception as e:
+                print(f"Error generando pivote para {cat} × {num}: {str(e)}")
+
+            idx += 1
+            if progress_callback:
+                progress_callback(idx, total)
+
+        if results:
+            first_key = next(iter(results))
+            self.last_result = results[first_key]
+        else:
+            print("No se generó ningún resultado pivote.")
+
+        return results
+
     def get_pivot_stats(self) -> dict[str, Any] | None:
-        """Obtener estadísticas del último pivote/aggregación"""
         if self.last_result is None:
             return None
-        
         return {
             'rows': len(self.last_result),
             'columns': len(self.last_result.columns),
             'shape': self.last_result.shape,
-            'config': self.last_config
         }
-    
-    # ==================== MÉTODOS DE INTERFAZ SIMPLIFICADA ====================
-    
-    def execute_simple(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
-        """
-        Ejecutar pivote simple con fallback a agregación.
-        
-        Args:
-            df: DataFrame source
-            config: Configuración con keys: index, values, aggfunc, is_pivot
-        
-        Returns:
-            DataFrame resultado
-        """
-        is_pivot = config.get('is_pivot', True)
-        
-        if is_pivot:
-            try:
-                result = self.create_simple_pivot(
-                    df,
-                    index=config.get('index', config.get('rows')),
-                    columns=config.get('columns'),
-                    values=config.get('values'),
-                    aggfunc=config.get('aggfunc', 'sum')
-                )
-                if result is not None and not result.empty:
-                    return result
-            except Exception as e:
-                logger.warning("Pivote simple falló, iniciando fallback a agregación: %s", e)
-        
-        # Fallback a agregación simple
-        try:
-            result = self.create_simple_aggregation(
-                df,
-                index=config.get('index', config.get('rows')),
-                values=config.get('values'),
-                aggfunc=config.get('aggfunc', 'mean')
-            )
-            if result is not None and not result.empty:
-                return result
-        except Exception as e:
-            logger.warning("Fallback agregación simple falló: %s", e)
-
-        self.last_result = None
-        return None
-    
-    def execute_combined(self, df: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame | None:
-        """
-        Ejecutar pivote combinada con fallback a agregación.
-        
-        Args:
-            df: DataFrame source
-            config: Configuración con keys: index, columns, values, aggfuncs
-        
-        Returns:
-            DataFrame resultado
-        """
-        try:
-            result = self.create_combined_pivot(
-                df,
-                index=config.get('index', config.get('rows')),
-                columns=config.get('columns'),
-                values=config.get('values', []),
-                aggfuncs=config.get('aggfuncs', config.get('aggfunc', ['sum', 'mean']))
-            )
-            if result is not None and not result.empty:
-                return result
-        except Exception as e:
-            logger.warning("Pivote combinada falló, iniciando fallback a agregación: %s", e)
-        
-        # Fallback a agregación
-        try:
-            result = self.create_fallback_aggregation(
-                df,
-                index=config.get('index', config.get('rows')),
-                values=config.get('values', []),
-                aggfunc=config.get('aggfunc', config.get('aggfuncs', ['mean']))
-            )
-            if result is not None and not result.empty:
-                return result
-        except Exception as e:
-            logger.warning("Fallback agregación combinada falló: %s", e)
-
-        self.last_result = None
-        return None
-    
-    # ==================== UTILIDADES ====================
-    
-    def get_aggregation_functions(self) -> list[tuple[str, str]]:
-        """Obtener lista de funciones de agregación disponibles"""
-        return [
-            ('Suma', 'sum'),
-            ('Promedio', 'mean'),
-            ('Mediana', 'median'),
-            ('Mínimo', 'min'),
-            ('Máximo', 'max'),
-            ('Desviación estándar', 'std'),
-            ('Recuento', 'count'),
-            ('Primer valor', 'first'),
-            ('Último valor', 'last'),
-        ]
-    
-    def validate_pivot_config(self, df: pd.DataFrame, config: dict[str, Any]) -> dict[str, Any]:
-        """
-        Validar configuración de pivote.
-        
-        Args:
-            df: DataFrame source
-            config: Configuración a validar
-        
-        Returns:
-            Dict con is_valid y message
-        """
-        if df is None or df.empty:
-            return {'is_valid': False, 'message': 'No hay datos'}
-        
-        index = config.get('index', config.get('rows', []))
-        values = config.get('values', [])
-        
-        if isinstance(index, str):
-            index = [index]
-        if isinstance(values, str):
-            values = [values]
-        
-        # Verificar columnas de índice
-        missing_index = [col for col in index if col not in df.columns]
-        if missing_index:
-            return {
-                'is_valid': False,
-                'message': f"Faltan columnas de índice: {', '.join(missing_index)}"
-            }
-        
-        # Verificar columnas de valores
-        if values:
-            missing_values = [col for col in values if col not in df.columns]
-            if missing_values:
-                return {
-                    'is_valid': False,
-                    'message': f"Faltan columnas de valores: {', '.join(missing_values)}"
-                }
-        
-        # Verificar tipos de datos para valores
-        numeric_cols = [col for col in values if col in df.columns
-                       and is_numeric_dtype(df[col])]
-        if not numeric_cols and values:
-            return {
-                'is_valid': False,
-                'message': 'Las columnas de valores no son numéricas'
-            }
-        
-        return {'is_valid': True, 'message': 'Configuración válida'}

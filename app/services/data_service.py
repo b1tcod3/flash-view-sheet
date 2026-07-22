@@ -11,7 +11,6 @@ import pandas as pd
 from PySide6.QtCore import QThread, Signal, Qt
 from PySide6.QtWidgets import QProgressDialog
 from core.data_handler import (
-    cargar_datos, 
     cargar_datos_con_opciones,
     get_supported_file_formats
 )
@@ -25,20 +24,26 @@ class DataLoaderThread(QThread):
     data_loaded = Signal(object)
     # Signal(str)
     error_occurred = Signal(str)
+    # Signal(int, int) — (loaded, total) para barra de progreso
+    progress_updated = Signal(int, int)
     
-    def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> None:
+    def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None, separator: str | None = None, sheet_name: str | None = None) -> None:
         super().__init__()
         self.filepath = filepath
         self.skip_rows = skip_rows
         self.column_names = column_names if column_names else {}
+        self.separator = separator
+        self.sheet_name = sheet_name
     
     def run(self) -> None:
         """Ejecutar la carga de datos"""
         try:
             if self.isInterruptionRequested():
                 return
-            df = cargar_datos_con_opciones(self.filepath, self.skip_rows, self.column_names)
+            self.progress_updated.emit(0, 100)
+            df = cargar_datos_con_opciones(self.filepath, self.skip_rows, self.column_names, separator=self.separator, sheet_name=self.sheet_name)
             if not self.isInterruptionRequested():
+                self.progress_updated.emit(100, 100)
                 self.data_loaded.emit(df)
         except Exception as e:
             if not self.isInterruptionRequested():
@@ -125,6 +130,7 @@ class DataService:
         self.loading_thread: DataLoaderThread | None = None
         self.folder_loading_thread: FolderLoaderThread | None = None
         self.progress_dialog: QProgressDialog | None = None
+        self._active_threads: list[DataLoaderThread] = []
         
         # Formatos soportados
         self._format_descriptions: dict[str, str] = {
@@ -178,10 +184,18 @@ class DataService:
         
         return ";;".join(format_filters)
     
-    def create_loader_thread(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> DataLoaderThread:
+    def create_loader_thread(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None, separator: str | None = None, sheet_name: str | None = None) -> DataLoaderThread:
         """Crear un hilo de carga de datos"""
-        self.loading_thread = DataLoaderThread(filepath, skip_rows, column_names)
-        return self.loading_thread
+        thread = DataLoaderThread(filepath, skip_rows, column_names, separator, sheet_name)
+        self.loading_thread = thread
+        self._active_threads.append(thread)
+        thread.finished.connect(
+            lambda t=thread: self._active_threads.remove(t) if t in self._active_threads else None
+        )
+        thread.finished.connect(
+            lambda t=thread: setattr(self, 'loading_thread', None) if self.loading_thread is t else None
+        )
+        return thread
     
     def create_folder_loader_thread(self, folder_path: str, config: Any | None = None) -> FolderLoaderThread:
         """Crear un hilo de carga de carpeta"""
@@ -201,31 +215,6 @@ class DataService:
         if self.progress_dialog:
             self.progress_dialog.close()
             self.progress_dialog = None
-    
-    def load_data(self, filepath: str) -> pd.DataFrame:
-        """Cargar datos desde un archivo"""
-        try:
-            self.df_original = cargar_datos(filepath)
-            self.df_vista_actual = self.df_original.copy()
-            return self.df_vista_actual
-        except Exception as e:
-            raise Exception(f"No se pudo cargar el archivo: {str(e)}")
-    
-    def load_data_with_options(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
-        """Cargar datos con opciones adicionales"""
-        try:
-            self.df_original = cargar_datos_con_opciones(filepath, skip_rows, column_names)
-            self.df_vista_actual = self.df_original.copy()
-            return self.df_vista_actual
-        except Exception as e:
-            raise Exception(f"No se pudo cargar el archivo: {str(e)}")
-    
-    def reset_to_original(self) -> pd.DataFrame | None:
-        """Restaurar datos originales"""
-        if self.df_original is not None:
-            self.df_vista_actual = self.df_original.copy()
-            return self.df_vista_actual
-        return None
     
     def set_current_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Establecer datos actuales"""
@@ -279,6 +268,15 @@ class DataService:
     def cleanup(self) -> None:
         """Libera agresivamente la memoria de los DataFrames cargados."""
         # 1. Detener hilos activos
+        for thread in self._active_threads[:]:
+            if thread.isRunning():
+                thread.requestInterruption()
+                thread.quit()
+                if not thread.wait(2000):
+                    thread.terminate()
+                    thread.wait(1000)
+        self._active_threads.clear()
+
         for thread in (self.loading_thread, self.folder_loading_thread):
             if thread and thread.isRunning():
                 thread.requestInterruption()

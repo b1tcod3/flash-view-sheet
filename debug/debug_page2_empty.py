@@ -8,7 +8,7 @@ import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel
 from PySide6.QtCore import QTimer
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 def create_test_data():
     """Crear datos de prueba como en la aplicación real"""

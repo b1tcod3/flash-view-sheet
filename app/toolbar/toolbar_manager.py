@@ -4,7 +4,10 @@ Toolbar Manager for Flash View Sheet.
 This module manages the main toolbar creation and coordination.
 """
 
-from PySide6.QtWidgets import QToolBar, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QFrame
+from PySide6.QtWidgets import QToolBar, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QFrame, QPushButton
+from PySide6.QtGui import QIcon
+
+from app.resources import get_asset_path
 from PySide6.QtCore import Qt
 from typing import TYPE_CHECKING
 
@@ -29,6 +32,7 @@ class ToolbarManager:
         self.main_window = main_window
         self.tool_bar: QToolBar | None = None
         self.view_switcher: ViewSwitcher | None = None
+        self.separar_btn: QPushButton | None = None
         self.view_coordinator: 'ViewCoordinator' | None = None
         self.coordinator: 'AppCoordinator' | None = None
         self.buttons_layout: QHBoxLayout | None = None
@@ -100,6 +104,25 @@ class ToolbarManager:
 
         self._create_view_switcher()
 
+        self._create_separar_button()
+
+        quit_btn = QPushButton()
+        quit_btn.setIcon(QIcon(str(get_asset_path("power.svg"))))
+        quit_btn.setToolTip("Salir")
+        quit_btn.setFixedSize(28, 28)
+        quit_btn.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                border-radius: 4px;
+                padding: 2px;
+            }
+            QPushButton:hover { background-color: #e2e8f0; }
+            QPushButton:pressed { background-color: #cbd5e1; }
+        """)
+        quit_btn.clicked.connect(self.main_window.close)
+        self.buttons_layout.addWidget(quit_btn)
+
         self.buttons_layout.addStretch()
         section_layout = section.layout()
         assert section_layout is not None
@@ -112,9 +135,9 @@ class ToolbarManager:
 
         self.view_switcher.view_main.connect(lambda: self._on_view_switch(0))
         self.view_switcher.view_data.connect(lambda: self._on_view_switch(1))
-        self.view_switcher.view_info.connect(self._on_info_requested)
-        self.view_switcher.view_graphics.connect(lambda: self._on_view_switch(2))
         self.view_switcher.view_joined.connect(lambda: self._on_view_switch(3))
+        self.view_switcher.view_pivot.connect(self._on_pivot_requested)
+        self.view_switcher.view_info.connect(self._on_info_requested)
 
         if self.buttons_layout is not None:
             self.buttons_layout.addWidget(self.view_switcher)
@@ -127,12 +150,45 @@ class ToolbarManager:
         if self.coordinator:
             self.coordinator.mostrar_info()
 
+    def _on_pivot_requested(self) -> None:
+        if self.coordinator:
+            self.coordinator.auto_pivot()
+
+    def _create_separar_button(self) -> None:
+        self.separar_btn = QPushButton()
+        self.separar_btn.setIcon(QIcon(str(get_asset_path("split.svg"))))
+        self.separar_btn.setToolTip("Separar datos por columna")
+        self.separar_btn.setFixedSize(28, 28)
+        self.separar_btn.setEnabled(False)
+        self.separar_btn.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                border-radius: 4px;
+                padding: 2px;
+            }
+            QPushButton:hover { background-color: #e2e8f0; }
+            QPushButton:pressed { background-color: #cbd5e1; }
+            QPushButton:disabled { border: 1px solid transparent; }
+        """)
+        self.separar_btn.clicked.connect(self._on_separar_requested)
+        if self.buttons_layout is not None:
+            self.buttons_layout.addWidget(self.separar_btn)
+
+    def _on_separar_requested(self) -> None:
+        if self.coordinator:
+            self.coordinator.exportar_datos_separados()
+
     def set_view_buttons_enabled(self, enabled: bool) -> None:
         if self.view_switcher:
             self.view_switcher.set_joined_enabled(enabled)
 
     def on_datos_disponibles(self, has_data: bool) -> None:
         self.set_view_buttons_enabled(has_data)
+        if self.view_switcher:
+            self.view_switcher.set_pivot_enabled(has_data)
+        if self.separar_btn:
+            self.separar_btn.setEnabled(has_data)
 
     def get_toolbar(self) -> QToolBar | None:
         return self.tool_bar

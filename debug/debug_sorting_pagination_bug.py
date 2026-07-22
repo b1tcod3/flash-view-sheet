@@ -8,8 +8,8 @@ import pandas as pd
 from PySide6.QtWidgets import QApplication
 
 # Importar componentes del proyecto
-from paginacion.data_view import DataView
-from paginacion.pagination_manager import PaginationManager
+from app.widgets.data_view import DataView
+from app.services.pagination_manager import PaginationManager
 
 def test_sorting_pagination_bug():
     """Test que reproduce el bug de paginación al ordenar"""

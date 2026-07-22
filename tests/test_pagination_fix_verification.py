@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
 
 # Importar componentes del proyecto
-from paginacion.data_view import DataView
+from app.widgets.data_view import DataView
 
 def test_sorting_preserves_pagination() -> None:
     """Test que verifica específicamente la preservación de paginación al ordenar"""

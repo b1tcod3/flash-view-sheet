@@ -7,7 +7,7 @@ import pandas as pd
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
                                QLineEdit, QPushButton, QLabel, QFrame,
                                QMessageBox, QSpinBox, QSizePolicy, QButtonGroup,
-                               QSpacerItem, QComboBox, QHeaderView)
+                               QComboBox, QHeaderView, QStyle)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
@@ -40,7 +40,7 @@ class DataView(QWidget):
         self.setup_ui()
 
     def setup_ui(self) -> None:
-        self.setStyleSheet("background-color: white;")
+        self.setStyleSheet("background-color: #f8fafc;")
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(12)
         main_layout.setContentsMargins(20, 16, 20, 16)
@@ -57,54 +57,85 @@ class DataView(QWidget):
         self._create_pagination_section(main_layout)
 
     def _create_search_section(self, parent_layout: QVBoxLayout) -> None:
-        search_layout = QHBoxLayout()
-        search_layout.setContentsMargins(0, 0, 0, 8)
+        search_frame = QFrame()
+        search_frame.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+            }
+        """)
+        search_layout = QHBoxLayout(search_frame)
+        search_layout.setContentsMargins(4, 4, 4, 4)
+        search_layout.setSpacing(0)
 
         self.search_column_combo = QComboBox()
         self.search_column_combo.setStyleSheet("""
             QComboBox {
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
+                border: none;
+                background-color: transparent;
                 padding: 6px 10px;
-                background-color: #f9fafb;
-                color: #374151;
                 min-width: 130px;
+                color: #334155;
             }
         """)
         search_layout.addWidget(self.search_column_combo)
+
+        sep1 = QFrame()
+        sep1.setFrameShape(QFrame.VLine)
+        sep1.setStyleSheet("color: #e2e8f0;")
+        search_layout.addWidget(sep1)
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Buscar...")
         self.search_input.setMinimumWidth(220)
         self.search_input.setStyleSheet("""
             QLineEdit {
-                border: 1px solid #d1d5db;
-                border-radius: 6px;
+                border: none;
+                background-color: transparent;
                 padding: 6px 12px;
-                background-color: white;
-                color: #374151;
+                color: #334155;
             }
-            QLineEdit:focus { border: 1px solid #4a90e2; }
         """)
         self.search_input.returnPressed.connect(self._apply_text_filter)
         search_layout.addWidget(self.search_input, 1)
 
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.VLine)
+        sep2.setStyleSheet("color: #e2e8f0;")
+        search_layout.addWidget(sep2)
+
+        self.filter_btn = QPushButton("Filtrar")
+        self.filter_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3b82f6; color: white; border: none;
+                border-radius: 6px; padding: 6px 12px; font-weight: 600;
+                margin: 2px;
+            }
+            QPushButton:hover { background-color: #2563eb; }
+            QPushButton:pressed { background-color: #1d4ed8; }
+        """)
+        self.filter_btn.clicked.connect(self._apply_text_filter)
+        search_layout.addWidget(self.filter_btn)
+
         self.clear_search_btn = QPushButton("Limpiar")
         self.clear_search_btn.setStyleSheet("""
             QPushButton {
-                background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db;
-                border-radius: 6px; padding: 6px 12px; font-weight: bold;
+                background-color: transparent; color: #64748b;
+                border: 1px solid #e2e8f0; border-radius: 6px;
+                padding: 6px 12px; font-weight: 600; margin: 2px;
             }
-            QPushButton:hover { background-color: #e5e7eb; }
+            QPushButton:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+            QPushButton:pressed { background-color: #e2e8f0; }
         """)
         self.clear_search_btn.clicked.connect(self.clear_filter)
         search_layout.addWidget(self.clear_search_btn)
 
-        parent_layout.addLayout(search_layout)
+        parent_layout.addWidget(search_frame)
 
     def _create_table_section(self, parent_layout: QVBoxLayout) -> None:
         self.table_view = QTableView()
-        self.table_view.setAlternatingRowColors(False)
+        self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectRows)
         self.table_view.setSortingEnabled(True)
         self.table_view.setShowGrid(False)
@@ -117,28 +148,38 @@ class DataView(QWidget):
         self.table_view.setStyleSheet("""
             QTableView {
                 background-color: white;
-                border: 1px solid #e5e7eb;
-                border-radius: 6px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
                 outline: none;
+                gridline-color: transparent;
             }
             QTableView::item {
-                padding: 8px 5px;
-                border-bottom: 1px solid #f3f4f6;
-                color: #374151;
+                padding: 8px 10px;
+                border-bottom: 1px solid #f1f5f9;
+                color: #334155;
+            }
+            QTableView::item:alternate {
+                background-color: #f8fafc;
             }
             QTableView::item:selected {
-                background-color: #eff6ff;
-                color: #1d4ed8;
+                background-color: #dbeafe;
+                color: #1e40af;
+            }
+            QTableView::item:hover {
+                background-color: #f1f5f9;
             }
             QHeaderView::section {
-                background-color: #f9fafb;
-                color: #111827;
-                font-weight: bold;
-                padding: 8px 10px;
+                background-color: #f1f5f9;
+                color: #0f172a;
+                font-weight: 600;
+                padding: 10px 10px;
                 border: none;
-                border-bottom: 2px solid #e5e7eb;
-                border-right: 1px solid #e5e7eb;
+                border-bottom: 2px solid #cbd5e1;
+                border-right: 1px solid #e2e8f0;
                 text-align: left;
+            }
+            QHeaderView::section:last {
+                border-right: none;
             }
         """)
 
@@ -149,19 +190,10 @@ class DataView(QWidget):
         pagination_frame.setStyleSheet("""
             QFrame {
                 border-top: 1px solid #e5e7eb;
-                background-color: white;
+                background-color: transparent;
                 padding-top: 10px;
             }
             QLabel { color: #6b7280; font-size: 13px; }
-            QPushButton {
-                background-color: white; border: 1px solid #d1d5db;
-                border-radius: 4px; padding: 4px 8px; color: #374151;
-            }
-            QPushButton:hover { background-color: #f3f4f6; }
-            QPushButton:disabled {
-                background-color: #f9fafb; color: #9ca3af;
-                border: 1px solid #e5e7eb;
-            }
             QSpinBox {
                 border: 1px solid #d1d5db; border-radius: 4px; padding: 2px;
             }
@@ -172,6 +204,9 @@ class DataView(QWidget):
 
         self.page_info_label = QLabel("0 registros")
         pagination_layout.addWidget(self.page_info_label)
+
+        self.page_number_label = QLabel("Página 1 de 1")
+        pagination_layout.addWidget(self.page_number_label)
 
         pagination_layout.addStretch()
 
@@ -184,14 +219,29 @@ class DataView(QWidget):
 
         pagination_layout.addSpacing(12)
 
-        self.first_page_btn = QPushButton("⏮")
-        self.prev_page_btn = QPushButton("◀")
-        self.next_page_btn = QPushButton("▶")
-        self.last_page_btn = QPushButton("⏭")
+        self.first_page_btn = QPushButton()
+        self.first_page_btn.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipBackward))
+        self.prev_page_btn = QPushButton()
+        self.prev_page_btn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekBackward))
+        self.next_page_btn = QPushButton()
+        self.next_page_btn.setIcon(self.style().standardIcon(QStyle.SP_MediaSeekForward))
+        self.last_page_btn = QPushButton()
+        self.last_page_btn.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipForward))
 
+        pagination_btn_style = """
+            QPushButton {
+                background-color: white; border: 1px solid #d1d5db;
+                border-radius: 6px; padding: 4px 8px;
+            }
+            QPushButton:hover { background-color: #f3f4f6; }
+            QPushButton:disabled {
+                background-color: #f9fafb; border-color: #e5e7eb;
+            }
+        """
         for btn in (self.first_page_btn, self.prev_page_btn,
                     self.next_page_btn, self.last_page_btn):
-            btn.setFixedWidth(32)
+            btn.setStyleSheet(pagination_btn_style)
+            btn.setFixedSize(32, 28)
             pagination_layout.addWidget(btn)
 
         self.first_page_btn.clicked.connect(self.first_page)
@@ -235,7 +285,7 @@ class DataView(QWidget):
         frame = QFrame()
         frame.setStyleSheet("""
             QFrame {
-                border: 1px solid #d1d5db;
+                border: 1px solid #e2e8f0;
                 border-radius: 6px;
                 background-color: white;
             }
@@ -268,7 +318,7 @@ class DataView(QWidget):
         for i, val in enumerate(values):
             btn = QPushButton(str(val))
             btn.setCheckable(True)
-            btn.setStyleSheet(self._segment_btn_style())
+            btn.setStyleSheet(self._segment_btn_style(first=False))
             btn_group.addButton(btn, i + 1)
             btn.clicked.connect(lambda checked, c=col, v=str(val): self._apply_quick_filter(c, v))
             layout.addWidget(btn)
@@ -279,15 +329,20 @@ class DataView(QWidget):
     @staticmethod
     def _segment_btn_style(first: bool = False) -> str:
         border_left = "border-left: none;" if not first else ""
+        radius_left = "border-top-left-radius: 6px; border-bottom-left-radius: 6px;" if first else ""
+        radius_right = "border-top-right-radius: 6px; border-bottom-right-radius: 6px;" if not first else ""
         return f"""
             QPushButton {{
-                background-color: transparent;
+                background-color: white;
                 border: 1px solid #d1d5db;
                 {border_left}
+                {radius_left}
+                {radius_right}
                 padding: 5px 14px;
                 color: #4b5563;
-                font-weight: bold;
+                font-weight: 500;
                 font-size: 12px;
+                margin: 0px;
             }}
             QPushButton:checked {{
                 background-color: #eff6ff;
@@ -435,15 +490,20 @@ class DataView(QWidget):
     def _update_page_info(self) -> None:
         if self.pagination_manager is None:
             self.page_info_label.setText("Sin datos")
+            self.page_number_label.setText("Página 1 de 1")
             return
 
         info = self.pagination_manager.get_page_info()
         if info['total_rows'] == 0:
             self.page_info_label.setText("No hay registros")
+            self.page_number_label.setText("Página 1 de 1")
         else:
             self.page_info_label.setText(
                 f"Mostrando {info['start_row']}–{info['end_row']} de "
                 f"{info['total_rows']} registros"
+            )
+            self.page_number_label.setText(
+                f"Página {info['current_page']} de {info['total_pages']}"
             )
 
     def _update_pagination_buttons(self) -> None:
