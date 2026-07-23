@@ -162,6 +162,7 @@ class JoinDialog(QDialog):
             ("Inner Join", JoinType.INNER),
             ("Left Join", JoinType.LEFT),
             ("Right Join", JoinType.RIGHT),
+            ("Outer Join", JoinType.OUTER),
             ("Cross Join", JoinType.CROSS)
         ]
 

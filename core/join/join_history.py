@@ -3,13 +3,16 @@ JoinHistory: Sistema para mantener historial de operaciones de cruce
 """
 
 import json
+import logging
+import uuid
 from pathlib import Path
 from datetime import datetime
 from typing import Any
-from dataclasses import dataclass, asdict
-import pandas as pd
+from dataclasses import dataclass
 
-from .models import JoinConfig, JoinResult
+from .models import JoinConfig, JoinResult, JoinType
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class JoinHistoryEntry:
@@ -24,19 +27,35 @@ class JoinHistoryEntry:
     error_message: str = ""
 
 class JoinHistory:
-    """Sistema para mantener historial de operaciones de cruce"""
+    """Sistema para mantener historial de operaciones de cruce.
 
-    def __init__(self, max_entries: int = 50) -> None:
+    Almacena entradas en un archivo JSON. La ruta del archivo es
+    configurable mediante history_dir (por defecto, la carpeta del módulo).
+
+    Args:
+        max_entries: Número máximo de entradas a conservar.
+        history_dir: Directorio donde almacenar join_history.json.
+            Si es None se usa la carpeta del propio módulo.
+        use_uuid: Si True genera IDs con UUID4; si False usa formato
+            timestamp_secuencia para compatibilidad con versiones anteriores.
+    """
+
+    def __init__(self, max_entries: int = 50, history_dir: Path | None = None, use_uuid: bool = True) -> None:
         self.max_entries = max_entries
+        self.use_uuid = use_uuid
         self.entries: list[JoinHistoryEntry] = []
-        self.history_file = Path(__file__).parent / "join_history.json"
 
-        # Cargar historial existente
+        base_dir = history_dir if history_dir else Path(__file__).parent
+        self.history_file = base_dir / "join_history.json"
+
         self._load_history()
 
     def add_entry(self, left_name: str, right_name: str, config: JoinConfig, result: JoinResult) -> None:
         """Añadir nueva entrada al historial"""
-        entry_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.entries)}"
+        if self.use_uuid:
+            entry_id = str(uuid.uuid4())
+        else:
+            entry_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.entries)}"
 
         entry = JoinHistoryEntry(
             id=entry_id,
@@ -56,13 +75,11 @@ class JoinHistory:
             error_message=result.error_message
         )
 
-        self.entries.insert(0, entry)  # Añadir al inicio
+        self.entries.insert(0, entry)
 
-        # Mantener límite de entradas
         if len(self.entries) > self.max_entries:
             self.entries = self.entries[:self.max_entries]
 
-        # Guardar
         self._save_history()
 
     def get_entries(self, limit: int | None = None) -> list[JoinHistoryEntry]:
@@ -84,7 +101,11 @@ class JoinHistory:
         self._save_history()
 
     def export_history(self, filepath: str) -> None:
-        """Exportar historial a archivo JSON"""
+        """Exportar historial a archivo JSON.
+
+        Genera un formato de archivo independiente con marca de tiempo
+        de exportación. No confundir con el archivo interno de persistencia.
+        """
         data = {
             'exported_at': datetime.now().isoformat(),
             'entries': [self._entry_to_dict(entry) for entry in self.entries]
@@ -94,7 +115,12 @@ class JoinHistory:
             json.dump(data, f, indent=2, default=str)
 
     def import_history(self, filepath: str) -> None:
-        """Importar historial desde archivo JSON"""
+        """Importar historial desde archivo JSON.
+
+        Añade las entradas importadas al inicio de la lista y respeta
+        el límite de max_entries. Trabaja con el formato de exportación,
+        no con el archivo interno de persistencia.
+        """
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -105,10 +131,8 @@ class JoinHistory:
                 if entry:
                     imported_entries.append(entry)
 
-            # Añadir al inicio
             self.entries = imported_entries + self.entries
 
-            # Mantener límite
             if len(self.entries) > self.max_entries:
                 self.entries = self.entries[:self.max_entries]
 
@@ -118,7 +142,11 @@ class JoinHistory:
             raise ValueError(f"Error importando historial: {str(e)}")
 
     def _entry_to_dict(self, entry: JoinHistoryEntry) -> dict[str, Any]:
-        """Convertir entrada a diccionario para serialización"""
+        """Convertir entrada a diccionario para serialización.
+
+        Nota: JSON serializa tuplas como listas. El campo suffixes
+        se guarda como lista y se reconstruye como tupla al cargar.
+        """
         return {
             'id': entry.id,
             'timestamp': entry.timestamp.isoformat(),
@@ -131,7 +159,8 @@ class JoinHistory:
                 'suffixes': entry.config.suffixes,
                 'validate_integrity': entry.config.validate_integrity,
                 'sort_results': entry.config.sort_results,
-                'indicator': entry.config.indicator
+                'indicator': entry.config.indicator,
+                'include_columns': entry.config.include_columns
             },
             'result_metadata': entry.result_metadata,
             'success': entry.success,
@@ -139,10 +168,12 @@ class JoinHistory:
         }
 
     def _dict_to_entry(self, data: dict[str, Any]) -> JoinHistoryEntry | None:
-        """Convertir diccionario a entrada"""
-        try:
-            from .models import JoinType
+        """Convertir diccionario a entrada.
 
+        Devuelve None si la entrada está corrupta o no se puede
+        reconstruir, registrando una advertencia en el log.
+        """
+        try:
             config_data = data['config']
             config = JoinConfig(
                 join_type=JoinType(config_data['join_type']),
@@ -151,7 +182,8 @@ class JoinHistory:
                 suffixes=tuple(config_data.get('suffixes', ('_left', '_right'))),
                 validate_integrity=config_data.get('validate_integrity', True),
                 sort_results=config_data.get('sort_results', True),
-                indicator=config_data.get('indicator', False)
+                indicator=config_data.get('indicator', False),
+                include_columns=config_data.get('include_columns', [])
             )
 
             return JoinHistoryEntry(
@@ -164,12 +196,13 @@ class JoinHistory:
                 success=data['success'],
                 error_message=data.get('error_message', '')
             )
-        except Exception:
+        except Exception as e:
+            logger.warning("Entrada de historial corrupta ignorada: %s", e)
             return None
 
     def _load_history(self) -> None:
         """Cargar historial desde archivo"""
-        if Path(self.history_file).exists():
+        if self.history_file.exists():
             try:
                 with open(self.history_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
@@ -181,12 +214,13 @@ class JoinHistory:
                         self.entries.append(entry)
 
             except Exception:
-                # Si hay error, empezar con historial vacío
                 self.entries = []
 
     def _save_history(self) -> None:
         """Guardar historial a archivo"""
         try:
+            self.history_file.parent.mkdir(parents=True, exist_ok=True)
+
             data = {
                 'entries': [self._entry_to_dict(entry) for entry in self.entries]
             }
@@ -195,5 +229,4 @@ class JoinHistory:
                 json.dump(data, f, indent=2, default=str)
 
         except Exception:
-            # Si no se puede guardar, continuar sin error
             pass
