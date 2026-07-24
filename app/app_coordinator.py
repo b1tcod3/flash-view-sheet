@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QMessageBox, QFileDialog, QInputDialog,
                                 QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                 QComboBox, QPushButton, QApplication)
 
-from app.services import DataService, ExportService, PivotService, CleaningService
+from app.services import DataService, ExportService, PivotService, CleaningService, JoinService
 from app.services.recent_files_service import RecentFilesService
 from app.services.data_service import DataLoaderThread, FolderLoaderThread
 from app.view_manager import ViewCoordinator, ViewRegistry
@@ -49,7 +49,7 @@ class AppCoordinator(QObject):
     def __init__(self, parent_window: 'QMainWindow', data_service: DataService, export_service: ExportService, 
                  pivot_service: PivotService, cleaning_service: CleaningService,
                  view_coordinator: ViewCoordinator, toolbar_manager: ToolbarManager, join_history: JoinHistory,
-                 recent_files_service: RecentFilesService) -> None:
+                 recent_files_service: RecentFilesService, join_service: JoinService) -> None:
         """Inicializar el coordinador"""
         super().__init__(parent_window)
         
@@ -62,6 +62,7 @@ class AppCoordinator(QObject):
         self.toolbar_manager = toolbar_manager
         self.join_history = join_history
         self.recent_files_service = recent_files_service
+        self.join_service = join_service
         self._loader_thread: DataLoaderThread | None = None
         self._folder_thread: FolderLoaderThread | None = None
         self._active_loaders: list[DataLoaderThread] = []
@@ -328,7 +329,8 @@ class AppCoordinator(QObject):
                               "No hay datos cargados para cruzar.")
             return
         
-        dialog = JoinDialog(self.data_service.datos_actuales, self.parent_window)
+        dialog = JoinDialog(self.data_service.datos_actuales, self.parent_window,
+                           join_service=self.join_service)
         dialog.join_completed.connect(self._on_join_completed)
         dialog.exec()
     
@@ -357,7 +359,22 @@ class AppCoordinator(QObject):
     def _basename(self, path: str) -> str:
         """Obtener nombre de archivo sin ruta"""
         return Path(path).name
-    
+
+    def abrir_historial(self) -> None:
+        """Abrir diálogo de historial de joins"""
+        entries = self.join_history.get_entries(limit=20)
+        joined_view = self.view_coordinator.get_joined_data_view()
+        if joined_view:
+            joined_view.populate_history(entries)
+
+    def exportar_resultado_join(self, df: pd.DataFrame) -> None:
+        """Exportar resultado del join actual"""
+        self.mostrar_dialogo_exportacion("Cruce_Datos")
+
+    def limpiar_historial_joins(self) -> None:
+        """Limpiar el historial de joins"""
+        self.join_history.clear_history()
+
     # ==================== OPERACIONES DE PIVOTE ====================
     
     def auto_pivot(self) -> None:

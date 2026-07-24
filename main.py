@@ -17,7 +17,7 @@ from app.resources import get_asset_path
 from core.join.join_history import JoinHistory
 
 # Importar servicios y gestores
-from app.services import DataService, ExportService, FilterService, PivotService, CleaningService
+from app.services import DataService, ExportService, FilterService, PivotService, CleaningService, JoinService
 from app.services.recent_files_service import RecentFilesService
 from app.toolbar import ToolbarManager
 from app.view_manager import ViewCoordinator
@@ -88,6 +88,7 @@ class MainWindow(QMainWindow):
         """Inicializar coordinador de aplicación"""
         # 1. Dependencias primero
         self.join_history = JoinHistory()
+        self.join_service = JoinService()
         self.view_coordinator = ViewCoordinator(self)
         
         # 2. Inyectar todo en el constructor
@@ -100,7 +101,8 @@ class MainWindow(QMainWindow):
             view_coordinator=self.view_coordinator,
             toolbar_manager=self.toolbar_manager,
             join_history=self.join_history,
-            recent_files_service=self.recent_files_service
+            recent_files_service=self.recent_files_service,
+            join_service=self.join_service
         )
         
         # 3. Conexiones posteriores
@@ -153,6 +155,9 @@ class MainWindow(QMainWindow):
         
         if joined_view:
             joined_view.new_join_requested.connect(self.coordinator.abrir_cruzar_datos)
+            joined_view.export_requested.connect(self.coordinator.exportar_resultado_join)
+            joined_view.history_requested.connect(self.coordinator.abrir_historial)
+            joined_view.history_clear_requested.connect(self.coordinator.limpiar_historial_joins)
         
         # Conectar señales de datos del coordinator al ViewCoordinator
         self.coordinator.datos_originales_cargados.connect(

@@ -2,6 +2,9 @@
 JoinDialog: Diálogo para configurar operaciones de cruce de datos
 """
 
+import logging
+import traceback
+
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                   QGroupBox, QComboBox, QPushButton, QFormLayout,
                                   QDialogButtonBox, QMessageBox, QWidget, QTextEdit,
@@ -13,12 +16,13 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd
 from pathlib import Path
-from typing import Any
 
 from core.data_handler import cargar_datos
 from core.join.models import JoinConfig, JoinType
-from core.join.data_join_manager import DataJoinManager
 from core.join.exceptions import JoinValidationError, JoinExecutionError
+from app.services.join_service import JoinService, JoinWorkerThread, compute_result_columns
+
+logger = logging.getLogger(__name__)
 
 class JoinDialog(QDialog):
     """
@@ -29,12 +33,15 @@ class JoinDialog(QDialog):
     join_completed = Signal(object, str)  # JoinResult, right_file_path
     join_cancelled = Signal()
 
-    def __init__(self, left_df: pd.DataFrame, parent: QWidget | None = None) -> None:
+    def __init__(self, left_df: pd.DataFrame, parent: QWidget | None = None,
+                 join_service: JoinService | None = None) -> None:
         super().__init__(parent)
         self.left_df = left_df
         self.right_df: pd.DataFrame | None = None
-        self.right_file_path: str | None = None
-        self.join_manager: DataJoinManager | None = None
+        self.right_file_path: Path | None = None
+        self.join_service = join_service or JoinService()
+        self._worker: JoinWorkerThread | None = None
+        self._progress_dialog: QProgressDialog | None = None
         self.setup_ui()
         self.setup_connections()
 
@@ -71,6 +78,9 @@ class JoinDialog(QDialog):
         # Pestaña de vista previa
         self.create_preview_tab()
 
+        # Botones de acción (siempre visibles, fuera de las pestañas)
+        self.create_button_panel(main_layout)
+
     def create_configuration_tab(self) -> None:
         """Crear pestaña de configuración"""
         config_widget = QWidget()
@@ -100,9 +110,6 @@ class JoinDialog(QDialog):
 
         # Preview
         self.create_preview_group(preview_layout)
-
-        # Botones de acción
-        self.create_button_panel(preview_layout)
 
         self.tab_widget.addTab(preview_widget, "👁️ Vista Previa")
 
@@ -367,9 +374,9 @@ class JoinDialog(QDialog):
         if file_path:
             try:
                 self.right_df = cargar_datos(file_path)
-                self.right_file_path = file_path
+                self.right_file_path = Path(file_path)
                 self.right_info_label.setText(
-                    f"📄 {Path(file_path).name}\n{self.right_df.shape[0]} filas × {self.right_df.shape[1]} columnas"
+                    f"📄 {self.right_file_path.name}\n{self.right_df.shape[0]} filas × {self.right_df.shape[1]} columnas"
                 )
                 self.right_info_label.setStyleSheet("color: #2c3e50; font-weight: bold;")
 
@@ -382,6 +389,7 @@ class JoinDialog(QDialog):
                     self.update_available_columns()
 
             except Exception as e:
+                logger.error("Error cargando dataset derecho: %s\n%s", e, traceback.format_exc())
                 QMessageBox.critical(self, "Error", f"Error cargando archivo: {str(e)}")
 
     def enable_join_config(self, enabled: bool):
@@ -477,26 +485,37 @@ class JoinDialog(QDialog):
             self.update_available_columns()
 
     def update_available_columns(self) -> None:
-        """Actualizar lista de columnas disponibles"""
+        """Actualizar lista de columnas disponibles usando cálculo puro.
+
+        Simula los nombres de columna del resultado sin ejecutar el merge.
+        """
         if self.right_df is None:
             return
 
-        # Obtener configuración actual para determinar columnas disponibles
         config = self.get_config()
         if not config:
             return
 
-        # Crear manager temporal para obtener columnas del resultado
-        manager = DataJoinManager(self.left_df, self.right_df)
         try:
-            # Obtener preview para ver qué columnas estarán disponibles
-            preview_df = manager.get_join_preview(config, max_rows=1)
-            available_columns = preview_df.columns.tolist()
-        except:
-            # Si no se puede obtener preview, usar todas las columnas de ambos datasets
-            available_columns = list(self.left_df.columns) + list(self.right_df.columns)
+            if config.join_type == JoinType.CROSS:
+                available_columns = (
+                    list(self.left_df.columns)
+                    + list(self.right_df.columns)
+                )
+            else:
+                available_columns = compute_result_columns(
+                    self.left_df.columns.tolist(),
+                    self.right_df.columns.tolist(),
+                    config.left_keys,
+                    config.right_keys,
+                    config.suffixes,
+                )
+        except Exception as e:
+            logger.warning("Error calculando columnas resultado: %s", e)
+            available_columns = (
+                list(self.left_df.columns) + list(self.right_df.columns)
+            )
 
-        # Limpiar y llenar lista
         self.available_columns_list.clear()
         for col in sorted(available_columns):
             item = QListWidgetItem(col)
@@ -555,8 +574,7 @@ class JoinDialog(QDialog):
                 return
 
             # Crear manager temporal para preview
-            manager = DataJoinManager(self.left_df, self.right_df)
-            preview_df = manager.get_join_preview(config, max_rows=10)
+            preview_df = self.join_service.get_preview(self.left_df, self.right_df, config, max_rows=10)
 
             # Actualizar estadísticas
             estimated_rows = len(preview_df)
@@ -569,6 +587,7 @@ class JoinDialog(QDialog):
             self.update_preview_table(preview_df)
 
         except Exception as e:
+            logger.warning("Error en preview: %s\n%s", e, traceback.format_exc())
             self.preview_stats_label.setText(f"Error en preview: {str(e)}")
             self.preview_table.setRowCount(0)
             self.preview_table.setColumnCount(0)
@@ -641,8 +660,7 @@ class JoinDialog(QDialog):
             return
 
         try:
-            manager = DataJoinManager(self.left_df, self.right_df)
-            validation = manager.validate_join(config)
+            validation = self.join_service.validate_config(self.left_df, self.right_df, config)
 
             if validation.is_valid:
                 QMessageBox.information(self, "Validación Exitosa",
@@ -658,12 +676,14 @@ class JoinDialog(QDialog):
                 QMessageBox.warning(self, "Errores de Validación", message)
 
         except JoinValidationError as e:
+            logger.warning("Error de validación: %s", e)
             QMessageBox.critical(self, "Error de Validación", str(e))
         except Exception as e:
+            logger.error("Error inesperado en validación: %s\n%s", e, traceback.format_exc())
             QMessageBox.critical(self, "Error", f"Error inesperado: {str(e)}")
 
     def execute_join(self) -> None:
-        """Ejecutar el join"""
+        """Ejecutar el join en un hilo separado para no bloquear la UI."""
         if self.right_df is None:
             QMessageBox.warning(self, "Error", "Debe cargar un dataset derecho primero")
             return
@@ -673,121 +693,131 @@ class JoinDialog(QDialog):
             QMessageBox.warning(self, "Error", "Configuración incompleta")
             return
 
-        # Estimar si la operación será larga
-        estimated_time = self._estimate_operation_time(config)
-        show_progress = estimated_time > 2.0  # Mostrar progreso si > 2 segundos
-
-        progress_dialog = None
-        if show_progress:
-            progress_dialog = QProgressDialog(
-                "Ejecutando operación de cruce...",
-                "Cancelar",
-                0, 100, self
-            )
-            progress_dialog.setWindowModality(2)  # ApplicationModal
-            progress_dialog.setAutoClose(True)
-            progress_dialog.setAutoReset(True)
-            progress_dialog.setValue(10)  # Iniciar con 10%
-
-        try:
-            # Deshabilitar botón
-            self.execute_btn.setEnabled(False)
-            self.execute_btn.setText("Procesando...")
-
-            manager = DataJoinManager(self.left_df, self.right_df)
-
-            if progress_dialog:
-                progress_dialog.setValue(30)
-                progress_dialog.setLabelText("Validando configuración...")
-
-            # Verificar validación antes de ejecutar
-            validation = manager.validate_join(config)
-            if validation.warnings:
-                warning_msg = "Advertencias detectadas:\n" + "\n".join(validation.warnings)
-                warning_msg += "\n\n¿Desea continuar de todos modos?"
-                reply = QMessageBox.question(self, "Advertencias de Configuración",
-                                           warning_msg, QMessageBox.Yes | QMessageBox.No)
+        # Advertir sobre cross joins grandes
+        if config.join_type == JoinType.CROSS:
+            estimated_rows = len(self.left_df) * len(self.right_df)
+            if estimated_rows > 1_000_000:
+                reply = QMessageBox.question(
+                    self, "Cross Join grande",
+                    f"El cross join generará ~{estimated_rows:,} filas.\n"
+                    "¿Desea continuar?",
+                    QMessageBox.Yes | QMessageBox.No,
+                )
                 if reply == QMessageBox.No:
-                    self.execute_btn.setEnabled(True)
-                    self.execute_btn.setText("🚀 Ejecutar Join")
-                    if progress_dialog:
-                        progress_dialog.cancel()
                     return
 
-            result = manager.execute_join(config)
+        # Validar antes de lanzar el hilo
+        validation = self.join_service.validate_config(
+            self.left_df, self.right_df, config
+        )
+        if validation.warnings:
+            warning_msg = "Advertencias detectadas:\n" + "\n".join(
+                validation.warnings
+            )
+            warning_msg += "\n\n¿Desea continuar de todos modos?"
+            reply = QMessageBox.question(
+                self,
+                "Advertencias de Configuración",
+                warning_msg,
+                QMessageBox.Yes | QMessageBox.No,
+            )
+            if reply == QMessageBox.No:
+                return
 
-            if progress_dialog:
-                progress_dialog.setValue(90)
-                progress_dialog.setLabelText("Finalizando...")
+        # Deshabilitar botones
+        self.execute_btn.setEnabled(False)
+        self.execute_btn.setText("Procesando...")
+        self.cancel_btn.setEnabled(False)
 
-            if result.success:
-                if progress_dialog:
-                    progress_dialog.setValue(100)
+        # Crear barra de progreso
+        self._progress_dialog = QProgressDialog(
+            "Ejecutando operación de cruce...", "Cancelar", 0, 100, self
+        )
+        self._progress_dialog.setWindowModality(Qt.WindowModal)
+        self._progress_dialog.setAutoClose(False)
+        self._progress_dialog.setAutoReset(False)
+        self._progress_dialog.setValue(0)
+        self._progress_dialog.canceled.connect(self._cancel_worker)
+        self._progress_dialog.show()
 
-                self.join_completed.emit(result, self.right_file_path)
-                QMessageBox.information(self, "Éxito",
-                                      f"Join completado exitosamente\n"
-                                      f"Resultado: {result.metadata.result_rows} filas × {len(result.data.columns)} columnas\n"
-                                      f"Tiempo: {result.metadata.processing_time_seconds:.2f} segundos")
-                self.accept()
-            else:
-                if progress_dialog:
-                    progress_dialog.cancel()
-                QMessageBox.critical(self, "Error", result.error_message)
+        # Lanzar worker
+        self._worker = JoinWorkerThread(
+            self.join_service, self.left_df, self.right_df, config
+        )
+        self._worker.progress_updated.connect(self._on_join_progress)
+        self._worker.finished.connect(self._on_join_finished)
+        self._worker.error_occurred.connect(self._on_join_error)
+        self._worker.start()
 
-        except JoinExecutionError as e:
-            if progress_dialog:
-                progress_dialog.cancel()
-            QMessageBox.critical(self, "Error de Ejecución", str(e))
-        except Exception as e:
-            if progress_dialog:
-                progress_dialog.cancel()
-            QMessageBox.critical(self, "Error", f"Error inesperado: {str(e)}")
-        finally:
-            self.execute_btn.setEnabled(True)
-            self.execute_btn.setText("🚀 Ejecutar Join")
-            if progress_dialog:
-                progress_dialog.close()
+    def _cancel_worker(self) -> None:
+        """Cancelar el hilo de ejecución."""
+        if self._worker and self._worker.isRunning():
+            self._worker.requestInterruption()
+            self._worker.quit()
+            if not self._worker.wait(3000):
+                self._worker.terminate()
+                self._worker.wait(1000)
+        self._restore_buttons()
 
-    def _estimate_operation_time(self, config: JoinConfig) -> float:
-        """
-        Estimar tiempo de ejecución de la operación
+    def _on_join_progress(self, percent: int) -> None:
+        """Actualizar barra de progreso."""
+        if self._progress_dialog and not self._progress_dialog.wasCanceled():
+            self._progress_dialog.setValue(percent)
 
-        Args:
-            config: Configuración del join
+    def _on_join_finished(self, result: object) -> None:
+        """Manejar resultado exitoso del join."""
+        from core.join.models import JoinResult
 
-        Returns:
-            Tiempo estimado en segundos
-        """
-        if self.right_df is None:
-            return 0.0
+        if self._progress_dialog:
+            self._progress_dialog.close()
+            self._progress_dialog = None
 
-        left_rows = len(self.left_df)
-        right_rows = len(self.right_df)
+        self._restore_buttons()
+        self._worker = None
 
-        # Factores base por tipo de join
-        if config.join_type == JoinType.CROSS:
-            # Cross join: tiempo proporcional al producto
-            base_time = (left_rows * right_rows) / 1000000  # ~1 segundo por millón de operaciones
-        elif config.join_type == JoinType.INNER:
-            # Inner join: más rápido, depende del tamaño del resultado
-            base_time = min(left_rows, right_rows) / 50000
+        join_result: JoinResult = result
+        if join_result.success:
+            self.join_completed.emit(
+                join_result,
+                str(self.right_file_path) if self.right_file_path else "",
+            )
+            QMessageBox.information(
+                self,
+                "Éxito",
+                f"Join completado exitosamente\n"
+                f"Resultado: {join_result.metadata.result_rows} filas "
+                f"× {len(join_result.data.columns)} columnas\n"
+                f"Tiempo: {join_result.metadata.processing_time_seconds:.2f} segundos",
+            )
+            self.accept()
         else:
-            # Left/Right join: tiempo moderado
-            base_time = left_rows / 30000
+            QMessageBox.critical(self, "Error", join_result.error_message)
 
-        # Factor adicional por validación de integridad
-        if config.validate_integrity:
-            base_time *= 1.2
+    def _on_join_error(self, error_message: str) -> None:
+        """Manejar error del hilo de ejecución."""
+        logger.error("Error en JoinWorkerThread: %s", error_message)
+        if self._progress_dialog:
+            self._progress_dialog.close()
+            self._progress_dialog = None
 
-        # Factor adicional por ordenamiento
-        if config.sort_results:
-            base_time *= 1.1
+        self._restore_buttons()
+        self._worker = None
+        QMessageBox.critical(self, "Error", f"Error inesperado: {error_message}")
 
-        # Mínimo 0.5 segundos, máximo 30 segundos para estimación
-        return max(0.5, min(base_time, 30.0))
+    def _restore_buttons(self) -> None:
+        """Restaurar estado de botones tras ejecución."""
+        self.execute_btn.setEnabled(True)
+        self.execute_btn.setText("🚀 Ejecutar Join")
+        self.cancel_btn.setEnabled(True)
 
     def reject(self) -> None:
-        """Cancelar operación"""
+        """Cancelar operación y limpiar recursos."""
+        if self._worker and self._worker.isRunning():
+            self._worker.requestInterruption()
+            self._worker.quit()
+            self._worker.wait(2000)
+        if self._progress_dialog:
+            self._progress_dialog.close()
+            self._progress_dialog = None
         self.join_cancelled.emit()
         super().reject()

@@ -12,6 +12,7 @@ from .pivot_service import PivotService
 from .cleaning_service import CleaningService
 from .pagination_manager import PaginationManager
 from .recent_files_service import RecentFilesService
+from .join_service import JoinService, JoinWorkerThread, compute_result_columns
 
 __all__ = [
     'DataService',
@@ -21,4 +22,7 @@ __all__ = [
     'CleaningService',
     'PaginationManager',
     'RecentFilesService',
+    'JoinService',
+    'JoinWorkerThread',
+    'compute_result_columns',
 ]
