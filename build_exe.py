@@ -30,6 +30,8 @@ def build_executable():
         '--hidden-import=pandas',
         '--hidden-import=openpyxl',
         '--hidden-import=psutil',
+        '--hidden-import=numpy',
+        '--collect-all=numpy',
         '--distpath=dist/windows',
         '--workpath=build/windows',
     ]
