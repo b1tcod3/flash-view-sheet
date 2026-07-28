@@ -21,7 +21,7 @@ def build_executable():
         '--onefile',
         '--windowed',
         '--name=FlashSheet',
-        '--icon=assets/logo.ico',
+        '--icon=assets/logo.png',
         '--add-data=assets;assets',
         '--add-data=core;core',
         '--add-data=app;app',
