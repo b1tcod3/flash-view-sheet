@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (QMessageBox, QFileDialog, QInputDialog,
 from app.services import DataService, ExportService, PivotService, CleaningService, JoinService
 from app.services.recent_files_service import RecentFilesService
 from app.services.data_service import DataLoaderThread, FolderLoaderThread
+from app.services.profiler_service import ProfilerWorkerThread
 from app.view_manager import ViewCoordinator, ViewRegistry
 from app.toolbar import ToolbarManager
 from app.widgets import JoinDialog, FolderLoadDialog, CSVSeparatorDialog, ExcelSheetDialog
@@ -65,6 +66,7 @@ class AppCoordinator(QObject):
         self.join_service = join_service
         self._loader_thread: DataLoaderThread | None = None
         self._folder_thread: FolderLoaderThread | None = None
+        self._profiler_thread: ProfilerWorkerThread | None = None
         self._active_loaders: list[DataLoaderThread] = []
         self._pending_dfs: list[pd.DataFrame] = []
         self._pending_paths: list[str] = []
@@ -236,6 +238,8 @@ class AppCoordinator(QObject):
         self._error_count = 0
         self._total_files = 0
 
+        self._start_profiling()
+
     # ==================== CALLBACKS DE DATOS ====================
     
     def _on_datos_cargados(self, df: pd.DataFrame) -> None:
@@ -265,11 +269,48 @@ class AppCoordinator(QObject):
         # Cambiar a vista de datos
         self.view_coordinator.switch_to(ViewRegistry.VIEW_DATA)
         self.status_message.emit(f"Datos cargados: {self.data_service.get_filename()}")
+        self._start_profiling()
     
     def _on_error_carga(self, error_message: str) -> None:
         """Manejar error de carga"""
         QMessageBox.critical(self.parent_window, "Error de carga", error_message)
         self.status_message.emit("Error al cargar archivo")
+    
+    # ==================== PERFILADO DE DATOS ====================
+
+    def _start_profiling(self) -> None:
+        """Iniciar el perfilado del dataset original en segundo plano."""
+        df = self.data_service.datos_originales
+        if df is None or df.empty:
+            return
+
+        self._cancel_thread(self._profiler_thread)
+
+        self.view_coordinator.show_profile_loading()
+
+        thread = ProfilerWorkerThread(df)
+        self._profiler_thread = thread
+        thread.progress.connect(self._on_profile_progress)
+        thread.finished.connect(self._on_profile_finished)
+        thread.error.connect(self._on_profile_error)
+        thread.start()
+
+    def _on_profile_progress(self, percent: int) -> None:
+        """Actualizar el porcentaje de progreso del perfilado."""
+        self.view_coordinator.show_profile_progress(percent)
+
+    def _on_profile_finished(self, profile: object) -> None:
+        """Manejar finalización del perfilado en segundo plano."""
+        self._profiler_thread = None
+        if profile is None:
+            return
+        self.view_coordinator.set_profile_data(profile)
+        self.status_message.emit("Perfil de datos calculado")
+
+    def _on_profile_error(self, message: str) -> None:
+        """Manejar error del hilo de perfilado."""
+        self._profiler_thread = None
+        self.status_message.emit(f"Error calculando perfil: {message}")
     
     # ==================== CARGA DE CARPETA ====================
     
@@ -319,6 +360,7 @@ class AppCoordinator(QObject):
             f"Filas: {rows}, Columnas: {cols}")
         
         self.status_message.emit("Carpeta cargada exitosamente")
+        self._start_profiling()
     
     # ==================== OPERACIONES DE JOIN ====================
     
@@ -715,7 +757,10 @@ class AppCoordinator(QObject):
 
     def limpiar_datos(self) -> None:
         """Limpia los datos cargados y restaura el estado inicial."""
+        self._cancel_thread(self._profiler_thread)
+        self._profiler_thread = None
         self.data_service.clear_data()
+        self.view_coordinator.clear_profile_data()
         self.view_coordinator.switch_to(ViewRegistry.VIEW_DATA)
         self.datos_originales_cargados.emit(pd.DataFrame())
         self.datos_actualizados.emit(pd.DataFrame())
@@ -729,7 +774,7 @@ class AppCoordinator(QObject):
 
     # ==================== THREAD CLEANUP ====================
 
-    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | None) -> None:
+    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | ProfilerWorkerThread | None) -> None:
         """Detener un hilo de forma segura si está corriendo."""
         if thread is None or not thread.isRunning():
             return
@@ -752,11 +797,13 @@ class AppCoordinator(QObject):
         # 0. Detener hilos de carga activos
         self._cancel_thread(self._loader_thread)
         self._cancel_thread(self._folder_thread)
+        self._cancel_thread(self._profiler_thread)
         for thread in self._active_loaders[:]:
             self._cancel_thread(thread)
         self._active_loaders.clear()
         self._loader_thread = None
         self._folder_thread = None
+        self._profiler_thread = None
         self._pending_dfs.clear()
         self._pending_paths.clear()
 

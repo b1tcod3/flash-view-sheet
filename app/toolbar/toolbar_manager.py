@@ -138,6 +138,7 @@ class ToolbarManager:
         self.view_switcher.view_joined.connect(lambda: self._on_view_switch(3))
         self.view_switcher.view_pivot.connect(self._on_pivot_requested)
         self.view_switcher.view_info.connect(self._on_info_requested)
+        self.view_switcher.view_profile.connect(self._on_profile_requested)
 
         if self.buttons_layout is not None:
             self.buttons_layout.addWidget(self.view_switcher)
@@ -153,6 +154,11 @@ class ToolbarManager:
     def _on_pivot_requested(self) -> None:
         if self.coordinator:
             self.coordinator.auto_pivot()
+
+    def _on_profile_requested(self) -> None:
+        if self.view_coordinator:
+            from app.view_manager.view_registry import ViewRegistry
+            self.view_coordinator.switch_to(ViewRegistry.VIEW_PROFILING)
 
     def _create_separar_button(self) -> None:
         self.separar_btn = QPushButton()
@@ -187,6 +193,7 @@ class ToolbarManager:
         self.set_view_buttons_enabled(has_data)
         if self.view_switcher:
             self.view_switcher.set_pivot_enabled(has_data)
+            self.view_switcher.set_profile_enabled(has_data)
         if self.separar_btn:
             self.separar_btn.setEnabled(has_data)
 

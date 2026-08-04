@@ -51,6 +51,7 @@ class MenuBuilder:
         self.vista_principal_action: QAction
         self.vista_datos_action: QAction
         self.vista_info_action: QAction
+        self.vista_perfil_action: QAction
         self.acerca_de_action: QAction
 
         self.limpieza_rapida_action: QAction
@@ -129,6 +130,11 @@ class MenuBuilder:
         self.vista_info_action = QAction("&Ver Información del dataset", p)
         self.vista_info_action.setStatusTip("Mostrar información del dataset actual")
 
+        self.vista_perfil_action = QAction("&Perfil de Datos", p)
+        self.vista_perfil_action.setShortcut("Ctrl+3")
+        self.vista_perfil_action.setStatusTip("Mostrar el perfil de datos del dataset")
+        self.vista_perfil_action.setEnabled(False)
+
         # === Ayuda ===
         self.acerca_de_action = QAction("&Acerca de...", p)
         self.acerca_de_action.setShortcut("F1")
@@ -194,6 +200,8 @@ class MenuBuilder:
         actions: list[QAction | None] = [
             self.vista_principal_action,
             self.vista_datos_action,
+            self.vista_perfil_action,
+            None,
             self.vista_info_action,
         ]
         VistaMenu.create(self.menu_bar, actions, self.parent_window)
@@ -225,6 +233,11 @@ class MenuBuilder:
         self.vista_datos_action.triggered.connect(lambda: view_coordinator.switch_to(1))
         self.vista_info_action.triggered.connect(coordinator.mostrar_info)
 
+        from app.view_manager.view_registry import ViewRegistry
+        self.vista_perfil_action.triggered.connect(
+            lambda: view_coordinator.switch_to(ViewRegistry.VIEW_PROFILING)
+        )
+
         self.acerca_de_action.triggered.connect(coordinator.mostrar_acerca_de)
 
     # ==================== ESTADO ====================
@@ -237,6 +250,7 @@ class MenuBuilder:
             self.pivot_simple_action,
             self.export_pivot_action,
             self.limpieza_rapida_action,
+            self.vista_perfil_action,
         ):
             action.setEnabled(enabled)
 

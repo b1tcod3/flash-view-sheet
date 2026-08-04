@@ -33,6 +33,7 @@ class ViewSwitcher(QWidget):
     view_info = Signal()
     view_joined = Signal()
     view_pivot = Signal()
+    view_profile = Signal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -42,6 +43,7 @@ class ViewSwitcher(QWidget):
         self.view_info_btn: QPushButton
         self.view_joined_btn: QPushButton
         self.view_pivot_btn: QPushButton
+        self.view_profile_btn: QPushButton
 
         self._setup_ui()
         self._connect_signals()
@@ -99,6 +101,16 @@ class ViewSwitcher(QWidget):
         )
         self._layout.addWidget(self.view_info_btn)
 
+        self._layout.addWidget(_make_vline())
+
+        self.view_profile_btn = self._make_button(
+            style.standardIcon(QStyle.SP_FileDialogListView),  # type: ignore[attr-defined]
+            "Perfil de Datos",
+            icon_size
+        )
+        self.view_profile_btn.setEnabled(False)
+        self._layout.addWidget(self.view_profile_btn)
+
     def _make_button(self, icon, tooltip: str, icon_size: QSize) -> QPushButton:  # type: ignore[no-untyped-def]
         btn = QPushButton()
         btn.setIcon(icon)
@@ -131,6 +143,7 @@ class ViewSwitcher(QWidget):
         self.view_info_btn.clicked.connect(self.view_info.emit)
         self.view_joined_btn.clicked.connect(self.view_joined.emit)
         self.view_pivot_btn.clicked.connect(self.view_pivot.emit)
+        self.view_profile_btn.clicked.connect(self.view_profile.emit)
 
     def set_joined_enabled(self, enabled: bool) -> None:
         self.view_joined_btn.setEnabled(enabled)
@@ -146,3 +159,6 @@ class ViewSwitcher(QWidget):
 
     def set_pivot_enabled(self, enabled: bool) -> None:
         self.view_pivot_btn.setEnabled(enabled)
+
+    def set_profile_enabled(self, enabled: bool) -> None:
+        self.view_profile_btn.setEnabled(enabled)

@@ -7,7 +7,7 @@ Maneja la creación, actualización y coordinación de todas las vistas de la ap
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, cast
 from collections.abc import Mapping
 
 from PySide6.QtCore import Signal, QObject
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from app.widgets.join.joined_data_view import JoinedDataView
     from app.widgets.info_modal import InfoModal
     from app.widgets.pivot_results_view import PivotResultsView
+    from app.widgets.profiling_view import ProfilingView
 
 
 class ViewCoordinator(QObject):
@@ -41,6 +42,7 @@ class ViewCoordinator(QObject):
         self._data_view: DataView | None = None
         self._joined_data_view: JoinedDataView | None = None
         self._pivot_view: PivotResultsView | None = None
+        self._profiling_view: ProfilingView | None = None
         self._info_modal: InfoModal | None = None
 
         self._view_factories: dict[int, Callable[[QWidget], QWidget]] = {
@@ -48,6 +50,7 @@ class ViewCoordinator(QObject):
             ViewRegistry.VIEW_DATA: self._create_data_view,
             ViewRegistry.VIEW_JOIN: self._create_joined_data_view,
             ViewRegistry.VIEW_PIVOT: self._create_pivot_view,
+            ViewRegistry.VIEW_PROFILING: self._create_profiling_view,
         }
 
     # ==================== CREACIÓN DE VISTAS ====================
@@ -72,6 +75,8 @@ class ViewCoordinator(QObject):
                 self._joined_data_view = view  # type: ignore[assignment]
             elif view_id == ViewRegistry.VIEW_PIVOT:
                 self._pivot_view = view  # type: ignore[assignment]
+            elif view_id == ViewRegistry.VIEW_PROFILING:
+                self._profiling_view = view  # type: ignore[assignment]
 
             self.view_created.emit(view_id)
 
@@ -97,6 +102,10 @@ class ViewCoordinator(QObject):
         from app.widgets.pivot_results_view import PivotResultsView
         return PivotResultsView()
 
+    def _create_profiling_view(self, parent: QWidget) -> ProfilingView:
+        from app.widgets.profiling_view import ProfilingView
+        return ProfilingView()
+
     # ==================== GETTERS ====================
 
     def get_stacked_widget(self) -> QStackedWidget:
@@ -116,6 +125,9 @@ class ViewCoordinator(QObject):
 
     def get_pivot_view(self) -> PivotResultsView | None:
         return self._pivot_view
+
+    def get_profiling_view(self) -> ProfilingView | None:
+        return self._profiling_view
 
     def get_view_switcher(self) -> ViewSwitcher:
         return self._view_switcher
@@ -157,6 +169,23 @@ class ViewCoordinator(QObject):
         if self._joined_data_view:
             self._joined_data_view.set_join_result(result, left_name, right_name)
 
+    def set_profile_data(self, profile: object) -> None:
+        if self._profiling_view is not None:
+            profile_dict = cast(Mapping[str, object], profile)
+            self._profiling_view.set_profile(dict(profile_dict))
+
+    def show_profile_loading(self) -> None:
+        if self._profiling_view is not None:
+            self._profiling_view.show_loading()
+
+    def show_profile_progress(self, percent: int) -> None:
+        if self._profiling_view is not None:
+            self._profiling_view.set_progress(percent)
+
+    def clear_profile_data(self) -> None:
+        if self._profiling_view is not None:
+            self._profiling_view.clear_profile()
+
     # ==================== SLOTS DE SEÑALES ====================
 
     def on_datos_originales_cargados(self, df: pd.DataFrame) -> None:
@@ -183,6 +212,7 @@ class ViewCoordinator(QObject):
         self._data_view = None
         self._joined_data_view = None
         self._pivot_view = None
+        self._profiling_view = None
         self._views.clear()
         self._view_factories.clear()
         self._parent = None
