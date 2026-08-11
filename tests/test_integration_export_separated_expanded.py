@@ -575,7 +575,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
         df_very_large = pd.DataFrame({
             'Región': [f'Región_{i%num_groups}' for i in range(num_rows)],
             'Producto': [f'Producto_{i%100}' for i in range(num_rows)],
-            'Ventas': [i for i in range(num_rows)],
+            'Ventas': list(range(num_rows)),
             'Descripcion': [f'Descripción del producto {i%100} con texto largo' * 5 for i in range(num_rows)]
         })
         
