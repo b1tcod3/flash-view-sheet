@@ -141,6 +141,8 @@ class MainWindow(QMainWindow):
         main_view = self.view_coordinator.get_main_view()
         data_view = self.view_coordinator.get_data_view()
         joined_view = self.view_coordinator.get_joined_data_view()
+        profiling_view = self.view_coordinator.get_profiling_view()
+        quick_visualizer_view = self.view_coordinator.get_quick_visualizer_view()
         
         if main_view:
             main_view.load_file_clicked.connect(self.coordinator.solicitar_apertura_archivo)
@@ -158,6 +160,14 @@ class MainWindow(QMainWindow):
             joined_view.export_requested.connect(self.coordinator.exportar_resultado_join)
             joined_view.history_requested.connect(self.coordinator.abrir_historial)
             joined_view.history_clear_requested.connect(self.coordinator.limpiar_historial_joins)
+
+        if profiling_view:
+            profiling_view.visualize_requested.connect(
+                self.coordinator.open_visualizer_for_column)
+
+        if quick_visualizer_view:
+            quick_visualizer_view.generate_requested.connect(
+                self.coordinator.on_visualize_requested)
         
         # Conectar señales de datos del coordinator al ViewCoordinator
         self.coordinator.datos_originales_cargados.connect(

@@ -52,6 +52,7 @@ class MenuBuilder:
         self.vista_datos_action: QAction
         self.vista_info_action: QAction
         self.vista_perfil_action: QAction
+        self.vista_visualizador_action: QAction
         self.acerca_de_action: QAction
 
         self.limpieza_rapida_action: QAction
@@ -135,6 +136,11 @@ class MenuBuilder:
         self.vista_perfil_action.setStatusTip("Mostrar el perfil de datos del dataset")
         self.vista_perfil_action.setEnabled(False)
 
+        self.vista_visualizador_action = QAction("&Visualizador Rápido", p)
+        self.vista_visualizador_action.setShortcut("Ctrl+4")
+        self.vista_visualizador_action.setStatusTip("Generar gráficos exploratorios rápidos")
+        self.vista_visualizador_action.setEnabled(False)
+
         # === Ayuda ===
         self.acerca_de_action = QAction("&Acerca de...", p)
         self.acerca_de_action.setShortcut("F1")
@@ -201,6 +207,7 @@ class MenuBuilder:
             self.vista_principal_action,
             self.vista_datos_action,
             self.vista_perfil_action,
+            self.vista_visualizador_action,
             None,
             self.vista_info_action,
         ]
@@ -237,6 +244,9 @@ class MenuBuilder:
         self.vista_perfil_action.triggered.connect(
             lambda: view_coordinator.switch_to(ViewRegistry.VIEW_PROFILING)
         )
+        self.vista_visualizador_action.triggered.connect(
+            lambda: view_coordinator.switch_to(ViewRegistry.VIEW_VISUALIZER)
+        )
 
         self.acerca_de_action.triggered.connect(coordinator.mostrar_acerca_de)
 
@@ -251,6 +261,7 @@ class MenuBuilder:
             self.export_pivot_action,
             self.limpieza_rapida_action,
             self.vista_perfil_action,
+            self.vista_visualizador_action,
         ):
             action.setEnabled(enabled)
 

@@ -8,10 +8,12 @@ frecuentes. Diseño plano y minimalista, alto ratio tinta-datos.
 
 from typing import Any
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
+from PySide6.QtCore import Qt, QSize, Signal
+from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (QFrame, QGridLayout, QHBoxLayout, QLabel,
-                               QScrollArea, QVBoxLayout, QWidget)
+                               QPushButton, QScrollArea, QVBoxLayout, QWidget)
+
+from app.resources import get_asset_path
 
 _BG_COLOR = "#f8fafc"
 _BORDER_COLOR = "#e2e8f0"
@@ -21,6 +23,9 @@ _BODY_COLOR = "#334155"
 _MUTED_COLOR = "#64748b"
 _TITLE_COLOR = "#1e293b"
 _ERROR_COLOR = "#b45309"
+_WHITE = "#ffffff"
+
+_MAX_VALUE_LENGTH = 40
 
 
 class _PercentBar(QWidget):
@@ -69,6 +74,8 @@ class _PercentBar(QWidget):
 class ProfilingView(QWidget):
     """Vista de perfil de datos del dataset cargado."""
 
+    visualize_requested = Signal(str)  # (column) — pedir gráfico de la columna
+
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._profile: dict[str, Any] | None = None
@@ -104,7 +111,7 @@ class ProfilingView(QWidget):
         self._cards_widget = QWidget()
         self._cards_layout = QVBoxLayout(self._cards_widget)
         self._cards_layout.setContentsMargins(0, 0, 0, 0)
-        self._cards_layout.setSpacing(8)
+        self._cards_layout.setSpacing(12)
         self._cards_layout.addStretch()
         self._scroll.setWidget(self._cards_widget)
         main_layout.addWidget(self._scroll, 1)
@@ -182,18 +189,25 @@ class ProfilingView(QWidget):
             if widget is not None:
                 widget.deleteLater()
 
+    def _create_separator(self) -> QFrame:
+        """Línea divisoria sutil para organizar el contenido de la tarjeta."""
+        line = QFrame()
+        line.setFixedHeight(1)
+        line.setStyleSheet(f"background-color: {_BORDER_COLOR}; border: none;")
+        return line
+
     def _create_column_card(self, name: str, profile: dict[str, Any]) -> QFrame:
         if profile.get('error'):
             return self._create_error_card(name, profile.get('error_msg', 'Error desconocido'))
 
         card = QFrame()
         card.setStyleSheet(
-            f"QFrame {{ background-color: white; border: 1px solid {_BORDER_COLOR}; "
+            f"QFrame {{ background-color: {_WHITE}; border: 1px solid {_BORDER_COLOR}; "
             f"border-radius: 8px; }}"
         )
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(14, 10, 14, 10)
-        layout.setSpacing(6)
+        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setSpacing(10)
 
         header = QHBoxLayout()
         name_label = QLabel(name)
@@ -201,6 +215,7 @@ class ProfilingView(QWidget):
         name_label.setStyleSheet(f"color: {_TITLE_COLOR}; border: none;")
         header.addWidget(name_label)
         header.addStretch()
+        self._add_visualize_button(header, name)
         dtype_label = QLabel(profile.get('dtype', ''))
         dtype_label.setStyleSheet(
             f"color: {_MUTED_COLOR}; font-size: 11px; background: {_BG_COLOR}; "
@@ -211,30 +226,35 @@ class ProfilingView(QWidget):
 
         rows = QGridLayout()
         rows.setHorizontalSpacing(16)
-        rows.setVerticalSpacing(4)
+        rows.setVerticalSpacing(6)
 
         null_count = profile.get('null_count', 0)
         null_percent = profile.get('null_percent', 0.0)
         rows.addWidget(self._metric_label("Nulos"), 0, 0)
         rows.addWidget(_PercentBar(null_percent), 0, 1)
-        rows.addWidget(self._metric_label(f"{null_count:,} valores"), 1, 1)
+        rows.addWidget(self._metric_label(f"{null_count:,}"), 0, 2,
+                       alignment=Qt.AlignRight)
 
         unique_count = profile.get('unique_count', 0)
         unique_percent = profile.get('unique_percent', 0.0)
-        rows.addWidget(self._metric_label("Únicos"), 2, 0)
-        rows.addWidget(_PercentBar(unique_percent), 2, 1)
-        rows.addWidget(self._metric_label(f"{unique_count:,} valores"), 3, 1)
+        rows.addWidget(self._metric_label("Únicos"), 1, 0)
+        rows.addWidget(_PercentBar(unique_percent), 1, 1)
+        rows.addWidget(self._metric_label(f"{unique_count:,}"), 1, 2,
+                       alignment=Qt.AlignRight)
 
         rows.setColumnStretch(0, 0)
         rows.setColumnStretch(1, 1)
+        rows.setColumnStretch(2, 0)
         layout.addLayout(rows)
 
         numeric_stats = profile.get('numeric_stats')
         if numeric_stats:
+            layout.addWidget(self._create_separator())
             layout.addWidget(self._numeric_stats_grid(numeric_stats))
 
         date_range = profile.get('date_range')
         if date_range:
+            layout.addWidget(self._create_separator())
             layout.addWidget(self._metric_label(
                 f"Rango: {date_range.get('min', '')} → {date_range.get('max', '')} "
                 f"({date_range.get('days_span', 0):,} días)"
@@ -242,18 +262,42 @@ class ProfilingView(QWidget):
 
         top_values = profile.get('top_values')
         if top_values:
+            layout.addWidget(self._create_separator())
             layout.addWidget(self._values_list_widget("Valores más frecuentes", top_values))
 
         distribution = profile.get('value_distribution')
         if distribution:
+            layout.addWidget(self._create_separator())
             layout.addWidget(self._values_list_widget("Distribución", distribution))
 
         return card
 
+    def _add_visualize_button(self, header: QHBoxLayout, name: str) -> None:
+        """Botón minimalista que pide graficar la columna de la tarjeta."""
+        chart_path = get_asset_path("chart.svg")
+        btn = QPushButton()
+        if chart_path.exists():
+            btn.setIcon(QIcon(str(chart_path)))
+            btn.setIconSize(QSize(14, 14))
+        else:
+            btn.setText("+")
+        btn.setToolTip("Graficar esta columna")
+        btn.setFixedSize(22, 22)
+        btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        btn.setStyleSheet(
+            f"QPushButton {{ background: transparent; border: 1px solid transparent; "
+            f"border-radius: 4px; }}"
+            f"QPushButton:hover {{ background: {_BG_COLOR}; border-color: {_BORDER_COLOR}; }}"
+            f"QPushButton:pressed {{ background: {_BORDER_COLOR}; }}"
+        )
+        btn.clicked.connect(lambda: self.visualize_requested.emit(name))
+        header.addWidget(btn)
+        header.addSpacing(4)
+
     def _create_error_card(self, name: str, error_msg: str) -> QFrame:
         card = QFrame()
         card.setStyleSheet(
-            f"QFrame {{ background-color: white; border: 1px solid {_BORDER_COLOR}; "
+            f"QFrame {{ background-color: {_WHITE}; border: 1px solid {_BORDER_COLOR}; "
             f"border-radius: 8px; }}"
         )
         layout = QVBoxLayout(card)
@@ -276,7 +320,9 @@ class ProfilingView(QWidget):
 
         error_label = QLabel(error_msg)
         error_label.setWordWrap(True)
-        error_label.setStyleSheet(f"color: {_ERROR_COLOR}; font-size: 12px; border: none;")
+        error_label.setStyleSheet(
+            f"color: {_ERROR_COLOR}; font-size: 12px; border: none; margin-top: 4px;"
+        )
         layout.addWidget(error_label)
 
         return card
@@ -293,9 +339,9 @@ class ProfilingView(QWidget):
             f"border-radius: 6px; }}"
         )
         grid = QGridLayout(frame)
-        grid.setContentsMargins(10, 6, 10, 6)
+        grid.setContentsMargins(12, 8, 12, 8)
         grid.setHorizontalSpacing(16)
-        grid.setVerticalSpacing(2)
+        grid.setVerticalSpacing(4)
 
         labels = [
             ("Conteo", 'count', "{:,}"),
@@ -307,45 +353,62 @@ class ProfilingView(QWidget):
             ("P25", 'q25', "{:,.4g}"),
             ("P75", 'q75', "{:,.4g}"),
         ]
-        for col_index, (title, key, fmt) in enumerate(labels):
+        columns_per_row = 4
+        for i, (title, key, fmt) in enumerate(labels):
+            row_offset = (i // columns_per_row) * 2
+            col_index = i % columns_per_row
+
             value = stats.get(key)
             title_label = QLabel(title)
             title_label.setStyleSheet(
-                f"color: {_MUTED_COLOR}; font-size: 11px; border: none;"
+                f"color: {_MUTED_COLOR}; font-size: 10px; border: none;"
             )
             value_label = QLabel(self._format_value(value, fmt))
             value_label.setStyleSheet(
                 f"color: {_BODY_COLOR}; font-size: 11px; font-weight: 600; border: none;"
             )
-            grid.addWidget(title_label, 0, col_index)
-            grid.addWidget(value_label, 1, col_index)
+            grid.addWidget(title_label, row_offset, col_index)
+            grid.addWidget(value_label, row_offset + 1, col_index)
 
         return frame
 
     def _values_list_widget(self, title_text: str, values: list[list[Any]]) -> QFrame:
         frame = QFrame()
         layout = QVBoxLayout(frame)
-        layout.setContentsMargins(0, 2, 0, 0)
-        layout.setSpacing(2)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
 
         title = QLabel(title_text)
-        title.setStyleSheet(f"color: {_MUTED_COLOR}; font-size: 11px; border: none;")
+        title.setStyleSheet(
+            f"color: {_MUTED_COLOR}; font-size: 11px; border: none; font-weight: bold;"
+        )
         layout.addWidget(title)
 
-        for value, count in values:
-            row = QHBoxLayout()
-            value_label = QLabel(str(value) if value is not None else "(nulo)")
-            value_label.setStyleSheet(
-                f"color: {_BODY_COLOR}; font-size: 12px; border: none;"
-            )
+        grid_widget = QWidget()
+        grid = QGridLayout(grid_widget)
+        grid.setContentsMargins(0, 0, 0, 0)
+        grid.setVerticalSpacing(4)
+
+        for row_idx, (value, count) in enumerate(values):
+            value_str = str(value) if value is not None else "(nulo)"
+            if len(value_str) > _MAX_VALUE_LENGTH:
+                value_str = value_str[:_MAX_VALUE_LENGTH - 3] + "..."
+
+            value_label = QLabel(value_str)
+            value_label.setStyleSheet(f"color: {_BODY_COLOR}; font-size: 11px; border: none;")
+
             count_label = QLabel(f"{count:,}")
             count_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             count_label.setStyleSheet(
-                f"color: {_MUTED_COLOR}; font-size: 11px; border: none;"
+                f"color: {_MUTED_COLOR}; font-size: 11px; border: none; "
+                f"font-family: monospace;"
             )
-            row.addWidget(value_label, 1)
-            row.addWidget(count_label)
-            layout.addLayout(row)
+            grid.addWidget(value_label, row_idx, 0)
+            grid.addWidget(count_label, row_idx, 1)
+
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 0)
+        layout.addWidget(grid_widget)
 
         return frame
 

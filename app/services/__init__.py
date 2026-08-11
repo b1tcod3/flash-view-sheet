@@ -14,6 +14,7 @@ from .pagination_manager import PaginationManager
 from .recent_files_service import RecentFilesService
 from .join_service import JoinService, JoinWorkerThread, compute_result_columns
 from .profiler_service import ProfilerService, ProfilerWorkerThread
+from .visualization_service import VisualizationService, VisualizerWorkerThread
 
 __all__ = [
     'DataService',
@@ -28,4 +29,6 @@ __all__ = [
     'compute_result_columns',
     'ProfilerService',
     'ProfilerWorkerThread',
+    'VisualizationService',
+    'VisualizerWorkerThread',
 ]

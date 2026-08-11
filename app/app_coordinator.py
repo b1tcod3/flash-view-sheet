@@ -9,12 +9,14 @@ from typing import Any, TYPE_CHECKING
 from pathlib import Path
 
 import pandas as pd
+from matplotlib.figure import Figure
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import (QMessageBox, QFileDialog, QInputDialog,
                                 QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                 QComboBox, QPushButton, QApplication)
 
 from app.services import DataService, ExportService, PivotService, CleaningService, JoinService
+from app.services.visualization_service import VisualizationService, VisualizerWorkerThread
 from app.services.recent_files_service import RecentFilesService
 from app.services.data_service import DataLoaderThread, FolderLoaderThread
 from app.services.profiler_service import ProfilerWorkerThread
@@ -67,6 +69,7 @@ class AppCoordinator(QObject):
         self._loader_thread: DataLoaderThread | None = None
         self._folder_thread: FolderLoaderThread | None = None
         self._profiler_thread: ProfilerWorkerThread | None = None
+        self._visualizer_thread: VisualizerWorkerThread | None = None
         self._active_loaders: list[DataLoaderThread] = []
         self._pending_dfs: list[pd.DataFrame] = []
         self._pending_paths: list[str] = []
@@ -301,7 +304,10 @@ class AppCoordinator(QObject):
 
     def _on_profile_finished(self, profile: object) -> None:
         """Manejar finalización del perfilado en segundo plano."""
+        thread = self._profiler_thread
         self._profiler_thread = None
+        if thread is not None:
+            thread.deleteLater()
         if profile is None:
             return
         self.view_coordinator.set_profile_data(profile)
@@ -309,8 +315,57 @@ class AppCoordinator(QObject):
 
     def _on_profile_error(self, message: str) -> None:
         """Manejar error del hilo de perfilado."""
+        thread = self._profiler_thread
         self._profiler_thread = None
+        if thread is not None:
+            thread.deleteLater()
         self.status_message.emit(f"Error calculando perfil: {message}")
+
+    # ==================== VISUALIZACIÓN RÁPIDA ====================
+
+    def on_visualize_requested(self, chart_type: str, x_col: str, y_col: str) -> None:
+        """Generar un gráfico en segundo plano con el visualizador rápido."""
+        df = self.data_service.datos_actuales
+        if df is None or df.empty or not x_col:
+            return
+
+        self._cancel_thread(self._visualizer_thread)
+
+        view = self.view_coordinator.get_quick_visualizer_view()
+        if view is None:
+            return
+
+        thread = VisualizerWorkerThread(df, chart_type, x_col, y_col)
+        self._visualizer_thread = thread
+        thread.finished.connect(self._on_visualizer_finished)
+        thread.error.connect(self._on_visualizer_error)
+        thread.start()
+
+    def open_visualizer_for_column(self, column: str) -> None:
+        """Abrir el visualizador rápido preseleccionando una columna."""
+        if self.view_coordinator is not None:
+            self.view_coordinator.open_visualizer_for_column(column)
+
+    def _on_visualizer_finished(self, fig: Figure) -> None:
+        """Manejar finalización de la generación del gráfico."""
+        thread = self._visualizer_thread
+        self._visualizer_thread = None
+        if thread is not None:
+            thread.deleteLater()
+        view = self.view_coordinator.get_quick_visualizer_view()
+        if view is not None and fig is not None:
+            view.show_figure(fig)
+
+    def _on_visualizer_error(self, message: str) -> None:
+        """Manejar error de generación del gráfico."""
+        thread = self._visualizer_thread
+        self._visualizer_thread = None
+        if thread is not None:
+            thread.deleteLater()
+        view = self.view_coordinator.get_quick_visualizer_view()
+        if view is not None:
+            view.show_error(message)
+        self.status_message.emit(f"Error generando gráfico: {message}")
     
     # ==================== CARGA DE CARPETA ====================
     
@@ -774,7 +829,7 @@ class AppCoordinator(QObject):
 
     # ==================== THREAD CLEANUP ====================
 
-    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | ProfilerWorkerThread | None) -> None:
+    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | ProfilerWorkerThread | VisualizerWorkerThread | None) -> None:
         """Detener un hilo de forma segura si está corriendo."""
         if thread is None or not thread.isRunning():
             return
@@ -798,12 +853,14 @@ class AppCoordinator(QObject):
         self._cancel_thread(self._loader_thread)
         self._cancel_thread(self._folder_thread)
         self._cancel_thread(self._profiler_thread)
+        self._cancel_thread(self._visualizer_thread)
         for thread in self._active_loaders[:]:
             self._cancel_thread(thread)
         self._active_loaders.clear()
         self._loader_thread = None
         self._folder_thread = None
         self._profiler_thread = None
+        self._visualizer_thread = None
         self._pending_dfs.clear()
         self._pending_paths.clear()
 

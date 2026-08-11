@@ -15,6 +15,7 @@ class ViewRegistry:
     VIEW_JOIN = 3
     VIEW_PIVOT = 4
     VIEW_PROFILING = 5
+    VIEW_VISUALIZER = 6
 
     VIEW_NAMES = {
         VIEW_MAIN: "Principal",
@@ -23,6 +24,7 @@ class ViewRegistry:
         VIEW_JOIN: "Datos Cruzados",
         VIEW_PIVOT: "Pivote",
         VIEW_PROFILING: "Perfil de Datos",
+        VIEW_VISUALIZER: "Visualizador Rápido",
     }
 
     VIEW_DESCRIPTIONS = {
@@ -32,6 +34,7 @@ class ViewRegistry:
         VIEW_JOIN: "Resultado de cruce de datasets",
         VIEW_PIVOT: "Tablas pivote automáticas por combinación categórica × numérica",
         VIEW_PROFILING: "Perfil de datos: tipo, nulos y cardinalidad por columna",
+        VIEW_VISUALIZER: "Gráficos exploratorios rápidos: histograma, dispersión, barras y boxplot",
     }
 
     @classmethod

@@ -25,6 +25,9 @@ from .pivot_results_view import PivotResultsView
 # DataView (widget de paginación)
 from .data_view import DataView
 
+# Visualizador rápido
+from .quick_visualizer_view import QuickVisualizerView
+
 __all__ = [
     'InfoPanel',
     'MainView',
@@ -42,4 +45,6 @@ __all__ = [
     'PivotResultsView',
     # DataView
     'DataView',
+    # Visualizador rápido
+    'QuickVisualizerView',
 ]

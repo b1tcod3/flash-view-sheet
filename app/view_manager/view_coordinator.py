@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from app.widgets.info_modal import InfoModal
     from app.widgets.pivot_results_view import PivotResultsView
     from app.widgets.profiling_view import ProfilingView
+    from app.widgets.quick_visualizer_view import QuickVisualizerView
 
 
 class ViewCoordinator(QObject):
@@ -43,6 +44,7 @@ class ViewCoordinator(QObject):
         self._joined_data_view: JoinedDataView | None = None
         self._pivot_view: PivotResultsView | None = None
         self._profiling_view: ProfilingView | None = None
+        self._quick_visualizer_view: QuickVisualizerView | None = None
         self._info_modal: InfoModal | None = None
 
         self._view_factories: dict[int, Callable[[QWidget], QWidget]] = {
@@ -51,6 +53,7 @@ class ViewCoordinator(QObject):
             ViewRegistry.VIEW_JOIN: self._create_joined_data_view,
             ViewRegistry.VIEW_PIVOT: self._create_pivot_view,
             ViewRegistry.VIEW_PROFILING: self._create_profiling_view,
+            ViewRegistry.VIEW_VISUALIZER: self._create_quick_visualizer_view,
         }
 
     # ==================== CREACIÓN DE VISTAS ====================
@@ -77,6 +80,8 @@ class ViewCoordinator(QObject):
                 self._pivot_view = view  # type: ignore[assignment]
             elif view_id == ViewRegistry.VIEW_PROFILING:
                 self._profiling_view = view  # type: ignore[assignment]
+            elif view_id == ViewRegistry.VIEW_VISUALIZER:
+                self._quick_visualizer_view = view  # type: ignore[assignment]
 
             self.view_created.emit(view_id)
 
@@ -106,6 +111,10 @@ class ViewCoordinator(QObject):
         from app.widgets.profiling_view import ProfilingView
         return ProfilingView()
 
+    def _create_quick_visualizer_view(self, parent: QWidget) -> QuickVisualizerView:
+        from app.widgets.quick_visualizer_view import QuickVisualizerView
+        return QuickVisualizerView()
+
     # ==================== GETTERS ====================
 
     def get_stacked_widget(self) -> QStackedWidget:
@@ -128,6 +137,9 @@ class ViewCoordinator(QObject):
 
     def get_profiling_view(self) -> ProfilingView | None:
         return self._profiling_view
+
+    def get_quick_visualizer_view(self) -> QuickVisualizerView | None:
+        return self._quick_visualizer_view
 
     def get_view_switcher(self) -> ViewSwitcher:
         return self._view_switcher
@@ -195,6 +207,14 @@ class ViewCoordinator(QObject):
     def on_datos_actualizados(self, df: pd.DataFrame) -> None:
         if df is not None:
             self.update_data_view(df)
+            if self._quick_visualizer_view is not None:
+                self._quick_visualizer_view.set_dataframe(df)
+
+    def open_visualizer_for_column(self, column: str) -> None:
+        """Cambiar al visualizador rápido preseleccionando una columna en Eje X."""
+        if self._quick_visualizer_view is not None:
+            self._quick_visualizer_view.set_selected_column(column)
+        self.switch_to(ViewRegistry.VIEW_VISUALIZER)
 
     def set_column_visibility_enabled(self, enabled: bool) -> None:
         if self._data_view is not None:
@@ -213,6 +233,7 @@ class ViewCoordinator(QObject):
         self._joined_data_view = None
         self._pivot_view = None
         self._profiling_view = None
+        self._quick_visualizer_view = None
         self._views.clear()
         self._view_factories.clear()
         self._parent = None
