@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                   QRadioButton, QButtonGroup, QCheckBox, QLineEdit,
                                   QFileDialog, QProgressBar, QTableWidget, QTableWidgetItem,
                                   QHeaderView, QProgressDialog, QTabWidget, QListWidget,
-                                  QListWidgetItem, QSplitter, QHBoxLayout, QAbstractButton)
+                                  QListWidgetItem, QSplitter, QAbstractButton)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 import pandas as pd

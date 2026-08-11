@@ -4,7 +4,7 @@ JoinedDataView: Vista especializada para mostrar resultados de cruces de datos
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                 QGroupBox, QTextEdit, QPushButton, QMessageBox,
-                                QDialog)
+                                QDialog, QListWidget, QListWidgetItem)
 from PySide6.QtCore import Qt, Signal
 
 from app.widgets.data_view import DataView
@@ -163,10 +163,6 @@ class JoinedDataView(DataView):
         self.history_requested.emit()
 
     def populate_history(self, entries: list[JoinHistoryEntry]) -> None:
-        from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                                        QListWidget, QListWidgetItem, QPushButton, QTextEdit)
-        from PySide6.QtCore import Qt
-
         if not entries:
             QMessageBox.information(self, "Historial", "No hay operaciones de cruce registradas.")
             return

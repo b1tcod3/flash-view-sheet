@@ -623,9 +623,6 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
 # SISTEMA DE EXPORTACIÓN SEPARADA CON PLANTILLAS EXCEL (FASE 3)
 # ===============================
 
-import pandas as pd
-import numpy as np
-import os
 import tempfile
 import time
 import json
@@ -633,11 +630,9 @@ import shutil
 import hashlib
 import re
 import gc
-from pathlib import Path
 from datetime import datetime
-from typing import Any, Iterator, Callable
+from typing import Iterator
 from dataclasses import dataclass, field
-from pathlib import Path
 from collections import namedtuple, defaultdict
 from enum import Enum
 
