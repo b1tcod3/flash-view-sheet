@@ -5,6 +5,7 @@ Test específico para el bug en VirtualizedPandasModel
 
 import pandas as pd
 import sys
+from typing import Any
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PySide6.QtCore import Qt
 from app.widgets.data_view import DataView

@@ -154,22 +154,22 @@ class ExcelFormatPreserver:
         
         # Extraer formato si existe
         if cell.font != Font():
-            format_dict['font'] = copy.deepcopy(cell.font)
+            format_dict['font'] = copy.copy(cell.font)
         
         if cell.fill != PatternFill():
-            format_dict['fill'] = copy.deepcopy(cell.fill)
+            format_dict['fill'] = copy.copy(cell.fill)
         
         if cell.border != Border():
-            format_dict['border'] = copy.deepcopy(cell.border)
+            format_dict['border'] = copy.copy(cell.border)
         
         if cell.alignment != Alignment():
-            format_dict['alignment'] = copy.deepcopy(cell.alignment)
+            format_dict['alignment'] = copy.copy(cell.alignment)
         
         if cell.number_format != 'General':
             format_dict['number_format'] = cell.number_format
         
         if cell.protection:
-            format_dict['protection'] = copy.deepcopy(cell.protection)
+            format_dict['protection'] = copy.copy(cell.protection)
         
         return format_dict
     

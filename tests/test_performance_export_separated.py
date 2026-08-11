@@ -30,7 +30,6 @@ from core.data_handler import (
     ExcelTemplateSplitter,
     ExportSeparatedConfig,
     exportar_datos_separados,
-    OptimizationConfig
 )
 from core.performance_optimizer import PerformanceOptimizer, ChunkingStrategy
 
@@ -150,6 +149,20 @@ def measure_performance(test_name: str, metrics: PerformanceMetrics) -> None:
     start_memory = MemoryMonitor.get_memory_mb()
     start_time = time.time()
     
+    # Registrar medición inicial (se completa con datos reales al salir)
+    metrics.measurements.append({
+        'name': test_name,
+        'duration_seconds': 0,
+        'memory_peak_mb': 0,
+        'rows_processed': 0,  # Se actualizará después
+        'groups_processed': 0,  # Se actualizará después
+        'file_size_mb': 0.0,  # Se actualizará después
+        'success': True,  # Se actualizará después
+        'throughput_rows_per_second': 0,  # Se calculará después
+        'memory_per_row_kb': 0,  # Se calculará después
+        'timestamp': datetime.now()
+    })
+    
     try:
         yield
     finally:
@@ -164,19 +177,19 @@ def measure_performance(test_name: str, metrics: PerformanceMetrics) -> None:
         duration = end_time - start_time
         memory_peak = max(end_memory, peak / 1024 / 1024)
         
-        # Nota: rows_processed y otros valores se agregarán después
-        metrics.measurements.append({
-            'name': test_name,
-            'duration_seconds': duration,
-            'memory_peak_mb': memory_peak,
-            'rows_processed': 0,  # Se actualizará después
-            'groups_processed': 0,  # Se actualizará después
-            'file_size_mb': 0.0,  # Se actualizará después
-            'success': True,  # Se actualizará después
-            'throughput_rows_per_second': 0,  # Se calculará después
-            'memory_per_row_kb': 0,  # Se calculará después
-            'timestamp': datetime.now()
-        })
+        # Completar la medición registrada por el cuerpo
+        measurement = metrics.measurements[-1]
+        measurement['duration_seconds'] = duration
+        measurement['memory_peak_mb'] = memory_peak
+        
+        # Recalcular métricas derivadas
+        if measurement['rows_processed'] > 0 and duration > 0:
+            measurement['throughput_rows_per_second'] = (
+                measurement['rows_processed'] / duration
+            )
+            measurement['memory_per_row_kb'] = (
+                measurement['memory_peak_mb'] * 1024 / measurement['rows_processed']
+            )
 
 
 class TestExportSeparatedPerformance(unittest.TestCase):

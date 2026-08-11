@@ -337,6 +337,10 @@ def exportar_a_pdf(df: pd.DataFrame, filepath: str) -> bool:
         # Convertir DataFrame a lista de listas
         data = [df.columns.tolist()] + df.values.tolist()
         
+        # DataFrame sin columnas no genera tabla válida en reportlab
+        if not data or not data[0]:
+            data = [['']]
+        
         # Crear tabla
         tabla = Table(data)
         estilo = TableStyle([
@@ -377,7 +381,13 @@ def exportar_a_sql(df: pd.DataFrame, filepath: str, nombre_tabla: str) -> bool:
         engine = create_engine(f'sqlite:///{filepath}')
 
         # Exportar a SQL
-        df.to_sql(nombre_tabla, engine, if_exists='replace', index=False)
+        if df.empty and len(df.columns) == 0:
+            # SQLAlchemy no puede crear una tabla sin columnas
+            dummy = df.copy()
+            dummy['_placeholder'] = pd.Series(dtype='object')
+            dummy.to_sql(nombre_tabla, engine, if_exists='replace', index=False)
+        else:
+            df.to_sql(nombre_tabla, engine, if_exists='replace', index=False)
         return True
 
     except Exception as e:
@@ -749,6 +759,22 @@ class ExportSeparatedConfig:
                 mapping[col] = get_column_letter(i + 1)
         return mapping
 
+    def to_dict(self) -> dict[str, Any]:
+        """Convertir configuración a diccionario (para exportar_datos_separados)"""
+        return {
+            'separator_column': self.separator_column,
+            'template_path': self.template_path,
+            'start_cell': self.start_cell,
+            'output_folder': self.output_folder,
+            'file_template': self.file_template,
+            'column_mapping': dict(self.column_mapping),
+            'handle_duplicates': self.handle_duplicates,
+            'create_summary': self.create_summary,
+            'preserve_format': self.preserve_format,
+            'enable_chunking': self.enable_chunking,
+            'max_memory_mb': self.max_memory_mb
+        }
+
 @dataclass
 class ValidationResult:
     """Resultado de validación"""
@@ -1057,7 +1083,9 @@ class ExcelTemplateSplitter:
                     'success': False,
                     'error': 'Configuración inválida: ' + '; '.join(validation.errors),
                     'validation_errors': validation.errors,
-                    'validation_warnings': validation.warnings
+                    'validation_warnings': validation.warnings,
+                    'errors': validation.errors,
+                    'warnings': validation.warnings
                 }
             
             # 2. Analizar datos
@@ -1071,6 +1099,7 @@ class ExcelTemplateSplitter:
             # 3. Procesar separación
             results = []
             groups_processed = 0
+            group_errors = []
             
             for group_name, group_df in self.df.groupby(self.config.separator_column):
                 try:
@@ -1084,9 +1113,16 @@ class ExcelTemplateSplitter:
                     
                     groups_processed += 1
                     
-                    # Callback de progreso
-                    if self.progress_callback:
-                        self.progress_callback(groups_processed, analysis['estimated_groups'])
+                    if not result.success:
+                        error_msg = result.error or "Error exportando grupo"
+                        self.failed_groups[str(group_name)] = error_msg
+                        group_errors.append(f"Grupo '{group_name}': {error_msg}")
+                    
+                    # Callback de progreso (se lee en cada iteración para soportar
+                    # asignación posterior a la creación del splitter)
+                    callback = self.config.progress_callback or self.progress_callback
+                    if callback:
+                        callback(groups_processed, analysis['estimated_groups'])
                     
                 except Exception as e:
                     self.logger.error(f"Error procesando grupo {group_name}: {str(e)}")
@@ -1097,6 +1133,7 @@ class ExcelTemplateSplitter:
                     )
                     results.append(error_result)
                     self.failed_groups[str(group_name)] = str(e)
+                    group_errors.append(f"Grupo '{group_name}': {str(e)}")
             
             # 4. Generar resumen
             processing_time = time.time() - start_time
@@ -1111,7 +1148,7 @@ class ExcelTemplateSplitter:
                 'successful_exports': len(successful_exports),
                 'failed_exports': len(failed_exports),
                 'processing_time': processing_time,
-                'errors': validation.errors,
+                'errors': validation.errors + group_errors,
                 'warnings': validation.warnings,
                 'failed_groups': self.failed_groups,
                 'analysis': analysis
@@ -1326,6 +1363,8 @@ def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
             'files_created': result.get('files_created', []),
             'groups_processed': result.get('groups_processed', 0),
             'total_rows': result.get('total_rows', 0),
+            'successful_exports': result.get('successful_exports', 0),
+            'failed_exports': result.get('failed_exports', 0),
             'processing_time': result.get('processing_time', 0.0),
             'errors': result.get('errors', []),
             'warnings': result.get('warnings', []),
@@ -1340,6 +1379,8 @@ def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
             'files_created': [],
             'groups_processed': 0,
             'total_rows': 0,
+            'successful_exports': 0,
+            'failed_exports': 0,
             'processing_time': 0.0,
             'errors': [str(e)],
             'warnings': [],

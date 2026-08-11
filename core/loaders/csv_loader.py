@@ -61,7 +61,7 @@ class CsvLoader(FileLoader):
             file_size = Path(self.filepath).stat().st_size
             
             # Get first few lines to detect delimiter
-            with open(self.filepath, 'r', encoding='utf-8', nrows=5) as f:
+            with open(self.filepath, 'r', encoding='utf-8') as f:
                 first_line = f.readline().strip()
                 delimiter = '\t' if self.filepath.lower().endswith('.tsv') else ','
                 delimiter = delimiter if delimiter in first_line else ','
@@ -70,7 +70,7 @@ class CsvLoader(FileLoader):
                 'format': 'CSV/TSV',
                 'delimiter': delimiter,
                 'file_size_bytes': file_size,
-                'file_size_mb': round(file_size / (1024 * 1024), 2)
+                'file_size_mb': round(file_size / (1024 * 1024), 6)
             }
         except Exception as e:
             return {'error': str(e)}

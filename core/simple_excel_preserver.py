@@ -31,7 +31,7 @@ class SimpleExcelFormatPreserver:
                 'size': cell.font.size,
                 'bold': cell.font.bold,
                 'italic': cell.font.italic,
-                'color': cell.font.color.rgb if cell.font.color else None
+                'color': cell.font.color.rgb if (cell.font.color and cell.font.color.type == 'rgb') else None
             },
             'fill': {
                 'start_color': cell.fill.start_color.rgb if cell.fill.start_color else None,
@@ -57,7 +57,7 @@ class SimpleExcelFormatPreserver:
         """Serializar border side"""
         return {
             'style': side.style,
-            'color': side.color.rgb if side.color else None
+            'color': side.color.rgb if (side.color and side.color.type == 'rgb') else None
         }
     
     def restore_cell_format(self, cell: Any, format_info: dict[str, Any]) -> None:
@@ -69,20 +69,23 @@ class SimpleExcelFormatPreserver:
             format_info: Dict con formato a restaurar
         """
         try:
-            # Restaurar font
+            # Restaurar font construyendo un nuevo objeto (evita mutar estilos inmutables)
             if format_info.get('font'):
+                from openpyxl.styles import Font, Color
                 font_info = format_info['font']
+                kwargs = {}
                 if font_info.get('name'):
-                    cell.font.name = font_info['name']
+                    kwargs['name'] = font_info['name']
                 if font_info.get('size'):
-                    cell.font.size = font_info['size']
+                    kwargs['size'] = font_info['size']
                 if font_info.get('bold') is not None:
-                    cell.font.bold = font_info['bold']
+                    kwargs['bold'] = font_info['bold']
                 if font_info.get('italic') is not None:
-                    cell.font.italic = font_info['italic']
+                    kwargs['italic'] = font_info['italic']
                 if font_info.get('color'):
-                    from openpyxl.styles import Color
-                    cell.font.color = Color(rgb=font_info['color'])
+                    kwargs['color'] = Color(rgb=font_info['color'])
+                if kwargs:
+                    cell.font = Font(**kwargs)
             
             # Restaurar fill
             if format_info.get('fill'):
@@ -133,9 +136,6 @@ class SimpleExcelFormatPreserver:
         
         except Exception as e:
             print(f"Warning: No se pudo restaurar formato completo: {e}")
-            # Al menos preservar el valor
-            if 'value' in format_info:
-                cell.value = format_info['value']
     
     def backup_area_formatting(self, worksheet: Any, start_cell: str, area_size: tuple[int, int]) -> dict[str, Any]:
         """
@@ -208,13 +208,79 @@ class SimpleExcelFormatPreserver:
                 cell = worksheet[cell_coord]
                 self.restore_cell_format(cell, format_info)
             except Exception as e:
-                # Si falla la restauración, al menos asegurar que el valor se mantenga
-                if 'value' in format_info:
-                    try:
-                        cell = worksheet[cell_coord]
-                        cell.value = format_info['value']
-                    except:
-                        pass
+                print(f"Warning: No se pudo restaurar formato de {cell_coord}: {e}")
+        
+        # Heredar formato de la fila de encabezados hacia las filas de datos
+        self._inherit_header_format(worksheet, column_mapping, start_cell, max_rows, area_backup)
+    
+    def _has_style(self, cell: Any) -> bool:
+        """Determinar si una celda tiene formato aplicado (distinto del predeterminado)"""
+        try:
+            font = cell.font
+            fill = cell.fill
+            border = cell.border
+            
+            if font.bold or font.italic:
+                return True
+            if font.color and font.color.type == 'rgb' and font.color.rgb not in ('FF000000', '00000000'):
+                return True
+            if fill.fill_type not in (None, 'none'):
+                return True
+            if any(getattr(border, side).style for side in ('left', 'right', 'top', 'bottom')):
+                return True
+            if cell.number_format != 'General':
+                return True
+        except Exception:
+            pass
+        return False
+    
+    def _inherit_header_format(self, worksheet: Any, column_mapping: dict[str, str],
+                               start_cell: str, max_rows: int,
+                               restored_coords: set[str] | None = None) -> None:
+        """
+        Copiar el formato de la fila de encabezados (fila 1) hacia las filas de datos
+        que no tengan formato propio.
+        """
+        start_row, _ = coordinate_to_tuple(start_cell)
+        if start_row <= 1:
+            return
+        
+        # Pre-calcular columnas cuyo encabezado tiene formato
+        styled_cols = []
+        for excel_col_letter in column_mapping.values():
+            excel_col_idx = column_index_from_string(excel_col_letter)
+            if self._has_style(worksheet.cell(row=1, column=excel_col_idx)):
+                styled_cols.append(excel_col_idx)
+        
+        if not styled_cols:
+            return
+        
+        # Construir los estilos base una sola vez por columna (objetos reutilizables)
+        base_styles = {}
+        for excel_col_idx in styled_cols:
+            header_cell = worksheet.cell(row=1, column=excel_col_idx)
+            base_styles[excel_col_idx] = (
+                copy.copy(header_cell.font),
+                copy.copy(header_cell.fill),
+                copy.copy(header_cell.border),
+                header_cell.number_format
+            )
+        
+        restored = restored_coords or set()
+        
+        for row_offset in range(max_rows):
+            excel_row = start_row + row_offset
+            for excel_col_idx in styled_cols:
+                coord = f"{openpyxl.utils.get_column_letter(excel_col_idx)}{excel_row}"
+                # Celdas con formato de plantilla restaurado: no sobreescribir
+                if coord in restored:
+                    continue
+                base_font, base_fill, base_border, base_numfmt = base_styles[excel_col_idx]
+                data_cell = worksheet.cell(row=excel_row, column=excel_col_idx)
+                data_cell.font = base_font
+                data_cell.fill = base_fill
+                data_cell.border = base_border
+                data_cell.number_format = base_numfmt
 
 def create_excel_with_simple_format_preservation(template_path: str, output_path: str, 
                                                data: dict[str, Any], column_mapping: dict[str, str],

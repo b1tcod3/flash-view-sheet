@@ -170,7 +170,7 @@ class TestJoinIntegration:
         # Verificar que el botón de exportar está habilitado
         assert view.export_btn.isEnabled()
 
-    def test_join_history_integration(self, sample_dataframes) -> None:
+    def test_join_history_integration(self, sample_dataframes, tmp_path) -> None:
         """Probar integración del sistema de historial"""
         from core.join.join_history import JoinHistory
 
@@ -186,8 +186,8 @@ class TestJoinIntegration:
         manager = DataJoinManager(ventas_df, clientes_df)
         result = manager.execute_join(config)
 
-        # Crear historial y añadir entrada
-        history = JoinHistory(max_entries=10)
+        # Crear historial en directorio temporal aislado y añadir entrada
+        history = JoinHistory(max_entries=10, history_dir=tmp_path)
         initial_count = len(history.get_entries())
         history.add_entry('ventas.csv', 'clientes.csv', config, result)
 

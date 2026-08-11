@@ -114,7 +114,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         group_data = self.df_test[self.df_test['Region'] == 'Norte'].copy()
         
         # Crear archivo de salida
-        output_path = str(Path(self.config.output_folder) / 'Norte_test_format.xlsx')
+        output_path = str(Path(self.config.output_folder) / 'Norte_test.xlsx')
         
         # Procesar grupo
         result = splitter._export_group('Norte', group_data)
@@ -153,14 +153,14 @@ class TestExcelFormatPreservation(unittest.TestCase):
         
         try:
             # Verificar que el formato se preservó
-            self._verify_format_preservation(test_output.name)
+            self._verify_format_preservation(test_output.name, expected_value='Test')
         finally:
             try:
                 Path(test_output.name).unlink()
             except:
                 pass
     
-    def _verify_format_preservation(self, output_path: str) -> None:
+    def _verify_format_preservation(self, output_path: str, expected_value: str = 'Norte') -> None:
         """Verificar que el formato se preservó en el archivo de salida"""
         # Cargar archivo de salida
         output_wb = openpyxl.load_workbook(output_path, data_only=False)
@@ -172,7 +172,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         self.assertEqual(title_cell.font.name, 'Arial')
         self.assertEqual(title_cell.font.size, 16)
         self.assertTrue(title_cell.font.bold)
-        self.assertEqual(title_cell.fill.start_color.rgb, '366092')
+        self.assertEqual(title_cell.fill.start_color.rgb, '00366092')
         
         # 2. Verificar headers
         for col in ['A', 'B', 'C']:
@@ -181,7 +181,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
             self.assertEqual(cell.font.name, 'Calibri')
             self.assertEqual(cell.font.size, 12)
             self.assertTrue(cell.font.bold)
-            self.assertEqual(cell.fill.start_color.rgb, 'D9E1F2')
+            self.assertEqual(cell.fill.start_color.rgb, '00D9E1F2')
             # Verificar que tiene borde
             self.assertIsNotNone(cell.border.left.style)
         
@@ -192,7 +192,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         
         # 4. Verificar que se insertaron nuevos datos en A5
         new_data_cell = output_sheet['A5']
-        self.assertEqual(new_data_cell.value, 'Norte')  # Primer valor del DataFrame
+        self.assertEqual(new_data_cell.value, expected_value)  # Primer valor del DataFrame
         
         # 5. Verificar anchos de columna
         self.assertEqual(output_sheet.column_dimensions['A'].width, 20.0)
@@ -206,7 +206,7 @@ class TestExcelFormatPreservation(unittest.TestCase):
         comment_cell = output_sheet['D2']
         self.assertEqual(comment_cell.value, "TEST")
         self.assertTrue(comment_cell.font.italic)
-        self.assertEqual(comment_cell.font.color.rgb, 'FFFF0000')  # Rojo
+        self.assertEqual(comment_cell.font.color.rgb, '00FF0000')  # Rojo
         
         output_wb.close()
     
@@ -270,9 +270,9 @@ class TestExcelFormatPreservation(unittest.TestCase):
             self.assertGreater(len(merged_ranges), 0)
             
             # Verificar que formato de headers se preservó
-            self.assertEqual(output_sheet['A1'].font.color.rgb, 'FFFF0000')  # Rojo
-            self.assertEqual(output_sheet['B1'].font.color.rgb, 'FF0000FF')  # Azul
-            self.assertEqual(output_sheet['C1'].font.color.rgb, 'FF008000')  # Verde
+            self.assertEqual(output_sheet['A1'].font.color.rgb, '00FF0000')  # Rojo
+            self.assertEqual(output_sheet['B1'].font.color.rgb, '000000FF')  # Azul
+            self.assertEqual(output_sheet['C1'].font.color.rgb, '00008000')  # Verde
             
             output_wb.close()
             

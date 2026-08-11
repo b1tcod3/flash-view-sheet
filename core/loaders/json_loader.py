@@ -64,7 +64,7 @@ class JsonLoader(FileLoader):
                 'format': 'JSON',
                 'is_array': is_array,
                 'file_size_bytes': file_size,
-                'file_size_mb': round(file_size / (1024 * 1024), 2)
+                'file_size_mb': round(file_size / (1024 * 1024), 6)
             }
         except Exception as e:
             return {'error': str(e)}

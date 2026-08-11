@@ -144,7 +144,7 @@ def test_dataview_integration() -> None:
     original_size = data_view.pagination_manager.get_page_size()
     original_page = data_view.pagination_manager.get_current_page()
     
-    data_view.change_page_size(25)
+    data_view._change_page_size(25)
     new_size = data_view.pagination_manager.get_page_size()
     new_page = data_view.pagination_manager.get_current_page()
     

@@ -249,18 +249,16 @@ class TestExportSeparatedDialog(unittest.TestCase):
         dialog._dest_path = Path('/test/output')
         dialog.dest_folder_label.setText('output')
 
-        # Mock para evitar validación real
-        with patch.object(dialog, 'get_configuration') as mock_get_config:
-            mock_config = MagicMock()
-            mock_get_config.return_value = mock_config
+        # Mock para evitar export real y diálogos bloqueantes
+        with patch.object(dialog, '_build_config') as mock_build_config:
+            mock_build_config.return_value = MagicMock()
 
             with patch.object(QDialog, 'accept') as mock_accept:
-                dialog.export_btn.clicked.emit()
+                dialog._on_export()
 
-                if dialog.export_btn.isEnabled():
-                    dialog.accept()
-                    mock_get_config.assert_called_once()
-    
+                # _on_export construye config y acepta el diálogo
+                mock_accept.assert_called_once()
+
     def test_accept_functionality_invalid_config(self) -> None:
         """Test funcionalidad de aceptar con configuración inválida"""
         dialog = ExportSeparatedDialog(self.df_test)
@@ -268,8 +266,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
         # No configurar nada (configuración inválida)
         
         # Mock para simular configuración inválida
-        with patch.object(dialog, 'get_configuration') as mock_get_config:
-            mock_get_config.return_value = None
+        with patch.object(dialog, '_build_config', return_value=None):
             
             # Mock QMessageBox.warning
             with patch('PySide6.QtWidgets.QMessageBox.warning') as mock_warning:
@@ -465,6 +462,7 @@ class TestExportSeparatedDialogIntegration(unittest.TestCase):
         dialog._dest_path = Path('/minimal/output')
         dialog.dest_folder_label.setText('output')
         dialog.filename_template_edit.setText('Simple.xlsx')
+        dialog.start_cell_combo.setCurrentText('A1')
 
         config = dialog.get_configuration(validate=False)
 

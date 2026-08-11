@@ -7,6 +7,7 @@ import pandas as pd
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QThread, Signal, QTimer
 
@@ -61,7 +62,7 @@ def test_main_flow() -> None:
     """Test del flujo principal como en main.py"""
     print("=== TEST CRÍTICO: Flujo Principal de main.py ===")
     
-    app = QApplication(sys.argv)
+    app = QApplication.instance() or QApplication(sys.argv)
     
     # Variables como en main.py
     data_view = None
