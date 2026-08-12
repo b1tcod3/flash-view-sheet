@@ -184,17 +184,17 @@ class TestFolderLoadConfig:
             excluded_files=["file2.xlsx"]
         )
 
-        assert config.should_include_file("file1.xlsx") == True
-        assert config.should_include_file("file2.xlsx") == False
-        assert config.should_include_file("file3.xlsx") == False  # Not in included list
+        assert config.should_include_file("file1.xlsx") is True
+        assert config.should_include_file("file2.xlsx") is False
+        assert config.should_include_file("file3.xlsx") is False  # Not in included list
 
         # Test with no specific includes/excludes
         config2 = FolderLoadConfig(folder_path="/test/path")
-        assert config2.should_include_file("any.xlsx") == True
+        assert config2.should_include_file("any.xlsx") is True
 
         # Test with no specific includes/excludes
         config2 = FolderLoadConfig(folder_path="/test/path")
-        assert config2.should_include_file("any.xlsx") == True
+        assert config2.should_include_file("any.xlsx") is True
 
     def test_config_to_dict(self) -> None:
         """Test converting config to dict"""
@@ -223,7 +223,7 @@ class TestFileMetadata:
 
         assert metadata.filename == "test.xlsx"
         assert metadata.num_columns == 2
-        assert metadata.has_error == False
+        assert metadata.has_error is False
 
     def test_metadata_with_error(self) -> None:
         """Test metadata with error"""
@@ -240,7 +240,7 @@ class TestFileMetadata:
             error="File corrupted"
         )
 
-        assert metadata.has_error == True
+        assert metadata.has_error is True
         assert metadata.error == "File corrupted"
 
     def test_metadata_to_dict(self) -> None:

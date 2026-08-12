@@ -199,7 +199,7 @@ class TestJoinIntegration:
         assert latest_entry.left_dataset_name == 'ventas.csv'
         assert latest_entry.right_dataset_name == 'clientes.csv'
         assert latest_entry.config.join_type == JoinType.LEFT
-        assert latest_entry.success == True
+        assert latest_entry.success is True
 
     def test_memory_limit_handling(self) -> None:
         """Probar estimación de memoria"""

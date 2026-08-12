@@ -33,13 +33,13 @@ class TestFileLoaderFactory:
     def test_is_file_supported(self) -> None:
         """Test checking if file format is supported"""
         # Supported formats
-        assert is_file_supported('test.csv') == True
-        assert is_file_supported('test.json') == True
-        assert is_file_supported('test.parquet') == True
+        assert is_file_supported('test.csv') is True
+        assert is_file_supported('test.json') is True
+        assert is_file_supported('test.parquet') is True
         
         # Unsupported formats
-        assert is_file_supported('test.txt') == False
-        assert is_file_supported('test.doc') == False
+        assert is_file_supported('test.txt') is False
+        assert is_file_supported('test.doc') is False
 
     def test_get_loader(self) -> None:
         """Test getting appropriate loader for file"""
@@ -139,7 +139,7 @@ class TestCsvLoader:
     def test_csv_chunk_loading(self) -> None:
         """Test CSV chunk loading support"""
         loader = CsvLoader(self.csv_file)
-        assert loader.can_load_chunks() == True
+        assert loader.can_load_chunks() is True
         
         df = loader.load_in_chunks(chunk_size=1)
         assert isinstance(df, pd.DataFrame)
@@ -184,7 +184,7 @@ class TestJsonLoader:
     def test_json_no_chunk_loading(self) -> None:
         """Test JSON doesn't support chunk loading"""
         loader = JsonLoader(self.json_file)
-        assert loader.can_load_chunks() == False
+        assert loader.can_load_chunks() is False
 
 
 class TestDataHandlerIntegration:
@@ -226,8 +226,8 @@ class TestDataHandlerIntegration:
     def test_is_format_supported_function(self) -> None:
         """Test is_file_format_supported function"""
         from core.data_handler import is_file_format_supported
-        assert is_file_format_supported(self.csv_file) == True
-        assert is_file_format_supported('test.txt') == False
+        assert is_file_format_supported(self.csv_file) is True
+        assert is_file_format_supported('test.txt') is False
 
 
 if __name__ == "__main__":
