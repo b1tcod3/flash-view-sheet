@@ -8,7 +8,6 @@ import pandas as pd
 from PySide6.QtWidgets import QApplication
 
 # Importar componentes del proyecto
-from app.widgets.data_view import DataView
 from app.services.pagination_manager import PaginationManager
 
 def test_complete_sorting_pagination_flow() -> None:

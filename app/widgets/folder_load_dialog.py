@@ -6,15 +6,13 @@ Dialog for configuring folder loading with multiple Excel files
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QGroupBox, QDialogButtonBox,
                                QListWidget, QListWidgetItem, QCheckBox,
-                               QTableWidget, QTableWidgetItem, QHeaderView,
-                               QFileDialog, QMessageBox, QSplitter, QFrame,
-                               QWidget)
+                               QTableWidget, QTableWidgetItem, QFileDialog,
+                               QMessageBox, QSplitter, QWidget)
 from PySide6.QtCore import Qt
-from typing import Any
 from pathlib import Path
 
 from core.loaders.folder_loader import FolderLoader
-from core.models.folder_load_config import FolderLoadConfig, ColumnAlignmentStrategy
+from core.models.folder_load_config import FolderLoadConfig
 from .column_alignment_preview import ColumnAlignmentPreview
 
 class FolderLoadDialog(QDialog):

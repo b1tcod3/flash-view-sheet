@@ -3,11 +3,9 @@ Diálogo de Opciones de Carga para Flash View Sheet
 Permite configurar opciones como saltar filas y renombrar columnas
 """
 
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                                 QSpinBox, QLineEdit, QPushButton, QGroupBox,
-                                 QFormLayout, QDialogButtonBox, QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox)
-from PySide6.QtCore import Qt
-import pandas as pd
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QSpinBox, QPushButton,
+                                 QGroupBox, QFormLayout, QDialogButtonBox, QTableWidget,
+                                 QTableWidgetItem, QCheckBox)
 
 class LoadOptionsDialog(QDialog):
     """

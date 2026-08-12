@@ -5,12 +5,11 @@ Widget for previewing and manually aligning columns from multiple Excel files
 
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                 QPushButton, QTableWidget, QTableWidgetItem,
-                                QHeaderView, QAbstractItemView, QMenu,
-                                QLineEdit, QMessageBox, QCheckBox)
-from PySide6.QtCore import Qt, QPoint, QMimeData, QTimer
+                                QAbstractItemView, QMenu, QLineEdit,
+                                QMessageBox, QCheckBox)
+from PySide6.QtCore import Qt, QPoint, QMimeData
 from PySide6.QtGui import QDrag, QPixmap, QPainter, QColor
 from typing import Any
-import pandas as pd
 
 class ColumnAlignmentPreview(QWidget):
     """
@@ -205,7 +204,6 @@ class ColumnAlignmentPreview(QWidget):
     def on_item_changed(self, item: QTableWidgetItem) -> None:
         """Handle item changes"""
         # Could update mappings here
-        pass
 
     def on_include_changed(self, position: int, state: int) -> None:
         """Handle include checkbox state change"""
@@ -337,4 +335,3 @@ class ColumnAlignmentPreview(QWidget):
         """Update file metadata based on current table state"""
         # This would update the internal metadata to reflect manual changes
         # For now, just a placeholder
-        pass

@@ -5,7 +5,6 @@ Permite al usuario elegir qué pestaña/hoja cargar de un archivo Excel.
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox,
                                 QDialogButtonBox)
-from PySide6.QtCore import Qt
 import pandas as pd
 
 

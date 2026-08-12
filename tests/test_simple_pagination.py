@@ -6,8 +6,6 @@ Test simple para verificar el problema de páginas en blanco
 import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QTableWidget, QTableWidgetItem
-from PySide6.QtCore import Qt
-from app.widgets.data_view import DataView
 from app.services.pagination_manager import PaginationManager
 
 def create_test_data() -> pd.DataFrame:

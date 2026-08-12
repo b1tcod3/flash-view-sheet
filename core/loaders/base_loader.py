@@ -39,7 +39,6 @@ class FileLoader(ABC):
         Returns:
             List of file extensions (e.g., ['.csv', '.tsv'])
         """
-        pass
 
     @abstractmethod
     def load(self, skip_rows: int = 0, column_names: dict[str, str] | None = None) -> pd.DataFrame:
@@ -53,7 +52,6 @@ class FileLoader(ABC):
         Returns:
             DataFrame with the loaded data
         """
-        pass
 
     @abstractmethod
     def get_file_info(self) -> dict[str, Any]:
@@ -63,7 +61,6 @@ class FileLoader(ABC):
         Returns:
             Dictionary with file information (size, format, etc.)
         """
-        pass
 
     def can_load_chunks(self) -> bool:
         """

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch, mock_open, MagicMock
+from unittest.mock import patch
 import pandas as pd
 import numpy as np
 import tempfile
@@ -7,9 +7,6 @@ from pathlib import Path
 import shutil
 import sys
 import time
-import json
-import hashlib
-import re
 import openpyxl
 from datetime import datetime
 
@@ -18,12 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from core.data_handler import (
     ExcelTemplateSplitter,
     ExportSeparatedConfig,
-    exportar_datos_separados,
-    ValidationResult,
-    ExportResult,
-    SeparationError,
-    TemplateError,
-    ConfigurationError
+    exportar_datos_separados
 )
 
 

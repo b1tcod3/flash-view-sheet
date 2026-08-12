@@ -4,7 +4,6 @@ Menú Datos para Flash View Sheet.
 
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenu, QMenuBar
-from typing import Any
 
 
 class DatosMenu:

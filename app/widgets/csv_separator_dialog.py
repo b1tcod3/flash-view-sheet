@@ -5,7 +5,6 @@ Permite al usuario elegir el delimitador al importar archivos CSV/TSV.
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox,
                                 QDialogButtonBox)
-from PySide6.QtCore import Qt
 
 
 class CSVSeparatorDialog(QDialog):

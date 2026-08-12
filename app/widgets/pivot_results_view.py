@@ -11,7 +11,6 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 
 from app.models.pandas_model import VirtualizedPandasModel
-from typing import Any
 
 
 class PivotTabWidget(QWidget):

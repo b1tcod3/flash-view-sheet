@@ -6,7 +6,7 @@ Implementa interfaz de carga con Drag & Drop y lista de archivos recientes.
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                                QLabel, QFrame, QScrollArea, QProgressBar, QStyle)
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPixmap, QDragEnterEvent, QDropEvent, QIcon
+from PySide6.QtGui import QPixmap, QDragEnterEvent, QDropEvent
 from pathlib import Path
 
 from app.resources import get_asset_path

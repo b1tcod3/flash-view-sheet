@@ -7,7 +7,6 @@ import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel
 from app.widgets.data_view import DataView
-from app.services.pagination_manager import PaginationManager
 
 def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""

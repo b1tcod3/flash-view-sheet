@@ -8,7 +8,6 @@ from PySide6.QtWidgets import QToolBar, QWidget, QHBoxLayout, QVBoxLayout, QLabe
 from PySide6.QtGui import QIcon
 
 from app.resources import get_asset_path
-from PySide6.QtCore import Qt
 from typing import TYPE_CHECKING
 
 from app.toolbar.view_switcher import ViewSwitcher

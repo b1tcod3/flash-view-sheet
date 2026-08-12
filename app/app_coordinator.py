@@ -16,14 +16,14 @@ from PySide6.QtWidgets import (QMessageBox, QFileDialog, QInputDialog,
                                 QComboBox, QPushButton, QApplication)
 
 from app.services import DataService, ExportService, PivotService, CleaningService, JoinService
-from app.services.visualization_service import VisualizationService, VisualizerWorkerThread
+from app.services.visualization_service import VisualizerWorkerThread
 from app.services.recent_files_service import RecentFilesService
 from app.services.data_service import DataLoaderThread, FolderLoaderThread
 from app.services.profiler_service import ProfilerWorkerThread
 from app.view_manager import ViewCoordinator, ViewRegistry
 from app.toolbar import ToolbarManager
 from app.widgets import JoinDialog, FolderLoadDialog, CSVSeparatorDialog, ExcelSheetDialog
-from core.join.models import JoinResult, JoinConfig
+from core.join.models import JoinResult
 from core.models.folder_load_config import FolderLoadConfig
 from core.join.join_history import JoinHistory
 

@@ -5,7 +5,7 @@ This module provides the view switching buttons widget.
 """
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QFrame, QApplication, QStyle
-from PySide6.QtCore import Signal, Qt, QSize
+from PySide6.QtCore import Signal, QSize
 from PySide6.QtGui import QIcon
 
 from app.resources import get_asset_path

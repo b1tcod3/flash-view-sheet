@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from typing import Any
-import pandas as pd
 
 FilePath = str | Path
 ColumnMapping = dict[str, str]

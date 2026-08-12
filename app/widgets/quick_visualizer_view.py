@@ -8,10 +8,9 @@ de la figura; la generación se delega al AppCoordinator mediante la
 señal generate_requested.
 """
 
-from typing import Any
 
 import pandas as pd
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (QComboBox, QFrame, QHBoxLayout, QLabel,
                                QVBoxLayout, QWidget)
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas

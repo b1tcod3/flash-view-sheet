@@ -6,7 +6,6 @@ Test específico del SimpleExcelPreserver que está funcionando
 import sys
 import tempfile
 from pathlib import Path
-import pandas as pd
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
 

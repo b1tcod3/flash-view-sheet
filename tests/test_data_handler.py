@@ -6,7 +6,6 @@ import unittest
 import pandas as pd
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
 
 # Añadir el directorio raíz al path para importar módulos
 import sys

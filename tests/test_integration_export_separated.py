@@ -8,12 +8,10 @@ import unittest
 import tempfile
 from pathlib import Path
 import shutil
-from unittest.mock import patch, MagicMock, Mock
 import pandas as pd
 
 # Configurar QApplication para tests
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import Qt
 
 from main import MainWindow
 from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig, exportar_datos_separados

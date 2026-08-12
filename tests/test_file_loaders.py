@@ -10,12 +10,10 @@ from pathlib import Path
 from core.loaders import (
     get_file_loader, 
     is_file_supported, 
-    get_supported_formats,
-    FileLoaderFactory
+    get_supported_formats
 )
 from core.loaders.csv_loader import CsvLoader
 from core.loaders.json_loader import JsonLoader
-from core.loaders.xml_loader import XmlLoader
 
 
 class TestFileLoaderFactory:

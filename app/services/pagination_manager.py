@@ -5,7 +5,7 @@ Maneja la lógica de paginación independiente de la interfaz de usuario
 
 import pandas as pd
 from PySide6.QtCore import QObject, Signal
-from typing import Optional, Dict, Any
+from typing import Optional
 
 
 class PaginationManager(QObject):

@@ -5,12 +5,9 @@ Tests para el diálogo de exportación separada - Actualizado para implementaci�
 import unittest
 import pandas as pd
 from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
-import tempfile
+from unittest.mock import patch, MagicMock
 
 from PySide6.QtWidgets import QApplication, QDialog
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtTest import QTest
 
 from app.widgets.export_separated_dialog import ExportSeparatedDialog
 

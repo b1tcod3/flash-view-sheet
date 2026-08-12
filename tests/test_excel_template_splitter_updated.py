@@ -6,8 +6,7 @@ import unittest
 import pandas as pd
 import tempfile
 from pathlib import Path
-import json
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import patch
 import openpyxl
 
 from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig, ValidationResult, ExportResult

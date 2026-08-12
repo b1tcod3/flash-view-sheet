@@ -7,7 +7,6 @@ Reproduce el problema exacto reportado por el usuario
 import pandas as pd
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel
-from PySide6.QtCore import QTimer
 from app.widgets.data_view import DataView
 
 def create_test_data():

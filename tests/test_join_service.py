@@ -4,9 +4,7 @@ Pruebas para JoinService — servicio de orquestación de joins
 
 import pytest
 import pandas as pd
-import numpy as np
 from core.join.models import JoinConfig, JoinType
-from core.join.exceptions import JoinValidationError, UnsupportedJoinError
 from app.services.join_service import JoinService, compute_result_columns
 
 

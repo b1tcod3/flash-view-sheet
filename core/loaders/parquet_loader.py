@@ -101,7 +101,6 @@ class ParquetLoader(FileLoader):
         try:
             # Check if pyarrow is available
             try:
-                import pyarrow as pa
                 import pyarrow.parquet as pq
             except ImportError:
                 raise ImportError(

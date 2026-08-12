@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 
 from .models import JoinConfig, JoinResult, JoinMetadata, ValidationResult, JoinType
-from .exceptions import JoinValidationError, JoinExecutionError, MemoryLimitExceededError, UnsupportedJoinError
+from .exceptions import JoinExecutionError, UnsupportedJoinError
 
 try:
     import psutil

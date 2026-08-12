@@ -406,9 +406,6 @@ def exportar_a_imagen(table_view: Any, filepath: str) -> bool:
         True si la exportación fue exitosa
     """
     try:
-        from PySide6.QtWidgets import QApplication
-        from PySide6.QtGui import QPixmap
-
         # Capturar la vista de la tabla como pixmap
         pixmap = table_view.grab()
 
@@ -623,24 +620,16 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
 # SISTEMA DE EXPORTACIÓN SEPARADA CON PLANTILLAS EXCEL (FASE 3)
 # ===============================
 
-import tempfile
 import time
-import json
-import shutil
-import hashlib
 import re
-import gc
 from datetime import datetime
-from typing import Iterator
 from dataclasses import dataclass, field
-from collections import namedtuple, defaultdict
 from enum import Enum
 
 try:
-    import openpyxl
-    from openpyxl import load_workbook, Workbook
-    from openpyxl.utils import get_column_letter, column_index_from_string, coordinate_to_tuple
-    from openpyxl.styles import Font, PatternFill, Border, Alignment
+    import openpyxl  # noqa
+    from openpyxl import load_workbook
+    from openpyxl.utils import get_column_letter, coordinate_to_tuple
     OPENPYXL_AVAILABLE = True
 except ImportError:
     OPENPYXL_AVAILABLE = False
@@ -649,8 +638,7 @@ except ImportError:
 try:
     from core.performance_optimizer import (
         PerformanceOptimizer, ExcelFormatOptimizer, ProgressMonitor,
-        ChunkingStrategy, SystemResources, PerformanceConfig,
-        PerformanceResult, ProgressInfo
+        ChunkingStrategy, SystemResources, PerformanceConfig
     )
     PERFORMANCE_OPTIMIZER_AVAILABLE = True
 except ImportError:
@@ -808,15 +796,12 @@ class SeparationError(Exception):
 
 class TemplateError(SeparationError):
     """Error específico de plantilla Excel"""
-    pass
 
 class ConfigurationError(SeparationError):
     """Error de configuración inválida"""
-    pass
 
 class MemoryError(SeparationError):
     """Error de memoria insuficiente"""
-    pass
 
 class ExcelTemplateSplitter:
     """Clase principal para separación de datos con plantillas Excel"""

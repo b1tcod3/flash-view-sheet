@@ -4,7 +4,6 @@ Test completo para verificar que la corrección de paginación no introduce regr
 """
 
 import pandas as pd
-import sys
 from app.widgets.data_view import DataView
 from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel

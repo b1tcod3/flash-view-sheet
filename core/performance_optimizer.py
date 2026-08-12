@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from enum import Enum
 import pandas as pd
 import openpyxl
-from openpyxl.worksheet.table import Table, TableStyleInfo
 
 class ChunkingStrategy(Enum):
     """Estrategias de chunking disponibles"""

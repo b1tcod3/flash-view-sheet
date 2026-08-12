@@ -4,12 +4,11 @@ Pruebas para funcionalidad de cruce de datos (join)
 
 import pytest
 import pandas as pd
-import numpy as np
 import re
 from pathlib import Path
-from core.join.models import JoinConfig, JoinResult, JoinMetadata, JoinType
+from core.join.models import JoinConfig, JoinType
 from core.join.data_join_manager import DataJoinManager
-from core.join.exceptions import JoinValidationError, UnsupportedJoinError
+from core.join.exceptions import UnsupportedJoinError
 from core.join.join_history import JoinHistory
 
 

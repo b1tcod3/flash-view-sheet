@@ -8,8 +8,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableView,
                                QLineEdit, QPushButton, QLabel, QFrame,
                                QMessageBox, QSpinBox, QSizePolicy, QButtonGroup,
                                QComboBox, QHeaderView, QStyle)
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QFont
+from PySide6.QtCore import Signal
 
 from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel

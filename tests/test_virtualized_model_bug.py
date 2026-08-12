@@ -8,7 +8,6 @@ import sys
 from typing import Any
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PySide6.QtCore import Qt
-from app.widgets.data_view import DataView
 from app.models.pandas_model import VirtualizedPandasModel
 
 def create_test_data() -> pd.DataFrame:

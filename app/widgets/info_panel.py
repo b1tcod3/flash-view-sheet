@@ -2,11 +2,9 @@
 Panel de información y estadísticas para Flash View Sheet
 """
 
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-                          QGroupBox, QScrollArea, QFrame)
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, 
+                          QScrollArea)
 import pandas as pd
-from typing import Any
 
 class InfoPanel(QWidget):
     """

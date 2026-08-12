@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import Mock, patch, MagicMock
 import pandas as pd
 import numpy as np
 import tempfile
@@ -11,8 +10,6 @@ import gc
 import tracemalloc
 import resource
 from datetime import datetime
-import threading
-import concurrent.futures
 from contextlib import contextmanager
 
 # Verificar si psutil está disponible
@@ -26,11 +23,8 @@ except ImportError:
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.data_handler import (
-    ExcelTemplateSplitter,
-    ExportSeparatedConfig,
     exportar_datos_separados,
 )
-from core.performance_optimizer import PerformanceOptimizer, ChunkingStrategy
 
 
 class PerformanceMetrics:

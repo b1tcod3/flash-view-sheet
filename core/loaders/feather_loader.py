@@ -98,7 +98,7 @@ class FeatherLoader(FileLoader):
         try:
             # Check if pyarrow is available
             try:
-                import pyarrow.feather as pf
+                import pyarrow.feather as pf  # noqa
             except ImportError:
                 raise ImportError(
                     "PyArrow is required to load Feather files. "

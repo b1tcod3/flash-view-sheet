@@ -4,7 +4,6 @@ Pruebas de integración para funcionalidad de cruce de datos (join)
 
 import pytest
 import pandas as pd
-from unittest.mock import Mock, patch
 from PySide6.QtWidgets import QApplication
 
 from core.join.models import JoinConfig, JoinType

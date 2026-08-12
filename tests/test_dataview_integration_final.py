@@ -6,8 +6,7 @@ Test de integración completo para verificar DataView con ordenamiento y paginac
 import sys
 import pandas as pd
 import numpy as np
-from PySide6.QtWidgets import QApplication, QMessageBox
-from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
 
 # Importar componentes del proyecto
 from app.widgets.data_view import DataView

@@ -7,10 +7,9 @@ import traceback
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                   QGroupBox, QComboBox, QPushButton, QFormLayout,
-                                  QDialogButtonBox, QMessageBox, QWidget, QTextEdit,
-                                  QRadioButton, QButtonGroup, QCheckBox, QLineEdit,
-                                  QFileDialog, QProgressBar, QTableWidget, QTableWidgetItem,
-                                  QHeaderView, QProgressDialog, QTabWidget, QListWidget,
+                                  QMessageBox, QWidget, QRadioButton, QButtonGroup,
+                                  QCheckBox, QLineEdit, QFileDialog, QTableWidget,
+                                  QTableWidgetItem, QProgressDialog, QTabWidget, QListWidget,
                                   QListWidgetItem, QSplitter, QAbstractButton)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
@@ -19,7 +18,7 @@ from pathlib import Path
 
 from core.data_handler import cargar_datos
 from core.join.models import JoinConfig, JoinType
-from core.join.exceptions import JoinValidationError, JoinExecutionError
+from core.join.exceptions import JoinValidationError
 from app.services.join_service import JoinService, JoinWorkerThread, compute_result_columns
 
 logger = logging.getLogger(__name__)

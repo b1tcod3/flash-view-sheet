@@ -4,7 +4,7 @@ Implementa paginación virtual para optimizar el rendimiento con datasets grande
 """
 
 import pandas as pd
-from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex, QThread, Signal
+from PySide6.QtCore import QAbstractTableModel, Qt, QModelIndex
 import math
 import sys
 from pathlib import Path

@@ -8,7 +8,6 @@ import tempfile
 from pathlib import Path
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Alignment
-from openpyxl.utils import get_column_letter
 
 from core.data_handler import ExcelTemplateSplitter, ExportSeparatedConfig
 from core.excel_format_preserver import ExcelFormatPreserver

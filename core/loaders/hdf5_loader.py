@@ -101,7 +101,7 @@ class Hdf5Loader(FileLoader):
         try:
             # Check if tables is available
             try:
-                import tables
+                import tables  # noqa
             except ImportError:
                 raise ImportError(
                     "PyTables is required to load HDF5 files. "

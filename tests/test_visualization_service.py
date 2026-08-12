@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
-from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 from app.services.visualization_service import (

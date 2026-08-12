@@ -11,16 +11,12 @@ class JoinError(Exception):
 
 class JoinValidationError(JoinError):
     """Error en validación de configuración de join"""
-    pass
 
 class JoinExecutionError(JoinError):
     """Error durante ejecución del join"""
-    pass
 
 class MemoryLimitExceededError(JoinError):
     """Límite de memoria excedido"""
-    pass
 
 class UnsupportedJoinError(JoinError):
     """Tipo de join no soportado"""
-    pass

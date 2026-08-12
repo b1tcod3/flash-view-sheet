@@ -3,9 +3,8 @@ Modal de Información para Flash View Sheet
 Muestra detalles del archivo: nombre, filas, columnas, tipos
 """
 
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                               QGroupBox, QScrollArea, QFrame, QPushButton, QWidget)
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLabel, QGroupBox,
+                               QScrollArea, QPushButton, QWidget)
 import pandas as pd
 
 class InfoModal(QDialog):

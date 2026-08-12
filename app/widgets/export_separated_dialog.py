@@ -5,16 +5,13 @@ Diseño compacto con QSplitter (panel dividido lado a lado).
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QGroupBox, QFormLayout, QGridLayout,
-                               QComboBox, QLineEdit, QSpinBox,
-                               QMessageBox, QListWidget,
-                               QCheckBox, QWidget,
-                               QTableWidget, QTableWidgetItem, QHeaderView,
-                               QFileDialog, QFrame, QSizePolicy, QSplitter,
-                               QProgressBar)
+                               QComboBox, QLineEdit, QMessageBox,
+                               QListWidget, QCheckBox,
+                               QWidget, QTableWidget,
+                               QTableWidgetItem, QHeaderView, QFileDialog,
+                               QSplitter, QProgressBar)
 from PySide6.QtCore import Qt, Signal, QTimer, QSettings
-from PySide6.QtGui import QFont
 import pandas as pd
-import os
 import openpyxl
 from pathlib import Path
 from datetime import datetime
@@ -23,8 +20,7 @@ from typing import Any
 import sys
 sys.path.append('..')
 from core.data_handler import (
-    ExcelTemplateSplitter, ExportSeparatedConfig, ValidationResult,
-    SeparationError, TemplateError, ConfigurationError, MemoryError
+    ExcelTemplateSplitter, ExportSeparatedConfig, ValidationResult
 )
 
 

@@ -4,7 +4,6 @@ Test específico para identificar el problema exacto de paginación
 """
 
 import pandas as pd
-import sys
 from app.widgets.data_view import DataView
 from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
