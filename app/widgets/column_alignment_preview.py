@@ -219,7 +219,7 @@ class ColumnAlignmentPreview(QWidget):
         menu = QMenu(self)
 
         rename_action = menu.addAction("Renombrar Columna")
-        rename_action.triggered.connect(lambda: self.rename_selected_column())
+        rename_action.triggered.connect(self.rename_selected_column)
 
         menu.exec(self.alignment_table.mapToGlobal(position))
 
