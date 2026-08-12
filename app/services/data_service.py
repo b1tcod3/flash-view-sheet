@@ -20,11 +20,8 @@ from core.consolidation.excel_consolidator import ExcelConsolidator
 class DataLoaderThread(QThread):
     """Hilo para cargar datos en segundo plano"""
     
-    # Signal(pd.DataFrame)
     data_loaded = Signal(object)
-    # Signal(str)
     error_occurred = Signal(str)
-    # Signal(int, int) — (loaded, total) para barra de progreso
     progress_updated = Signal(int, int)
     
     def __init__(self, filepath: str, skip_rows: int = 0, column_names: dict[str, str] | None = None, separator: str | None = None, sheet_name: str | None = None) -> None:

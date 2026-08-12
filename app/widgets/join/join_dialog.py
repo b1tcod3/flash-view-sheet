@@ -316,7 +316,6 @@ class JoinDialog(QDialog):
 
         # Tabla preview - sin límite de altura para ocupar espacio disponible
         self.preview_table = QTableWidget()
-        # self.preview_table.setMaximumHeight(200)  # Removido para ocupar espacio completo
         group_layout.addWidget(self.preview_table)
 
         # Botón actualizar preview

@@ -10,7 +10,6 @@ import time
 import gc
 import tracemalloc
 import resource
-# import psutil  # Opcional - solo si está disponible (import condicional más abajo)
 from datetime import datetime
 import threading
 import concurrent.futures

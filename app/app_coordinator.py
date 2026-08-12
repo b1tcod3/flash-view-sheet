@@ -43,9 +43,7 @@ class AppCoordinator(QObject):
     
     # Señales para comunicar con MainWindow
     status_message = Signal(str)
-    # Signal(pd.DataFrame)
     datos_originales_cargados = Signal(object)
-    # Signal(pd.DataFrame)
     datos_actualizados = Signal(object)
     datos_disponibles = Signal(bool)
     
