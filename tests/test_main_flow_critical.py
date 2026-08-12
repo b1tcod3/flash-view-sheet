@@ -47,7 +47,7 @@ def create_real_test_file() -> pd.DataFrame:
         'Departamento': ['Ventas', 'IT', 'RRHH', 'Marketing', 'Finanzas'] * 10,
         'Salario': [25000 + i * 500 for i in range(50)],
         'Fecha_Ingreso': pd.date_range('2020-01-01', periods=50, freq='D'),
-        'Activo': [True if i % 3 == 0 else False for i in range(50)]
+        'Activo': [i % 3 == 0 for i in range(50)]
     }
     df = pd.DataFrame(data)
     

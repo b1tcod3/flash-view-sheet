@@ -624,7 +624,7 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             'Salario': [50000 + (i*1000) for i in range(100)],
             'Fecha_Ingreso': pd.date_range('2020-01-01', periods=100, freq='5D'),
             'Evaluacion': np.random.uniform(1, 5, 100).round(2),
-            'Activo': [True if i%3==0 else False for i in range(100)]
+            'Activo': [i % 3 == 0 for i in range(100)]
         })
         
         # Crear plantilla realista
