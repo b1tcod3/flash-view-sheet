@@ -102,7 +102,7 @@ def test_proposed_solution():
         manager.filtered_df = df.copy()
         
         # NO resetear la página, recalcular si es necesario
-        manager._update_total_pages()
+        manager._update_total_pages()  # pylint: disable=protected-access
         
         # Si la página actual sigue siendo válida, mantenerla
         if old_page <= manager.total_pages:

@@ -425,6 +425,11 @@ class MainView(QWidget):
             self.current_file = filepath
             self.show_options_button()
 
+    def set_file_error(self, filepath: str, message: str) -> None:
+        """Marca la carga del archivo como fallida con un mensaje de error"""
+        if filepath in self._file_widgets:
+            self._file_widgets[filepath].set_error(message)
+
     def remove_file_from_list(self, filepath: str) -> None:
         if filepath in self._file_widgets:
             widget = self._file_widgets.pop(filepath)

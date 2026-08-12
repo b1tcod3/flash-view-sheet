@@ -319,7 +319,7 @@ class ExcelFormatOptimizer:
             sheet.sheet_properties.formulaUpdatesEnabled = True
             
             # Optimización final: forzar escritura
-            workbook._archive.close()
+            workbook.close()
             
             return success
             

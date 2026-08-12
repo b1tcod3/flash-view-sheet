@@ -192,8 +192,8 @@ class AppCoordinator(QObject):
         """Callback individual cuando un archivo falla al cargar."""
         self._error_count += 1
         main_view = self.view_coordinator.get_main_view()
-        if main_view and filepath in main_view._file_widgets:
-            main_view._file_widgets[filepath].set_error(f"Error: {error[:50]}")
+        if main_view:
+            main_view.set_file_error(filepath, f"Error: {error[:50]}")
         self.status_message.emit(f"Error cargando {Path(filepath).name}: {error}")
 
     def _on_single_finished(self, filepath: str) -> None:
