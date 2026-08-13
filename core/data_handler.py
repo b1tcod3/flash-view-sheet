@@ -435,7 +435,6 @@ def exportar_a_xlsx(df: pd.DataFrame, filepath: str) -> bool:
     """
     try:
         # Verificar que openpyxl esté disponible
-        import openpyxl
         from openpyxl.utils.dataframe import dataframe_to_rows
 
         # Crear workbook y worksheet
@@ -627,7 +626,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 try:
-    import openpyxl  # noqa
+    import openpyxl
     from openpyxl import load_workbook
     from openpyxl.utils import get_column_letter, coordinate_to_tuple
     OPENPYXL_AVAILABLE = True
@@ -1224,7 +1223,7 @@ class ExcelTemplateSplitter:
             sheet = workbook.active
             
             # Determinar posición inicial
-            from openpyxl.utils import coordinate_to_tuple, column_index_from_string
+            from openpyxl.utils import column_index_from_string
             start_row, _ = coordinate_to_tuple(self.config.start_cell)
             
             # Aplicar mapeo de columnas
