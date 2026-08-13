@@ -462,7 +462,7 @@ class AppCoordinator(QObject):
         if joined_view:
             joined_view.populate_history(entries)
 
-    def exportar_resultado_join(self, df: pd.DataFrame) -> None:
+    def exportar_resultado_join(self, _df: pd.DataFrame) -> None:
         """Exportar resultado del join actual"""
         self.mostrar_dialogo_exportacion("Cruce_Datos")
 
@@ -503,7 +503,7 @@ class AppCoordinator(QObject):
         progress.show()
         QApplication.processEvents()
         
-        def on_progress(current: int, total_items: int) -> None:
+        def on_progress(current: int, _: int) -> None:
             progress.setValue(current)
             QApplication.processEvents()
         
