@@ -467,7 +467,7 @@ class MainView(QWidget):
     # --- Archivos Recientes ---
 
     def set_recent_files(self, entries: list[dict]) -> None:
-        for i in range(self.recent_layout.count()):
+        for _ in range(self.recent_layout.count()):
             child = self.recent_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()

@@ -497,9 +497,6 @@ class DataJoinManager:
         Returns:
             Memoria estimada en MB
         """
-        left_memory = self.left_df.memory_usage(deep=True).sum() / 1024 / 1024
-        right_memory = self.right_df.memory_usage(deep=True).sum() / 1024 / 1024
-
         if config.join_type == JoinType.CROSS:
             estimated_rows = len(self.left_df) * len(self.right_df)
             estimated_cols = len(self.left_df.columns) + len(self.right_df.columns)

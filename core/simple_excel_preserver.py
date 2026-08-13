@@ -178,7 +178,7 @@ class SimpleExcelFormatPreserver:
             column_mapping: Mapeo de columnas
             start_cell: Celda inicial
         """
-        start_row, start_col = coordinate_to_tuple(start_cell)
+        start_row, _ = coordinate_to_tuple(start_cell)
         
         # Backup formato de área donde se insertarán datos
         max_rows = len(data)

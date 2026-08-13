@@ -99,7 +99,7 @@ def main():
     app = QApplication(sys.argv)
     
     # Crear ventana de debug
-    window = DebugWindow()
+    _ = DebugWindow()
     
     # Ejecutar aplicación
     sys.exit(app.exec())

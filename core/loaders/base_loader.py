@@ -111,7 +111,7 @@ class FileLoader(ABC):
             Estimated number of rows
         """
         try:
-            with open(self.filepath, 'r', encoding='utf-8') as f:
+            with open(self.filepath, 'r', encoding='utf-8') as _:
                 file_size = Path(self.filepath).stat().st_size
                 line_length = 100  # Rough estimate
                 return file_size // line_length

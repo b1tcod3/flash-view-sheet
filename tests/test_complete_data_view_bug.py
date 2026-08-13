@@ -88,7 +88,7 @@ def main() -> None:
     app = QApplication(sys.argv)
     
     # Crear ventana de test
-    window = TestWindow()
+    _ = TestWindow()
     
     print("📝 INSTRUCCIONES:")
     print("1. Observar que página 1 muestra datos correctamente")

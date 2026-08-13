@@ -186,12 +186,12 @@ def memory_optimization_demo() -> None:
 
     # Primera carga (sin caché)
     start_time = time.time()
-    meta1 = loader.get_file_metadata(loader.get_excel_files()[0])
+    loader.get_file_metadata(loader.get_excel_files()[0])
     time1 = time.time() - start_time
 
     # Segunda carga (con caché)
     start_time = time.time()
-    meta2 = loader.get_file_metadata(loader.get_excel_files()[0])
+    loader.get_file_metadata(loader.get_excel_files()[0])
     time2 = time.time() - start_time
 
     print(f"   📊 Primera carga (sin caché): {time1:.4f} segundos")
@@ -204,7 +204,7 @@ def memory_optimization_demo() -> None:
     loader.clear_metadata_cache()
 
     start_time = time.time()
-    meta3 = loader.get_file_metadata(loader.get_excel_files()[0])
+    loader.get_file_metadata(loader.get_excel_files()[0])
     time3 = time.time() - start_time
 
     print(f"   📊 Después de limpiar caché: {time3:.4f} segundos")

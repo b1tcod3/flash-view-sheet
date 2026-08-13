@@ -73,7 +73,6 @@ class PerformanceOptimizer:
         # Análisis de distribución de grupos
         group_sizes = df.groupby(separator_column).size()
         largest_group_size = group_sizes.max()
-        smallest_group_size = group_sizes.min()
         group_size_variance = group_sizes.var()
         
         # Decisión de estrategia según especificaciones
@@ -285,7 +284,7 @@ class ExcelFormatOptimizer:
         """
         try:
             sheet = workbook.active
-            start_row, start_col = self._cell_coordinates_to_indices(start_cell)
+            start_row, _ = self._cell_coordinates_to_indices(start_cell)
             
             # Detectar área de datos existente
             existing_data_range = self._detect_existing_data_range(sheet, start_cell)

@@ -79,9 +79,6 @@ class YamlLoader(FileLoader):
             # Get basic YAML structure information
             try:
                 import yaml
-                with open(self.filepath, 'r', encoding='utf-8') as f:
-                    content = f.read(1000)  # Read first 1KB
-                    
                 # Try to parse to get structure info
                 try:
                     with open(self.filepath, 'r', encoding='utf-8') as f:

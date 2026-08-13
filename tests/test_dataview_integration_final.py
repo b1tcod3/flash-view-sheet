@@ -77,7 +77,6 @@ def test_dataview_integration() -> None:
     if data_view.pandas_model is not None:
         try:
             # Simular el ordenamiento que hace Qt internamente
-            current_df = data_view.pagination_manager.get_page_data()
             sorted_full_df = df.sort_values('Edad', ascending=False)
             
             # Actualizar como lo hace DataView.on_model_sorted()

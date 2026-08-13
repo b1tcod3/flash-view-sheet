@@ -114,7 +114,7 @@ def test_sorting_integration_with_data_view() -> None:
         from PySide6.QtCore import Qt
         
         # Crear aplicación (necesaria para GUI)
-        app = QApplication.instance() or QApplication([])
+        _ = QApplication.instance() or QApplication([])
         
         # Crear DataView
         data_view = DataView()

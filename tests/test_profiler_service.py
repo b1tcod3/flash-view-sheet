@@ -65,7 +65,7 @@ class TestProgress:
 
     def test_progress_monotono_hasta_100(self, service, sample_df):
         steps: list[int] = []
-        profile = service.generate_profile(sample_df, progress_callback=steps.append)
+        service.generate_profile(sample_df, progress_callback=steps.append)
         assert steps == sorted(steps)
         assert steps[-1] == 100
         assert steps[0] == 5

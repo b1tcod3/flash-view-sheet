@@ -124,7 +124,7 @@ class TestDownsampling:
 
     def test_scatter_descarta_nulos(self, service):
         df = pd.DataFrame({'x': [1.0, 2.0, np.nan], 'y': [1.0, np.nan, 3.0]})
-        x_data, y_data = service.prepare_scatter_data(df, 'x', 'y')
+        x_data, _ = service.prepare_scatter_data(df, 'x', 'y')
         assert len(x_data) == 1
         assert x_data.iloc[0] == 1.0
 

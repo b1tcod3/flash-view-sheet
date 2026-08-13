@@ -28,7 +28,6 @@ def create_sample_data() -> None:
         np.random.seed(42 + quarter)  # Semilla consistente por trimestre
 
         start_date = datetime(year, (quarter-1)*3 + 1, 1)
-        end_date = datetime(year, quarter*3, 28) if quarter < 4 else datetime(year, 12, 31)
 
         dates = [start_date + timedelta(days=np.random.randint(0, 90)) for _ in range(num_records)]
 

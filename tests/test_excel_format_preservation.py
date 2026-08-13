@@ -133,9 +133,6 @@ class TestExcelFormatPreservation(unittest.TestCase):
         original_wb = openpyxl.load_workbook(self.temp_template.name, data_only=False)
         original_sheet = original_wb.active
         
-        # Cachear formatos originales
-        original_formats = preserver.cache_workbook_formats(original_wb)
-        
         # Simular inserción de datos
         test_data = {0: {'Region': 'Test', 'Ventas': 1234, 'Meta': 5678}}
         preserver.insert_data_preserving_format(

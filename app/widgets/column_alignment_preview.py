@@ -192,7 +192,6 @@ class ColumnAlignmentPreview(QWidget):
                 # Update mappings
                 file_idx = item.column() - 1
                 if file_idx < len(self.file_metadata):
-                    filename = self.file_metadata[file_idx]['filename']
                     old_name = self.file_metadata[file_idx]['columns'][item.row()] if item.row() < len(self.file_metadata[file_idx]['columns']) else ""
                     if old_name:
                         self.column_mappings[old_name] = new_name

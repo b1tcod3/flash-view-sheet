@@ -120,7 +120,7 @@ def main() -> None:
     print("2. Verificar que ambos modelos muestren datos correctamente")
     print("3. Si un modelo muestra datos en blanco, ese es el bug")
     
-    window = VirtualizedModelTest()
+    _ = VirtualizedModelTest()
     
     sys.exit(app.exec())
 

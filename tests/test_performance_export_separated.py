@@ -129,7 +129,7 @@ class MemoryMonitor:
     def get_peak_memory_mb() -> dict:
         """Obtener memoria pico usando tracemalloc"""
         if tracemalloc.is_tracing():
-            current, peak = tracemalloc.get_traced_memory()
+            _, peak = tracemalloc.get_traced_memory()
             return peak / 1024 / 1024
         return 0.0
 
@@ -139,7 +139,6 @@ def measure_performance(test_name: str, metrics: PerformanceMetrics) -> None:
     """Context manager para medir rendimiento de una operación"""
     # Iniciar medición de memoria
     tracemalloc.start()
-    start_memory = MemoryMonitor.get_memory_mb()
     start_time = time.time()
     
     # Registrar medición inicial (se completa con datos reales al salir)
@@ -164,7 +163,7 @@ def measure_performance(test_name: str, metrics: PerformanceMetrics) -> None:
         end_memory = MemoryMonitor.get_memory_mb()
         
         # Obtener peak de memoria de tracemalloc
-        current, peak = tracemalloc.get_traced_memory()
+        _, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
         
         duration = end_time - start_time
@@ -278,7 +277,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
     def measure_export_performance(self, df: pd.DataFrame, config: dict, 
                                  test_name: str) -> dict:
         """Medir rendimiento de una exportación específica"""
-        with measure_performance(test_name, self.metrics) as measure_context:
+        with measure_performance(test_name, self.metrics):
             try:
                 # Ejecutar exportación
                 result = exportar_datos_separados(df, config)
@@ -311,7 +310,7 @@ class TestExportSeparatedPerformance(unittest.TestCase):
                 
                 return result
                 
-            except Exception as e:
+            except Exception:
                 # Marcar como fallido si hay excepción
                 if self.metrics.measurements:
                     self.metrics.measurements[-1]['success'] = False
@@ -437,10 +436,8 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         stress_config['max_memory_mb'] = 100
         stress_config['enable_chunking'] = True
         
-        start_time = time.time()
         result = self.measure_export_performance(df_stress, stress_config, 
                                                "Stress Test (5K filas, 100 grupos)")
-        total_time = time.time() - start_time
         
         # Verificar que survived el stress test
         if result['success']:

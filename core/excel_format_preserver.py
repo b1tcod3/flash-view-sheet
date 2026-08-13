@@ -231,7 +231,7 @@ class ExcelFormatPreserver:
         from openpyxl.utils import coordinate_to_tuple
         
         # Obtener posición inicial
-        start_row, start_col = coordinate_to_tuple(start_cell)
+        start_row, _ = coordinate_to_tuple(start_cell)
         
         # Cachear formatos antes de insertar
         self._cache_worksheet_formats(worksheet)
@@ -245,9 +245,6 @@ class ExcelFormatPreserver:
                     if df_col in row_data:
                         excel_col_idx = column_index_from_string(excel_col_letter)
                         cell = worksheet.cell(row=excel_row, column=excel_col_idx)
-                        
-                        # Guardar valor actual para preservarlo
-                        current_value = cell.value
                         
                         # Insertar nuevo valor
                         value = row_data[df_col]
@@ -319,10 +316,7 @@ def create_template_with_preserved_format(template_path: str, output_path: str,
         preserver = ExcelFormatPreserver()
         
         # Procesar cada worksheet
-        for sheet_name, sheet in workbook.worksheets:
-            # Cachear formatos originales
-            formats_cache = preserver.cache_workbook_formats(workbook)
-            
+        for _, sheet in workbook.worksheets:
             # Insertar datos preservando formato
             preserver.insert_data_preserving_format(
                 sheet, data, column_mapping, start_cell

@@ -86,7 +86,7 @@ def test_data_view_integration():
         from PySide6.QtWidgets import QApplication
         
         # Crear aplicación
-        app = QApplication([])
+        _ = QApplication([])
         
         # Crear DataView
         data_view = DataView()

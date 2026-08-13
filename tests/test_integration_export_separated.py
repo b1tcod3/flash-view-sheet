@@ -94,8 +94,6 @@ class TestExportSeparatedIntegration(unittest.TestCase):
     
     def test_export_processing_integration(self) -> None:
         """Test procesamiento de exportación desde core"""
-        window = MainWindow()
-        
         # Crear configuración válida
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -129,8 +127,6 @@ class TestExportSeparatedIntegration(unittest.TestCase):
     
     def test_error_handling_integration(self) -> None:
         """Test manejo de errores en la integración"""
-        window = MainWindow()
-        
         # Configuración inválida
         config = ExportSeparatedConfig(
             separator_column='ColumnaInexistente',
@@ -148,8 +144,6 @@ class TestExportSeparatedIntegration(unittest.TestCase):
     
     def test_complete_workflow_simulation(self) -> None:
         """Test simulación de workflow completo"""
-        window = MainWindow()
-        
         # Configuración válida
         config = ExportSeparatedConfig(
             separator_column='Region',
@@ -181,8 +175,6 @@ class TestExportSeparatedIntegration(unittest.TestCase):
     
     def test_progress_dialog_integration(self) -> None:
         """Test integración del diálogo de progreso"""
-        window = MainWindow()
-        
         # Configuración válida
         config = ExportSeparatedConfig(
             separator_column='Region',

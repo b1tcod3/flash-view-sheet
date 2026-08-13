@@ -1225,7 +1225,7 @@ class ExcelTemplateSplitter:
             
             # Determinar posición inicial
             from openpyxl.utils import coordinate_to_tuple, column_index_from_string
-            start_row, start_col = coordinate_to_tuple(self.config.start_cell)
+            start_row, _ = coordinate_to_tuple(self.config.start_cell)
             
             # Aplicar mapeo de columnas
             if not self.config.column_mapping:

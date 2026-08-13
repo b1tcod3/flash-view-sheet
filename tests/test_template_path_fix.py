@@ -101,7 +101,7 @@ def test_validation_with_stored_template() -> None:
         
         # Intentar validación (esto no debe fallar ahora)
         try:
-            validation_result = dialog.validate_configuration()
+            dialog.validate_configuration()
             print("✅ Test pasado: La validación funciona correctamente con plantilla almacenada")
             return True
         except Exception as e:

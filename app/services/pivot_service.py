@@ -67,7 +67,7 @@ class PivotService:
         total = len(top_combos)
         idx = 0
 
-        for cat, num, score in top_combos:
+        for cat, num, _ in top_combos:
             try:
                 pivot_df = pd.pivot_table(
                     df, index=cat, values=num,
