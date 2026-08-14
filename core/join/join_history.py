@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class JoinHistoryEntry:
     """Entrada del historial de join"""
-    id: str
+    entry_id: str
     timestamp: datetime
     left_dataset_name: str
     right_dataset_name: str
@@ -58,7 +58,7 @@ class JoinHistory:
             entry_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.entries)}"
 
         entry = JoinHistoryEntry(
-            id=entry_id,
+            entry_id=entry_id,
             timestamp=datetime.now(),
             left_dataset_name=left_name,
             right_dataset_name=right_name,
@@ -91,7 +91,7 @@ class JoinHistory:
     def get_entry(self, entry_id: str) -> JoinHistoryEntry | None:
         """Obtener entrada específica por ID"""
         for entry in self.entries:
-            if entry.id == entry_id:
+            if entry.entry_id == entry_id:
                 return entry
         return None
 
@@ -148,7 +148,7 @@ class JoinHistory:
         se guarda como lista y se reconstruye como tupla al cargar.
         """
         return {
-            'id': entry.id,
+            'id': entry.entry_id,
             'timestamp': entry.timestamp.isoformat(),
             'left_dataset_name': entry.left_dataset_name,
             'right_dataset_name': entry.right_dataset_name,
@@ -187,7 +187,7 @@ class JoinHistory:
             )
 
             return JoinHistoryEntry(
-                id=data['id'],
+                entry_id=data['id'],
                 timestamp=datetime.fromisoformat(data['timestamp']),
                 left_dataset_name=data['left_dataset_name'],
                 right_dataset_name=data['right_dataset_name'],

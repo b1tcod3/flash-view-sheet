@@ -510,7 +510,7 @@ class TestJoinHistory:
         history.add_entry('left.csv', 'right.csv', JoinConfig(join_type=JoinType.LEFT, left_keys=['id'], right_keys=['id']), sample_result)
 
         entry = history.get_entries()[0]
-        assert uuid_pattern.match(entry.id), f"ID no es UUID válido: {entry.id}"
+        assert uuid_pattern.match(entry.entry_id), f"ID no es UUID válido: {entry.entry_id}"
 
     def test_timestamp_id_fallback(self, tmp_history_dir, sample_result):
         """Con use_uuid=False, IDs mantienen formato timestamp_secuencia"""
@@ -520,7 +520,7 @@ class TestJoinHistory:
         history.add_entry('left.csv', 'right.csv', JoinConfig(join_type=JoinType.LEFT, left_keys=['id'], right_keys=['id']), sample_result)
 
         entry = history.get_entries()[0]
-        assert ts_pattern.match(entry.id), f"ID no tiene formato timestamp: {entry.id}"
+        assert ts_pattern.match(entry.entry_id), f"ID no tiene formato timestamp: {entry.entry_id}"
 
     def test_custom_history_dir(self, tmp_history_dir, sample_result):
         """El archivo se crea en el directorio especificado"""
@@ -571,7 +571,7 @@ class TestJoinHistory:
 
         history = JoinHistory(max_entries=10, history_dir=tmp_history_dir)
         assert len(history.get_entries()) == 1
-        assert history.get_entries()[0].id == 'valid'
+        assert history.get_entries()[0].entry_id == 'valid'
 
     def test_mkdir_on_save(self, tmp_history_dir, sample_result):
         """El directorio se crea automáticamente si no existe"""

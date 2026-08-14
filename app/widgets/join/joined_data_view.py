@@ -209,7 +209,7 @@ class JoinedDataView(DataView):
             if not entry.success:
                 item_text += " (ERROR)"
             item = QListWidgetItem(item_text)
-            item.setData(Qt.UserRole, entry.id)
+            item.setData(Qt.UserRole, entry.entry_id)
             list_widget.addItem(item)
 
         def on_item_selected():
@@ -227,7 +227,7 @@ class JoinedDataView(DataView):
 
     def _show_entry_details(self, entries: list[JoinHistoryEntry], entry_id: str,
                             details_text: QTextEdit) -> None:
-        entry = next((e for e in entries if e.id == entry_id), None)
+        entry = next((e for e in entries if e.entry_id == entry_id), None)
         if entry is None:
             return
 
