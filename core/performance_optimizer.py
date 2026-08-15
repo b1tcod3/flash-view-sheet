@@ -48,9 +48,10 @@ class SystemResources:
 class PerformanceOptimizer:
     """Optimizador principal de rendimiento"""
     
-    def __init__(self, chunking_strategy: ChunkingStrategy = ChunkingStrategy.MODERATE) -> None:
+    def __init__(self, chunking_strategy: ChunkingStrategy = ChunkingStrategy.MODERATE,
+                 memory_threshold_mb: int = 2048) -> None:
         self.chunking_strategy = chunking_strategy
-        self.memory_threshold_mb = 2048  # 2GB threshold
+        self.memory_threshold_mb = memory_threshold_mb  # 2GB threshold por defecto
         self.performance_cache = {}
         self.format_cache = {}  # Cache para formatos Excel
         self.active_monitors = {}

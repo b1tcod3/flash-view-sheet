@@ -308,8 +308,7 @@ def create_template_with_preserved_format(template_path: str, output_path: str,
             template_path, 
             data_only=False,  # No interpretar datos, preservar formato
             keep_vba=True,    # Preservar macros si existen
-            keep_links=True,  # Preservar links
-            keep_images=True  # Preservar imágenes
+            keep_links=True   # Preservar links
         )
         
         # Crear preserver
