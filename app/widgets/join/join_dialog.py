@@ -609,7 +609,7 @@ class JoinDialog(QDialog):
 
         self.preview_table.resizeColumnsToContents()
 
-    def get_config(self) -> JoinConfig:
+    def get_config(self) -> JoinConfig | None:
         """Obtener configuración actual"""
         if self.right_df is None:
             return None

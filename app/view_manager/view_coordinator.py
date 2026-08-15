@@ -118,6 +118,8 @@ class ViewCoordinator(QObject):
     # ==================== GETTERS ====================
 
     def get_stacked_widget(self) -> QStackedWidget:
+        if self._stacked_widget is None:
+            raise RuntimeError("create_views() debe llamarse antes de acceder a get_stacked_widget()")
         return self._stacked_widget
 
     def get_view(self, view_id: int) -> QWidget | None:
