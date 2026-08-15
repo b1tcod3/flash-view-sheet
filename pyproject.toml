@@ -15,7 +15,6 @@ exclude = [
     "__pycache__/",
     "docs/",
     "debug/",
-    "examples/",
     "separar/",
     "tablas-pivote/",
 ]
