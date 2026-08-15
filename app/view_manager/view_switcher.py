@@ -7,6 +7,8 @@ Provides methods to switch between different views in the application.
 
 from PySide6.QtCore import Signal, QObject
 
+from .view_registry import ViewRegistry
+
 
 class ViewSwitcher(QObject):
     """Manejador de cambio de vistas"""
@@ -90,7 +92,6 @@ class ViewSwitcher(QObject):
     
     def get_view_name(self) -> str:
         """Obtener nombre de la vista actual"""
-        from .view_registry import ViewRegistry
         return ViewRegistry.get_view_name(self._current_registry_id)
     
     def get_view_history(self) -> list:

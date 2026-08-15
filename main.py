@@ -6,6 +6,7 @@ Punto de entrada principal de la aplicación
 
 import sys
 import traceback
+from pathlib import Path
 from types import TracebackType
 
 from PySide6.QtCore import QEvent, QObject

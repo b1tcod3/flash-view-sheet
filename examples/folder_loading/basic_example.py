@@ -6,6 +6,7 @@ Este ejemplo muestra cómo usar la funcionalidad de carga de carpeta
 para consolidar múltiples archivos Excel de forma programática.
 """
 
+import os
 import sys
 from pathlib import Path
 import pandas as pd
