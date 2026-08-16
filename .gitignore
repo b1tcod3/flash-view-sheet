@@ -83,6 +83,9 @@ venv/
 build/
 dist/
 
+# Sphinx documentation build
+docs/_build/
+
 # Logs
 logs/
 *.log
