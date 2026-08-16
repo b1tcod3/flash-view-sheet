@@ -100,18 +100,42 @@ class JoinHistory:
         self.entries = []
         self._save_history()
 
+    def _validated_history_path(self, filepath: str) -> Path:
+        """Validar y normalizar la ruta de exportación/importación del historial.
+
+        Restringe el acceso a archivos .json: rechaza directorios, rutas
+        vacías o con caracteres no válidos y normaliza la ruta antes de usarla.
+        """
+        if not filepath or not filepath.strip():
+            raise ValueError("La ruta del historial no puede estar vacía")
+
+        path = Path(filepath).expanduser()
+
+        if path.is_dir():
+            raise ValueError("La ruta debe apuntar a un archivo, no a un directorio")
+
+        if path.suffix.lower() != '.json':
+            raise ValueError("El historial debe exportarse/importarse como archivo .json")
+
+        if '\x00' in str(path):
+            raise ValueError("La ruta contiene caracteres no válidos")
+
+        return path.resolve()
+
     def export_history(self, filepath: str) -> None:
         """Exportar historial a archivo JSON.
 
         Genera un formato de archivo independiente con marca de tiempo
         de exportación. No confundir con el archivo interno de persistencia.
         """
+        path = self._validated_history_path(filepath)
+
         data = {
             'exported_at': datetime.now().isoformat(),
             'entries': [self._entry_to_dict(entry) for entry in self.entries]
         }
 
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
 
     def import_history(self, filepath: str) -> None:
@@ -121,8 +145,10 @@ class JoinHistory:
         el límite de max_entries. Trabaja con el formato de exportación,
         no con el archivo interno de persistencia.
         """
+        path = self._validated_history_path(filepath)
+
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
             imported_entries = []
