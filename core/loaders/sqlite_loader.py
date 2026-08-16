@@ -40,11 +40,12 @@ class SqliteLoader(FileLoader):
             import sqlalchemy as sa
             engine = sa.create_engine(f'sqlite:///{self.filepath}')
             
-            query = f"SELECT * FROM {table_name}"
+            db_table = sa.Table(table_name, sa.MetaData(), autoload_with=engine)
+            stmt = sa.select(db_table)
             if skip_rows > 0:
-                query += f" LIMIT -1 OFFSET {skip_rows}"
+                stmt = stmt.offset(skip_rows)
             
-            df = pd.read_sql(query, engine)
+            df = pd.read_sql(stmt, engine)
             
             # Apply column renaming if specified
             if column_names:
@@ -142,9 +143,11 @@ class SqliteLoader(FileLoader):
             chunk_list = []
             offset = 0
             
+            db_table = sa.Table(table_name, sa.MetaData(), autoload_with=engine)
+            
             while True:
-                query = f"SELECT * FROM {table_name} LIMIT {chunk_size} OFFSET {offset}"
-                chunk_df = pd.read_sql(query, engine)
+                stmt = sa.select(db_table).limit(chunk_size).offset(offset)
+                chunk_df = pd.read_sql(stmt, engine)
                 
                 if chunk_df.empty:
                     break
@@ -186,8 +189,9 @@ class SqliteLoader(FileLoader):
                 return 0
             
             # Count rows
-            query = f"SELECT COUNT(*) as count FROM {table_name}"
-            result = pd.read_sql(query, engine)
+            db_table = sa.Table(table_name, sa.MetaData(), autoload_with=engine)
+            stmt = sa.select(sa.func.count().label('count')).select_from(db_table)  # pylint: disable=not-callable
+            result = pd.read_sql(stmt, engine)
             return result['count'].iloc[0]
         except:
             return super()._estimate_rows()
