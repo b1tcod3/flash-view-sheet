@@ -786,22 +786,6 @@ class ExportResult:
     error: str = ""
     timestamp: datetime | None = None
 
-class SeparationError(Exception):
-    """Error base para separación de datos"""
-    def __init__(self, message: str, error_code: str | None = None, details: dict | None = None) -> None:
-        super().__init__(message)
-        self.error_code = error_code
-        self.details = details or {}
-
-class TemplateError(SeparationError):
-    """Error específico de plantilla Excel"""
-
-class ConfigurationError(SeparationError):
-    """Error de configuración inválida"""
-
-class MemoryError(SeparationError):
-    """Error de memoria insuficiente"""
-
 class ExcelTemplateSplitter:
     """Clase principal para separación de datos con plantillas Excel"""
     
