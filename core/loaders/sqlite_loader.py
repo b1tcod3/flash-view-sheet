@@ -72,7 +72,7 @@ class SqliteLoader(FileLoader):
             table_names = inspector.get_table_names()
             
             return table_names[0] if table_names else None
-        except:
+        except Exception:
             return None
 
     def get_file_info(self) -> dict[str, Any]:
@@ -172,7 +172,7 @@ class SqliteLoader(FileLoader):
             engine = sa.create_engine(f'sqlite:///{self.filepath}')
             inspector = sa.inspect(engine)
             return inspector.get_table_names()
-        except:
+        except Exception:
             return []
 
     def _estimate_rows(self) -> int:
@@ -193,5 +193,5 @@ class SqliteLoader(FileLoader):
             stmt = sa.select(sa.func.count().label('count')).select_from(db_table)  # pylint: disable=not-callable
             result = pd.read_sql(stmt, engine)
             return result['count'].iloc[0]
-        except:
+        except Exception:
             return super()._estimate_rows()

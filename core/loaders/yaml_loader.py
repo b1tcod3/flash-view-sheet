@@ -85,7 +85,7 @@ class YamlLoader(FileLoader):
                         data = yaml.safe_load(f)
                         data_type = type(data).__name__
                         is_list = isinstance(data, list)
-                except:
+                except Exception:
                     data_type = 'unknown'
                     is_list = False
                     
@@ -130,5 +130,5 @@ class YamlLoader(FileLoader):
                 return len(data['data'])
             else:
                 return 1  # Single row from dictionary
-        except:
+        except Exception:
             return super()._estimate_rows()

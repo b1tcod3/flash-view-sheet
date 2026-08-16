@@ -57,7 +57,7 @@ class JsonLoader(FileLoader):
                     content = f.read(1000)  # Read first 1KB to get structure
                     is_array = content.strip().startswith('[')
                     
-            except:
+            except Exception:
                 is_array = False
             
             return {
@@ -86,5 +86,5 @@ class JsonLoader(FileLoader):
                 if content.strip().startswith('[') and content.strip().endswith(']'):
                     return content.count('{')  # Count objects
                 return 1  # Single object
-        except:
+        except Exception:
             return super()._estimate_rows()

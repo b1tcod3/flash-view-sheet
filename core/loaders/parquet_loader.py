@@ -135,5 +135,5 @@ class ParquetLoader(FileLoader):
                 total_rows += parquet_file.metadata.row_group(i).num_rows
             
             return total_rows
-        except:
+        except Exception:
             return super()._estimate_rows()

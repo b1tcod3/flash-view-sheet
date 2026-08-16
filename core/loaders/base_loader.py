@@ -115,5 +115,5 @@ class FileLoader(ABC):
                 file_size = Path(self.filepath).stat().st_size
                 line_length = 100  # Rough estimate
                 return file_size // line_length
-        except:
+        except Exception:
             return 0

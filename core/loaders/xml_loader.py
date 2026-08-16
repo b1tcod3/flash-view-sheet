@@ -81,7 +81,7 @@ class XmlLoader(FileLoader):
                             root_tag = line.strip().split()[0][1:]
                             break
                             
-            except:
+            except Exception:
                 root_tag = 'unknown'
             
             # Count elements (rough estimate)
@@ -89,7 +89,7 @@ class XmlLoader(FileLoader):
                 with open(self.filepath, 'r', encoding='utf-8') as f:
                     content = f.read()
                     element_count = content.count('<') // 2  # Rough estimate
-            except:
+            except Exception:
                 element_count = 0
             
             return {
@@ -117,5 +117,5 @@ class XmlLoader(FileLoader):
                 content = f.read()
                 # Count root children (rough estimate)
                 return content.count('<') // 2
-        except:
+        except Exception:
             return super()._estimate_rows()

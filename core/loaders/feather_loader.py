@@ -126,5 +126,5 @@ class FeatherLoader(FileLoader):
             import pyarrow.feather as pf
             feather_file = pf.read_table(self.filepath)
             return len(feather_file)
-        except:
+        except Exception:
             return super()._estimate_rows()

@@ -184,7 +184,7 @@ class FolderLoader:
 
             # Cap at reasonable maximum to avoid unrealistic estimates
             return min(estimated_rows, 1000000)
-        except:
+        except Exception:
             return 0
 
     def clear_metadata_cache(self) -> None:

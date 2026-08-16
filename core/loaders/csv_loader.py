@@ -111,5 +111,5 @@ class CsvLoader(FileLoader):
                 # Count lines efficiently
                 line_count = sum(1 for _ in f)
                 return line_count - 1  # Subtract header row
-        except:
+        except Exception:
             return super()._estimate_rows()

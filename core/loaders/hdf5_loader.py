@@ -128,5 +128,5 @@ class Hdf5Loader(FileLoader):
         try:
             df = pd.read_hdf(self.filepath, stop=1000)
             return len(df)
-        except:
+        except Exception:
             return super()._estimate_rows()

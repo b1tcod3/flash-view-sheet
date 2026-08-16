@@ -61,7 +61,7 @@ class ExcelLoader(FileLoader):
                 excel_file = pd.ExcelFile(self.filepath)
                 sheets = excel_file.sheet_names
                 sheet_count = len(sheets)
-            except:
+            except Exception:
                 sheets = ['Default']
                 sheet_count = 1
             
@@ -97,5 +97,5 @@ class ExcelLoader(FileLoader):
             if sample_estimated_size > 0:
                 return int((file_size / sample_estimated_size) * sample_size)
             return 0
-        except:
+        except Exception:
             return super()._estimate_rows()
