@@ -111,36 +111,11 @@ class DataJoinManager:
                 result.warnings.append("Cross join no requiere columnas de join")
             return result
 
-        if not config.left_keys:
-            result.errors.append("Columnas de join del dataset izquierdo son requeridas")
-            result.is_valid = False
-
-        if not config.right_keys:
-            result.errors.append("Columnas de join del dataset derecho son requeridas")
-            result.is_valid = False
-
-        if len(config.left_keys) != len(config.right_keys):
-            result.errors.append("Número de columnas de join debe ser igual en ambos datasets")
-            result.is_valid = False
-
-        missing_left = [col for col in config.left_keys if col not in self.left_df.columns]
-        if missing_left:
-            result.errors.append(f"Columnas no encontradas en dataset izquierdo: {missing_left}")
-            result.is_valid = False
-
-        missing_right = [col for col in config.right_keys if col not in self.right_df.columns]
-        if missing_right:
-            result.errors.append(f"Columnas no encontradas en dataset derecho: {missing_right}")
-            result.is_valid = False
+        result.errors.extend(self._validate_key_columns(config))
+        result.is_valid = not result.errors
 
         if result.is_valid and config.validate_integrity:
-            for left_key, right_key in zip(config.left_keys, config.right_keys):
-                left_dtype = self.left_df[left_key].dtype
-                right_dtype = self.right_df[right_key].dtype
-                if left_dtype != right_dtype:
-                    result.warnings.append(
-                        f"Tipos de datos diferentes para {left_key} ({left_dtype}) y {right_key} ({right_dtype})"
-                    )
+            result.warnings.extend(self._validate_dtype_mismatches(config))
 
         left_cols = set(self.left_df.columns)
         right_cols = set(self.right_df.columns)
@@ -150,6 +125,33 @@ class DataJoinManager:
             result.suggestions.append("Considere usar sufijos personalizados")
 
         return result
+
+    def _validate_key_columns(self, config: JoinConfig) -> list[str]:
+        errors = []
+        if not config.left_keys:
+            errors.append("Columnas de join del dataset izquierdo son requeridas")
+        if not config.right_keys:
+            errors.append("Columnas de join del dataset derecho son requeridas")
+        if len(config.left_keys) != len(config.right_keys):
+            errors.append("Número de columnas de join debe ser igual en ambos datasets")
+        missing_left = [col for col in config.left_keys if col not in self.left_df.columns]
+        if missing_left:
+            errors.append(f"Columnas no encontradas en dataset izquierdo: {missing_left}")
+        missing_right = [col for col in config.right_keys if col not in self.right_df.columns]
+        if missing_right:
+            errors.append(f"Columnas no encontradas en dataset derecho: {missing_right}")
+        return errors
+
+    def _validate_dtype_mismatches(self, config: JoinConfig) -> list[str]:
+        warnings = []
+        for left_key, right_key in zip(config.left_keys, config.right_keys):
+            left_dtype = self.left_df[left_key].dtype
+            right_dtype = self.right_df[right_key].dtype
+            if left_dtype != right_dtype:
+                warnings.append(
+                    f"Tipos de datos diferentes para {left_key} ({left_dtype}) y {right_key} ({right_dtype})"
+                )
+        return warnings
 
     def get_join_preview(self, config: JoinConfig, max_rows: int = 100) -> pd.DataFrame:
         """

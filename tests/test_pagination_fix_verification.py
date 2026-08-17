@@ -59,6 +59,23 @@ def test_sorting_preserves_pagination() -> None:
         print("   ❌ FALLO: No hay modelo disponible")
         return False
     
+    page_preserved = _verify_sorting(model, data_view, target_page)
+    
+    print()
+    
+    # Test 3: Navegación después del ordenamiento
+    navigation_ok = _verify_navigation_after_sort(data_view)
+    
+    print()
+    
+    # Test 4: Ordenamiento en otra dirección
+    multiple_sorting_ok = _verify_second_sort(model, data_view)
+    
+    print()
+    
+    return page_preserved and navigation_ok and multiple_sorting_ok
+
+def _verify_sorting(model, data_view, target_page: int) -> bool:
     # Verificar datos antes del ordenamiento
     page_data_before = data_view.pagination_manager.get_page_data()
     print(f"   Filas en página antes del ordenamiento: {len(page_data_before)}")
@@ -111,9 +128,9 @@ def test_sorting_preserves_pagination() -> None:
         traceback.print_exc()
         return False
     
-    print()
-    
-    # Test 3: Navegación después del ordenamiento
+    return page_preserved
+
+def _verify_navigation_after_sort(data_view) -> bool:
     print("3️⃣ Navegación después del ordenamiento")
     
     try:
@@ -139,9 +156,9 @@ def test_sorting_preserves_pagination() -> None:
         print(f"   ❌ Error durante navegación: {e}")
         navigation_ok = False
     
-    print()
-    
-    # Test 4: Ordenamiento en otra dirección
+    return navigation_ok
+
+def _verify_second_sort(model, data_view) -> bool:
     print("4️⃣ Ordenamiento en dirección opuesta")
     
     try:
@@ -166,9 +183,7 @@ def test_sorting_preserves_pagination() -> None:
         print(f"   ❌ Error en segundo ordenamiento: {e}")
         multiple_sorting_ok = False
     
-    print()
-    
-    return page_preserved and navigation_ok and multiple_sorting_ok
+    return multiple_sorting_ok
 
 def test_different_column_types() -> None:
     """Test ordenamiento en diferentes tipos de columnas"""

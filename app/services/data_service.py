@@ -69,13 +69,7 @@ class FolderLoaderThread(QThread):
             if self.isInterruptionRequested():
                 return
             
-            if self.config and hasattr(self.config, 'should_include_file'):
-                selected_files = [
-                    meta['filepath'] for meta in all_metadata
-                    if self.config.should_include_file(meta['filename'])
-                ]
-            else:
-                selected_files = [meta['filepath'] for meta in all_metadata]
+            selected_files = self._select_files(all_metadata)
             
             if not selected_files:
                 self.error_occurred.emit("No se encontraron archivos válidos en la carpeta.")
@@ -85,9 +79,7 @@ class FolderLoaderThread(QThread):
             self.progress_updated.emit(0, total_files)
             
             consolidator = ExcelConsolidator()
-            
-            if self.config and hasattr(self.config, 'column_rename_mapping') and self.config.column_rename_mapping:
-                consolidator.set_column_mappings(self.config.column_rename_mapping)
+            self._apply_rename_mapping(consolidator)
             
             def _progress_callback(progress: float) -> None:
                 if self.isInterruptionRequested():
@@ -109,6 +101,18 @@ class FolderLoaderThread(QThread):
         except Exception as e:
             if not self.isInterruptionRequested():
                 self.error_occurred.emit(str(e))
+
+    def _select_files(self, all_metadata: list[dict[str, Any]]) -> list[str]:
+        if self.config and hasattr(self.config, 'should_include_file'):
+            return [
+                meta['filepath'] for meta in all_metadata
+                if self.config.should_include_file(meta['filename'])
+            ]
+        return [meta['filepath'] for meta in all_metadata]
+
+    def _apply_rename_mapping(self, consolidator: ExcelConsolidator) -> None:
+        if self.config and hasattr(self.config, 'column_rename_mapping') and self.config.column_rename_mapping:
+            consolidator.set_column_mappings(self.config.column_rename_mapping)
 
 class DataService:
     """

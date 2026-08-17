@@ -219,6 +219,23 @@ def compute_result_columns(
         else:
             result_cols.append(col)
 
+    result_cols.extend(_right_result_columns(
+        right_columns, right_key_set, paired_keys, left_key_set, conflicting, right_suffix
+    ))
+
+    return result_cols
+
+
+def _right_result_columns(
+    right_columns: list[str],
+    right_key_set: set[str],
+    paired_keys: list[tuple[str, str]],
+    left_key_set: set[str],
+    conflicting: set[str],
+    right_suffix: str,
+) -> list[str]:
+    result_cols: list[str] = []
+
     for col in right_columns:
         if col in right_key_set:
             paired_left = next(
@@ -226,14 +243,10 @@ def compute_result_columns(
             )
             if paired_left and paired_left in left_key_set and col == paired_left:
                 continue
-            elif paired_left and paired_left in left_key_set:
-                result_cols.append(col)
-            else:
-                result_cols.append(col)
+            result_cols.append(col)
+        elif col in conflicting:
+            result_cols.append(f"{col}{right_suffix}")
         else:
-            if col in conflicting:
-                result_cols.append(f"{col}{right_suffix}")
-            else:
-                result_cols.append(col)
+            result_cols.append(col)
 
     return result_cols

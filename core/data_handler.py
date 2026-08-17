@@ -1060,62 +1060,12 @@ class ExcelTemplateSplitter:
                 }
             
             # 3. Procesar separación
-            results = []
-            groups_processed = 0
-            group_errors = []
-            
-            for group_name, group_df in self.df.groupby(self.config.separator_column):
-                try:
-                    # Verificar cancelación
-                    if hasattr(self, '_cancelled') and self._cancelled:
-                        break
-                    
-                    # Procesar grupo individual
-                    result = self._export_group(str(group_name), group_df)
-                    results.append(result)
-                    
-                    groups_processed += 1
-                    
-                    if not result.success:
-                        error_msg = result.error or "Error exportando grupo"
-                        self.failed_groups[str(group_name)] = error_msg
-                        group_errors.append(f"Grupo '{group_name}': {error_msg}")
-                    
-                    # Callback de progreso (se lee en cada iteración para soportar
-                    # asignación posterior a la creación del splitter)
-                    callback = self.config.progress_callback or self.progress_callback
-                    if callback:
-                        callback(groups_processed, analysis['estimated_groups'])
-                    
-                except Exception as e:
-                    self.logger.error("Error procesando grupo %s: %s", group_name, str(e))
-                    error_result = ExportResult(
-                        success=False,
-                        group_name=str(group_name),
-                        error=str(e)
-                    )
-                    results.append(error_result)
-                    self.failed_groups[str(group_name)] = str(e)
-                    group_errors.append(f"Grupo '{group_name}': {str(e)}")
+            results, groups_processed, group_errors = self._process_groups(analysis)
             
             # 4. Generar resumen
-            processing_time = time.time() - start_time
-            successful_exports = [r for r in results if r.success]
-            failed_exports = [r for r in results if not r.success]
-            
-            return {
-                'success': len(successful_exports) > 0,
-                'files_created': [r.file_path for r in successful_exports],
-                'groups_processed': groups_processed,
-                'total_rows': self.df.shape[0],
-                'successful_exports': len(successful_exports),
-                'failed_exports': len(failed_exports),
-                'processing_time': processing_time,
-                'errors': validation.errors + group_errors,
-                'warnings': validation.warnings,
-                'failed_groups': self.failed_groups,
-                'analysis': analysis
-            }
+            return self._build_export_summary(
+                validation, analysis, results, groups_processed, group_errors, start_time
+            )
             
         except Exception as e:
             self.logger.error("Error crítico en separación: %s", str(e))
@@ -1124,6 +1074,73 @@ class ExcelTemplateSplitter:
                 'error': str(e),
                 'processing_time': time.time() - start_time
             }
+
+    def _process_groups(self, analysis: dict[str, Any]) -> tuple[list[ExportResult], int, list[str]]:
+        results = []
+        groups_processed = 0
+        group_errors = []
+        
+        for group_name, group_df in self.df.groupby(self.config.separator_column):
+            try:
+                # Verificar cancelación
+                if hasattr(self, '_cancelled') and self._cancelled:
+                    break
+                
+                # Procesar grupo individual
+                result = self._export_group(str(group_name), group_df)
+                results.append(result)
+                groups_processed += 1
+                
+                if not result.success:
+                    error_msg = result.error or "Error exportando grupo"
+                    self.failed_groups[str(group_name)] = error_msg
+                    group_errors.append(f"Grupo '{group_name}': {error_msg}")
+                
+                # Callback de progreso (se lee en cada iteración para soportar
+                # asignación posterior a la creación del splitter)
+                callback = self.config.progress_callback or self.progress_callback
+                if callback:
+                    callback(groups_processed, analysis['estimated_groups'])
+                
+            except Exception as e:
+                self.logger.error("Error procesando grupo %s: %s", group_name, str(e))
+                error_result = ExportResult(
+                    success=False,
+                    group_name=str(group_name),
+                    error=str(e)
+                )
+                results.append(error_result)
+                self.failed_groups[str(group_name)] = str(e)
+                group_errors.append(f"Grupo '{group_name}': {str(e)}")
+        
+        return results, groups_processed, group_errors
+
+    def _build_export_summary(
+        self,
+        validation: object,
+        analysis: dict[str, Any],
+        results: list[ExportResult],
+        groups_processed: int,
+        group_errors: list[str],
+        start_time: float
+    ) -> dict[str, Any]:
+        processing_time = time.time() - start_time
+        successful_exports = [r for r in results if r.success]
+        failed_exports = [r for r in results if not r.success]
+        
+        return {
+            'success': len(successful_exports) > 0,
+            'files_created': [r.file_path for r in successful_exports],
+            'groups_processed': groups_processed,
+            'total_rows': self.df.shape[0],
+            'successful_exports': len(successful_exports),
+            'failed_exports': len(failed_exports),
+            'processing_time': processing_time,
+            'errors': validation.errors + group_errors,
+            'warnings': validation.warnings,
+            'failed_groups': self.failed_groups,
+            'analysis': analysis
+        }
     
     def _export_group(self, group_name: str, group_df: pd.DataFrame) -> ExportResult:
         """Exportar un grupo individual"""

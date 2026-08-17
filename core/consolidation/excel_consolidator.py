@@ -68,26 +68,7 @@ class ExcelConsolidator:
         max_columns = max(len(df['columns']) for df in self.dataframes)
 
         # Create aligned DataFrames
-        aligned_dfs = []
-        for df_info in self.dataframes:
-            df = df_info['dataframe']
-            columns = df_info['columns']
-
-            # Pad with NaN columns if necessary
-            if len(columns) < max_columns:
-                for i in range(len(columns), max_columns):
-                    df[f'__extra_col_{i}__'] = pd.NA
-                    columns.append(f'__extra_col_{i}__')
-
-            # Reorder columns to match positions
-            df_aligned = df[columns[:max_columns]]
-
-            # Add source column if specified
-            if df_info['source']:
-                df_aligned = df_aligned.copy()
-                df_aligned['__source__'] = df_info['source']
-
-            aligned_dfs.append(df_aligned)
+        aligned_dfs = [self._align_dataframe(df_info, max_columns) for df_info in self.dataframes]
 
         # Concatenate all DataFrames
         consolidated = pd.concat(aligned_dfs, ignore_index=True)
@@ -100,21 +81,43 @@ class ExcelConsolidator:
         extra_cols = [col for col in consolidated.columns if col.startswith('__extra_col_')]
         consolidated = consolidated.drop(columns=extra_cols)
 
-        # Apply column selection
-        if self.included_columns or self.excluded_columns:
-            columns_to_keep = []
-            for col in consolidated.columns:
-                if col == '__source__':  # Always keep source column if present
-                    columns_to_keep.append(col)
-                elif self.excluded_columns and col in self.excluded_columns:
-                    continue
-                elif self.included_columns and col not in self.included_columns:
-                    continue
-                else:
-                    columns_to_keep.append(col)
-            consolidated = consolidated[columns_to_keep]
+        return self._apply_column_selection(consolidated)
 
-        return consolidated
+    def _align_dataframe(self, df_info: dict[str, Any], max_columns: int) -> pd.DataFrame:
+        df = df_info['dataframe']
+        columns = df_info['columns']
+
+        # Pad with NaN columns if necessary
+        if len(columns) < max_columns:
+            for i in range(len(columns), max_columns):
+                df[f'__extra_col_{i}__'] = pd.NA
+                columns.append(f'__extra_col_{i}__')
+
+        # Reorder columns to match positions
+        df_aligned = df[columns[:max_columns]]
+
+        # Add source column if specified
+        if df_info['source']:
+            df_aligned = df_aligned.copy()
+            df_aligned['__source__'] = df_info['source']
+
+        return df_aligned
+
+    def _apply_column_selection(self, df: pd.DataFrame) -> pd.DataFrame:
+        if not self.included_columns and not self.excluded_columns:
+            return df
+
+        columns_to_keep = []
+        for col in df.columns:
+            if col == '__source__':  # Always keep source column if present
+                columns_to_keep.append(col)
+            elif self.excluded_columns and col in self.excluded_columns:
+                continue
+            elif self.included_columns and col not in self.included_columns:
+                continue
+            else:
+                columns_to_keep.append(col)
+        return df[columns_to_keep]
 
     def get_column_alignment_preview(self) -> list[dict[str, Any]]:
         """
@@ -184,16 +187,7 @@ class ExcelConsolidator:
 
             # Clear previous dataframes to free memory
             self.clear()
-
-            # Load chunk
-            for file_path in chunk_files:
-                try:
-                    df = pd.read_excel(file_path)
-                    self.add_dataframe(df, Path(file_path).name)
-                except Exception as e:
-                    # Log error but continue with other files
-                    print(f"Error loading {file_path}: {e}")
-                    continue
+            self._load_chunk(chunk_files)
 
             # Consolidate chunk
             if self.dataframes:
@@ -206,30 +200,26 @@ class ExcelConsolidator:
                 progress_callback(progress)
 
         # Final consolidation of all chunks
-        if consolidated_chunks:
-            final_result = pd.concat(consolidated_chunks, ignore_index=True)
-
-            # Apply column mappings if set
-            if self.column_mappings:
-                final_result = final_result.rename(columns=self.column_mappings)
-
-            # Apply column selection
-            if self.included_columns or self.excluded_columns:
-                columns_to_keep = []
-                for col in final_result.columns:
-                    if col == '__source__':  # Always keep source column if present
-                        columns_to_keep.append(col)
-                    elif self.excluded_columns and col in self.excluded_columns:
-                        continue
-                    elif self.included_columns and col not in self.included_columns:
-                        continue
-                    else:
-                        columns_to_keep.append(col)
-                final_result = final_result[columns_to_keep]
-
-            return final_result
-        else:
+        if not consolidated_chunks:
             return pd.DataFrame()
+
+        final_result = pd.concat(consolidated_chunks, ignore_index=True)
+
+        # Apply column mappings if set
+        if self.column_mappings:
+            final_result = final_result.rename(columns=self.column_mappings)
+
+        return self._apply_column_selection(final_result)
+
+    def _load_chunk(self, chunk_files: list[str]) -> None:
+        for file_path in chunk_files:
+            try:
+                df = pd.read_excel(file_path)
+                self.add_dataframe(df, Path(file_path).name)
+            except Exception as e:
+                # Log error but continue with other files
+                print(f"Error loading {file_path}: {e}")
+                continue
 
     def clear(self) -> None:
         """Clear all DataFrames"""

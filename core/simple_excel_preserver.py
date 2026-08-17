@@ -71,73 +71,83 @@ class SimpleExcelFormatPreserver:
             format_info: Dict con formato a restaurar
         """
         try:
-            # Restaurar font construyendo un nuevo objeto (evita mutar estilos inmutables)
-            if format_info.get('font'):
-                from openpyxl.styles import Font, Color
-                font_info = format_info['font']
-                kwargs = {}
-                if font_info.get('name'):
-                    kwargs['name'] = font_info['name']
-                if font_info.get('size'):
-                    kwargs['size'] = font_info['size']
-                if font_info.get('bold') is not None:
-                    kwargs['bold'] = font_info['bold']
-                if font_info.get('italic') is not None:
-                    kwargs['italic'] = font_info['italic']
-                if font_info.get('color'):
-                    kwargs['color'] = Color(rgb=font_info['color'])
-                if kwargs:
-                    cell.font = Font(**kwargs)
-            
-            # Restaurar fill
-            if format_info.get('fill'):
-                fill_info = format_info['fill']
-                if fill_info.get('start_color') and fill_info.get('fill_type'):
-                    from openpyxl.styles import PatternFill
-                    cell.fill = PatternFill(
-                        start_color=fill_info['start_color'],
-                        end_color=fill_info['start_color'],
-                        fill_type=fill_info['fill_type']
-                    )
-            
-            # Restaurar border
-            if format_info.get('border'):
-                border_info = format_info['border']
-                from openpyxl.styles import Border, Side
-                
-                sides = {}
-                for side_name, side_info in border_info.items():
-                    if side_info and side_info.get('style'):
-                        side = Side(
-                            border_style=side_info['style'],
-                            color=Color(rgb=side_info['color']) if side_info.get('color') else None
-                        )
-                        sides[side_name] = side
-                
-                if sides:
-                    cell.border = Border(**sides)
-            
-            # Restaurar alignment
-            if format_info.get('alignment'):
-                align_info = format_info['alignment']
-                from openpyxl.styles import Alignment
-                alignment_kwargs = {}
-                if align_info.get('horizontal'):
-                    alignment_kwargs['horizontal'] = align_info['horizontal']
-                if align_info.get('vertical'):
-                    alignment_kwargs['vertical'] = align_info['vertical']
-                if align_info.get('wrap_text') is not None:
-                    alignment_kwargs['wrap_text'] = align_info['wrap_text']
-                
-                if alignment_kwargs:
-                    cell.alignment = Alignment(**alignment_kwargs)
-            
-            # Restaurar number format
-            if format_info.get('number_format') and format_info['number_format'] != 'General':
-                cell.number_format = format_info['number_format']
-        
+            SimpleExcelFormatPreserver._restore_font(cell, format_info)
+            SimpleExcelFormatPreserver._restore_fill(cell, format_info)
+            SimpleExcelFormatPreserver._restore_border(cell, format_info)
+            SimpleExcelFormatPreserver._restore_alignment(cell, format_info)
+            SimpleExcelFormatPreserver._restore_number_format(cell, format_info)
         except Exception as e:
             print(f"Warning: No se pudo restaurar formato completo: {e}")
+
+    @staticmethod
+    def _restore_font(cell: Any, format_info: dict[str, Any]) -> None:
+        if not format_info.get('font'):
+            return
+        from openpyxl.styles import Font, Color
+        font_info = format_info['font']
+        kwargs = {}
+        if font_info.get('name'):
+            kwargs['name'] = font_info['name']
+        if font_info.get('size'):
+            kwargs['size'] = font_info['size']
+        if font_info.get('bold') is not None:
+            kwargs['bold'] = font_info['bold']
+        if font_info.get('italic') is not None:
+            kwargs['italic'] = font_info['italic']
+        if font_info.get('color'):
+            kwargs['color'] = Color(rgb=font_info['color'])
+        if kwargs:
+            cell.font = Font(**kwargs)
+
+    @staticmethod
+    def _restore_fill(cell: Any, format_info: dict[str, Any]) -> None:
+        if format_info.get('fill'):
+            fill_info = format_info['fill']
+            if fill_info.get('start_color') and fill_info.get('fill_type'):
+                from openpyxl.styles import PatternFill
+                cell.fill = PatternFill(
+                    start_color=fill_info['start_color'],
+                    end_color=fill_info['start_color'],
+                    fill_type=fill_info['fill_type']
+                )
+
+    @staticmethod
+    def _restore_border(cell: Any, format_info: dict[str, Any]) -> None:
+        if not format_info.get('border'):
+            return
+        from openpyxl.styles import Border, Side, Color
+        border_info = format_info['border']
+        sides = {}
+        for side_name, side_info in border_info.items():
+            if side_info and side_info.get('style'):
+                side = Side(
+                    border_style=side_info['style'],
+                    color=Color(rgb=side_info['color']) if side_info.get('color') else None
+                )
+                sides[side_name] = side
+        if sides:
+            cell.border = Border(**sides)
+
+    @staticmethod
+    def _restore_alignment(cell: Any, format_info: dict[str, Any]) -> None:
+        if not format_info.get('alignment'):
+            return
+        align_info = format_info['alignment']
+        from openpyxl.styles import Alignment
+        alignment_kwargs = {}
+        if align_info.get('horizontal'):
+            alignment_kwargs['horizontal'] = align_info['horizontal']
+        if align_info.get('vertical'):
+            alignment_kwargs['vertical'] = align_info['vertical']
+        if align_info.get('wrap_text') is not None:
+            alignment_kwargs['wrap_text'] = align_info['wrap_text']
+        if alignment_kwargs:
+            cell.alignment = Alignment(**alignment_kwargs)
+
+    @staticmethod
+    def _restore_number_format(cell: Any, format_info: dict[str, Any]) -> None:
+        if format_info.get('number_format') and format_info['number_format'] != 'General':
+            cell.number_format = format_info['number_format']
     
     def backup_area_formatting(self, worksheet: Any, start_cell: str, area_size: tuple[int, int]) -> dict[str, Any]:
         """

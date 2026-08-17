@@ -38,51 +38,57 @@ class ExcelFormatPreserver:
         
         # Cachear estilos nombrados
         if hasattr(workbook, 'named_styles'):
-            if isinstance(workbook.named_styles, dict):
-                for style_name, style in workbook.named_styles.items():
-                    formats_cache['named_styles'][style_name] = copy.deepcopy(style)
-            else:
-                # named_styles es una lista
-                for style in workbook.named_styles:
-                    if hasattr(style, 'name'):
-                        formats_cache['named_styles'][style.name] = copy.deepcopy(style)
+            self._cache_named_styles(workbook, formats_cache)
         
         # Cachear formatos por worksheet
         if hasattr(workbook, 'worksheets'):
-            if isinstance(workbook.worksheets, dict):
-                worksheets_items = workbook.worksheets.items()
-            else:
-                # worksheets es una lista
-                worksheets_items = [(ws.title, ws) for ws in workbook.worksheets]
-            
-            for sheet_name, worksheet in worksheets_items:
-                sheet_cache = {
-                    'cell_formats': {},
-                    'column_widths': {},
-                    'row_heights': {},
-                    'merged_cells': list(worksheet.merged_cells.ranges),
-                    'page_setup': getattr(worksheet, 'page_setup', None),
-                    'print_options': getattr(worksheet, 'print_options', None)
-                }
-                
-                # Cachear formato de celdas individuales
-                for row in worksheet.iter_rows():
-                    for cell in row:
-                        if cell.value is not None or self._has_formatting(cell):
-                            cell_format = self._extract_cell_format(cell)
-                            sheet_cache['cell_formats'][cell.coordinate] = cell_format
-                
-                # Cachear anchos de columna
-                for col_letter, col_dim in worksheet.column_dimensions.items():
-                    sheet_cache['column_widths'][col_letter] = col_dim.width
-                
-                # Cachear alturas de fila
-                for row_num, row_dim in worksheet.row_dimensions.items():
-                    sheet_cache['row_heights'][row_num] = row_dim.height
-                
-                formats_cache['worksheet_formats'][sheet_name] = sheet_cache
+            self._cache_all_worksheets(workbook, formats_cache)
         
         return formats_cache
+
+    def _cache_named_styles(self, workbook: Any, formats_cache: dict[str, Any]) -> None:
+        if isinstance(workbook.named_styles, dict):
+            for style_name, style in workbook.named_styles.items():
+                formats_cache['named_styles'][style_name] = copy.deepcopy(style)
+        else:
+            # named_styles es una lista
+            for style in workbook.named_styles:
+                if hasattr(style, 'name'):
+                    formats_cache['named_styles'][style.name] = copy.deepcopy(style)
+
+    def _cache_all_worksheets(self, workbook: Any, formats_cache: dict[str, Any]) -> None:
+        if isinstance(workbook.worksheets, dict):
+            worksheets_items = workbook.worksheets.items()
+        else:
+            # worksheets es una lista
+            worksheets_items = [(ws.title, ws) for ws in workbook.worksheets]
+        
+        for sheet_name, worksheet in worksheets_items:
+            sheet_cache = {
+                'cell_formats': {},
+                'column_widths': {},
+                'row_heights': {},
+                'merged_cells': list(worksheet.merged_cells.ranges),
+                'page_setup': getattr(worksheet, 'page_setup', None),
+                'print_options': getattr(worksheet, 'print_options', None)
+            }
+            
+            # Cachear formato de celdas individuales
+            for row in worksheet.iter_rows():
+                for cell in row:
+                    if cell.value is not None or self._has_formatting(cell):
+                        cell_format = self._extract_cell_format(cell)
+                        sheet_cache['cell_formats'][cell.coordinate] = cell_format
+            
+            # Cachear anchos de columna
+            for col_letter, col_dim in worksheet.column_dimensions.items():
+                sheet_cache['column_widths'][col_letter] = col_dim.width
+            
+            # Cachear alturas de fila
+            for row_num, row_dim in worksheet.row_dimensions.items():
+                sheet_cache['row_heights'][row_num] = row_dim.height
+            
+            formats_cache['worksheet_formats'][sheet_name] = sheet_cache
     
     def restore_workbook_formats(self, workbook: Any, formats_cache: dict[str, Any]) -> None:
         """
@@ -98,40 +104,44 @@ class ExcelFormatPreserver:
         
         # Restaurar formatos por worksheet
         for sheet_name, sheet_cache in formats_cache.get('worksheet_formats', {}).items():
-            # Verificar si la hoja existe (soporte para diferentes versiones de openpyxl)
-            worksheet = None
-            if hasattr(workbook, 'sheetnames') and sheet_name in workbook.sheetnames:
-                worksheet = workbook[sheet_name]
-            elif hasattr(workbook, 'worksheets'):
-                for ws in workbook.worksheets:
-                    if ws.title == sheet_name:
-                        worksheet = ws
-                        break
-            
+            worksheet = self._find_worksheet(workbook, sheet_name)
             if worksheet:
-                # Restaurar merged cells
-                if hasattr(worksheet.merged_cells, 'ranges'):
-                    worksheet.merged_cells.ranges.clear()
-                    for merged_range in sheet_cache.get('merged_cells', []):
-                        worksheet.merge_cells(str(merged_range))
-                
-                # Restaurar anchos de columna
-                for col_letter, width in sheet_cache.get('column_widths', {}).items():
-                    if hasattr(worksheet.column_dimensions, 'items'):
-                        worksheet.column_dimensions[col_letter].width = width
-                
-                # Restaurar alturas de fila
-                for row_num, height in sheet_cache.get('row_heights', {}).items():
-                    if hasattr(worksheet.row_dimensions, 'items'):
-                        worksheet.row_dimensions[row_num].height = height
-                
-                # Restaurar formato de celdas individuales
-                for cell_coord, cell_format in sheet_cache.get('cell_formats', {}).items():
-                    try:
-                        cell = worksheet[cell_coord]
-                        self._apply_cell_format(cell, cell_format)
-                    except Exception as e:
-                        print(f"Warning: No se pudo restaurar formato de celda {cell_coord}: {e}")
+                self._restore_sheet_formats(worksheet, sheet_cache)
+
+    @staticmethod
+    def _find_worksheet(workbook: Any, sheet_name: str) -> Any:
+        if hasattr(workbook, 'sheetnames') and sheet_name in workbook.sheetnames:
+            return workbook[sheet_name]
+        if hasattr(workbook, 'worksheets'):
+            for ws in workbook.worksheets:
+                if ws.title == sheet_name:
+                    return ws
+        return None
+
+    def _restore_sheet_formats(self, worksheet: Any, sheet_cache: dict[str, Any]) -> None:
+        # Restaurar merged cells
+        if hasattr(worksheet.merged_cells, 'ranges'):
+            worksheet.merged_cells.ranges.clear()
+            for merged_range in sheet_cache.get('merged_cells', []):
+                worksheet.merge_cells(str(merged_range))
+        
+        # Restaurar anchos de columna
+        for col_letter, width in sheet_cache.get('column_widths', {}).items():
+            if hasattr(worksheet.column_dimensions, 'items'):
+                worksheet.column_dimensions[col_letter].width = width
+        
+        # Restaurar alturas de fila
+        for row_num, height in sheet_cache.get('row_heights', {}).items():
+            if hasattr(worksheet.row_dimensions, 'items'):
+                worksheet.row_dimensions[row_num].height = height
+        
+        # Restaurar formato de celdas individuales
+        for cell_coord, cell_format in sheet_cache.get('cell_formats', {}).items():
+            try:
+                cell = worksheet[cell_coord]
+                self._apply_cell_format(cell, cell_format)
+            except Exception as e:
+                print(f"Warning: No se pudo restaurar formato de celda {cell_coord}: {e}")
     
     @staticmethod
     def _extract_cell_format(cell: Any) -> dict[str, Any]:

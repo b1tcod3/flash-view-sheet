@@ -612,21 +612,7 @@ class ExportSeparatedDialog(QDialog):
         tpl_path = s.value("template_path", "")
         tpl_ext = s.value("template_ext", ".xlsx")
         if tpl_path and Path(tpl_path).exists():
-            self._template_path = tpl_path
-            self._template_ext = tpl_ext
-            self.template_path_label.setText(Path(tpl_path).name)
-            self.template_path_label.setStyleSheet("color: #111827;")
-            self.template_path_label.setToolTip(tpl_path)
-            try:
-                wb = openpyxl.load_workbook(tpl_path, read_only=True)
-                self.sheet_combo.blockSignals(True)
-                self.sheet_combo.clear()
-                self.sheet_combo.addItems(wb.sheetnames)
-                self.sheet_combo.setEnabled(True)
-                self.sheet_combo.blockSignals(False)
-                wb.close()
-            except Exception:
-                pass
+            self._load_template_settings(tpl_path, tpl_ext)
 
         cell = s.value("start_cell", "A1")
         idx = self.start_cell_combo.findText(cell)
@@ -654,24 +640,44 @@ class ExportSeparatedDialog(QDialog):
 
         mapping_str = s.value("column_mapping", "")
         if mapping_str:
-            try:
-                import ast
-                mapping = ast.literal_eval(mapping_str)
-                if isinstance(mapping, dict):
-                    for df_col, excel_col in mapping.items():
-                        for row in range(self.mapping_widget.mapping_table.rowCount()):
-                            item = self.mapping_widget.mapping_table.item(row, 0)
-                            if item and item.text() == df_col:
-                                combo = self.mapping_widget.mapping_table.cellWidget(row, 2)
-                                if combo:
-                                    idx = combo.findText(excel_col)
-                                    if idx >= 0:
-                                        combo.setCurrentIndex(idx)
-                                break
-            except Exception:
-                pass
+            self._load_mapping_settings(mapping_str)
 
         s.endGroup()
+
+    def _load_template_settings(self, tpl_path: str, tpl_ext: str) -> None:
+        self._template_path = tpl_path
+        self._template_ext = tpl_ext
+        self.template_path_label.setText(Path(tpl_path).name)
+        self.template_path_label.setStyleSheet("color: #111827;")
+        self.template_path_label.setToolTip(tpl_path)
+        try:
+            wb = openpyxl.load_workbook(tpl_path, read_only=True)
+            self.sheet_combo.blockSignals(True)
+            self.sheet_combo.clear()
+            self.sheet_combo.addItems(wb.sheetnames)
+            self.sheet_combo.setEnabled(True)
+            self.sheet_combo.blockSignals(False)
+            wb.close()
+        except Exception:
+            pass
+
+    def _load_mapping_settings(self, mapping_str: str) -> None:
+        import ast
+        try:
+            mapping = ast.literal_eval(mapping_str)
+            if isinstance(mapping, dict):
+                for df_col, excel_col in mapping.items():
+                    for row in range(self.mapping_widget.mapping_table.rowCount()):
+                        item = self.mapping_widget.mapping_table.item(row, 0)
+                        if item and item.text() == df_col:
+                            combo = self.mapping_widget.mapping_table.cellWidget(row, 2)
+                            if combo:
+                                idx = combo.findText(excel_col)
+                                if idx >= 0:
+                                    combo.setCurrentIndex(idx)
+                            break
+        except Exception:
+            pass
 
     # ── Selección de plantilla ──────────────────────────────────────
 
