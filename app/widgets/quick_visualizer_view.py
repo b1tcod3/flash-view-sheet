@@ -39,7 +39,7 @@ class QuickVisualizerView(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._df: pd.DataFrame | None = None
-        self._fig = None
+        self._fig: Figure
         self._setup_ui()
 
     def _setup_ui(self) -> None:

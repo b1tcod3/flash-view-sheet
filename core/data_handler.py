@@ -600,6 +600,7 @@ def pivotar_datos(df: pd.DataFrame, index: str, columns: str, values: str,
         DataFrame pivoteado
     """
     try:
+        func: Any
         if aggfunc == 'mean':
             func = np.mean
         elif aggfunc == 'sum':
@@ -799,9 +800,12 @@ class ExcelTemplateSplitter:
         self.config = config
         self.progress_callback = config.progress_callback
         self.logger = self._setup_logger()
-        self.created_files = []
-        self.failed_groups = {}
+        self.created_files: list[str] = []
+        self.failed_groups: dict[str, str] = {}
         self._cancelled = False
+        self.performance_optimizer: PerformanceOptimizer | None = None
+        self.excel_optimizer: ExcelFormatOptimizer | None = None
+        self.progress_monitor: ProgressMonitor | None = None
         
         # Verificar dependencias
         if not OPENPYXL_AVAILABLE:
@@ -822,21 +826,24 @@ class ExcelTemplateSplitter:
         """Configurar optimizaciones de rendimiento avanzadas"""
         # Inicializar optimizador de rendimiento si está disponible
         if PERFORMANCE_OPTIMIZER_AVAILABLE and self.config.enable_chunking:
-            self.performance_optimizer = PerformanceOptimizer(
+            performance_optimizer = PerformanceOptimizer(
                 memory_threshold_mb=self.config.max_memory_mb
             )
             
             # Determinar estrategia de chunking óptima
-            self.chunking_strategy = self.performance_optimizer.determine_optimal_chunking_strategy(
+            self.chunking_strategy = performance_optimizer.determine_optimal_chunking_strategy(
                 self.df, self.config.separator_column
             )
             
             # Configurar optimizador de formato Excel
-            self.excel_optimizer = ExcelFormatOptimizer()
+            excel_optimizer = ExcelFormatOptimizer()
             
             # Configurar monitor de progreso
-            self.progress_monitor = ProgressMonitor()
+            progress_monitor = ProgressMonitor()
             
+            self.performance_optimizer = performance_optimizer
+            self.excel_optimizer = excel_optimizer
+            self.progress_monitor = progress_monitor
             self.using_advanced_optimization = True
         else:
             # Fallback a optimización básica
@@ -900,7 +907,7 @@ class ExcelTemplateSplitter:
     
     def analyze_data(self) -> dict[str, Any]:
         """Analizar DataFrame para generar preview y validar separación"""
-        analysis = {}
+        analysis: dict[str, Any] = {}
         
         # Análisis básico
         analysis['total_rows'] = len(self.df)
@@ -1189,9 +1196,9 @@ class ExcelTemplateSplitter:
                 self.config.column_mapping = self.config.get_default_mapping(data.columns.tolist())
             
             # Convertir DataFrame a dict para el preserver
-            data_dict = {}
+            data_dict: dict[str, Any] = {}
             for row_offset, (_, row_data) in enumerate(data.iterrows()):
-                data_dict[row_offset] = row_data.to_dict()
+                data_dict[str(row_offset)] = row_data.to_dict()
             
             # Crear archivo con preservación de formato
             success = create_excel_with_simple_format_preservation(

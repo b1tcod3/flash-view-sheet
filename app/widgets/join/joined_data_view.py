@@ -35,11 +35,11 @@ class JoinedDataView(DataView):
         self.left_dataset_name: str = ""
         self.right_dataset_name: str = ""
 
-        self.metadata_text = None
-        self.export_btn = None
-        self.new_join_btn = None
-        self.history_btn = None
-        self.help_btn = None
+        self.metadata_text: QTextEdit
+        self.export_btn: QPushButton
+        self.new_join_btn: QPushButton
+        self.history_btn: QPushButton
+        self.help_btn: QPushButton
 
         self.add_join_metadata_section()
 
@@ -110,7 +110,7 @@ class JoinedDataView(DataView):
 
         return metadata_group
 
-    def set_join_result(self, result: JoinResult, left_name: str = "", right_name: str = ""):
+    def set_join_result(self, result: JoinResult, left_name: str = "", right_name: str = "") -> None:
         self.join_metadata = result.metadata
         self.left_dataset_name = left_name or "Dataset Izquierdo"
         self.right_dataset_name = right_name or "Dataset Derecho"
@@ -218,7 +218,7 @@ class JoinedDataView(DataView):
             item.setData(Qt.UserRole, entry.entry_id)
             list_widget.addItem(item)
 
-        def on_item_selected():
+        def on_item_selected() -> None:
             current_item = list_widget.currentItem()
             if current_item:
                 entry_id = current_item.data(Qt.UserRole)

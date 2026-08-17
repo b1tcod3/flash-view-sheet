@@ -20,6 +20,7 @@ from core.data_handler import cargar_datos
 from core.join.models import JoinConfig, JoinType
 from core.join.exceptions import JoinValidationError
 from app.services.join_service import JoinService, JoinWorkerThread, compute_result_columns
+from typing import cast
 
 logger = logging.getLogger(__name__)
 
@@ -42,28 +43,28 @@ class JoinDialog(QDialog):
         self._worker: JoinWorkerThread | None = None
         self._progress_dialog: QProgressDialog | None = None
 
-        self.right_info_label = None
-        self.join_type_group = None
-        self.left_key_combo = None
-        self.right_key_combo = None
-        self.left_suffix_edit = None
-        self.right_suffix_edit = None
-        self.validate_check = None
-        self.indicator_check = None
-        self.sort_check = None
-        self.select_columns_check = None
-        self.available_columns_list = None
-        self.add_column_btn = None
-        self.remove_column_btn = None
-        self.select_all_btn = None
-        self.clear_selection_btn = None
-        self.selected_columns_list = None
-        self.preview_stats_label = None
-        self.preview_table = None
-        self.update_preview_btn = None
-        self.validate_btn = None
-        self.execute_btn = None
-        self.cancel_btn = None
+        self.right_info_label: QLabel
+        self.join_type_group: QButtonGroup
+        self.left_key_combo: QComboBox
+        self.right_key_combo: QComboBox
+        self.left_suffix_edit: QLineEdit
+        self.right_suffix_edit: QLineEdit
+        self.validate_check: QCheckBox
+        self.indicator_check: QCheckBox
+        self.sort_check: QCheckBox
+        self.select_columns_check: QCheckBox
+        self.available_columns_list: QListWidget
+        self.add_column_btn: QPushButton
+        self.remove_column_btn: QPushButton
+        self.select_all_btn: QPushButton
+        self.clear_selection_btn: QPushButton
+        self.selected_columns_list: QListWidget
+        self.preview_stats_label: QLabel
+        self.preview_table: QTableWidget
+        self.update_preview_btn: QPushButton
+        self.validate_btn: QPushButton
+        self.execute_btn: QPushButton
+        self.cancel_btn: QPushButton
 
         self.setup_ui()
         self.setup_connections()
@@ -414,7 +415,7 @@ class JoinDialog(QDialog):
                 logger.error("Error cargando dataset derecho: %s\n%s", e, traceback.format_exc())
                 QMessageBox.critical(self, "Error", f"Error cargando archivo: {str(e)}")
 
-    def enable_join_config(self, enabled: bool):
+    def enable_join_config(self, enabled: bool) -> None:
         """Habilitar/deshabilitar configuración del join"""
         self.left_key_combo.setEnabled(enabled)
         self.right_key_combo.setEnabled(enabled)
@@ -616,7 +617,7 @@ class JoinDialog(QDialog):
             self.preview_table.setRowCount(0)
             self.preview_table.setColumnCount(0)
 
-    def update_preview_table(self, df: pd.DataFrame):
+    def update_preview_table(self, df: pd.DataFrame) -> None:
         """Actualizar tabla de preview"""
         if df.empty:
             self.preview_table.setRowCount(0)
@@ -799,7 +800,7 @@ class JoinDialog(QDialog):
         self._restore_buttons()
         self._worker = None
 
-        join_result: JoinResult = result
+        join_result: JoinResult = cast(JoinResult, result)
         if join_result.success:
             self.join_completed.emit(
                 join_result,

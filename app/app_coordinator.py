@@ -91,15 +91,15 @@ class AppCoordinator(QObject):
             filepath = filepaths[0]
             suffix = Path(filepath).suffix.lower()
             if suffix in ('.csv', '.tsv'):
-                dialog = CSVSeparatorDialog(self.parent_window)
-                if dialog.exec() != QDialog.Accepted:
+                csv_dialog = CSVSeparatorDialog(self.parent_window)
+                if csv_dialog.exec() != QDialog.Accepted:
                     return
-                self.iniciar_carga_archivo(filepath, separator=dialog.get_separator())
+                self.iniciar_carga_archivo(filepath, separator=csv_dialog.get_separator())
             elif suffix in ('.xlsx', '.xls'):
-                dialog = ExcelSheetDialog(filepath, self.parent_window)
-                if dialog.exec() != QDialog.Accepted:
+                excel_dialog = ExcelSheetDialog(filepath, self.parent_window)
+                if excel_dialog.exec() != QDialog.Accepted:
                     return
-                self.iniciar_carga_archivo(filepath, sheet_name=dialog.get_sheet_name())
+                self.iniciar_carga_archivo(filepath, sheet_name=excel_dialog.get_sheet_name())
             else:
                 self.iniciar_carga_archivo(filepath)
         elif len(filepaths) > 1:

@@ -279,13 +279,14 @@ class DataService:
                     thread.wait(1000)
         self._active_threads.clear()
 
-        for thread in (self.loading_thread, self.folder_loading_thread):
-            if thread and thread.isRunning():
-                thread.requestInterruption()
-                thread.quit()
-                if not thread.wait(2000):
-                    thread.terminate()
-                    thread.wait(1000)
+        threads: tuple[DataLoaderThread | FolderLoaderThread | None, ...] = (self.loading_thread, self.folder_loading_thread)
+        for active_thread in threads:
+            if active_thread and active_thread.isRunning():
+                active_thread.requestInterruption()
+                active_thread.quit()
+                if not active_thread.wait(2000):
+                    active_thread.terminate()
+                    active_thread.wait(1000)
 
         # 2. Cerrar diálogo de progreso
         self.close_progress_dialog()
