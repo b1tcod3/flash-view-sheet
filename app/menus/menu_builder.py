@@ -172,6 +172,8 @@ class MenuBuilder:
         return self.menu_bar
 
     def _build_archivo_menu(self) -> None:
+        if self.menu_bar is None:
+            return
         actions: list[QAction | None] = [
             self.abrir_action,
             self.cargar_carpeta_action,
@@ -191,6 +193,8 @@ class MenuBuilder:
         self.separar_menu.addAction(self.exportar_separado_action)
 
     def _build_datos_menu(self) -> None:
+        if self.menu_bar is None:
+            return
         self.datos_menu = DatosMenu.create(
             self.menu_bar, self.cruzar_datos_action, self.limpieza_rapida_action
         )
@@ -202,6 +206,8 @@ class MenuBuilder:
         self.tabla_pivote_menu.addAction(self.export_pivot_action)
 
     def _build_vista_menu(self) -> None:
+        if self.menu_bar is None:
+            return
         actions: list[QAction | None] = [
             self.vista_principal_action,
             self.vista_datos_action,

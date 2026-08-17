@@ -12,6 +12,7 @@ from collections.abc import Mapping
 
 from PySide6.QtCore import Signal, QObject
 from PySide6.QtWidgets import QStackedWidget, QWidget
+from core.join.models import JoinResult
 from .view_registry import ViewRegistry
 from .view_switcher import ViewSwitcher
 
@@ -187,7 +188,7 @@ class ViewCoordinator(QObject):
 
     def set_join_result(self, result: object, left_name: str, right_name: str) -> None:
         if self._joined_data_view:
-            self._joined_data_view.set_join_result(result, left_name, right_name)
+            self._joined_data_view.set_join_result(cast(JoinResult, result), left_name, right_name)
 
     def set_profile_data(self, profile: object) -> None:
         if self._profiling_view is not None:

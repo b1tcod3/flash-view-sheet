@@ -135,7 +135,9 @@ class MainWindow(QMainWindow):
     def _add_toolbar(self) -> None:
         """Añadir toolbar"""
         self.toolbar_manager.create_toolbar()
-        self.addToolBar(self.toolbar_manager.get_toolbar())
+        toolbar = self.toolbar_manager.get_toolbar()
+        if toolbar is not None:
+            self.addToolBar(toolbar)
     
     def _setup_connections(self) -> None:
         """Configurar conexiones de señales"""
@@ -196,16 +198,16 @@ class MainWindow(QMainWindow):
         suffix = Path(filepath).suffix.lower()
         if suffix in ('.csv', '.tsv'):
             from app.widgets.csv_separator_dialog import CSVSeparatorDialog
-            dialog = CSVSeparatorDialog(self)
-            if dialog.exec() == QDialog.Accepted:
-                separator = dialog.get_separator()
+            csv_dialog = CSVSeparatorDialog(self)
+            if csv_dialog.exec() == QDialog.Accepted:
+                separator = csv_dialog.get_separator()
             else:
                 return
         elif suffix in ('.xlsx', '.xls'):
             from app.widgets.excel_sheet_dialog import ExcelSheetDialog
-            dialog = ExcelSheetDialog(filepath, self)
-            if dialog.exec() == QDialog.Accepted:
-                sheet_name = dialog.get_sheet_name()
+            excel_dialog = ExcelSheetDialog(filepath, self)
+            if excel_dialog.exec() == QDialog.Accepted:
+                sheet_name = excel_dialog.get_sheet_name()
             else:
                 return
         self.coordinator.iniciar_carga_archivo(filepath, skip_rows, column_names, enable_column_visibility=enable_column_visibility, separator=separator, sheet_name=sheet_name)

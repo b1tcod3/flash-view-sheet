@@ -12,7 +12,7 @@ class InfoModal(QDialog):
     Modal para mostrar información detallada del DataFrame
     """
     
-    def __init__(self, parent: QDialog | None = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.df: pd.DataFrame | None = None
         self.setWindowTitle("Información del Archivo")

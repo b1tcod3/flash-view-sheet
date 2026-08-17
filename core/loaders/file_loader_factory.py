@@ -3,7 +3,7 @@ File Loader Factory
 Factory pattern for creating appropriate file loaders based on file extension
 """
 
-from typing import Type
+from typing import Type, Any
 from pathlib import Path
 from .base_loader import FileLoader
 from .csv_loader import CsvLoader
@@ -96,7 +96,7 @@ class FileLoaderFactory:
         """
         return list(self._loader_mapping.keys())
 
-    def get_loader_info(self, filepath: str) -> dict[str, str]:
+    def get_loader_info(self, filepath: str) -> dict[str, Any]:
         """
         Get information about the loader for a given file
         

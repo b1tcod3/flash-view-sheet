@@ -5,14 +5,14 @@ Permite configurar opciones como saltar filas y renombrar columnas
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QSpinBox, QPushButton,
                                  QGroupBox, QFormLayout, QDialogButtonBox, QTableWidget,
-                                 QTableWidgetItem, QCheckBox)
+                                 QTableWidgetItem, QCheckBox, QWidget)
 
 class LoadOptionsDialog(QDialog):
     """
     Diálogo para configurar opciones de carga de datos
     """
     
-    def __init__(self, parent: QDialog | None = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Opciones de Carga")
         self.resize(600, 400)

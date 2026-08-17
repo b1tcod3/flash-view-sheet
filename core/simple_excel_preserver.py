@@ -223,7 +223,7 @@ class SimpleExcelFormatPreserver:
                 print(f"Warning: No se pudo restaurar formato de {cell_coord}: {e}")
         
         # Heredar formato de la fila de encabezados hacia las filas de datos
-        self._inherit_header_format(worksheet, column_mapping, start_cell, max_rows, area_backup)
+        self._inherit_header_format(worksheet, column_mapping, start_cell, max_rows, set(area_backup))
     
     @staticmethod
     def _has_style(cell: Any) -> bool:

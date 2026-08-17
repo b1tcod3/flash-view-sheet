@@ -603,42 +603,42 @@ class ExportSeparatedDialog(QDialog):
         s = QSettings("FlashSheet", "ExportSeparated")
         s.beginGroup("Config")
 
-        col = s.value("separator_column", "")
+        col = str(s.value("separator_column", ""))
         if col:
             idx = self.column_combo.findText(col)
             if idx >= 0:
                 self.column_combo.setCurrentIndex(idx)
 
-        tpl_path = s.value("template_path", "")
-        tpl_ext = s.value("template_ext", ".xlsx")
+        tpl_path = str(s.value("template_path", ""))
+        tpl_ext = str(s.value("template_ext", ".xlsx"))
         if tpl_path and Path(tpl_path).exists():
             self._load_template_settings(tpl_path, tpl_ext)
 
-        cell = s.value("start_cell", "A1")
+        cell = str(s.value("start_cell", "A1"))
         idx = self.start_cell_combo.findText(cell)
         if idx >= 0:
             self.start_cell_combo.setCurrentIndex(idx)
         else:
             self.start_cell_combo.setEditText(cell)
 
-        file_tpl = s.value("file_template", "")
+        file_tpl = str(s.value("file_template", ""))
         if file_tpl:
             self.filename_template_edit.setText(file_tpl)
 
-        dup = s.value("handle_duplicates", "")
+        dup = str(s.value("handle_duplicates", ""))
         if dup:
             idx = self.handle_duplicates_combo.findText(dup)
             if idx >= 0:
                 self.handle_duplicates_combo.setCurrentIndex(idx)
 
-        output = s.value("output_folder", "")
+        output = str(s.value("output_folder", ""))
         if output and Path(output).is_dir():
             self._dest_path = Path(output)
             self.dest_folder_label.setText(self._dest_path.name)
             self.dest_folder_label.setToolTip(str(self._dest_path))
             self.dest_folder_label.setStyleSheet("color: #111827;")
 
-        mapping_str = s.value("column_mapping", "")
+        mapping_str = str(s.value("column_mapping", ""))
         if mapping_str:
             self._load_mapping_settings(mapping_str)
 
