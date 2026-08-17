@@ -41,7 +41,7 @@ class ParquetLoader(FileLoader):
             df = pd.read_parquet(self.filepath)
             
             # Apply skip_rows if specified
-            if skip_rows > 0 and len(df) > skip_rows:
+            if 0 < skip_rows < len(df):
                 df = df.iloc[skip_rows:].reset_index(drop=True)
             
             # Apply column renaming if specified
