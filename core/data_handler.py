@@ -970,7 +970,7 @@ class ExcelTemplateSplitter:
                 })
         
         except Exception as e:
-            self.logger.error(f"Error generando preview: {str(e)}")
+            self.logger.error("Error generando preview: %s", str(e))
             return []
         
         return preview
@@ -1088,7 +1088,7 @@ class ExcelTemplateSplitter:
                         callback(groups_processed, analysis['estimated_groups'])
                     
                 except Exception as e:
-                    self.logger.error(f"Error procesando grupo {group_name}: {str(e)}")
+                    self.logger.error("Error procesando grupo %s: %s", group_name, str(e))
                     error_result = ExportResult(
                         success=False,
                         group_name=str(group_name),
@@ -1118,7 +1118,7 @@ class ExcelTemplateSplitter:
             }
             
         except Exception as e:
-            self.logger.error(f"Error crítico en separación: {str(e)}")
+            self.logger.error("Error crítico en separación: %s", str(e))
             return {
                 'success': False,
                 'error': str(e),
@@ -1186,7 +1186,7 @@ class ExcelTemplateSplitter:
             )
             
             if success:
-                self.logger.info(f"Archivo Excel creado con formato preservado: {output_path}")
+                self.logger.info("Archivo Excel creado con formato preservado: %s", output_path)
             
             return success
             
@@ -1196,7 +1196,7 @@ class ExcelTemplateSplitter:
             return self._create_excel_file_with_template_fallback(output_path, data)
             
         except Exception as e:
-            self.logger.error(f"Error creando archivo Excel con formato preservado: {str(e)}")
+            self.logger.error("Error creando archivo Excel con formato preservado: %s", str(e))
             return False
     
     def _create_excel_file_with_template_fallback(self, output_path: str, data: pd.DataFrame) -> bool:
@@ -1237,10 +1237,11 @@ class ExcelTemplateSplitter:
             return True
             
         except Exception as e:
-            self.logger.error(f"Error en método fallback creando archivo Excel: {str(e)}")
+            self.logger.error("Error en método fallback creando archivo Excel: %s", str(e))
             return False
     
-    def _resolve_filename_conflicts(self, file_path: str) -> str:
+    @staticmethod
+    def _resolve_filename_conflicts(file_path: str) -> str:
         """Resolver conflictos de nombres de archivo"""
         p = Path(file_path)
         if not p.exists():
@@ -1274,7 +1275,7 @@ class ExcelTemplateSplitter:
                 if p.exists():
                     p.unlink()
             except Exception as e:
-                self.logger.warning(f"No se pudo limpiar archivo temporal {file_path}: {str(e)}")
+                self.logger.warning("No se pudo limpiar archivo temporal %s: %s", file_path, str(e))
 
 def exportar_datos_separados(df: pd.DataFrame, config_dict: dict) -> dict:
     """
