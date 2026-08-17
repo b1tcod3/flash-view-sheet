@@ -579,4 +579,8 @@ class DataView(QWidget):
         return pd.DataFrame()
 
     def set_column_visibility_enabled(self, _enabled: bool) -> None:
-        pass
+        """API de visibilidad de columnas.
+
+        Intencionalmente sin implementación: la visibilidad de columnas se
+        gestiona a nivel de modelo/vista sin requerir acción en este widget.
+        """
