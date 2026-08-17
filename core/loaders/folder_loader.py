@@ -159,7 +159,8 @@ class FolderLoader:
         """
         return len(self.excel_files)
 
-    def _estimate_rows(self, file_path: str) -> int:
+    @staticmethod
+    def _estimate_rows(file_path: str) -> int:
         """
         Estimate number of rows in Excel file (optimized)
 

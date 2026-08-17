@@ -35,7 +35,8 @@ def right_df():
 
 class TestValidateConfig:
 
-    def test_valid_inner_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_valid_inner_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -45,7 +46,8 @@ class TestValidateConfig:
         assert result.is_valid is True
         assert len(result.errors) == 0
 
-    def test_valid_left_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_valid_left_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.LEFT,
             left_keys=['id'],
@@ -54,7 +56,8 @@ class TestValidateConfig:
         result = service.validate_config(left_df, right_df, config)
         assert result.is_valid is True
 
-    def test_missing_left_keys(self, service, left_df, right_df):
+    @staticmethod
+    def test_missing_left_keys(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=[],
@@ -64,7 +67,8 @@ class TestValidateConfig:
         assert result.is_valid is False
         assert any('izquierdo' in e for e in result.errors)
 
-    def test_missing_right_keys(self, service, left_df, right_df):
+    @staticmethod
+    def test_missing_right_keys(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -74,7 +78,8 @@ class TestValidateConfig:
         assert result.is_valid is False
         assert any('derecho' in e for e in result.errors)
 
-    def test_mismatched_key_counts(self, service, left_df, right_df):
+    @staticmethod
+    def test_mismatched_key_counts(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id', 'dept'],
@@ -84,7 +89,8 @@ class TestValidateConfig:
         assert result.is_valid is False
         assert any('igual' in e for e in result.errors)
 
-    def test_missing_column_in_left(self, service, left_df, right_df):
+    @staticmethod
+    def test_missing_column_in_left(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['no_existe'],
@@ -94,7 +100,8 @@ class TestValidateConfig:
         assert result.is_valid is False
         assert any('no encontrada' in e.lower() or 'izquierdo' in e for e in result.errors)
 
-    def test_missing_column_in_right(self, service, left_df, right_df):
+    @staticmethod
+    def test_missing_column_in_right(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -103,12 +110,14 @@ class TestValidateConfig:
         result = service.validate_config(left_df, right_df, config)
         assert result.is_valid is False
 
-    def test_cross_join_no_keys_needed(self, service, left_df, right_df):
+    @staticmethod
+    def test_cross_join_no_keys_needed(service, left_df, right_df):
         config = JoinConfig(join_type=JoinType.CROSS)
         result = service.validate_config(left_df, right_df, config)
         assert result.is_valid is True
 
-    def test_cross_join_keys_produces_warning(self, service, left_df, right_df):
+    @staticmethod
+    def test_cross_join_keys_produces_warning(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.CROSS,
             left_keys=['id'],
@@ -118,7 +127,8 @@ class TestValidateConfig:
         assert result.is_valid is True
         assert len(result.warnings) > 0
 
-    def test_type_mismatch_warning(self, service, left_df, right_df):
+    @staticmethod
+    def test_type_mismatch_warning(service, left_df, right_df):
         right_df_str = right_df.copy()
         right_df_str['id'] = right_df_str['id'].astype(str)
         config = JoinConfig(
@@ -135,7 +145,8 @@ class TestValidateConfig:
 
 class TestExecuteJoin:
 
-    def test_inner_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_inner_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -146,7 +157,8 @@ class TestExecuteJoin:
         assert len(result.data) == 2
         assert set(result.data.columns) >= {'id', 'nombre', 'salario'}
 
-    def test_left_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_left_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.LEFT,
             left_keys=['id'],
@@ -157,7 +169,8 @@ class TestExecuteJoin:
         assert len(result.data) == 4
         assert result.metadata.left_rows == 4
 
-    def test_outer_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_outer_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.OUTER,
             left_keys=['id'],
@@ -167,13 +180,15 @@ class TestExecuteJoin:
         assert result.success is True
         assert len(result.data) == 5
 
-    def test_cross_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_cross_join(service, left_df, right_df):
         config = JoinConfig(join_type=JoinType.CROSS)
         result = service.execute_join(left_df, right_df, config)
         assert result.success is True
         assert len(result.data) == len(left_df) * len(right_df)
 
-    def test_invalid_config_returns_failed_result(self, service, left_df, right_df):
+    @staticmethod
+    def test_invalid_config_returns_failed_result(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=[],
@@ -184,7 +199,8 @@ class TestExecuteJoin:
         assert result.error_message
         assert result.data.empty
 
-    def test_metadata_has_join_keys(self, service, left_df, right_df):
+    @staticmethod
+    def test_metadata_has_join_keys(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.LEFT,
             left_keys=['id'],
@@ -193,7 +209,8 @@ class TestExecuteJoin:
         result = service.execute_join(left_df, right_df, config)
         assert 'id' in result.metadata.join_keys
 
-    def test_metadata_has_processing_time(self, service, left_df, right_df):
+    @staticmethod
+    def test_metadata_has_processing_time(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -202,7 +219,8 @@ class TestExecuteJoin:
         result = service.execute_join(left_df, right_df, config)
         assert result.metadata.processing_time_seconds >= 0
 
-    def test_result_stores_config(self, service, left_df, right_df):
+    @staticmethod
+    def test_result_stores_config(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -211,7 +229,8 @@ class TestExecuteJoin:
         result = service.execute_join(left_df, right_df, config)
         assert result.config is config
 
-    def test_indicator_true_keeps_merge_column(self, service, left_df, right_df):
+    @staticmethod
+    def test_indicator_true_keeps_merge_column(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -221,7 +240,8 @@ class TestExecuteJoin:
         result = service.execute_join(left_df, right_df, config)
         assert '_merge' in result.data.columns
 
-    def test_include_columns_filters_result(self, service, left_df, right_df):
+    @staticmethod
+    def test_include_columns_filters_result(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.LEFT,
             left_keys=['id'],
@@ -237,7 +257,8 @@ class TestExecuteJoin:
 
 class TestGetPreview:
 
-    def test_preview_returns_dataframe(self, service, left_df, right_df):
+    @staticmethod
+    def test_preview_returns_dataframe(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.LEFT,
             left_keys=['id'],
@@ -246,17 +267,20 @@ class TestGetPreview:
         preview = service.get_preview(left_df, right_df, config)
         assert isinstance(preview, pd.DataFrame)
 
-    def test_preview_respects_max_rows(self, service, left_df, right_df):
+    @staticmethod
+    def test_preview_respects_max_rows(service, left_df, right_df):
         config = JoinConfig(join_type=JoinType.CROSS)
         preview = service.get_preview(left_df, right_df, config, max_rows=5)
         assert len(preview) <= 5
 
-    def test_preview_cross_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_preview_cross_join(service, left_df, right_df):
         config = JoinConfig(join_type=JoinType.CROSS)
         preview = service.get_preview(left_df, right_df, config, max_rows=10)
         assert isinstance(preview, pd.DataFrame)
 
-    def test_preview_inner_join(self, service, left_df, right_df):
+    @staticmethod
+    def test_preview_inner_join(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -270,7 +294,8 @@ class TestGetPreview:
 
 class TestEstimateOperationTime:
 
-    def test_inner_join_fast(self, service, left_df, right_df):
+    @staticmethod
+    def test_inner_join_fast(service, left_df, right_df):
         config = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -279,7 +304,8 @@ class TestEstimateOperationTime:
         time_est = service.estimate_operation_time(left_df, right_df, config)
         assert 0.0 <= time_est <= 30.0
 
-    def test_cross_join_slower(self, service, left_df, right_df):
+    @staticmethod
+    def test_cross_join_slower(service, left_df, right_df):
         config_cross = JoinConfig(join_type=JoinType.CROSS)
         config_inner = JoinConfig(
             join_type=JoinType.INNER,
@@ -290,7 +316,8 @@ class TestEstimateOperationTime:
         time_inner = service.estimate_operation_time(left_df, right_df, config_inner)
         assert time_cross >= time_inner
 
-    def test_validation_adds_time(self, service, left_df, right_df):
+    @staticmethod
+    def test_validation_adds_time(service, left_df, right_df):
         config_no_val = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -309,14 +336,16 @@ class TestEstimateOperationTime:
         time_val = service.estimate_operation_time(left_df, right_df, config_val)
         assert time_val >= time_no_val
 
-    def test_minimum_time_floor(self, service):
+    @staticmethod
+    def test_minimum_time_floor(service):
         tiny_left = pd.DataFrame({'a': [1]})
         tiny_right = pd.DataFrame({'b': [1]})
         config = JoinConfig(join_type=JoinType.INNER, left_keys=['a'], right_keys=['b'])
         time_est = service.estimate_operation_time(tiny_left, tiny_right, config)
         assert time_est >= 0.5
 
-    def test_large_dataset_estimation(self, service):
+    @staticmethod
+    def test_large_dataset_estimation(service):
         big_left = pd.DataFrame({'id': range(100_000)})
         big_right = pd.DataFrame({'id': range(100_000)})
         config = JoinConfig(join_type=JoinType.INNER, left_keys=['id'], right_keys=['id'])
@@ -328,7 +357,8 @@ class TestEstimateOperationTime:
 
 class TestStateless:
 
-    def test_multiple_calls_independent(self, service, left_df, right_df):
+    @staticmethod
+    def test_multiple_calls_independent(service, left_df, right_df):
         config1 = JoinConfig(
             join_type=JoinType.INNER,
             left_keys=['id'],
@@ -350,21 +380,24 @@ class TestStateless:
 
 class TestComputeResultColumns:
 
-    def test_inner_join_no_overlap(self):
+    @staticmethod
+    def test_inner_join_no_overlap():
         cols = compute_result_columns(
             ['id', 'name'], ['dept', 'salary'],
             ['id'], ['dept'],
         )
         assert cols == ['id', 'name', 'dept', 'salary']
 
-    def test_inner_join_same_key_name(self):
+    @staticmethod
+    def test_inner_join_same_key_name():
         cols = compute_result_columns(
             ['id', 'name'], ['id', 'salary'],
             ['id'], ['id'],
         )
         assert cols == ['id', 'name', 'salary']
 
-    def test_overlapping_non_key_columns(self):
+    @staticmethod
+    def test_overlapping_non_key_columns():
         cols = compute_result_columns(
             ['id', 'city'], ['id', 'city'],
             ['id'], ['id'],
@@ -372,7 +405,8 @@ class TestComputeResultColumns:
         assert 'city_left' in cols
         assert 'city_right' in cols
 
-    def test_custom_suffixes(self):
+    @staticmethod
+    def test_custom_suffixes():
         cols = compute_result_columns(
             ['id', 'city'], ['id', 'city'],
             ['id'], ['id'],
@@ -381,20 +415,23 @@ class TestComputeResultColumns:
         assert 'city_l' in cols
         assert 'city_r' in cols
 
-    def test_multiple_keys(self):
+    @staticmethod
+    def test_multiple_keys():
         cols = compute_result_columns(
             ['a', 'b', 'val'], ['a', 'b', 'info'],
             ['a', 'b'], ['a', 'b'],
         )
         assert cols == ['a', 'b', 'val', 'info']
 
-    def test_cross_join_fallback(self):
+    @staticmethod
+    def test_cross_join_fallback():
         left = ['a', 'b']
         right = ['c', 'd']
         cols = compute_result_columns(left, right, [], [])
         assert cols == ['a', 'b', 'c', 'd']
 
-    def test_matches_real_merge(self):
+    @staticmethod
+    def test_matches_real_merge():
         left_df = pd.DataFrame({'id': [1], 'name': ['X'], 'city': ['M']})
         right_df = pd.DataFrame({'id': [1], 'salary': [50000], 'city': ['B']})
         config = JoinConfig(

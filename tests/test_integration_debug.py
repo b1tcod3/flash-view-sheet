@@ -125,7 +125,8 @@ class IntegrationTestWindow(QMainWindow):
         # Verificar estado después de cargar
         self.verify_integration_state()
         
-    def on_error_carga(self, error_message: str) -> None:
+    @staticmethod
+    def on_error_carga(error_message: str) -> None:
         """Slot para manejar errores de carga"""
         print(f"❌ ERROR: {error_message}")
         
@@ -134,11 +135,13 @@ class IntegrationTestWindow(QMainWindow):
         print(f"🔍 TEST: Cambiando a vista {index}")
         self.stacked_widget.setCurrentIndex(index)
         
-    def on_filter_applied(self, column: str, term) -> None:
+    @staticmethod
+    def on_filter_applied(column: str, term) -> None:
         """Slot para manejar filtro aplicado"""
         print(f"🔍 TEST: Filtro aplicado: {column} = {term}")
         
-    def on_filter_cleared(self) -> None:
+    @staticmethod
+    def on_filter_cleared() -> None:
         """Slot para manejar filtro limpiado"""
         print("🔍 TEST: Filtro limpiado")
         

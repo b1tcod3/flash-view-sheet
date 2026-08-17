@@ -731,7 +731,8 @@ class ExportSeparatedConfig:
             'warnings': warnings
         }
     
-    def get_default_mapping(self, df_columns: list[str]) -> dict[str, str]:
+    @staticmethod
+    def get_default_mapping(df_columns: list[str]) -> dict[str, str]:
         """Obtener mapeo por defecto (posicional)"""
         mapping = {}
         for i, col in enumerate(df_columns):
@@ -812,7 +813,8 @@ class ExcelTemplateSplitter:
         # Configurar optimizaciones de rendimiento
         self._setup_performance_optimization()
     
-    def _setup_logger(self) -> Any:
+    @staticmethod
+    def _setup_logger() -> Any:
         """Configurar logging consistente con sistema existente"""
         import logging
         logger = logging.getLogger(__name__)
@@ -1009,7 +1011,8 @@ class ExcelTemplateSplitter:
         # Sanitizar nombre de archivo
         return self._sanitize_filename(processed)
     
-    def _sanitize_filename(self, filename: str) -> str:
+    @staticmethod
+    def _sanitize_filename(filename: str) -> str:
         """Sanitizar nombre para compatibilidad del SO"""
         # Caracteres prohibidos
         forbidden_chars = r'[<>:"/\\|?*]'

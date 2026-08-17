@@ -246,7 +246,8 @@ class TestExportSeparatedPerformance(unittest.TestCase):
         workbook.save(template_path)
         return template_path
     
-    def create_test_dataframe(self, num_rows: int, num_groups: int = None, 
+    @staticmethod
+    def create_test_dataframe(num_rows: int, num_groups: int = None, 
                             include_nulls: bool = False) -> pd.DataFrame:
         """Crear DataFrame de prueba con tamaño controlado"""
         if num_groups is None:

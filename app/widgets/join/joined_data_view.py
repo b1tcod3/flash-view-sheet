@@ -225,7 +225,8 @@ class JoinedDataView(DataView):
 
         dialog.exec()
 
-    def _show_entry_details(self, entries: list[JoinHistoryEntry], entry_id: str,
+    @staticmethod
+    def _show_entry_details(entries: list[JoinHistoryEntry], entry_id: str,
                             details_text: QTextEdit) -> None:
         entry = next((e for e in entries if e.entry_id == entry_id), None)
         if entry is None:

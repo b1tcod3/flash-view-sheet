@@ -15,8 +15,9 @@ from core.join.join_history import JoinHistory
 class TestDataJoinManager:
     """Pruebas para DataJoinManager"""
 
+    @staticmethod
     @pytest.fixture
-    def sample_dataframes(self) -> tuple:
+    def sample_dataframes() -> tuple:
         """Crear DataFrames de prueba"""
         left_df = pd.DataFrame({
             'id': [1, 2, 3, 4],
@@ -32,7 +33,8 @@ class TestDataJoinManager:
 
         return left_df, right_df
 
-    def test_inner_join(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_inner_join(sample_dataframes) -> None:
         """Probar join interno"""
         left_df, right_df = sample_dataframes
 
@@ -50,7 +52,8 @@ class TestDataJoinManager:
         assert 'name' in result.data.columns
         assert 'department' in result.data.columns
 
-    def test_left_join(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_left_join(sample_dataframes) -> None:
         """Probar left join"""
         left_df, right_df = sample_dataframes
 
@@ -67,7 +70,8 @@ class TestDataJoinManager:
         assert len(result.data) == 4  # todos los del izquierdo
         assert result.data['department'].isnull().sum() == 1  # id 4 no tiene match
 
-    def test_cross_join(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_cross_join(sample_dataframes) -> None:
         """Probar cross join"""
         left_df, right_df = sample_dataframes
 
@@ -82,7 +86,8 @@ class TestDataJoinManager:
         assert len(result.data) == 16  # 4 * 4
         assert len(result.data.columns) == 6  # id, name, value, id, department, salary
 
-    def test_validation_missing_columns(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_validation_missing_columns(sample_dataframes) -> None:
         """Probar validación de columnas faltantes"""
         left_df, right_df = sample_dataframes
 
@@ -98,7 +103,8 @@ class TestDataJoinManager:
         assert not validation.is_valid
         assert "nonexistent" in str(validation.errors)
 
-    def test_validation_different_key_counts(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_validation_different_key_counts(sample_dataframes) -> None:
         """Probar validación de número diferente de keys"""
         left_df, right_df = sample_dataframes
 
@@ -114,7 +120,8 @@ class TestDataJoinManager:
         assert not validation.is_valid
         assert "igual" in str(validation.errors).lower()
 
-    def test_unsupported_join_type(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_unsupported_join_type(sample_dataframes) -> None:
         """Probar tipo de join no soportado"""
         left_df, right_df = sample_dataframes
 
@@ -130,7 +137,8 @@ class TestDataJoinManager:
         with pytest.raises(UnsupportedJoinError):
             manager.validate_join(config)
 
-    def test_preview_functionality(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_preview_functionality(sample_dataframes) -> None:
         """Probar funcionalidad de preview"""
         left_df, right_df = sample_dataframes
 
@@ -146,7 +154,8 @@ class TestDataJoinManager:
         assert len(preview) <= 2
         assert not preview.empty
 
-    def test_chunking_large_cross_join(self) -> None:
+    @staticmethod
+    def test_chunking_large_cross_join() -> None:
         """Probar chunking para cross joins grandes"""
         # Crear datasets más grandes para forzar chunking
         left_df = pd.DataFrame({
@@ -168,7 +177,8 @@ class TestDataJoinManager:
         assert len(result.data) == 5000  # 100 * 50
         assert len(result.data.columns) == 4  # id_left, value, id_right, data
 
-    def test_chunking_detection(self) -> None:
+    @staticmethod
+    def test_chunking_detection() -> None:
         """Probar que el sistema detecta cuando usar chunking"""
         # Crear datasets que deberían activar chunking
         left_df = pd.DataFrame({
@@ -205,7 +215,8 @@ class TestDataJoinManager:
         )
         assert not should_chunk_inner  # Datasets pequeños no activan chunking
 
-    def test_column_suppression(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_column_suppression(sample_dataframes) -> None:
         """Probar supresión de columnas en resultados"""
         left_df, right_df = sample_dataframes
 
@@ -237,7 +248,8 @@ class TestDataJoinManager:
         assert set(result_filtered.data.columns) == {'name', 'department', 'salary'}
         assert len(result_filtered.data) == 3  # Mismos registros
 
-    def test_column_suppression_empty_list(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_column_suppression_empty_list(sample_dataframes) -> None:
         """Probar que lista vacía de columnas incluye todas"""
         left_df, right_df = sample_dataframes
 
@@ -255,7 +267,8 @@ class TestDataJoinManager:
         expected_columns = {'id', 'name', 'value', 'department', 'salary'}
         assert set(result.data.columns) == expected_columns
 
-    def test_column_suppression_invalid_columns(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_column_suppression_invalid_columns(sample_dataframes) -> None:
         """Probar manejo de columnas inexistentes en include_columns"""
         left_df, right_df = sample_dataframes
 
@@ -277,7 +290,8 @@ class TestDataJoinManager:
 class TestJoinConfig:
     """Pruebas para JoinConfig"""
 
-    def test_config_creation(self) -> None:
+    @staticmethod
+    def test_config_creation() -> None:
         """Probar creación de configuración"""
         config = JoinConfig(
             left_keys=['id'],
@@ -297,7 +311,8 @@ class TestJoinConfig:
         assert config.sort_results is True
         assert config.indicator is True
 
-    def test_config_integrity_mode_default(self) -> None:
+    @staticmethod
+    def test_config_integrity_mode_default() -> None:
         """Verificar que integrity_mode tiene valor por defecto"""
         config = JoinConfig(
             left_keys=['id'],
@@ -306,7 +321,8 @@ class TestJoinConfig:
         )
         assert config.integrity_mode == 'm:m'
 
-    def test_config_integrity_mode_none(self) -> None:
+    @staticmethod
+    def test_config_integrity_mode_none() -> None:
         """Verificar que integrity_mode puede desactivarse"""
         config = JoinConfig(
             left_keys=['id'],
@@ -320,8 +336,9 @@ class TestJoinConfig:
 class TestOuterJoin:
     """Pruebas para OUTER join"""
 
+    @staticmethod
     @pytest.fixture
-    def sample_dataframes(self) -> tuple:
+    def sample_dataframes() -> tuple:
         left_df = pd.DataFrame({
             'id': [1, 2, 3, 4],
             'name': ['Alice', 'Bob', 'Charlie', 'David'],
@@ -334,7 +351,8 @@ class TestOuterJoin:
         })
         return left_df, right_df
 
-    def test_outer_join(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_outer_join(sample_dataframes) -> None:
         """Probar outer join combina todos los registros"""
         left_df, right_df = sample_dataframes
         config = JoinConfig(
@@ -349,7 +367,8 @@ class TestOuterJoin:
         assert result.success
         assert len(result.data) == 5  # ids 1,2,3 (both) + 4 (left) + 5 (right)
 
-    def test_outer_join_metadata(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_outer_join_metadata(sample_dataframes) -> None:
         """Verificar estadísticas de matching en outer join"""
         left_df, right_df = sample_dataframes
         config = JoinConfig(
@@ -365,7 +384,8 @@ class TestOuterJoin:
         assert result.metadata.left_only_rows == 1  # id 4
         assert result.metadata.right_only_rows == 1  # id 5
 
-    def test_outer_join_no_indicator(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_outer_join_no_indicator(sample_dataframes) -> None:
         """Verificar que outer join sin indicator no deja columna _merge"""
         left_df, right_df = sample_dataframes
         config = JoinConfig(
@@ -381,7 +401,8 @@ class TestOuterJoin:
         assert result.success
         assert '_merge' not in result.data.columns
 
-    def test_outer_join_with_indicator(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_outer_join_with_indicator(sample_dataframes) -> None:
         """Verificar que outer join con indicator conserva la columna _merge"""
         left_df, right_df = sample_dataframes
         config = JoinConfig(
@@ -406,7 +427,8 @@ class TestOuterJoin:
 class TestIncludeColumnsChunked:
     """Pruebas para include_columns en joins chunked"""
 
-    def test_include_columns_chunked_cross_join(self) -> None:
+    @staticmethod
+    def test_include_columns_chunked_cross_join() -> None:
         """Verificar que include_columns funciona en cross join chunked"""
         left_df = pd.DataFrame({
             'id': range(200),
@@ -428,7 +450,8 @@ class TestIncludeColumnsChunked:
         assert result.success
         assert set(result.data.columns) == {'name', 'data'}
 
-    def test_include_columns_chunked_regular_join(self) -> None:
+    @staticmethod
+    def test_include_columns_chunked_regular_join() -> None:
         """Verificar que include_columns funciona en regular join chunked"""
         left_df = pd.DataFrame({
             'id': range(5000),
@@ -458,7 +481,8 @@ class TestIncludeColumnsChunked:
 class TestCreateEmptyMetadata:
     """Pruebas para _create_empty_metadata"""
 
-    def test_create_empty_metadata(self) -> None:
+    @staticmethod
+    def test_create_empty_metadata() -> None:
         """Verificar que _create_empty_metadata genera metadata válida"""
         left_df = pd.DataFrame({'id': [1, 2], 'name': ['A', 'B']})
         right_df = pd.DataFrame({'id': [3, 4], 'dept': ['X', 'Y']})
@@ -484,13 +508,15 @@ class TestCreateEmptyMetadata:
 class TestJoinHistory:
     """Pruebas para JoinHistory"""
 
+    @staticmethod
     @pytest.fixture
-    def tmp_history_dir(self, tmp_path):
+    def tmp_history_dir(tmp_path):
         """Directorio temporal para historial"""
         return tmp_path
 
+    @staticmethod
     @pytest.fixture
-    def sample_result(self):
+    def sample_result():
         """Crear un JoinResult de prueba"""
         left_df = pd.DataFrame({'id': [1, 2], 'name': ['A', 'B']})
         right_df = pd.DataFrame({'id': [1, 3], 'dept': ['X', 'Y']})
@@ -502,7 +528,8 @@ class TestJoinHistory:
         )
         return manager.execute_join(config)
 
-    def test_uuid_id_generation(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_uuid_id_generation(tmp_history_dir, sample_result):
         """Verificar que los IDs son UUIDs válidos"""
         history = JoinHistory(max_entries=10, history_dir=tmp_history_dir, use_uuid=True)
         uuid_pattern = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')
@@ -512,7 +539,8 @@ class TestJoinHistory:
         entry = history.get_entries()[0]
         assert uuid_pattern.match(entry.entry_id), f"ID no es UUID válido: {entry.entry_id}"
 
-    def test_timestamp_id_fallback(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_timestamp_id_fallback(tmp_history_dir, sample_result):
         """Con use_uuid=False, IDs mantienen formato timestamp_secuencia"""
         history = JoinHistory(max_entries=10, history_dir=tmp_history_dir, use_uuid=False)
         ts_pattern = re.compile(r'^\d{8}_\d{6}_\d+$')
@@ -522,7 +550,8 @@ class TestJoinHistory:
         entry = history.get_entries()[0]
         assert ts_pattern.match(entry.entry_id), f"ID no tiene formato timestamp: {entry.entry_id}"
 
-    def test_custom_history_dir(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_custom_history_dir(tmp_history_dir, sample_result):
         """El archivo se crea en el directorio especificado"""
         custom_dir = tmp_history_dir / "custom_history"
         history = JoinHistory(max_entries=10, history_dir=custom_dir, use_uuid=True)
@@ -532,13 +561,15 @@ class TestJoinHistory:
         assert history.history_file.exists()
         assert history.history_file.parent == custom_dir
 
-    def test_default_history_dir(self):
+    @staticmethod
+    def test_default_history_dir():
         """Sin history_dir, usa la carpeta del módulo"""
         history = JoinHistory(max_entries=50)
         expected_dir = Path(__file__).parent.parent / "core" / "join"
         assert history.history_file.parent == expected_dir
 
-    def test_save_and_reload(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_save_and_reload(tmp_history_dir, sample_result):
         """Verificar persistencia: guardar y recargar"""
         config = JoinConfig(join_type=JoinType.LEFT, left_keys=['id'], right_keys=['id'])
         history = JoinHistory(max_entries=10, history_dir=tmp_history_dir, use_uuid=True)
@@ -551,7 +582,8 @@ class TestJoinHistory:
         assert entries[0].left_dataset_name == 'ventas.csv'
         assert entries[0].success is True
 
-    def test_corrupt_entry_skipped(self, tmp_history_dir):
+    @staticmethod
+    def test_corrupt_entry_skipped(tmp_history_dir):
         """Entrada corrupta se omite sin crash"""
         corrupt_file = tmp_history_dir / "join_history.json"
         corrupt_data = {
@@ -573,7 +605,8 @@ class TestJoinHistory:
         assert len(history.get_entries()) == 1
         assert history.get_entries()[0].entry_id == 'valid'
 
-    def test_mkdir_on_save(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_mkdir_on_save(tmp_history_dir, sample_result):
         """El directorio se crea automáticamente si no existe"""
         nested_dir = tmp_history_dir / "a" / "b" / "c"
         history = JoinHistory(max_entries=10, history_dir=nested_dir, use_uuid=True)
@@ -583,7 +616,8 @@ class TestJoinHistory:
         assert nested_dir.exists()
         assert history.history_file.exists()
 
-    def test_clear_history(self, tmp_history_dir, sample_result):
+    @staticmethod
+    def test_clear_history(tmp_history_dir, sample_result):
         """Verificar que clear_history vacía las entradas"""
         history = JoinHistory(max_entries=10, history_dir=tmp_history_dir, use_uuid=True)
         history.add_entry('left.csv', 'right.csv', JoinConfig(join_type=JoinType.LEFT, left_keys=['id'], right_keys=['id']), sample_result)
@@ -592,7 +626,8 @@ class TestJoinHistory:
         history.clear_history()
         assert len(history.get_entries()) == 0
 
-    def test_max_entries_respected(self, tmp_history_dir):
+    @staticmethod
+    def test_max_entries_respected(tmp_history_dir):
         """Verificar que max_entries limita las entradas"""
         left_df = pd.DataFrame({'id': [1, 2], 'name': ['A', 'B']})
         right_df = pd.DataFrame({'id': [1, 3], 'dept': ['X', 'Y']})

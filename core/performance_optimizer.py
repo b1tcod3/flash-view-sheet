@@ -56,7 +56,8 @@ class PerformanceOptimizer:
         self.format_cache = {}  # Cache para formatos Excel
         self.active_monitors = {}
         
-    def determine_optimal_chunking_strategy(self, df: pd.DataFrame, 
+    @staticmethod
+    def determine_optimal_chunking_strategy(df: pd.DataFrame, 
                                           separator_column: str) -> ChunkingStrategy:
         """
         Determinar estrategia óptima de chunking basada en características del dataset
@@ -96,8 +97,9 @@ class PerformanceOptimizer:
         else:
             # Dataset pequeño - procesamiento directo
             return ChunkingStrategy.NONE
-    
-    def get_optimal_chunk_size(self, strategy: ChunkingStrategy, 
+
+    @staticmethod
+    def get_optimal_chunk_size(strategy: ChunkingStrategy, 
                               total_rows: int, unique_groups: int) -> int:
         """Calcular tamaño óptimo de chunk según estrategia"""
         if strategy == ChunkingStrategy.NONE:
@@ -117,7 +119,8 @@ class PerformanceOptimizer:
             
         return 1000  # Default
     
-    def process_dataframe_in_chunks(self, df: pd.DataFrame, 
+    @staticmethod
+    def process_dataframe_in_chunks(df: pd.DataFrame, 
                                    separator_column: str,
                                    chunk_size: int) -> Iterator[tuple[str, pd.DataFrame]]:
         """
@@ -160,7 +163,8 @@ class PerformanceOptimizer:
                 # Grupos pequeños se procesan directamente
                 yield (str(group_name), group_df)
     
-    def monitor_memory_usage(self) -> SystemResources:
+    @staticmethod
+    def monitor_memory_usage() -> SystemResources:
         """Monitorear recursos del sistema en tiempo real"""
         try:
             memory = psutil.virtual_memory()
@@ -342,7 +346,8 @@ class ExcelFormatOptimizer:
         
         return ""
     
-    def _cache_existing_formats(self, sheet: Any, data_range: str) -> dict[tuple[int, int], Any]:
+    @staticmethod
+    def _cache_existing_formats(sheet: Any, data_range: str) -> dict[tuple[int, int], Any]:
         """Cachear formatos existentes para preservación"""
         formats = {}
         
@@ -372,7 +377,8 @@ class ExcelFormatOptimizer:
         
         return formats
     
-    def _apply_cached_format(self, cell: Any, cached_format: dict[str, Any]) -> None:
+    @staticmethod
+    def _apply_cached_format(cell: Any, cached_format: dict[str, Any]) -> None:
         """Aplicar formato cacheado a celda"""
         try:
             if 'font' in cached_format and cached_format['font']:
@@ -388,13 +394,15 @@ class ExcelFormatOptimizer:
         except Exception as e:
             print(f"Warning: Error aplicando formato cacheado: {e}")
     
-    def _cell_coordinates_to_indices(self, cell_coord: str) -> tuple[int, int]:
+    @staticmethod
+    def _cell_coordinates_to_indices(cell_coord: str) -> tuple[int, int]:
         """Convertir coordenada de celda (A1) a índices (1, 1)"""
         from openpyxl.utils import coordinate_to_tuple
         row, col = coordinate_to_tuple(cell_coord)
         return row, col
     
-    def _column_letter_to_index(self, col_letter: str) -> int:
+    @staticmethod
+    def _column_letter_to_index(col_letter: str) -> int:
         """Convertir letra de columna a índice numérico"""
         from openpyxl.utils import column_index_from_string
         return column_index_from_string(col_letter)

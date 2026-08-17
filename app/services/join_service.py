@@ -26,8 +26,8 @@ class JoinService:
     temporal con los DataFrames recibidos.
     """
 
+    @staticmethod
     def validate_config(
-        self,
         left_df: pd.DataFrame,
         right_df: pd.DataFrame,
         config: JoinConfig,
@@ -45,8 +45,8 @@ class JoinService:
         manager = DataJoinManager(left_df, right_df)
         return manager.validate_join(config)
 
+    @staticmethod
     def execute_join(
-        self,
         left_df: pd.DataFrame,
         right_df: pd.DataFrame,
         config: JoinConfig,
@@ -64,8 +64,8 @@ class JoinService:
         manager = DataJoinManager(left_df, right_df)
         return manager.execute_join(config)
 
+    @staticmethod
     def get_preview(
-        self,
         left_df: pd.DataFrame,
         right_df: pd.DataFrame,
         config: JoinConfig,
@@ -85,8 +85,8 @@ class JoinService:
         manager = DataJoinManager(left_df, right_df)
         return manager.get_join_preview(config, max_rows)
 
+    @staticmethod
     def estimate_operation_time(
-        self,
         left_df: pd.DataFrame,
         right_df: pd.DataFrame,
         config: JoinConfig,

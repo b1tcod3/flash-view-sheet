@@ -86,7 +86,8 @@ class VirtualizedModelTest(QMainWindow):
         # Mostrar ventana
         self.show()
         
-    def test_data_access(self, model: Any, model_name: str) -> None:
+    @staticmethod
+    def test_data_access(model: Any, model_name: str) -> None:
         """Probar acceso a datos en el modelo"""
         print(f"\n🔍 TEST DE ACCESO - {model_name}:")
         

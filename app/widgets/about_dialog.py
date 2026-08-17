@@ -99,7 +99,8 @@ class AboutDialog(QDialog):
         
         return None
     
-    def _create_description(self, layout: QVBoxLayout) -> None:
+    @staticmethod
+    def _create_description(layout: QVBoxLayout) -> None:
         """Crear sección de descripción"""
         desc_text = """
         <p><b>Flash View Sheet</b> es una aplicación ligera para visualizar 

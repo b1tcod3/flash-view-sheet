@@ -91,27 +91,33 @@ class ViewCoordinator(QObject):
         self._stacked_widget.setCurrentIndex(0)
         return self._views
 
-    def _create_main_view(self, parent: QWidget) -> MainView:
+    @staticmethod
+    def _create_main_view(parent: QWidget) -> MainView:
         from app.widgets.main_view import MainView
         return MainView()
 
-    def _create_data_view(self, parent: QWidget) -> DataView:
+    @staticmethod
+    def _create_data_view(parent: QWidget) -> DataView:
         from app.widgets.data_view import DataView
         return DataView()
 
-    def _create_joined_data_view(self, parent: QWidget) -> JoinedDataView:
+    @staticmethod
+    def _create_joined_data_view(parent: QWidget) -> JoinedDataView:
         from app.widgets.join.joined_data_view import JoinedDataView
         return JoinedDataView()
 
-    def _create_pivot_view(self, parent: QWidget) -> PivotResultsView:
+    @staticmethod
+    def _create_pivot_view(parent: QWidget) -> PivotResultsView:
         from app.widgets.pivot_results_view import PivotResultsView
         return PivotResultsView()
 
-    def _create_profiling_view(self, parent: QWidget) -> ProfilingView:
+    @staticmethod
+    def _create_profiling_view(parent: QWidget) -> ProfilingView:
         from app.widgets.profiling_view import ProfilingView
         return ProfilingView()
 
-    def _create_quick_visualizer_view(self, parent: QWidget) -> QuickVisualizerView:
+    @staticmethod
+    def _create_quick_visualizer_view(parent: QWidget) -> QuickVisualizerView:
         from app.widgets.quick_visualizer_view import QuickVisualizerView
         return QuickVisualizerView()
 

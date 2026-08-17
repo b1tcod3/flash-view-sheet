@@ -94,7 +94,8 @@ class ProfilerService:
             'columns': columns,
         }
 
-    def _empty_profile(self, df: pd.DataFrame | None) -> dict[str, Any]:
+    @staticmethod
+    def _empty_profile(df: pd.DataFrame | None) -> dict[str, Any]:
         return {
             'total_rows': 0,
             'total_columns': 0 if df is None else len(df.columns),
@@ -104,8 +105,8 @@ class ProfilerService:
             'columns': {},
         }
 
+    @staticmethod
     def _quality_summary(
-        self,
         df: pd.DataFrame,
         total_rows: int,
         total_columns: int,
@@ -158,7 +159,8 @@ class ProfilerService:
 
         return profile
 
-    def _get_detailed_type(self, series: pd.Series) -> str:
+    @staticmethod
+    def _get_detailed_type(series: pd.Series) -> str:
         """Descripción legible del tipo de dato de la columna."""
         if pd.api.types.is_bool_dtype(series):
             return "boolean"
@@ -185,7 +187,8 @@ class ProfilerService:
             return str(mapping.get(inferred, inferred))
         return str(series.dtype)
 
-    def _numeric_stats(self, series: pd.Series) -> dict[str, float] | None:
+    @staticmethod
+    def _numeric_stats(series: pd.Series) -> dict[str, float] | None:
         """Métricas numéricas (min, max, media, mediana, std, cuartiles)."""
         if series.count() == 0:
             return None
@@ -204,7 +207,8 @@ class ProfilerService:
         except (TypeError, ValueError, KeyError):
             return None
 
-    def _date_range(self, series: pd.Series) -> dict[str, Any] | None:
+    @staticmethod
+    def _date_range(series: pd.Series) -> dict[str, Any] | None:
         """Rango temporal de columnas datetime."""
         valid = series.dropna()
         if valid.empty:
@@ -218,7 +222,8 @@ class ProfilerService:
         except (TypeError, ValueError):
             return None
 
-    def _top_values(self, series: pd.Series) -> list[list[Any]]:
+    @staticmethod
+    def _top_values(series: pd.Series) -> list[list[Any]]:
         """Valores más frecuentes (hasta 5), pares [valor, conteo]."""
         try:
             counts = series.dropna().value_counts()
@@ -229,7 +234,8 @@ class ProfilerService:
         except (TypeError, ValueError):
             return []
 
-    def _value_distribution_numeric(self, series: pd.Series) -> list[list[Any]]:
+    @staticmethod
+    def _value_distribution_numeric(series: pd.Series) -> list[list[Any]]:
         """Distribución en bins para columnas numéricas de alta cardinalidad."""
         try:
             valid = series.dropna()
@@ -258,7 +264,8 @@ class ProfilerService:
         except (TypeError, ValueError):
             return []
 
-    def _value_distribution_datetime(self, series: pd.Series) -> list[list[Any]]:
+    @staticmethod
+    def _value_distribution_datetime(series: pd.Series) -> list[list[Any]]:
         """Distribución por mes para columnas datetime de alta cardinalidad."""
         try:
             valid = series.dropna()

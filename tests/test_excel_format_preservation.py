@@ -52,7 +52,8 @@ class TestExcelFormatPreservation(unittest.TestCase):
         except:
             pass
     
-    def _create_formatted_template(self, template_path: str) -> None:
+    @staticmethod
+    def _create_formatted_template(template_path: str) -> None:
         """Crear plantilla Excel con formato específico para testing"""
         wb = openpyxl.Workbook()
         ws = wb.active

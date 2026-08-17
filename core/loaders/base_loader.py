@@ -62,7 +62,8 @@ class FileLoader(ABC):
             Dictionary with file information (size, format, etc.)
         """
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         Check if the loader supports loading in chunks for large files
         

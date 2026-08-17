@@ -222,7 +222,8 @@ class DataJoinManager:
         right_only = len(temp_result[temp_result['_merge'] == 'right_only'])
         return (matched, left_only, right_only)
 
-    def _apply_include_columns(self, df: pd.DataFrame, config: JoinConfig) -> pd.DataFrame:
+    @staticmethod
+    def _apply_include_columns(df: pd.DataFrame, config: JoinConfig) -> pd.DataFrame:
         """Filtrar columnas del resultado si include_columns está configurado.
 
         Args:
@@ -341,7 +342,8 @@ class DataJoinManager:
             timestamp=datetime.now()
         )
 
-    def _get_available_memory_mb(self) -> float:
+    @staticmethod
+    def _get_available_memory_mb() -> float:
         """Obtener memoria disponible en MB de forma segura.
 
         Returns:

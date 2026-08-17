@@ -26,7 +26,8 @@ class ExportService:
     - Exportación separada por columnas usando plantillas
     """
 
-    def _ensure_extension(self, filepath: str, extension: str, valid_extensions: list[str]) -> str:
+    @staticmethod
+    def _ensure_extension(filepath: str, extension: str, valid_extensions: list[str]) -> str:
         """Asegurar que el archivo tenga la extensión correcta."""
         if not any(filepath.lower().endswith(ext) for ext in valid_extensions):
             filepath += extension
@@ -119,7 +120,8 @@ class ExportService:
         except Exception as e:
             return False, f"Error exportando a imagen: {e}"
 
-    def export_separated(self, df: pd.DataFrame, config: Any) -> dict[str, Any]:
+    @staticmethod
+    def export_separated(df: pd.DataFrame, config: Any) -> dict[str, Any]:
         """Exportar datos separados por columna usando plantillas Excel."""
         if df is None or df.empty:
             return {'success': False, 'error': 'No hay datos'}
@@ -130,7 +132,8 @@ class ExportService:
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    def _format_export_error(self, error_str: str) -> str:
+    @staticmethod
+    def _format_export_error(error_str: str) -> str:
         """Formatear errores de exportación para mejor comprensión."""
         error_str = str(error_str)
 

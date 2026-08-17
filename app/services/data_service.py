@@ -231,7 +231,8 @@ class DataService:
         import gc
         gc.collect()
 
-    def extensiones_permitidas(self) -> list[str]:
+    @staticmethod
+    def extensiones_permitidas() -> list[str]:
         """Obtener lista de extensiones de archivo soportadas"""
         return get_supported_file_formats()
     

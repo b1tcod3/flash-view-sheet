@@ -24,8 +24,9 @@ def qapp() -> QApplication:
 class TestJoinIntegration:
     """Pruebas de integración end-to-end para joins"""
 
+    @staticmethod
     @pytest.fixture
-    def sample_dataframes(self) -> tuple:
+    def sample_dataframes() -> tuple:
         """Crear DataFrames de prueba más realistas"""
         # Dataset de ventas
         ventas_df = pd.DataFrame({
@@ -45,7 +46,8 @@ class TestJoinIntegration:
 
         return ventas_df, clientes_df
 
-    def test_full_join_workflow(self, sample_dataframes, qapp) -> None:
+    @staticmethod
+    def test_full_join_workflow(sample_dataframes, qapp) -> None:
         """Probar flujo completo de join desde configuración hasta resultado"""
         ventas_df, clientes_df = sample_dataframes
 
@@ -78,7 +80,8 @@ class TestJoinIntegration:
         assert result.metadata.left_only_rows == 0
         assert result.metadata.right_only_rows == 1  # Cliente 6 sin ventas
 
-    def test_join_dialog_integration(self, sample_dataframes, qapp) -> None:
+    @staticmethod
+    def test_join_dialog_integration(sample_dataframes, qapp) -> None:
         """Probar integración del JoinDialog"""
         ventas_df, clientes_df = sample_dataframes
 
@@ -111,7 +114,8 @@ class TestJoinIntegration:
         assert config.left_keys == ['cliente_id']
         assert config.right_keys == ['id']
 
-    def test_joined_data_view_integration(self, sample_dataframes, qapp) -> None:
+    @staticmethod
+    def test_joined_data_view_integration(sample_dataframes, qapp) -> None:
         """Probar integración de JoinedDataView"""
         ventas_df, clientes_df = sample_dataframes
 
@@ -144,7 +148,8 @@ class TestJoinIntegration:
         assert 'ventas.csv + clientes.csv' in metadata_text
         assert str(result.metadata.result_rows) in metadata_text
 
-    def test_export_integration(self, sample_dataframes, qapp, tmp_path) -> None:
+    @staticmethod
+    def test_export_integration(sample_dataframes, qapp, tmp_path) -> None:
         """Probar integración de exportación de resultados"""
         ventas_df, clientes_df = sample_dataframes
 
@@ -169,7 +174,8 @@ class TestJoinIntegration:
         # Verificar que el botón de exportar está habilitado
         assert view.export_btn.isEnabled()
 
-    def test_join_history_integration(self, sample_dataframes, tmp_path) -> None:
+    @staticmethod
+    def test_join_history_integration(sample_dataframes, tmp_path) -> None:
         """Probar integración del sistema de historial"""
         from core.join.join_history import JoinHistory
 
@@ -200,7 +206,8 @@ class TestJoinIntegration:
         assert latest_entry.config.join_type == JoinType.LEFT
         assert latest_entry.success is True
 
-    def test_memory_limit_handling(self) -> None:
+    @staticmethod
+    def test_memory_limit_handling() -> None:
         """Probar estimación de memoria"""
         # Crear datasets que generen un resultado muy grande
         large_left = pd.DataFrame({
@@ -226,7 +233,8 @@ class TestJoinIntegration:
         should_chunk = manager._should_use_chunking(config, estimated_memory, 200 * 1024 * 1024)  # 200 MB
         assert should_chunk  # Debería usar chunking para cross joins grandes
 
-    def test_error_recovery_integration(self, sample_dataframes) -> None:
+    @staticmethod
+    def test_error_recovery_integration(sample_dataframes) -> None:
         """Probar recuperación de errores en integración completa"""
         ventas_df, clientes_df = sample_dataframes
 
@@ -245,7 +253,8 @@ class TestJoinIntegration:
         assert "columna_inexistente" in result.error_message
         assert result.data.empty
 
-    def test_large_dataset_performance(self) -> None:
+    @staticmethod
+    def test_large_dataset_performance() -> None:
         """Probar rendimiento con datasets más grandes"""
         # Crear datasets de tamaño mediano
         left_df = pd.DataFrame({

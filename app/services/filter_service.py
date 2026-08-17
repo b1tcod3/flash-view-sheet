@@ -272,7 +272,8 @@ class FilterService:
         
         return "\n".join(summary)
     
-    def get_unique_values(self, df: pd.DataFrame, column: str, limit: int = 100) -> list[Any]:
+    @staticmethod
+    def get_unique_values(df: pd.DataFrame, column: str, limit: int = 100) -> list[Any]:
         """Obtener valores únicos de una columna"""
         if df is None or column not in df.columns:
             return []
@@ -283,7 +284,8 @@ class FilterService:
         except Exception:
             return []
     
-    def get_column_stats(self, df: pd.DataFrame, column: str) -> dict[str, Any] | None:
+    @staticmethod
+    def get_column_stats(df: pd.DataFrame, column: str) -> dict[str, Any] | None:
         """Obtener estadísticas de una columna para ayudar en filtrado"""
         if df is None or column not in df.columns:
             return None

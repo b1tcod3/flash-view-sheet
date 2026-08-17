@@ -53,14 +53,16 @@ class SimpleExcelFormatPreserver:
         
         return format_info
     
-    def _serialize_border(self, side: Any) -> dict[str, Any]:
+    @staticmethod
+    def _serialize_border(side: Any) -> dict[str, Any]:
         """Serializar border side"""
         return {
             'style': side.style,
             'color': side.color.rgb if (side.color and side.color.type == 'rgb') else None
         }
     
-    def restore_cell_format(self, cell: Any, format_info: dict[str, Any]) -> None:
+    @staticmethod
+    def restore_cell_format(cell: Any, format_info: dict[str, Any]) -> None:
         """
         Restaurar formato de una celda
         
@@ -213,7 +215,8 @@ class SimpleExcelFormatPreserver:
         # Heredar formato de la fila de encabezados hacia las filas de datos
         self._inherit_header_format(worksheet, column_mapping, start_cell, max_rows, area_backup)
     
-    def _has_style(self, cell: Any) -> bool:
+    @staticmethod
+    def _has_style(cell: Any) -> bool:
         """Determinar si una celda tiene formato aplicado (distinto del predeterminado)"""
         try:
             font = cell.font

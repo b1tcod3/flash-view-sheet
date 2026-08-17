@@ -62,7 +62,8 @@ class ToolbarManager:
         self.tool_bar.addWidget(ribbon_wrapper)
         return self.tool_bar
 
-    def _create_section_frame(self, title: str) -> QFrame:
+    @staticmethod
+    def _create_section_frame(title: str) -> QFrame:
         frame = QFrame()
         frame.setObjectName("RibbonSection")
         frame.setStyleSheet("""

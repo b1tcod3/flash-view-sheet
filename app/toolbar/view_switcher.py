@@ -126,7 +126,8 @@ class ViewSwitcher(QWidget):
         self.view_visualizer_btn.setEnabled(False)
         self._layout.addWidget(self.view_visualizer_btn)
 
-    def _make_button(self, icon, tooltip: str, icon_size: QSize) -> QPushButton:  # type: ignore[no-untyped-def]
+    @staticmethod
+    def _make_button(icon, tooltip: str, icon_size: QSize) -> QPushButton:  # type: ignore[no-untyped-def]
         btn = QPushButton()
         btn.setIcon(icon)
         btn.setIconSize(icon_size)

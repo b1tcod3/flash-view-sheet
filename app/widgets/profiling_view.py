@@ -189,7 +189,8 @@ class ProfilingView(QWidget):
             if widget is not None:
                 widget.deleteLater()
 
-    def _create_separator(self) -> QFrame:
+    @staticmethod
+    def _create_separator() -> QFrame:
         """Línea divisoria sutil para organizar el contenido de la tarjeta."""
         line = QFrame()
         line.setFixedHeight(1)
@@ -294,7 +295,8 @@ class ProfilingView(QWidget):
         header.addWidget(btn)
         header.addSpacing(4)
 
-    def _create_error_card(self, name: str, error_msg: str) -> QFrame:
+    @staticmethod
+    def _create_error_card(name: str, error_msg: str) -> QFrame:
         card = QFrame()
         card.setStyleSheet(
             f"QFrame {{ background-color: {_WHITE}; border: 1px solid {_BORDER_COLOR}; "
@@ -327,7 +329,8 @@ class ProfilingView(QWidget):
 
         return card
 
-    def _metric_label(self, text: str) -> QLabel:
+    @staticmethod
+    def _metric_label(text: str) -> QLabel:
         label = QLabel(text)
         label.setStyleSheet(f"color: {_MUTED_COLOR}; font-size: 12px; border: none;")
         return label
@@ -372,7 +375,8 @@ class ProfilingView(QWidget):
 
         return frame
 
-    def _values_list_widget(self, title_text: str, values: list[list[Any]]) -> QFrame:
+    @staticmethod
+    def _values_list_widget(title_text: str, values: list[list[Any]]) -> QFrame:
         frame = QFrame()
         layout = QVBoxLayout(frame)
         layout.setContentsMargins(0, 0, 0, 0)

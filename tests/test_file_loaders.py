@@ -19,7 +19,8 @@ from core.loaders.json_loader import JsonLoader
 class TestFileLoaderFactory:
     """Test the FileLoaderFactory"""
 
-    def test_get_supported_formats(self) -> None:
+    @staticmethod
+    def test_get_supported_formats() -> None:
         """Test getting supported formats"""
         formats = get_supported_formats()
         assert isinstance(formats, list)
@@ -28,7 +29,8 @@ class TestFileLoaderFactory:
         assert '.xml' in formats
         assert '.parquet' in formats
 
-    def test_is_file_supported(self) -> None:
+    @staticmethod
+    def test_is_file_supported() -> None:
         """Test checking if file format is supported"""
         # Supported formats
         assert is_file_supported('test.csv') is True
@@ -39,7 +41,8 @@ class TestFileLoaderFactory:
         assert is_file_supported('test.txt') is False
         assert is_file_supported('test.doc') is False
 
-    def test_get_loader(self) -> None:
+    @staticmethod
+    def test_get_loader() -> None:
         """Test getting appropriate loader for file"""
         with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as tmp:
             tmp_path = tmp.name
@@ -50,7 +53,8 @@ class TestFileLoaderFactory:
         finally:
             Path(tmp_path).unlink()
 
-    def test_unsupported_format(self) -> None:
+    @staticmethod
+    def test_unsupported_format() -> None:
         """Test error for unsupported format"""
         with tempfile.NamedTemporaryFile(suffix='.unsupported', delete=False) as tmp:
             tmp_path = tmp.name
@@ -61,7 +65,8 @@ class TestFileLoaderFactory:
         finally:
             Path(tmp_path).unlink()
 
-    def test_nonexistent_file(self) -> None:
+    @staticmethod
+    def test_nonexistent_file() -> None:
         """Test error for nonexistent file"""
         with pytest.raises(FileNotFoundError):
             get_file_loader('nonexistent_file.csv')
@@ -214,7 +219,8 @@ class TestDataHandlerIntegration:
         assert 'nombre' in df.columns
         assert 'name' not in df.columns
 
-    def test_supported_formats_function(self) -> None:
+    @staticmethod
+    def test_supported_formats_function() -> None:
         """Test get_supported_file_formats function"""
         from core.data_handler import get_supported_file_formats
         formats = get_supported_file_formats()

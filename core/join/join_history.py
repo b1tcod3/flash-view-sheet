@@ -100,7 +100,8 @@ class JoinHistory:
         self.entries = []
         self._save_history()
 
-    def _validated_history_path(self, filepath: str) -> Path:
+    @staticmethod
+    def _validated_history_path(filepath: str) -> Path:
         """Validar y normalizar la ruta de exportación/importación del historial.
 
         Restringe el acceso a archivos .json: rechaza directorios, rutas
@@ -167,7 +168,8 @@ class JoinHistory:
         except Exception as e:
             raise ValueError(f"Error importando historial: {str(e)}")
 
-    def _entry_to_dict(self, entry: JoinHistoryEntry) -> dict[str, Any]:
+    @staticmethod
+    def _entry_to_dict(entry: JoinHistoryEntry) -> dict[str, Any]:
         """Convertir entrada a diccionario para serialización.
 
         Nota: JSON serializa tuplas como listas. El campo suffixes
@@ -193,7 +195,8 @@ class JoinHistory:
             'error_message': entry.error_message
         }
 
-    def _dict_to_entry(self, data: dict[str, Any]) -> JoinHistoryEntry | None:
+    @staticmethod
+    def _dict_to_entry(data: dict[str, Any]) -> JoinHistoryEntry | None:
         """Convertir diccionario a entrada.
 
         Devuelve None si la entrada está corrupta o no se puede

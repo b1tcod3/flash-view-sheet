@@ -133,7 +133,8 @@ class ExcelFormatPreserver:
                     except Exception as e:
                         print(f"Warning: No se pudo restaurar formato de celda {cell_coord}: {e}")
     
-    def _extract_cell_format(self, cell: Any) -> dict[str, Any]:
+    @staticmethod
+    def _extract_cell_format(cell: Any) -> dict[str, Any]:
         """
         Extraer formato completo de una celda
         
@@ -173,7 +174,8 @@ class ExcelFormatPreserver:
         
         return format_dict
     
-    def _apply_cell_format(self, cell: Any, format_dict: dict[str, Any]) -> None:
+    @staticmethod
+    def _apply_cell_format(cell: Any, format_dict: dict[str, Any]) -> None:
         """
         Aplicar formato a una celda preservando valor
         
@@ -199,7 +201,8 @@ class ExcelFormatPreserver:
         if format_dict.get('protection'):
             cell.protection = format_dict['protection']
     
-    def _has_formatting(self, cell: Any) -> bool:
+    @staticmethod
+    def _has_formatting(cell: Any) -> bool:
         """
         Verificar si una celda tiene formato personalizado
         

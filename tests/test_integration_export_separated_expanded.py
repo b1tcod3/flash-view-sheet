@@ -201,7 +201,8 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def create_template_with_columns(self, template_path: str, num_cols: int) -> str:
+    @staticmethod
+    def create_template_with_columns(template_path: str, num_cols: int) -> str:
         """Crear plantilla con muchas columnas"""
         workbook = openpyxl.Workbook()
         sheet = workbook.active
@@ -659,7 +660,8 @@ class TestExportSeparatedIntegrationExpanded(unittest.TestCase):
             
             workbook.close()
     
-    def create_realistic_template(self, template_path: str) -> str:
+    @staticmethod
+    def create_realistic_template(template_path: str) -> str:
         """Crear plantilla más realista"""
         workbook = openpyxl.Workbook()
         sheet = workbook.active

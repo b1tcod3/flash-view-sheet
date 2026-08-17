@@ -20,7 +20,8 @@ from core.data_cleaner import (
 class CleaningService:
     """Servicio puro de limpieza. Sin imports de PySide6."""
 
-    def ejecutar_limpieza_rapida(self, df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
+    @staticmethod
+    def ejecutar_limpieza_rapida(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
         """
         Aplica limpieza estándar (nulos→eliminar, duplicados, espacios)
         y retorna (DataFrame limpio, resumen).
@@ -35,8 +36,8 @@ class CleaningService:
         resumen = resumen_limpieza(original, limpio)
         return limpio, resumen
 
+    @staticmethod
     def ejecutar_limpieza_personalizada(
-        self,
         df: pd.DataFrame,
         opciones: dict[str, Any],
     ) -> tuple[pd.DataFrame, dict[str, Any]]:

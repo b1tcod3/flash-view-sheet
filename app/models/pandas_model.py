@@ -118,7 +118,8 @@ class VirtualizedPandasModel(QAbstractTableModel):
 
         return None
 
-    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+    @staticmethod
+    def flags(index: QModelIndex) -> Qt.ItemFlags:
         """
         Retornar flags para la celda especificada
 

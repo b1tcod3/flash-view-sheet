@@ -75,7 +75,8 @@ class TestFolderLoader:
             assert 'filename' in meta
             assert meta['filename'].endswith('.xlsx')
 
-    def test_invalid_folder(self) -> None:
+    @staticmethod
+    def test_invalid_folder() -> None:
         """Test error handling for invalid folder"""
         with pytest.raises(FileNotFoundError):
             FolderLoader("/nonexistent/folder")
@@ -159,7 +160,8 @@ class TestExcelConsolidator:
 class TestFolderLoadConfig:
     """Test the FolderLoadConfig model"""
 
-    def test_config_creation(self) -> None:
+    @staticmethod
+    def test_config_creation() -> None:
         """Test creating a folder load config"""
         config = FolderLoadConfig(
             folder_path="/test/path",
@@ -176,7 +178,8 @@ class TestFolderLoadConfig:
         assert len(config.excluded_files) == 1
         assert config.alignment_strategy == ColumnAlignmentStrategy.BY_POSITION
 
-    def test_should_include_file(self) -> None:
+    @staticmethod
+    def test_should_include_file() -> None:
         """Test file inclusion logic"""
         config = FolderLoadConfig(
             folder_path="/test/path",
@@ -196,7 +199,8 @@ class TestFolderLoadConfig:
         config2 = FolderLoadConfig(folder_path="/test/path")
         assert config2.should_include_file("any.xlsx") is True
 
-    def test_config_to_dict(self) -> None:
+    @staticmethod
+    def test_config_to_dict() -> None:
         """Test converting config to dict"""
         config = FolderLoadConfig(folder_path="/test/path")
         config_dict = config.to_dict()
@@ -207,7 +211,8 @@ class TestFolderLoadConfig:
 class TestFileMetadata:
     """Test the FileMetadata model"""
 
-    def test_metadata_creation(self) -> None:
+    @staticmethod
+    def test_metadata_creation() -> None:
         """Test creating file metadata"""
         metadata = FileMetadata(
             filename="test.xlsx",
@@ -225,7 +230,8 @@ class TestFileMetadata:
         assert metadata.num_columns == 2
         assert metadata.has_error is False
 
-    def test_metadata_with_error(self) -> None:
+    @staticmethod
+    def test_metadata_with_error() -> None:
         """Test metadata with error"""
         metadata = FileMetadata(
             filename="test.xlsx",
@@ -243,7 +249,8 @@ class TestFileMetadata:
         assert metadata.has_error is True
         assert metadata.error == "File corrupted"
 
-    def test_metadata_to_dict(self) -> None:
+    @staticmethod
+    def test_metadata_to_dict() -> None:
         """Test converting metadata to dict"""
         metadata = FileMetadata(
             filename="test.xlsx",

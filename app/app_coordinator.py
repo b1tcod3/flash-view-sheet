@@ -451,7 +451,8 @@ class AppCoordinator(QObject):
             QMessageBox.critical(self.parent_window, "Error", 
                                f"Error procesando resultado del join: {str(e)}")
     
-    def _basename(self, path: str) -> str:
+    @staticmethod
+    def _basename(path: str) -> str:
         """Obtener nombre de archivo sin ruta"""
         return Path(path).name
 
@@ -827,7 +828,8 @@ class AppCoordinator(QObject):
 
     # ==================== THREAD CLEANUP ====================
 
-    def _cancel_thread(self, thread: DataLoaderThread | FolderLoaderThread | ProfilerWorkerThread | VisualizerWorkerThread | None) -> None:
+    @staticmethod
+    def _cancel_thread(thread: DataLoaderThread | FolderLoaderThread | ProfilerWorkerThread | VisualizerWorkerThread | None) -> None:
         """Detener un hilo de forma segura si está corriendo."""
         if thread is None or not thread.isRunning():
             return

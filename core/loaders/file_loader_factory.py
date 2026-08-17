@@ -134,7 +134,8 @@ class FileLoaderFactory:
         
         self._loader_mapping[extension.lower()] = loader_class
 
-    def get_format_description(self, extension: str) -> str:
+    @staticmethod
+    def get_format_description(extension: str) -> str:
         """
         Get description of a file format
         

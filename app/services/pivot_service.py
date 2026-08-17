@@ -22,15 +22,18 @@ class PivotService:
     def cleanup(self) -> None:
         self.last_result = None
 
-    def detect_categorical_columns(self, df: pd.DataFrame) -> list[str]:
+    @staticmethod
+    def detect_categorical_columns(df: pd.DataFrame) -> list[str]:
         """Solo columnas con ≤20 valores únicos."""
         return [c for c in df.columns if df[c].nunique() <= 20]
 
-    def detect_numeric_columns(self, df: pd.DataFrame) -> list[str]:
+    @staticmethod
+    def detect_numeric_columns(df: pd.DataFrame) -> list[str]:
         """Detectar columnas numéricas."""
         return [c for c in df.columns if is_numeric_dtype(df[c])]
 
-    def rank_combinations(self, df: pd.DataFrame, cat_cols: list[str], num_cols: list[str]) -> list[tuple[str, str, int]]:
+    @staticmethod
+    def rank_combinations(df: pd.DataFrame, cat_cols: list[str], num_cols: list[str]) -> list[tuple[str, str, int]]:
         """
         Rankear combinaciones categórica × numérica por volumen de datos.
         Retorna lista de (cat, num, score) ordenada de mayor a menor.
