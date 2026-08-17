@@ -441,31 +441,33 @@ class JoinDialog(QDialog):
     def _suggest_matching_columns(self, left_columns: list[str], right_columns: list[str]) -> None:
         """Sugerir automáticamente columnas que podrían hacer match"""
         # Buscar columnas con el mismo nombre (case insensitive)
-        suggested_left = None
-        suggested_right = None
-
-        for left_col in left_columns:
-            for right_col in right_columns:
-                if left_col.lower() == right_col.lower():
-                    suggested_left = left_col
-                    suggested_right = right_col
-                    break
-            if suggested_left:
-                break
+        suggested_left, suggested_right = self._find_exact_match(left_columns, right_columns)
 
         # Si no hay match exacto, buscar columnas con "id" o "key"
-        if not suggested_left:
-            id_columns_left = [col for col in left_columns if 'id' in col.lower() or 'key' in col.lower()]
-            id_columns_right = [col for col in right_columns if 'id' in col.lower() or 'key' in col.lower()]
-
-            if id_columns_left and id_columns_right:
-                suggested_left = id_columns_left[0]
-                suggested_right = id_columns_right[0]
+        if not suggested_left or not suggested_right:
+            suggested_left, suggested_right = self._find_key_match(left_columns, right_columns)
 
         # Seleccionar las columnas sugeridas
         if suggested_left and suggested_right:
             self.left_key_combo.setCurrentText(suggested_left)
             self.right_key_combo.setCurrentText(suggested_right)
+
+    @staticmethod
+    def _find_exact_match(left_columns: list[str], right_columns: list[str]) -> tuple[str | None, str | None]:
+        for left_col in left_columns:
+            for right_col in right_columns:
+                if left_col.lower() == right_col.lower():
+                    return left_col, right_col
+        return None, None
+
+    @staticmethod
+    def _find_key_match(left_columns: list[str], right_columns: list[str]) -> tuple[str | None, str | None]:
+        id_columns_left = [col for col in left_columns if 'id' in col.lower() or 'key' in col.lower()]
+        id_columns_right = [col for col in right_columns if 'id' in col.lower() or 'key' in col.lower()]
+
+        if id_columns_left and id_columns_right:
+            return id_columns_left[0], id_columns_right[0]
+        return None, None
 
     def on_join_type_changed(self, button: QAbstractButton) -> None:
         """Manejar cambio de tipo de join"""
