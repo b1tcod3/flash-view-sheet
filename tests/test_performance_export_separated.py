@@ -64,9 +64,9 @@ class PerformanceMetrics:
             'avg_duration_seconds': np.mean([m['duration_seconds'] for m in successful]) if successful else 0,
             'avg_memory_peak_mb': np.mean([m['memory_peak_mb'] for m in successful]) if successful else 0,
             'avg_throughput_rows_per_second': np.mean([m['throughput_rows_per_second'] for m in successful]) if successful else 0,
-            'max_memory_peak_mb': max([m['memory_peak_mb'] for m in successful]) if successful else 0,
-            'min_throughput_rows_per_second': min([m['throughput_rows_per_second'] for m in successful]) if successful else 0,
-            'max_throughput_rows_per_second': max([m['throughput_rows_per_second'] for m in successful]) if successful else 0
+            'max_memory_peak_mb': max(m['memory_peak_mb'] for m in successful) if successful else 0,
+            'min_throughput_rows_per_second': min(m['throughput_rows_per_second'] for m in successful) if successful else 0,
+            'max_throughput_rows_per_second': max(m['throughput_rows_per_second'] for m in successful) if successful else 0
         }
     
     def generate_report(self)-> str:
