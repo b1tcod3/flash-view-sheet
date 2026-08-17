@@ -189,7 +189,7 @@ class JoinedDataView(DataView):
 
         export_btn = QPushButton("Exportar Historial")
         export_btn.clicked.connect(lambda: self.history_export_requested.emit(
-            f"historial_cruce.json"))
+            "historial_cruce.json"))
         buttons_layout.addWidget(export_btn)
 
         clear_btn = QPushButton("Limpiar Historial")

@@ -260,7 +260,7 @@ if __name__ == "__main__":
             if not column_types_passed:
                 print("\n⚠️  Algunos tipos de columna no funcionan correctamente")
         
-        print(f"\n🎯 CONCLUSIÓN FINAL:")
+        print("\n🎯 CONCLUSIÓN FINAL:")
         if main_test_passed and column_types_passed:
             print("✅ LA CORRECCIÓN DE PAGINACIÓN ESTÁ FUNCIONANDO")
         else:
