@@ -156,7 +156,6 @@ class PerformanceOptimizer:
                     yield (f"{group_name}_chunk_{i//chunk_size + 1}", chunk)
                     
                     # Cleanup de memoria entre chunks
-                    del chunk
                     if i % (chunk_size * 5) == 0:  # GC cada 5 chunks
                         gc.collect()
             else:
