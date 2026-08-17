@@ -35,6 +35,12 @@ class JoinedDataView(DataView):
         self.left_dataset_name: str = ""
         self.right_dataset_name: str = ""
 
+        self.metadata_text = None
+        self.export_btn = None
+        self.new_join_btn = None
+        self.history_btn = None
+        self.help_btn = None
+
         self.add_join_metadata_section()
 
     def add_join_metadata_section(self) -> None:

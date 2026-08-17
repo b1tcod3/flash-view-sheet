@@ -41,6 +41,30 @@ class JoinDialog(QDialog):
         self.join_service = join_service or JoinService()
         self._worker: JoinWorkerThread | None = None
         self._progress_dialog: QProgressDialog | None = None
+
+        self.right_info_label = None
+        self.join_type_group = None
+        self.left_key_combo = None
+        self.right_key_combo = None
+        self.left_suffix_edit = None
+        self.right_suffix_edit = None
+        self.validate_check = None
+        self.indicator_check = None
+        self.sort_check = None
+        self.select_columns_check = None
+        self.available_columns_list = None
+        self.add_column_btn = None
+        self.remove_column_btn = None
+        self.select_all_btn = None
+        self.clear_selection_btn = None
+        self.selected_columns_list = None
+        self.preview_stats_label = None
+        self.preview_table = None
+        self.update_preview_btn = None
+        self.validate_btn = None
+        self.execute_btn = None
+        self.cancel_btn = None
+
         self.setup_ui()
         self.setup_connections()
 

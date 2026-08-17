@@ -74,6 +74,7 @@ class AppCoordinator(QObject):
         self._completed_count: int = 0
         self._error_count: int = 0
         self._total_files: int = 0
+        self._pending_col_vis = False
     
     # ==================== CARGA DE ARCHIVO ====================
 

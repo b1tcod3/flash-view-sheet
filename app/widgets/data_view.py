@@ -36,6 +36,19 @@ class DataView(QWidget):
         self._sorting_in_progress: bool = False
         self._quick_filter_groups: dict[str, QButtonGroup] = {}
 
+        self.search_column_combo = None
+        self.search_input = None
+        self.filter_btn = None
+        self.clear_search_btn = None
+        self.table_view = None
+        self.page_info_label = None
+        self.page_number_label = None
+        self.page_size_spin = None
+        self.first_page_btn = None
+        self.prev_page_btn = None
+        self.next_page_btn = None
+        self.last_page_btn = None
+
         self.setup_ui()
 
     def setup_ui(self) -> None:
