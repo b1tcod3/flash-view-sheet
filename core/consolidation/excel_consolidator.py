@@ -13,10 +13,10 @@ class ExcelConsolidator:
     """
 
     def __init__(self) -> None:
-        self.dataframes = []
-        self.column_mappings = {}
-        self.included_columns = []  # If empty, include all
-        self.excluded_columns = []
+        self.dataframes: list[dict[str, Any]] = []
+        self.column_mappings: dict[str, str] = {}
+        self.included_columns: list[str] = []  # If empty, include all
+        self.excluded_columns: list[str] = []
 
     def add_dataframe(self, df: pd.DataFrame, source_name: str = "") -> None:
         """
@@ -131,7 +131,7 @@ class ExcelConsolidator:
 
         max_columns = max(len(df['columns']) for df in self.dataframes)
 
-        alignment = []
+        alignment: list[dict[str, Any]] = []
         for i in range(max_columns):
             column_info = {'position': i + 1, 'sources': {}}
 

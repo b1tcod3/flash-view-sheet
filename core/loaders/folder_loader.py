@@ -24,7 +24,7 @@ class FolderLoader:
         self.folder_path = Path(folder_path)
         self._validate_folder()
         self.excel_files = self._scan_excel_files()
-        self._metadata_cache = {}  # Cache for file metadata
+        self._metadata_cache: dict[str, dict[str, Any]] = {}  # Cache for file metadata
 
     def _validate_folder(self) -> None:
         """Validate that the folder exists"""

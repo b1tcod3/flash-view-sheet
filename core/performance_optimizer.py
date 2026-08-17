@@ -52,9 +52,9 @@ class PerformanceOptimizer:
                  memory_threshold_mb: int = 2048) -> None:
         self.chunking_strategy = chunking_strategy
         self.memory_threshold_mb = memory_threshold_mb  # 2GB threshold por defecto
-        self.performance_cache = {}
-        self.format_cache = {}  # Cache para formatos Excel
-        self.active_monitors = {}
+        self.performance_cache: dict[str, Any] = {}
+        self.format_cache: dict[str, Any] = {}  # Cache para formatos Excel
+        self.active_monitors: dict[str, Any] = {}
         
     @staticmethod
     def determine_optimal_chunking_strategy(df: pd.DataFrame, 
@@ -228,7 +228,11 @@ class PerformanceOptimizer:
         
         # Obtener estado de memoria
         resources = self.monitor_memory_usage()
-        peak_memory = getattr(self, '_peak_memory_mb', resources.current_memory_mb)
+        peak_memory_value = getattr(self, '_peak_memory_mb', None)
+        if peak_memory_value is None:
+            peak_memory = resources.current_memory_mb
+        else:
+            peak_memory = float(peak_memory_value)
         
         return ProcessingMetrics(
             start_time=start_time,
@@ -247,7 +251,7 @@ class ExcelFormatOptimizer:
     """Optimizador específico para operaciones de Excel"""
     
     def __init__(self) -> None:
-        self.format_cache = {}  # Cache para formatos Excel
+        self.format_cache: dict[str, openpyxl.Workbook] = {}  # Cache para formatos Excel
         self.cache_limit = 100  # Límite de entradas en cache
     
     def load_excel_template_optimized(self, template_path: str) -> openpyxl.Workbook:
@@ -348,7 +352,7 @@ class ExcelFormatOptimizer:
     @staticmethod
     def _cache_existing_formats(sheet: Any, data_range: str) -> dict[tuple[int, int], Any]:
         """Cachear formatos existentes para preservación"""
-        formats = {}
+        formats: dict[tuple[int, int], Any] = {}
         
         if not data_range:
             return formats

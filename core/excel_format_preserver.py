@@ -27,7 +27,7 @@ class ExcelFormatPreserver:
         Returns:
             Dict con todos los formatos cacheados
         """
-        formats_cache = {
+        formats_cache: dict[str, Any] = {
             'worksheet_formats': {},
             'cell_formats': {},
             'column_formats': {},
@@ -58,13 +58,13 @@ class ExcelFormatPreserver:
 
     def _cache_all_worksheets(self, workbook: Any, formats_cache: dict[str, Any]) -> None:
         if isinstance(workbook.worksheets, dict):
-            worksheets_items = workbook.worksheets.items()
+            worksheets_items: list[tuple[Any, Any]] = list(workbook.worksheets.items())
         else:
             # worksheets es una lista
             worksheets_items = [(ws.title, ws) for ws in workbook.worksheets]
         
         for sheet_name, worksheet in worksheets_items:
-            sheet_cache = {
+            sheet_cache: dict[str, Any] = {
                 'cell_formats': {},
                 'column_widths': {},
                 'row_heights': {},
@@ -230,7 +230,7 @@ class ExcelFormatPreserver:
             cell.number_format != 'General'
         )
     
-    def insert_data_preserving_format(self, worksheet: Any, data: dict[tuple[int, int], Any], 
+    def insert_data_preserving_format(self, worksheet: Any, data: dict[str, Any], 
                                     column_mapping: dict[str, str], start_cell: str) -> None:
         """
         Insertar datos en worksheet preservando formato existente
