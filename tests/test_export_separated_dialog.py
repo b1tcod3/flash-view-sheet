@@ -352,7 +352,7 @@ class TestExportSeparatedDialog(unittest.TestCase):
             try:
                 dialog.validate_configuration()
                 # Si llegamos aquí, el manejo de error funcionó
-                self.assertTrue(True)
+                self.assertFalse(dialog.export_btn.isEnabled())
             except Exception:
                 self.fail("El diálogo debe manejar errores de validación gracefully")
     
