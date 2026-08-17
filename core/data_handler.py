@@ -736,10 +736,7 @@ class ExportSeparatedConfig:
         """Obtener mapeo por defecto (posicional)"""
         mapping = {}
         for i, col in enumerate(df_columns):
-            if i < 26:  # A-Z
-                mapping[col] = get_column_letter(i + 1)
-            else:  # AA, AB, etc.
-                mapping[col] = get_column_letter(i + 1)
+            mapping[col] = get_column_letter(i + 1)
         return mapping
 
     def to_dict(self) -> dict[str, Any]:
