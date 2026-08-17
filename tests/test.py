@@ -43,7 +43,7 @@ def test_page_preservation_debug():
     # Paso 3: Guardar estado antes del ordenamiento
     page_before_sorting = data_view.pagination_manager.get_current_page()
     total_pages_before = data_view.pagination_manager.get_total_pages()
-    print(f"3️⃣ Estado antes del ordenamiento:")
+    print("3️⃣ Estado antes del ordenamiento:")
     print(f"   - Página actual: {page_before_sorting}")
     print(f"   - Total páginas: {total_pages_before}")
     
@@ -68,7 +68,7 @@ def test_page_preservation_debug():
         
         # Paso 6: Verificar estado final
         page_after_sorting = data_view.pagination_manager.get_current_page()
-        print(f"5️⃣ Estado después del ordenamiento:")
+        print("5️⃣ Estado después del ordenamiento:")
         print(f"   - Página final: {page_after_sorting}")
         print(f"   - Total llamadas a set_data: {call_count}")
         

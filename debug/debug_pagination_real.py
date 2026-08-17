@@ -62,7 +62,7 @@ class DebugWindow(QMainWindow):
         # Verificar PaginationManager
         if self.data_view.pagination_manager is not None:
             pm = self.data_view.pagination_manager
-            print(f"✅ PaginationManager creado:")
+            print("✅ PaginationManager creado:")
             print(f"   - Página actual: {pm.get_current_page()}")
             print(f"   - Total páginas: {pm.get_total_pages()}")
             print(f"   - Tamaño página: {pm.get_page_size()}")
@@ -80,14 +80,14 @@ class DebugWindow(QMainWindow):
             
         # Verificar modelo
         if self.data_view.pandas_model is not None:
-            print(f"✅ PandasModel creado:")
+            print("✅ PandasModel creado:")
             print(f"   - Filas en modelo: {self.data_view.pandas_model.rowCount()}")
         else:
             print("❌ PandasModel: None")
             
         # Verificar tabla
         if self.data_view.table_view is not None:
-            print(f"✅ TableView configurado:")
+            print("✅ TableView configurado:")
             print(f"   - Modelo establecido: {self.data_view.table_view.model() is not None}")
         else:
             print("❌ TableView: None")

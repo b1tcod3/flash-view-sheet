@@ -30,7 +30,7 @@ def debug_qt_constants():
     print("Descendente (False):", df_desc['ID'].tolist())
     
     # Test con valores de Qt
-    print(f"\n=== TEST CON VALORES QT ===")
+    print("\n=== TEST CON VALORES QT ===")
     asc_order = Qt.AscendingOrder
     desc_order = Qt.DescendingOrder
     

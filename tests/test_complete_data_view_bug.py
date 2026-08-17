@@ -62,7 +62,7 @@ class TestWindow(QMainWindow):
         page_data = pm.get_page_data()
         page_info = pm.get_page_info()
         
-        print(f"   📊 PaginationManager:")
+        print("   📊 PaginationManager:")
         print(f"      - Página actual: {pm.get_current_page()}")
         print(f"      - Total páginas: {pm.get_total_pages()}")
         print(f"      - Filas en página: {len(page_data)}")
@@ -72,16 +72,16 @@ class TestWindow(QMainWindow):
             print(f"      - Primer ID: {page_data.iloc[0]['ID']}")
             print(f"      - Último ID: {page_data.iloc[-1]['ID']}")
         else:
-            print(f"      ❌ ¡PÁGINA VACÍA!")
+            print("      ❌ ¡PÁGINA VACÍA!")
         
         # Verificar estado del modelo
         if self.data_view.pandas_model is not None:
             model = self.data_view.pandas_model
-            print(f"   🗃️ PandasModel:")
+            print("   🗃️ PandasModel:")
             print(f"      - Total filas en modelo: {model.rowCount()}")
             print(f"      - Modelo correcto: {'✅' if model.rowCount() == len(page_data) else '❌'}")
         else:
-            print(f"   ❌ PandasModel: None")
+            print("   ❌ PandasModel: None")
 
 def main() -> None:
     """Función principal"""

@@ -171,7 +171,7 @@ class BugReproductionWindow(QMainWindow):
             print("❌ DataView: None")
             return
             
-        print(f"✅ DataView: existe")
+        print("✅ DataView: existe")
         
         # Verificar DataFrame original
         if self.data_view.original_df is not None:
@@ -182,7 +182,7 @@ class BugReproductionWindow(QMainWindow):
         # Verificar PaginationManager
         if self.data_view.pagination_manager is not None:
             pm = self.data_view.pagination_manager
-            print(f"✅ PaginationManager: existe")
+            print("✅ PaginationManager: existe")
             
             current_page = pm.get_current_page()
             total_pages = pm.get_total_pages()

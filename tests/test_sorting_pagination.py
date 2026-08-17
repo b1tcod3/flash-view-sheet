@@ -50,18 +50,18 @@ def test_sorting_with_pagination() -> None:
     page_data = pm.get_page_data()
     model = VirtualizedPandasModel(page_data)
     
-    print(f"\nPágina 1 (sin ordenamiento):")
+    print("\nPágina 1 (sin ordenamiento):")
     for i in range(min(3, len(page_data))):
         cell_value = model.data(model.index(i, 0))  # Primera columna (ID)
         print(f"  Fila {i}: {cell_value}")
     
     # Ordenar por ID (ascendente)
-    print(f"\n--- Ordenando por ID (ascendente) ---")
+    print("\n--- Ordenando por ID (ascendente) ---")
     from PySide6.QtCore import Qt
     model.sort(0, Qt.AscendingOrder)  # columna 0, orden ascendente
     
     # Verificar ordenamiento
-    print(f"Página 1 después del ordenamiento:")
+    print("Página 1 después del ordenamiento:")
     for i in range(min(3, model.rowCount())):
         cell_value = model.data(model.index(i, 0))
         print(f"  Fila {i}: {cell_value}")
@@ -72,22 +72,22 @@ def test_sorting_with_pagination() -> None:
         second_id = int(model.data(model.index(1, 0)))
         third_id = int(model.data(model.index(2, 0))) if model.rowCount() > 2 else None
         
-        print(f"\nVerificación:")
+        print("\nVerificación:")
         print(f"  Primer ID: {first_id}")
         print(f"  Segundo ID: {second_id}")
         if third_id:
             print(f"  Tercer ID: {third_id}")
         
         if first_id <= second_id and (third_id is None or second_id <= third_id):
-            print(f"  ✅ Ordenamiento ascendente correcto")
+            print("  ✅ Ordenamiento ascendente correcto")
         else:
-            print(f"  ❌ Error en ordenamiento ascendente")
+            print("  ❌ Error en ordenamiento ascendente")
     
     # Test ordenamiento descendente
-    print(f"\n--- Ordenando por ID (descendente) ---")
+    print("\n--- Ordenando por ID (descendente) ---")
     model.sort(0, Qt.DescendingOrder)  # columna 0, orden descendente
     
-    print(f"Página 1 después de ordenamiento descendente:")
+    print("Página 1 después de ordenamiento descendente:")
     for i in range(min(3, model.rowCount())):
         cell_value = model.data(model.index(i, 0))
         print(f"  Fila {i}: {cell_value}")
@@ -99,9 +99,9 @@ def test_sorting_with_pagination() -> None:
         third_id = int(model.data(model.index(2, 0))) if model.rowCount() > 2 else None
         
         if first_id >= second_id and (third_id is None or second_id >= third_id):
-            print(f"  ✅ Ordenamiento descendente correcto")
+            print("  ✅ Ordenamiento descendente correcto")
         else:
-            print(f"  ❌ Error en ordenamiento descendente")
+            print("  ❌ Error en ordenamiento descendente")
     
     return True
 
@@ -136,7 +136,7 @@ def test_sorting_integration_with_data_view() -> None:
         
         # Simular ordenamiento en el modelo
         model = data_view.pandas_model
-        print(f"\nAplicando ordenamiento al modelo...")
+        print("\nAplicando ordenamiento al modelo...")
         model.sort(0, Qt.AscendingOrder)  # Ordenar por ID ascendente
         
         # Actualizar pagination manager con datos ordenados
@@ -151,10 +151,10 @@ def test_sorting_integration_with_data_view() -> None:
         # Verificar que están ordenados
         ids_sorted = page1_sorted['ID'].tolist()
         if ids_sorted == sorted(ids_sorted):
-            print(f"  ✅ Datos correctamente ordenados")
+            print("  ✅ Datos correctamente ordenados")
             return True
         else:
-            print(f"  ❌ Error: datos no están ordenados")
+            print("  ❌ Error: datos no están ordenados")
             return False
             
     except Exception as e:

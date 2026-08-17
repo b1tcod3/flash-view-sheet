@@ -89,19 +89,19 @@ def test_main_flow() -> None:
     
     def on_data_loaded(df: pd.DataFrame) -> None:
         nonlocal data_view, df_original
-        print(f"\n✅ REAL: Slot on_datos_cargados ejecutado")
+        print("\n✅ REAL: Slot on_datos_cargados ejecutado")
         print(f"   - DataFrame recibido: {len(df)} filas")
         print(f"   - Columnas: {list(df.columns)}")
         
         # Variables como en main.py
         df_original = df
         
-        print(f"   - Estableciendo datos en DataView...")
+        print("   - Estableciendo datos en DataView...")
         data_view.set_data(df)
         print("✅ REAL: Datos establecidos en DataView")
         
         # Verificar estado después de set_data
-        print(f"\n--- ESTADO DESPUÉS DE SET_DATA ---")
+        print("\n--- ESTADO DESPUÉS DE SET_DATA ---")
         print(f"   - original_df: {len(data_view.original_df)} filas" if data_view.original_df is not None else "   - original_df: None")
         print(f"   - pagination_manager: {data_view.pagination_manager is not None}")
         
@@ -119,7 +119,7 @@ def test_main_flow() -> None:
             print(f"   - Filas en modelo: {model.rowCount()}")
         
         # Test de navegación manual
-        print(f"\n🔍 REAL: Probando navegación manual...")
+        print("\n🔍 REAL: Probando navegación manual...")
         if data_view.pagination_manager and data_view.pagination_manager.get_total_pages() > 1:
             print("   - Navegando a página 2...")
             data_view.pagination_manager.next_page()
@@ -161,7 +161,7 @@ def test_main_flow() -> None:
 
 def verify_final_state(data_view: Any, expected_df) -> None:
     """Verificar estado final después de la carga"""
-    print(f"\n--- VERIFICACIÓN FINAL ---")
+    print("\n--- VERIFICACIÓN FINAL ---")
     
     if data_view.original_df is not None:
         print(f"✅ DataFrame original: {len(data_view.original_df)} filas")

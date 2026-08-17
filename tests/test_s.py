@@ -26,13 +26,13 @@ def test_page2_bug() -> None:
     # Crear PaginationManager
     pm = PaginationManager(df, page_size=10)
     
-    print(f"\n📖 ESTADO INICIAL:")
+    print("\n📖 ESTADO INICIAL:")
     print(f"   - Página actual: {pm.get_current_page()}")
     print(f"   - Total páginas: {pm.get_total_pages()}")
     print(f"   - Tamaño página: {pm.get_page_size()}")
     
     # Verificar página 1
-    print(f"\n📄 PÁGINA 1:")
+    print("\n📄 PÁGINA 1:")
     page1_data = pm.get_page_data()
     print(f"   - Filas en página: {len(page1_data)}")
     if len(page1_data) > 0:
@@ -40,14 +40,14 @@ def test_page2_bug() -> None:
         print(f"   - Datos: {list(page1_data['ID'])}")
     
     # Navegar a página 2
-    print(f"\n➡️ NAVEGANDO A PÁGINA 2:")
+    print("\n➡️ NAVEGANDO A PÁGINA 2:")
     pm.next_page()
     
     print(f"   - Página actual después de next_page(): {pm.get_current_page()}")
     print(f"   - Total páginas: {pm.get_total_pages()}")
     
     # Verificar página 2
-    print(f"\n📄 PÁGINA 2:")
+    print("\n📄 PÁGINA 2:")
     page2_data = pm.get_page_data()
     print(f"   - Filas en página: {len(page2_data)}")
     
@@ -59,7 +59,7 @@ def test_page2_bug() -> None:
         print("   ❌ BUG CONFIRMADO: PÁGINA 2 ESTÁ VACÍA")
         
         # Debug detallado
-        print(f"\n🔍 DEBUG DETALLADO:")
+        print("\n🔍 DEBUG DETALLADO:")
         print(f"   - current_page: {pm.current_page}")
         print(f"   - page_size: {pm.page_size}")
         print(f"   - filtered_df length: {len(pm.filtered_df)}")
@@ -72,7 +72,7 @@ def test_page2_bug() -> None:
         print(f"   - Rango iloc: [{start_idx}:{end_idx}]")
         
         if start_idx < len(pm.filtered_df):
-            print(f"   - Datos en rango calculado:")
+            print("   - Datos en rango calculado:")
             sample_data = pm.filtered_df.iloc[start_idx:end_idx]
             print(f"     {len(sample_data)} filas")
             if len(sample_data) > 0:
@@ -81,7 +81,7 @@ def test_page2_bug() -> None:
             print(f"   - start_idx ({start_idx}) >= length ({len(pm.filtered_df)})")
     
     # Probar navegación manual
-    print(f"\n🔧 NAVEGACIÓN MANUAL:")
+    print("\n🔧 NAVEGACIÓN MANUAL:")
     pm.set_current_page(2)
     print(f"   - Página después de set_current_page(2): {pm.get_current_page()}")
     
@@ -95,7 +95,7 @@ def test_page2_bug() -> None:
         print("   ❌ NAVEGACIÓN MANUAL TAMBIÉN FALLA")
     
     # Test de todas las páginas
-    print(f"\n📋 TEST COMPLETO DE TODAS LAS PÁGINAS:")
+    print("\n📋 TEST COMPLETO DE TODAS LAS PÁGINAS:")
     for page in range(1, pm.get_total_pages() + 1):
         pm.set_current_page(page)
         page_data = pm.get_page_data()

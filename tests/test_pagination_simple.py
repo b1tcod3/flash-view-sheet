@@ -37,7 +37,7 @@ def probar_pagination_manager() -> bool:
     # Crear PaginationManager
     pm = PaginationManager(df, page_size=50)
     
-    print(f"✅ PaginationManager creado exitosamente")
+    print("✅ PaginationManager creado exitosamente")
     print(f"Total de páginas: {pm.get_total_pages()}")
     print(f"Página actual: {pm.get_current_page()}")
     print(f"Tamaño de página: {pm.get_page_size()}")
@@ -54,7 +54,7 @@ def probar_pagination_manager() -> bool:
     page_data = pm.get_page_data()
     print(f"✅ Filas en página actual: {len(page_data)}")
     if len(page_data) > 0:
-        print(f"   Primeras 3 filas de la página:")
+        print("   Primeras 3 filas de la página:")
         print(f"   {page_data.head(3).to_string()}")
     
     # Probar siguiente página

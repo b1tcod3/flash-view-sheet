@@ -157,12 +157,12 @@ class IntegrationTestWindow(QMainWindow):
             
         # Verificar DataView
         if self.data_view is not None:
-            print(f"✅ data_view inicializado")
+            print("✅ data_view inicializado")
             
             # Verificar estado interno del DataView
             if hasattr(self.data_view, 'pagination_manager') and self.data_view.pagination_manager is not None:
                 pm = self.data_view.pagination_manager
-                print(f"✅ PaginationManager inicializado:")
+                print("✅ PaginationManager inicializado:")
                 print(f"   - Página actual: {pm.get_current_page()}")
                 print(f"   - Total páginas: {pm.get_total_pages()}")
                 print(f"   - Tamaño página: {pm.get_page_size()}")

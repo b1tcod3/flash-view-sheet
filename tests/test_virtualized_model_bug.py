@@ -41,7 +41,7 @@ class VirtualizedModelTest(QMainWindow):
         
         # Crear modelo para página 1
         self.model1 = VirtualizedPandasModel(page1_data)
-        print(f"🔍 DEBUG: Modelo 1 creado:")
+        print("🔍 DEBUG: Modelo 1 creado:")
         print(f"   - Virtualización: {self.model1.enable_virtualization}")
         print(f"   - Total filas: {self.model1.rowCount()}")
         print(f"   - Total columnas: {self.model1.columnCount()}")
@@ -53,7 +53,7 @@ class VirtualizedModelTest(QMainWindow):
         
         # Crear modelo para página 2
         self.model2 = VirtualizedPandasModel(page2_data)
-        print(f"🔍 DEBUG: Modelo 2 creado:")
+        print("🔍 DEBUG: Modelo 2 creado:")
         print(f"   - Virtualización: {self.model2.enable_virtualization}")
         print(f"   - Total filas: {self.model2.rowCount()}")
         print(f"   - Total columnas: {self.model2.columnCount()}")
@@ -105,7 +105,7 @@ class VirtualizedModelTest(QMainWindow):
             if data_list[0] != expected_first_col:
                 print(f"   ❌ ERROR: Esperado {expected_first_col}, obtenido {data_list[0]}")
             else:
-                print(f"   ✅ Correcto")
+                print("   ✅ Correcto")
     
     def show_model(self, model: Any) -> None:
         """Cambiar modelo en la tabla"""

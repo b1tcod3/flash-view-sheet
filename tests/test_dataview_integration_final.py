@@ -44,7 +44,7 @@ def test_dataview_integration() -> None:
     data_view = DataView()
     data_view.set_data(df)
     
-    print(f"   ✅ DataView configurado exitosamente")
+    print("   ✅ DataView configurado exitosamente")
     print(f"   📄 Páginas totales: {data_view.pagination_manager.get_total_pages()}")
     print()
     

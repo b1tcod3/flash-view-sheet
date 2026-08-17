@@ -67,7 +67,7 @@ def test_pagination_bug() -> None:
             return False
     
     # Verificar información de página para cada página
-    print(f"\n--- Verificando información de página ---")
+    print("\n--- Verificando información de página ---")
     for page_num in range(1, pm.get_total_pages() + 1):
         pm.set_current_page(page_num)
         page_info = pm.get_page_info()

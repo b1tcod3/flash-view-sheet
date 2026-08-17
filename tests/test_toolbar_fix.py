@@ -33,7 +33,7 @@ def test_view_mapping() -> None:
     factory_pattern = r'self\._stacked_widget\.addWidget\(view\)'
     has_factory_addwidget = re.search(factory_pattern, content) is not None
 
-    print(f"📋 Orden de creación de vistas:")
+    print("📋 Orden de creación de vistas:")
     if has_factory_addwidget:
         factory_dict_pattern = r'VIEW_(\w+):\s*self\._create_(\w+)_view'
         factory_matches = re.findall(factory_dict_pattern, content)

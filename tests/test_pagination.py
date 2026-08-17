@@ -52,7 +52,7 @@ def probar_pagination_manager() -> bool:
     # Obtener datos de página actual
     page_data = pm.get_page_data()
     print(f"Filas en página actual: {len(page_data)}")
-    print(f"Primeras 3 filas de la página:")
+    print("Primeras 3 filas de la página:")
     print(page_data.head(3))
     
     # Probar siguiente página

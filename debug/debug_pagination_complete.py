@@ -69,9 +69,9 @@ def test_pagination_issue():
             if last_cell != expected_last:
                 print(f"     ❌ ERROR: Última celda esperada '{expected_last}', obtenida '{last_cell}'")
                 return False
-            print(f"     ✅ Datos correctos")
+            print("     ✅ Datos correctos")
         else:
-            print(f"     ❌ ERROR: Modelo vacío!")
+            print("     ❌ ERROR: Modelo vacío!")
             return False
     
     print("\n✅ TODAS LAS PRUEBAS PASARON - El problema está en la interfaz, no en la lógica")
