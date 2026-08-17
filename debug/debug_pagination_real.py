@@ -8,7 +8,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from app.widgets.data_view import DataView
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba con más de 10 filas"""
     data = {
         'ID': list(range(1, 36)),  # 35 filas
@@ -20,7 +20,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class DebugWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Debug Paginación - Prueba Real")
         self.setGeometry(200, 200, 1000, 700)
@@ -49,7 +49,7 @@ class DebugWindow(QMainWindow):
         # Mostrar ventana
         self.show()
         
-    def verify_internal_state(self):
+    def verify_internal_state(self) -> None:
         """Verificar estado interno del DataView"""
         print("\n=== VERIFICACIÓN DE ESTADO INTERNO ===")
         
@@ -94,7 +94,7 @@ class DebugWindow(QMainWindow):
             
         print("=== FIN VERIFICACIÓN ===\n")
 
-def main():
+def main() -> None:
     """Función principal"""
     app = QApplication(sys.argv)
     

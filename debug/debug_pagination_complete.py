@@ -8,7 +8,7 @@ from app.widgets.data_view import DataView
 from app.services.pagination_manager import PaginationManager
 from app.models.pandas_model import VirtualizedPandasModel
 
-def test_pagination_issue():
+def test_pagination_issue() -> None:
     """Test para identificar el problema de paginación"""
     print("=== DIAGNÓSTICO DE PROBLEMA DE PAGINACIÓN ===\n")
     
@@ -77,7 +77,7 @@ def test_pagination_issue():
     print("\n✅ TODAS LAS PRUEBAS PASARON - El problema está en la interfaz, no en la lógica")
     return True
 
-def test_data_view_integration():
+def test_data_view_integration() -> None:
     """Test de integración completo con DataView"""
     print("\n=== TEST DE INTEGRACIÓN DATAVIEW ===\n")
     
@@ -148,7 +148,7 @@ def test_data_view_integration():
         print(f"Error en test de integración: {e}")
         return False
 
-def main():
+def main() -> None:
     """Función principal de diagnóstico"""
     print("🔍 DIAGNÓSTICO COMPLETO DEL PROBLEMA DE PAGINACIÓN")
     print("=" * 60)

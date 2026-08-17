@@ -6,6 +6,7 @@ Provides methods to switch between different views in the application.
 """
 
 from PySide6.QtCore import Signal, QObject
+from PySide6.QtWidgets import QStackedWidget
 
 from .view_registry import ViewRegistry
 
@@ -17,15 +18,15 @@ class ViewSwitcher(QObject):
     view_changed = Signal(int)  # Emitido cuando cambia la vista
     view_about_to_change = Signal(int, int)  # (vista_actual, vista_nueva)
     
-    def __init__(self, stacked_widget=None):
+    def __init__(self, stacked_widget: QStackedWidget | None = None) -> None:
         super().__init__()
         self._stacked_widget = stacked_widget
         self._current_view = 0
         self._current_registry_id = 0
-        self._view_history = []
+        self._view_history: list[int] = []
         self._index_to_registry: dict[int, int] = {}
     
-    def set_stacked_widget(self, stacked_widget):
+    def set_stacked_widget(self, stacked_widget: QStackedWidget | None) -> None:
         """Establecer el widget stacked"""
         self._stacked_widget = stacked_widget
         if stacked_widget:

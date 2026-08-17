@@ -4,13 +4,13 @@ Permite al usuario elegir el delimitador al importar archivos CSV/TSV.
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox,
-                                QDialogButtonBox)
+                                QDialogButtonBox, QWidget)
 
 
 class CSVSeparatorDialog(QDialog):
     """Diálogo modal para seleccionar el separador de un archivo CSV/TSV."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Opciones de importación")
         self.setModal(True)

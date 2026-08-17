@@ -6,7 +6,7 @@ Debug de los valores Qt para verificar qué está pasando con el ordenamiento
 from PySide6.QtCore import Qt
 import pandas as pd
 
-def debug_qt_constants():
+def debug_qt_constants() -> None:
     """Debug de las constantes Qt"""
     print("=== DEBUG DE CONSTANTES QT ===")
     print(f"Qt.AscendingOrder = {Qt.AscendingOrder}")

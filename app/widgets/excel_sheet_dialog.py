@@ -4,14 +4,14 @@ Permite al usuario elegir qué pestaña/hoja cargar de un archivo Excel.
 """
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox,
-                                QDialogButtonBox)
+                                QDialogButtonBox, QWidget)
 import pandas as pd
 
 
 class ExcelSheetDialog(QDialog):
     """Diálogo modal para seleccionar la hoja de un archivo Excel."""
 
-    def __init__(self, filepath: str, parent=None):
+    def __init__(self, filepath: str, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Seleccionar hoja")
         self.setModal(True)

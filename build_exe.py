@@ -6,7 +6,7 @@ if sys.platform != "win32":
     print("ADVERTENCIA: Este script está diseñado para Windows.")
     print("En Linux/Mac los separadores de --add-data deben ser ':' no ';'")
 
-def build_executable():
+def build_executable() -> None:
     """Build ejecutable para Windows"""
 
     if os.path.exists("build"):

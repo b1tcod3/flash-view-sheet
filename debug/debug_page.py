@@ -9,7 +9,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel
 from app.widgets.data_view import DataView
 
-def create_test_data():
+def create_test_data() -> pd.DataFrame:
     """Crear datos de prueba como en la aplicación real"""
     data = {
         'ID': list(range(1, 51)),  # 50 filas para 5 páginas de 10
@@ -21,7 +21,7 @@ def create_test_data():
     return pd.DataFrame(data)
 
 class BugReproductionWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("BUG DEBUG: Página 2 vacía - Reproducir problema")
         self.setGeometry(200, 200, 1200, 800)
@@ -79,7 +79,7 @@ class BugReproductionWindow(QMainWindow):
         # Añadir DataView
         layout.addWidget(self.data_view, 1)
         
-    def step1_load_data(self):
+    def step1_load_data(self) -> None:
         """Paso 1: Cargar datos"""
         print("\n🔍 BUG DEBUG: PASO 1 - Cargando datos...")
         self.status_label.setText("🔍 PASO 1: Cargando datos...")
@@ -93,7 +93,7 @@ class BugReproductionWindow(QMainWindow):
         # Verificar estado después de cargar
         self.verify_current_state("Después de cargar datos")
         
-    def step2_go_to_page2(self):
+    def step2_go_to_page2(self) -> None:
         """Paso 2: Ir a página 2 (aquí ocurre el bug)"""
         print("\n🔍 BUG DEBUG: PASO 2 - Navegando a página 2...")
         self.status_label.setText("🔍 PASO 2: Navegando a página 2...")
@@ -121,14 +121,14 @@ class BugReproductionWindow(QMainWindow):
             print("   ❌ No hay PaginationManager")
             self.status_label.setText("❌ Error: No hay PaginationManager")
             
-    def step3_verify_state(self):
+    def step3_verify_state(self) -> None:
         """Paso 3: Verificar estado detallado"""
         print("\n🔍 BUG DEBUG: PASO 3 - Verificando estado detallado...")
         self.status_label.setText("🔍 PASO 3: Verificando estado...")
         
         self.verify_current_state("Verificación manual")
         
-    def manual_go_to_page(self, page_num):
+    def manual_go_to_page(self, page_num: int) -> None:
         """Navegación manual a página específica"""
         print(f"\n🔍 BUG DEBUG: Navegación manual a página {page_num}")
         self.status_label.setText(f"🔄 Navegando a página {page_num}...")
@@ -163,7 +163,7 @@ class BugReproductionWindow(QMainWindow):
         else:
             print("   ❌ No hay PaginationManager")
             
-    def verify_current_state(self, context):
+    def verify_current_state(self, context: str) -> None:
         """Verificar estado actual del sistema"""
         print(f"\n--- VERIFICACIÓN: {context} ---")
         
@@ -222,7 +222,7 @@ class BugReproductionWindow(QMainWindow):
             
         print("--- FIN VERIFICACIÓN ---\n")
 
-def main():
+def main() -> None:
     """Función principal para debug del bug"""
     print("=" * 70)
     print("🐛 DEBUG ESPECÍFICO: Bug de página 2 vacía")

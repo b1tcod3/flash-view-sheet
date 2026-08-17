@@ -10,7 +10,7 @@ from PySide6.QtCore import Qt
 
 from app.widgets.data_view import DataView
 
-def debug_signal_flow():
+def debug_signal_flow() -> None:
     """Debug del flujo de señales durante ordenamiento"""
     
     print("🔍 DEBUG: Flujo de señales durante ordenamiento")
@@ -30,19 +30,19 @@ def debug_signal_flow():
     
     call_log = []
     
-    def logged_set_data(df, preserve_page=True):
+    def logged_set_data(df: pd.DataFrame, preserve_page: bool = True) -> None:
         print(f"📞 set_data() llamado con preserve_page={preserve_page}, página antes: {data_view.pagination_manager.current_page}")
         result = original_set_data(df, preserve_page)
         print(f"📞 set_data() terminado, página después: {data_view.pagination_manager.current_page}")
         call_log.append(f"set_data({preserve_page})")
         return result
     
-    def logged_update_view():
+    def logged_update_view() -> None:
         print(f"📞 update_view() llamado, página actual: {data_view.pagination_manager.current_page}")
         call_log.append("update_view()")
         return original_update_view()
     
-    def logged_on_page_changed(page):
+    def logged_on_page_changed(page: int) -> None:
         print(f"📞 on_page_changed({page}) llamado")
         call_log.append(f"on_page_changed({page})")
         return original_on_page_changed(page)

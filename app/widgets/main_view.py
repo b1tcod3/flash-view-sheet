@@ -6,7 +6,7 @@ Implementa interfaz de carga con Drag & Drop y lista de archivos recientes.
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                                QLabel, QFrame, QScrollArea, QProgressBar, QStyle)
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPixmap, QDragEnterEvent, QDropEvent
+from PySide6.QtGui import QPixmap, QDragEnterEvent, QDragLeaveEvent, QDropEvent, QMouseEvent
 from pathlib import Path
 
 from app.resources import get_asset_path
@@ -24,7 +24,7 @@ class FileItemWidget(QFrame):
         self.is_uploading = True
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.setStyleSheet("""
             QFrame {
                 background-color: transparent;
@@ -101,7 +101,7 @@ class FileItemWidget(QFrame):
         self.action_btn.clicked.connect(self._on_action_clicked)
         layout.addWidget(self.action_btn)
 
-    def set_progress(self, loaded_bytes: int, total_bytes: int):
+    def set_progress(self, loaded_bytes: int, total_bytes: int) -> None:
         """Actualiza el estado de la carga visualmente"""
         if total_bytes > 0:
             percent = int((loaded_bytes / total_bytes) * 100)
@@ -115,7 +115,7 @@ class FileItemWidget(QFrame):
             if percent >= 100:
                 self.set_completed()
 
-    def set_completed(self):
+    def set_completed(self) -> None:
         """Cambia el widget a su estado de carga finalizada"""
         self.is_uploading = False
         self.progress_bar.hide()
@@ -123,7 +123,7 @@ class FileItemWidget(QFrame):
         self.percent_label.hide()
         self.action_btn.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
 
-    def set_error(self, message: str = "Error"):
+    def set_error(self, message: str = "Error") -> None:
         """Marca el widget como error de carga"""
         self.is_uploading = False
         self.progress_bar.hide()
@@ -132,7 +132,7 @@ class FileItemWidget(QFrame):
         self.percent_label.setStyleSheet("font-size: 11px; color: #ff4d4f; font-weight: bold;")
         self.action_btn.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
 
-    def _on_action_clicked(self):
+    def _on_action_clicked(self) -> None:
         if self.is_uploading:
             self.cancel_clicked.emit(self.filepath)
         else:
@@ -194,7 +194,7 @@ class RecentFileWidget(QFrame):
         remove_btn.clicked.connect(lambda: self.remove_clicked.emit(filepath))
         layout.addWidget(remove_btn)
 
-    def mousePressEvent(self, event) -> None:
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             self.clicked.emit(self.filepath)
         super().mousePressEvent(event)
@@ -367,7 +367,7 @@ class MainView(QWidget):
                 }
             """)
 
-    def dragLeaveEvent(self, event) -> None:
+    def dragLeaveEvent(self, event: QDragLeaveEvent | None = None) -> None:
         self.drop_zone.setStyleSheet("""
             QFrame#uploadZone {
                 border: 2px dashed #4a90e2; background-color: #f8fbff; border-radius: 12px;
@@ -375,7 +375,7 @@ class MainView(QWidget):
         """)
 
     def dropEvent(self, event: QDropEvent) -> None:
-        self.dragLeaveEvent(None)
+        self.dragLeaveEvent()
         urls = event.mimeData().urls()
         if not urls:
             return

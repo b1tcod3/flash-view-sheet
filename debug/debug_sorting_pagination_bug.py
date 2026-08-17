@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication
 # Importar componentes del proyecto
 from app.services.pagination_manager import PaginationManager
 
-def test_sorting_pagination_bug():
+def test_sorting_pagination_bug() -> None:
     """Test que reproduce el bug de paginación al ordenar"""
     
     print("🧪 TEST: Bug de paginación al aplicar ordenamiento")
@@ -69,7 +69,7 @@ def test_sorting_pagination_bug():
         print("   ✅ La página se mantuvo correctamente")
         return True
 
-def test_proposed_solution():
+def test_proposed_solution() -> None:
     """Test de la solución propuesta"""
     
     print("\n🧪 TEST: Solución propuesta para preservar paginación")
@@ -92,7 +92,7 @@ def test_proposed_solution():
     print(f"📄 Página original: {original_page}")
     
     # Crear versión corregida del método set_data
-    def set_data_preserving_page(manager, df):
+    def set_data_preserving_page(manager: PaginationManager, df: pd.DataFrame) -> None:
         """Versión corregida que preserva la página"""
         old_page = manager.current_page  # Preservar página actual
         old_total = manager.total_pages

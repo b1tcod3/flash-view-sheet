@@ -260,7 +260,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
 
         return None
     
-    def setData(self, index: QModelIndex, value, role: int = Qt.EditRole) -> bool:
+    def setData(self, index: QModelIndex, value: object, role: int = Qt.EditRole) -> bool:
         """
         Establecer datos en la celda especificada
 
@@ -296,7 +296,7 @@ class VirtualizedPandasModel(QAbstractTableModel):
         self.dataChanged.emit(index, index, [role])
         return True
 
-    def update_data(self, new_df: pd.DataFrame):
+    def update_data(self, new_df: pd.DataFrame) -> None:
         """
         Actualizar los datos del modelo
 
