@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication
 # Importar componentes del proyecto
 from app.services.pagination_manager import PaginationManager
 
-def test_sorting_pagination_bug() -> None:
+def test_sorting_pagination_bug() -> bool:
     """Test que reproduce el bug de paginación al ordenar"""
     
     print("🧪 TEST: Bug de paginación al aplicar ordenamiento")
@@ -69,7 +69,7 @@ def test_sorting_pagination_bug() -> None:
         print("   ✅ La página se mantuvo correctamente")
         return True
 
-def test_proposed_solution() -> None:
+def test_proposed_solution() -> bool:
     """Test de la solución propuesta"""
     
     print("\n🧪 TEST: Solución propuesta para preservar paginación")

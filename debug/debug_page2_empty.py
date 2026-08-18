@@ -222,7 +222,7 @@ class BugReproductionWindow(QMainWindow):
             
         print("--- FIN VERIFICACIÓN ---\n")
 
-def main() -> None:
+def main() -> int:
     """Función principal para debug del bug"""
     print("=" * 70)
     print("🐛 DEBUG ESPECÍFICO: Bug de página 2 vacía")
