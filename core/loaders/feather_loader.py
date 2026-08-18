@@ -85,7 +85,8 @@ class FeatherLoader(FileLoader):
         except Exception as e:
             return {'error': str(e)}
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         Feather files support chunk loading
         """

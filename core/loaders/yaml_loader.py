@@ -109,7 +109,8 @@ class YamlLoader(FileLoader):
         except Exception as e:
             return {'error': str(e)}
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         YAML files do not support chunk loading
         """

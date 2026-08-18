@@ -102,7 +102,8 @@ class XmlLoader(FileLoader):
         except Exception as e:
             return {'error': str(e)}
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         XML files do not support chunk loading
         """

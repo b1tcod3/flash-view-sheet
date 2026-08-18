@@ -156,7 +156,8 @@ class PickleLoader(FileLoader):
         except Exception as e:
             return {'error': str(e)}
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         Pickle files do not support chunk loading
         """

@@ -76,7 +76,8 @@ class ExcelLoader(FileLoader):
         except Exception as e:
             return {'error': str(e)}
 
-    def can_load_chunks(self) -> bool:
+    @staticmethod
+    def can_load_chunks() -> bool:
         """
         Excel files do not support chunk loading directly
         """
